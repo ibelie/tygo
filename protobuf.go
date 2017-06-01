@@ -2,7 +2,7 @@
 // Use of this source code is governed by The MIT License
 // that can be found in the LICENSE file.
 
-package main
+package tygo
 
 import (
 	"io"
@@ -25,7 +25,7 @@ const (
 )
 
 func MAKE_TAG(fieldNum uint32, wireType WireType) uint32 {
-	return (fieldNum << WireTypeBits) | wireType
+	return (fieldNum << WireTypeBits) | uint32(wireType)
 }
 
 func MAX_TAG(tag uint32) uint32 {
@@ -41,45 +41,9 @@ func TAG_WIRE(tag uint32) uint32 {
 }
 
 func ReadTag(reader io.Reader, cutoff uint32) (uint32, error) {
-
-}
-
-func ReadVarint32(reader io.Reader) (uint32, error) {
-
-}
-
-func ReadVarint64(reader io.Reader) (uint64, error) {
-
-}
-
-func Read64(reader io.Reader) (uint64, error) {
-
-}
-
-func Read32(reader io.Reader) (uint32, error) {
-
-}
-
-func ReadByte(reader io.Reader) (byte, error) {
-
+	return 0, nil
 }
 
 func SkipField(reader io.Reader, fieldNum uint32) error {
-
-}
-
-func WriteByte(writer io.Writer, data byte) error {
-
-}
-
-func WriteTag(writer io.Writer, data uint32) error {
-
-}
-
-func Write32(writer io.Writer, data uint32) error {
-
-}
-
-func Write64(writer io.Writer, data uint64) error {
-
+	return nil
 }

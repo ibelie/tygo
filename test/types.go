@@ -4,14 +4,7 @@
 
 package main
 
-import (
-	"flag"
-
-	"github.com/ibelie/tygo"
-)
-
-func main() {
-	pkg := flag.String("pkg", "", "target package")
-	flag.Parse()
-	tygo.Inject(*pkg)
+type Vector2 struct {
+	X float32 // @Property(坐标X)
+	Y float32 // @Property(坐标Y)
 }
