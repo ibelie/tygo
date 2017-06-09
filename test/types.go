@@ -4,13 +4,12 @@
 
 package main
 
-import "github.com/ibelie/tygo"
-
 import (
 	"bytes"
 	"io"
 
 	"encoding/gob"
+	"github.com/ibelie/tygo"
 )
 
 type Corpus uint8
@@ -45,12 +44,12 @@ func (g *GoType) Deserialize(r io.Reader) error {
 }
 
 type Vector2 struct {
-	X float32 // @Property(坐标X)
-	Y float32 // @Property(坐标Y) @FixedPoint(1, -10)
-	B []byte  // @Property
-	S string  // @Property
-	E Corpus  // @Property(Corpus)
-	P *GoType // @Property(GoType)
+	X float32         // @Property(坐标X)
+	Y tygo.FixedPoint // @Property(坐标Y) @FixedPoint(1, -10)
+	B []byte          // @Property
+	S string          // @Property
+	E Corpus          // @Property(Corpus)
+	P *GoType         // @Property(GoType)
 }
 
 type Fighter_Part1 struct {

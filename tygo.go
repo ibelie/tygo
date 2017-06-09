@@ -8,6 +8,8 @@ import (
 	"sort"
 )
 
+type FixedPoint float64
+
 type Type interface {
 	String() string
 	TypeStr() *TypeStr
