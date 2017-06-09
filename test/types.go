@@ -98,8 +98,9 @@ type Fighter struct {
 	Fdv interface{}                     // @Property @Variant(int32, Dict(int32, float32))
 }
 
-type RPG struct {
-	F Fighter // @Property
+// @Procedure
+func (f *Fighter) RPG(fighter *Fighter) *Vector2 {
+	return nil
 }
 
 var v *Vector2 = &Vector2{
