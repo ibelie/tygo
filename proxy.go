@@ -38,6 +38,9 @@ func Inject(path string) {
 	}
 	fs := token.NewFileSet()
 	for _, filename := range buildPackage.GoFiles {
+		if strings.HasSuffix(filename, ".ty.go") {
+			continue
+		}
 		file, err := parser.ParseFile(fs, buildPackage.Dir+"/"+filename, nil, parser.ParseComments)
 		if err != nil {
 			panic(fmt.Sprintf("[Tygo][Inject] Cannot parse file:\n>>>>%v", err))
