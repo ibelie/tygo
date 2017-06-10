@@ -9,9 +9,7 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"regexp"
 	"sort"
-	"strings"
 
 	"go/ast"
 	"go/build"
@@ -23,7 +21,7 @@ import (
 
 type Decorator struct {
 	Name   string
-	Params []string
+	Params []*Decorator
 }
 
 type Decorators map[string]*Decorator
@@ -297,20 +295,9 @@ func toString(fset *token.FileSet, node interface{}) string {
 }
 
 func decorate(text string, decorators Decorators) {
-	reg := regexp.MustCompile(`@(\w+)(?:\((.+)\))?`)
-	for _, submatch := range reg.FindAllStringSubmatch(text, -1) {
-		switch len(submatch) {
-		case 2:
-			decorators[submatch[1]] = &Decorator{Name: submatch[1]}
-		case 3:
-			decorator := &Decorator{Name: submatch[1]}
-			for _, param := range strings.Split(submatch[2], ",") {
-				decorator.Params = append(decorator.Params, strings.TrimSpace(param))
-			}
-			decorators[submatch[1]] = decorator
-		default:
-			panic(fmt.Sprintf("[Tygo][Decorator] Submatch: %v %v", text, submatch))
-		}
+	parser := &decoratorParserImpl{}
+	parser.Parse(&decoratorLex{line: []byte(text)})
+	for _, dec := range parser.lval.decorators {
+		decorators[dec.Name] = dec
 	}
-	return
 }
