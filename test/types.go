@@ -98,8 +98,8 @@ type Fighter struct {
 	Fdv interface{}                     // @Property @Variant(int32, Dict(int32, float32))
 }
 
-// @Procedure
-func (f *Fighter) RPG(fighter *Fighter) *Vector2 {
+// @Procedure @Variant(nil, int32) @Variant(Corpus, float64, string, Vector2) FixedPoint(3)
+func (f *Fighter) RPG(fighter *Fighter, nv interface{}, vd map[int32]interface{}, h tygo.FixedPoint) *Vector2 {
 	return nil
 }
 
@@ -112,7 +112,7 @@ var v *Vector2 = &Vector2{
 	P: &GoType{pp: 123, ap: "asdf"},
 }
 
-var v *Vector2 = &Vector2{
+var v2 *Vector2 = &Vector2{
 	X: 1234,
 	Y: 345.6,
 	B: []byte("xxx 1234"),
