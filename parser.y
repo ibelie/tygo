@@ -38,7 +38,7 @@ import (
 %type	<specs>   specs
 %type	<spec>    spec spec1
 
-%token	'*' '=' '.' ',' '(' ')' '[' ']' '<' '>' '\t' '\n'
+%token	'*' '=' '.' ',' '(' ')' '[' ']' '{' '}' '<' '>' '\t' '\n'
 %token	<keyword> TYPE ENUM OBJECT MAP FIXEDPOINT VARIANT IOTA NIL
 %token	<ident>   IDENT
 %token	<integer> INTEGER
@@ -217,7 +217,7 @@ func (x *tygoLex) Lex(yylval *tygoSymType) int {
 			return eof
 		case '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
 			return x.integer(c, yylval)
-		case '*', '=', '.', ',', '(', ')', '[', ']', '<', '>', '\t', '\n':
+		case '*', '=', '.', ',', '(', ')', '[', ']', '{', '}', '<', '>', '\t', '\n':
 			return int(c)
 		case ' ', '\r':
 		default:
@@ -267,7 +267,7 @@ func (x *tygoLex) ident(c rune, yylval *tygoSymType) int {
 	L: for {
 		c = x.next()
 		switch c {
-		case '*', '=', '.', ',', '(', ')', '[', ']', '<', '>', '\t', '\n', ' ', '\r':
+		case '*', '=', '.', ',', '(', ')', '[', ']', '{', '}', '<', '>', '\t', '\n', ' ', '\r':
 			break L
 		default:
 			add(&b, c)
