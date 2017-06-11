@@ -2,7 +2,6 @@
 
 package main
 
-import  
 
 type Corpus int
 
@@ -61,6 +60,7 @@ type Fighter_Part1 struct {
 }
 
 type Fighter_Part2 struct {
+	Fighter_Part1
 	Bd map[string]bytes
 	Bl []bytes
 	Ed map[int32]Corpus
@@ -72,6 +72,7 @@ type Fighter_Part2 struct {
 }
 
 type Fighter struct {
+	Fighter_Part2
 	Dd  map[int32]map[int32]interface{}
 	Dv  interface{}
 	Fdd map[int32]map[int32]float32

@@ -139,6 +139,22 @@ func inject(filename string, doc string, file *ast.File) {
 			sortedField = append(sortedField, name)
 		}
 		sort.Strings(sortedField)
+		var sortedParent []string
+		for _, parent := range object.Parents {
+			spec, pkgs := parent.Go()
+			sortedParent = append(sortedParent, spec)
+			for _, pkg := range pkgs {
+				if i, ok := imported[pkg]; !ok || !i {
+					head.Write([]byte(fmt.Sprintf(goImport, pkg, imports[pkg])))
+					imported[pkg] = true
+				}
+			}
+		}
+		sort.Strings(sortedParent)
+		for _, parent := range sortedParent {
+			fields = append(fields, fmt.Sprintf(`
+	%s`, parent))
+		}
 		for _, name := range sortedField {
 			spec, pkgs := object.Fields[name].Go()
 			for _, pkg := range pkgs {

@@ -61,7 +61,11 @@ func (t *ObjectType) String() string {
 }
 
 func (t *ObjectType) Go() (string, []string) {
-	return t.String(), []string{t.Pkg}
+	if t.Pkg == "" {
+		return t.String(), nil
+	} else {
+		return t.String(), []string{t.Pkg}
+	}
 }
 
 type FixedPointType struct {
