@@ -15,17 +15,21 @@ type Type interface {
 }
 
 type Enum struct {
+	Name   string
 	Values map[string]int
 }
 
 type Method struct {
+	Name    string
 	Params  []Type
 	Results []Type
 }
 
 type Object struct {
+	Name    string
 	Fields  map[string]Type
-	Methods map[string]*Method
+	Parents []Type
+	Methods []*Method
 }
 
 type SimpleType string
@@ -35,30 +39,30 @@ func (t SimpleType) String() string {
 }
 
 type ObjectType struct {
-	T     Type
-	isPtr bool
-	pkg   string
+	IsPtr bool
+	Pkg   string
+	Name  string
 }
 
 func (t *ObjectType) String() string {
 	s := ""
-	if t.isPtr {
+	if t.IsPtr {
 		s += "*"
 	}
-	if t.pkg != "" {
-		s += t.pkg + "."
+	if t.Pkg != "" {
+		s += t.Pkg + "."
 	}
-	s += t.T.String()
+	s += t.Name
 	return s
 }
 
 type FixedPointType struct {
-	precision int
-	floor     int
+	Precision int
+	Floor     int
 }
 
 func (t *FixedPointType) String() string {
-	return fmt.Sprintf("fixedpoint<%d, %d>", t.precision, t.floor)
+	return fmt.Sprintf("fixedpoint<%d, %d>", t.Precision, t.Floor)
 }
 
 type ListType struct {

@@ -13,6 +13,7 @@ package tygo
 import (
 	"bytes"
 	"log"
+	"strconv"
 	"unicode/utf8"
 )
 
@@ -20,87 +21,236 @@ import (
 
 %union {
 	ident   string
+	keyword string
+	integer int
 	spec    Type
-	params  []Type
-	methods map[string]*Method
-	fields  map[string]Type
-	enums   map[string]int
-	types   map[string]interface{}
+	specs   []Type
+	method  *Method
+	object  *Object
+	enum    *Enum
+	types   []interface{}
 }
 
-%type	<decorator>  dec
-%type	<decorators> top decs
+%type	<types>   top
+%type	<enum>    enum
+%type	<object>  object
+%type	<method>  method method1 method2
+%type	<specs>   specs
+%type	<spec>    spec spec1 spec2 spec3 spec4
+%type	<integer> integer
+%type	<keyword> keyword
+%type	<ident>   ident
 
-%token	'@' ',' '(' ')'
-%token	<id> ID
+%token	'*' '=' '.' ',' '(' ')' '[' ']' '<' '>' '\t' '\n'
+%token	<keyword> TYPE ENUM OBJECT MAP FIXEDPOINT VARIANT IOTA NIL
+%token	<ident>   IDENT
+%token	<integer> INTEGER
 
 %%
 
 top:
-	'@' dec
+	enum '}'
 	{
-		$$ = []*Decorator{$2}
+		$$ = []interface{}{$1}
 	}
-|	top '@' dec
+|	object '}'
+	{
+		$$ = []interface{}{$1}
+	}
+|	top enum '}'
+	{
+		$$ = append($1, $2)
+	}
+|	top object '}'
+	{
+		$$ = append($1, $2)
+	}
+
+enum:
+	TYPE IDENT ENUM '{' '\n'
+	{
+		eiota = 0
+		$$ = &Enum{Name: $2, Values: make(map[string]int)}
+	}
+|	enum '\t' IDENT '=' INTEGER '\n'
+	{
+		$$ = $1
+		$$.Values[$3] = $5
+		eiota++
+	}
+|	enum '\t' IDENT '=' IOTA '\n'
+	{
+		$$ = $1
+		$$.Values[$3] = eiota
+		eiota++
+	}
+|	enum '\t' IDENT '\n'
+	{
+		$$ = $1
+		$$.Values[$3] = eiota
+		eiota++
+	}
+
+object:
+	TYPE IDENT OBJECT '{' '\n'
+	{
+		$$ = &Object{Name: $2, Fields: make(map[string]Type)}
+	}
+|	object '\t' IDENT spec '\n'
+	{
+		$$ = $1
+		$$.Fields[$3] = $4
+	}
+|	object '\t' spec '\n'
+	{
+		$$ = $1
+		$$.Parents = append($$.Parents, $3)
+	}
+|	object '\t' method '\n'
+	{
+		$$ = $1
+		$$.Methods = append($$.Methods, $3)
+	}
+
+method:
+	method1
+!	method spec
+	{
+		$$ = $1
+		$$.Results = []Type{$2}
+	}
+|	method '(' specs ')'
+	{
+		$$ = $1
+		$$.Results = $3
+	}
+
+method1:
+	method2
+|	method1 ')'
+	{
+		$$ = $1
+	}
+|	method1 spec ')'
+	{
+		$$ = $1
+		$$.Params = []Type{$2}
+	}
+|	method1 specs ')'
+	{
+		$$ = $1
+		$$.Params = $3
+	}
+
+method2:
+	IDENT '('
+	{
+		$$ = &Method{Name: $1}
+	}
+
+specs:
+	spec ',' spec
+	{
+		$$ = []Type{$1, $3}
+	}
+|	specs ',' spec
 	{
 		$$ = append($1, $3)
 	}
 
-dec:
-	ID
+spec:
+	spec3
+|	spec4
+|	'[' ']' spec
 	{
-		$$ = &Decorator{Name: $1}
+		$$ = &ListType{E: $3}
 	}
-|	ID '(' decs ')'
+|	MAP '[' spec3 ']' spec
 	{
-		$$ = &Decorator{Name: $1, Params: $3}
+		$$ = &DictType{K: $3, V: $5}
+	}
+|	VARIANT '<' specs '>'
+	{
+		$$ = &VariantType{Ts: $3}
 	}
 
-decs:
-	dec
+spec1:
+	IDENT
 	{
-		$$ = []*Decorator{$1}
+		$$ = SimpleType($1)
 	}
-|	decs ',' dec
+
+spec2:
+	spec1
+|	IDENT '.' spec2
 	{
-		$$ = append($1, $3)
+		if t, ok := $1.(SimpleType) {
+			$$ = &ObjectType{Name: string(t)}
+		} else {
+			log.Fatalf("[Tygo][Parser] package type: %s", $1)
+		}
+	}
+
+spec3:
+	spec2
+|	'*' spec3
+	{
+		switch t := $1.(type) {
+		case SimpleType:
+			$$ = &ObjectType{IsPtr: true, Name: string(t)}
+		case *ObjectType:
+			$$ = $1
+			$$.IsPtr = true
+		default:
+			log.Fatalf("[Tygo][Parser] star type: %s", $1)
+		}
+	}
+
+spec4:
+	FIXEDPOINT '<' INTEGER ',' INTEGER '>'
+	{
+		$$ = &FixedPointType(Precision: $3, Floor: $5)
 	}
 
 
 %%
+
+var eiota int
 
 // The parser expects the lexer to return 0 on EOF.  Give it a name for clarity.
 const eof = 0
 
 // The parser uses the type <prefix>Lex as a lexer. It must provide
 // the methods Lex(*<prefix>SymType) int and Error(string).
-type decoratorLex struct {
-	line []byte
+type tygoLex struct {
+	code []byte
 	peek rune
 }
 
 // The parser calls this method to get each new token. This
 // implementation returns symbols and ID.
-func (x *decoratorLex) Lex(yylval *decoratorSymType) int {
+func (x *tygoLex) Lex(yylval *tygoSymType) int {
 	for {
 		c := x.next()
 		switch c {
 		case eof:
 			return eof
-		case '@', ',', '(', ')':
+		case '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
+			return x.integer(c, yylval)
+		case '*', '=', '.', ',', '(', ')', '[', ']', '<', '>', '\t', '\n':
 			return int(c)
-		case ' ', '\t', '\n', '\r':
+		case ' ', '\r':
 		default:
-			return x.id(c, yylval)
+			return x.ident(c, yylval)
 		}
 	}
 }
 
-// Lex a id.
-func (x *decoratorLex) id(c rune, yylval *decoratorSymType) int {
+// Lex a integer.
+func (x *tygoLex) integer(c rune, yylval *tygoSymType) int {
 	add := func(b *bytes.Buffer, c rune) {
 		if _, err := b.WriteRune(c); err != nil {
-			log.Fatalf("[Tygo][Decorator] WriteRune: %s", err)
+			log.Fatalf("[Tygo][Parser] WriteRune: %s", err)
 		}
 	}
 	var b bytes.Buffer
@@ -108,7 +258,34 @@ func (x *decoratorLex) id(c rune, yylval *decoratorSymType) int {
 	L: for {
 		c = x.next()
 		switch c {
-		case '@', ',', '(', ')', ' ', '\t', '\n', '\r':
+		case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
+			add(&b, c)
+		default:
+			break L
+		}
+	}
+	if c != eof {
+		x.peek = c
+	}
+	if yylval.integer, err := strconv.Atoi(b.String()); err != nil {
+		log.Fatalf("[Tygo][Parser] integer: %s", err)
+	}
+	return INTEGER
+}
+
+// Lex a ident/keyword.
+func (x *tygoLex) ident(c rune, yylval *tygoSymType) int {
+	add := func(b *bytes.Buffer, c rune) {
+		if _, err := b.WriteRune(c); err != nil {
+			log.Fatalf("[Tygo][Parser] WriteRune: %s", err)
+		}
+	}
+	var b bytes.Buffer
+	add(&b, c)
+	L: for {
+		c = x.next()
+		switch c {
+		case '*', '=', '.', ',', '(', ')', '[', ']', '<', '>', '\t', '\n', ' ', '\r':
 			break L
 		default:
 			add(&b, c)
@@ -117,30 +294,57 @@ func (x *decoratorLex) id(c rune, yylval *decoratorSymType) int {
 	if c != eof {
 		x.peek = c
 	}
-	yylval.id = b.String()
-	return ID
+	switch s := b.String() {
+	case 'type':
+		yylval.keyword = s
+		return TYPE
+	case 'enum':
+		yylval.keyword = s
+		return ENUM
+	case 'object':
+		yylval.keyword = s
+		return OBJECT
+	case 'map':
+		yylval.keyword = s
+		return MAP
+	case 'fixedpoint':
+		yylval.keyword = s
+		return FIXEDPOINT
+	case 'variant':
+		yylval.keyword = s
+		return VARIANT
+	case 'iota':
+		yylval.keyword = s
+		return IOTA
+	case 'nil':
+		yylval.keyword = s
+		return NIL
+	default:
+		yylval.ident = s
+		return IDENT
+	}
 }
 
 // Return the next rune for the lexer.
-func (x *decoratorLex) next() rune {
+func (x *tygoLex) next() rune {
 	if x.peek != eof {
 		r := x.peek
 		x.peek = eof
 		return r
 	}
-	if len(x.line) == 0 {
+	if len(x.code) == 0 {
 		return eof
 	}
-	c, size := utf8.DecodeRune(x.line)
-	x.line = x.line[size:]
+	c, size := utf8.DecodeRune(x.code)
+	x.code = x.code[size:]
 	if c == utf8.RuneError && size == 1 {
-		log.Print("[Tygo][Decorator] Invalid utf8")
+		log.Print("[Tygo][Parser] Invalid utf8")
 		return x.next()
 	}
 	return c
 }
 
 // The parser calls this method on a parse error.
-func (x *decoratorLex) Error(s string) {
-	log.Printf("[Tygo][Decorator] Parse error: %s", s)
+func (x *tygoLex) Error(s string) {
+	log.Printf("[Tygo][Parser] Parse error: %s", s)
 }
