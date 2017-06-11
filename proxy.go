@@ -87,6 +87,7 @@ type %s struct {%s
 )
 
 func inject(filename string, doc string, file *ast.File) {
+	enums, objects := Parse(doc)
 	imports := make(map[string]string)
 	for _, importSpec := range file.Imports {
 		if importSpec.Name == nil {
@@ -96,7 +97,6 @@ func inject(filename string, doc string, file *ast.File) {
 			imports[importSpec.Name.Name] = importSpec.Path.Value
 		}
 	}
-	enums, objects := Parse(imports, doc)
 
 	var head bytes.Buffer
 	var body bytes.Buffer
