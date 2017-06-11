@@ -55,7 +55,12 @@ func Inject(path string) {
 				if !ok || spec.Path.Value != "\"github.com/ibelie/tygo\"" {
 					continue
 				}
-				inject(path, filename, decl.Doc.Text(), file)
+				injectfile := SRC_PATH + path + "/" + strings.Replace(filename, ".go", ".ty.go", 1)
+				if strings.TrimSpace(decl.Doc.Text()) == "" {
+					os.Remove(injectfile)
+				} else {
+					inject(injectfile, decl.Doc.Text(), file)
+				}
 			}
 		}
 	}
@@ -81,7 +86,7 @@ type %s struct {%s
 `
 )
 
-func inject(path string, filename string, doc string, file *ast.File) {
+func inject(filename string, doc string, file *ast.File) {
 	enums, objects := Parse(doc)
 	imports := make(map[string]string)
 	for _, importSpec := range file.Imports {
@@ -128,5 +133,5 @@ func inject(path string, filename string, doc string, file *ast.File) {
 	}
 
 	head.Write(body.Bytes())
-	ioutil.WriteFile(SRC_PATH+path+"/"+strings.Replace(filename, ".go", ".ty.go", 1), head.Bytes(), 0666)
+	ioutil.WriteFile(filename, head.Bytes(), 0666)
 }
