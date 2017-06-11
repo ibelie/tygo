@@ -39,7 +39,7 @@ import (
 %type	<spec>    spec spec1
 
 %token	'*' '=' '.' ',' '(' ')' '[' ']' '{' '}' '<' '>' '\t' '\n'
-%token	<keyword> TYPE ENUM OBJECT MAP FIXEDPOINT VARIANT IOTA NIL
+%token	<keyword> TYPE ENUM OBJECT MAP FIXEDPOINT VARIANT IOTA
 %token	<ident>   IDENT
 %token	<integer> INTEGER
 
@@ -292,8 +292,6 @@ func (x *tygoLex) ident(c rune, yylval *tygoSymType) int {
 		return VARIANT
 	case "iota":
 		return IOTA
-	case "nil":
-		return NIL
 	default:
 		yylval.ident = yylval.keyword
 		return IDENT
