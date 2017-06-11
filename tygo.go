@@ -40,6 +40,7 @@ func (t SimpleType) String() string {
 type ObjectType struct {
 	IsPtr bool
 	Pkg   string
+	Path  string
 	Name  string
 }
 

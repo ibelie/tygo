@@ -74,15 +74,17 @@ const tygoInitialStackSize = 16
 var eiota int
 
 var (
-	enums   []*Enum
-	objects []*Object
+	parserEnums   []*Enum
+	parserObjects []*Object
+	parserImports map[string]string
 )
 
-func Parse(code string) ([]*Enum, []*Object) {
-	enums = nil
-	objects = nil
+func Parse(imports map[string]string, code string) ([]*Enum, []*Object) {
+	parserEnums = nil
+	parserObjects = nil
+	parserImports = imports
 	tygoParse(&tygoLex{code: []byte(code)})
-	return enums, objects
+	return parserEnums, parserObjects
 }
 
 // The parser expects the lexer to return 0 on EOF.  Give it a name for clarity.
@@ -663,25 +665,25 @@ tygodefault:
 		tygoDollar = tygoS[tygopt-3 : tygopt+1]
 		//line parser.y:48
 		{
-			enums = append(enums, tygoDollar[1].enum)
+			parserEnums = append(parserEnums, tygoDollar[1].enum)
 		}
 	case 2:
 		tygoDollar = tygoS[tygopt-4 : tygopt+1]
 		//line parser.y:52
 		{
-			enums = append(enums, tygoDollar[2].enum)
+			parserEnums = append(parserEnums, tygoDollar[2].enum)
 		}
 	case 3:
 		tygoDollar = tygoS[tygopt-3 : tygopt+1]
 		//line parser.y:56
 		{
-			objects = append(objects, tygoDollar[1].object)
+			parserObjects = append(parserObjects, tygoDollar[1].object)
 		}
 	case 4:
 		tygoDollar = tygoS[tygopt-4 : tygopt+1]
 		//line parser.y:60
 		{
-			objects = append(objects, tygoDollar[2].object)
+			parserObjects = append(parserObjects, tygoDollar[2].object)
 		}
 	case 5:
 		tygoDollar = tygoS[tygopt-5 : tygopt+1]
@@ -815,7 +817,7 @@ tygodefault:
 		tygoDollar = tygoS[tygopt-3 : tygopt+1]
 		//line parser.y:173
 		{
-			tygoVAL.spec = &ObjectType{Pkg: tygoDollar[1].ident, Name: tygoDollar[3].ident}
+			tygoVAL.spec = &ObjectType{Pkg: tygoDollar[1].ident, Name: tygoDollar[3].ident, Path: parserImports[tygoDollar[1].ident]}
 		}
 	case 28:
 		tygoDollar = tygoS[tygopt-2 : tygopt+1]
@@ -827,7 +829,7 @@ tygodefault:
 		tygoDollar = tygoS[tygopt-4 : tygopt+1]
 		//line parser.y:181
 		{
-			tygoVAL.spec = &ObjectType{IsPtr: true, Pkg: tygoDollar[2].ident, Name: tygoDollar[4].ident}
+			tygoVAL.spec = &ObjectType{IsPtr: true, Pkg: tygoDollar[2].ident, Name: tygoDollar[4].ident, Path: parserImports[tygoDollar[2].ident]}
 		}
 	case 30:
 		tygoDollar = tygoS[tygopt-6 : tygopt+1]

@@ -46,19 +46,19 @@ import (
 top:
 	enum '}' newline
 	{
-		enums = append(enums, $1)
+		parserEnums = append(parserEnums, $1)
 	}
 |	top enum '}' newline
 	{
-		enums = append(enums, $2)
+		parserEnums = append(parserEnums, $2)
 	}
 |	object '}' newline
 	{
-		objects = append(objects, $1)
+		parserObjects = append(parserObjects, $1)
 	}
 |	top object '}' newline
 	{
-		objects = append(objects, $2)
+		parserObjects = append(parserObjects, $2)
 	}
 
 enum:
@@ -171,7 +171,7 @@ spec1:
 	}
 |	IDENT '.' IDENT
 	{
-		$$ = &ObjectType{Pkg: $1, Name: $3}
+		$$ = &ObjectType{Pkg: $1, Name: $3, Path: parserImports[$1]}
 	}
 |	'*' IDENT
 	{
@@ -179,7 +179,7 @@ spec1:
 	}
 |	'*' IDENT '.' IDENT
 	{
-		$$ = &ObjectType{IsPtr: true, Pkg: $2, Name: $4}
+		$$ = &ObjectType{IsPtr: true, Pkg: $2, Name: $4, Path: parserImports[$2]}
 	}
 |	FIXEDPOINT '<' INTEGER ',' INTEGER '>'
 	{
@@ -196,15 +196,17 @@ newline:
 var eiota int
 
 var (
-	enums   []*Enum
-	objects []*Object
+	parserEnums   []*Enum
+	parserObjects []*Object
+	parserImports map[string]string
 )
 
-func Parse(code string) ([]*Enum, []*Object) {
-	enums   = nil
-	objects = nil
+func Parse(imports map[string]string, code string) ([]*Enum, []*Object) {
+	parserEnums   = nil
+	parserObjects = nil
+	parserImports = imports
 	tygoParse(&tygoLex{code: []byte(code)})
-	return enums, objects
+	return parserEnums, parserObjects
 }
 
 // The parser expects the lexer to return 0 on EOF.  Give it a name for clarity.
