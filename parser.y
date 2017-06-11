@@ -36,10 +36,7 @@ import (
 %type	<object>  object
 %type	<method>  method method1 method2
 %type	<specs>   specs
-%type	<spec>    spec spec1 spec2 spec3 spec4
-%type	<integer> integer
-%type	<keyword> keyword
-%type	<ident>   ident
+%type	<spec>    spec spec1
 
 %token	'*' '=' '.' ',' '(' ')' '[' ']' '<' '>' '\t' '\n'
 %token	<keyword> TYPE ENUM OBJECT MAP FIXEDPOINT VARIANT IOTA NIL
@@ -49,7 +46,8 @@ import (
 %%
 
 top:
-	enum '}'
+	top '\n'
+|	enum '}'
 	{
 		$$ = []interface{}{$1}
 	}
@@ -106,40 +104,36 @@ object:
 		$$ = $1
 		$$.Parents = append($$.Parents, $3)
 	}
-|	object '\t' method '\n'
+|	object '\t' method
 	{
 		$$ = $1
 		$$.Methods = append($$.Methods, $3)
 	}
 
 method:
-	method1
-!	method spec
+	method1 '\n'
+|	method1 spec '\n'
 	{
 		$$ = $1
 		$$.Results = []Type{$2}
 	}
-|	method '(' specs ')'
+|	method1 '(' specs ')' '\n'
 	{
 		$$ = $1
 		$$.Results = $3
 	}
 
 method1:
-	method2
-|	method1 ')'
-	{
-		$$ = $1
-	}
-|	method1 spec ')'
+	method2 ')'
+|	method2 spec ')'
 	{
 		$$ = $1
 		$$.Params = []Type{$2}
 	}
-|	method1 specs ')'
+|	method2 specs ')'
 	{
 		$$ = $1
-		$$.Params = $3
+		$$.Params = $2
 	}
 
 method2:
@@ -159,13 +153,12 @@ specs:
 	}
 
 spec:
-	spec3
-|	spec4
+	spec1
 |	'[' ']' spec
 	{
 		$$ = &ListType{E: $3}
 	}
-|	MAP '[' spec3 ']' spec
+|	MAP '[' spec ']' spec
 	{
 		$$ = &DictType{K: $3, V: $5}
 	}
@@ -179,35 +172,19 @@ spec1:
 	{
 		$$ = SimpleType($1)
 	}
-
-spec2:
-	spec1
-|	IDENT '.' spec2
+|	IDENT '.' IDENT
 	{
-		if t, ok := $1.(SimpleType) {
-			$$ = &ObjectType{Name: string(t)}
-		} else {
-			log.Fatalf("[Tygo][Parser] package type: %s", $1)
-		}
+		$$ = &ObjectType{Pkg: $1, Name: $3}
 	}
-
-spec3:
-	spec2
-|	'*' spec3
+|	'*' IDENT
 	{
-		switch t := $1.(type) {
-		case SimpleType:
-			$$ = &ObjectType{IsPtr: true, Name: string(t)}
-		case *ObjectType:
-			$$ = $1
-			$$.IsPtr = true
-		default:
-			log.Fatalf("[Tygo][Parser] star type: %s", $1)
-		}
+		$$ = &ObjectType{IsPtr: true, Name: $2}
 	}
-
-spec4:
-	FIXEDPOINT '<' INTEGER ',' INTEGER '>'
+|	'*' IDENT '.' IDENT
+	{
+		$$ = &ObjectType{IsPtr: true, Pkg: $2, Name: $4}
+	}
+|	FIXEDPOINT '<' INTEGER ',' INTEGER '>'
 	{
 		$$ = &FixedPointType(Precision: $3, Floor: $5)
 	}
