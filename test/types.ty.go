@@ -2,6 +2,7 @@
 
 package main
 
+import  
 
 type Corpus int
 
@@ -37,13 +38,54 @@ func (i Corpus) String() {
 }
 
 type Vector2 struct {
+	B bytes
+	E Corpus
+	P *GoType
+	S string
+	X float32
+	Y float64
 }
 
 type Fighter_Part1 struct {
+	Hp      float32
+	IsAwake bool
+	Pos     *Vector2
+	Posi    map[int32]float32
+	Posl    []*Vector2
+	Posll   [][]*Vector2
+	Poss    map[int32]*Vector2
+	Pyd     map[int32]*GoType
+	Pyl     []*GoType
+	Pyv1    interface{}
+	Pyv2    interface{}
 }
 
 type Fighter_Part2 struct {
+	Bd map[string]bytes
+	Bl []bytes
+	Ed map[int32]Corpus
+	El []Corpus
+	Fl []float32
+	Ll [][]float32
+	Sd map[int32]string
+	Sl []string
 }
 
 type Fighter struct {
+	Dd  map[int32]map[int32]interface{}
+	Dv  interface{}
+	Fdd map[int32]map[int32]float32
+	Fdv interface{}
+	Fld map[int32][]float32
+	Flv interface{}
+	Ld  map[int32][]interface{}
+	Lv  interface{}
+	Nv  interface{}
+	V0  interface{}
+	V1  interface{}
+	V2  interface{}
+	V3  interface{}
+	V4  interface{}
+	Vd  map[int32]interface{}
+	Vl  []interface{}
 }

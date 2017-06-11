@@ -127,8 +127,29 @@ func inject(filename string, doc string, file *ast.File) {
 		body.Write([]byte(fmt.Sprintf(goEnum, enum.Name, strings.Join(values, ""), enum.Name, strings.Join(names, ""), enum.Name)))
 	}
 
+	imported := map[string]bool{}
 	for _, object := range objects {
 		var fields []string
+		var sortedField []string
+		nameMax := 0
+		for name, _ := range object.Fields {
+			if nameMax < len(name) {
+				nameMax = len(name)
+			}
+			sortedField = append(sortedField, name)
+		}
+		sort.Strings(sortedField)
+		for _, name := range sortedField {
+			spec, pkgs := object.Fields[name].Go()
+			for _, pkg := range pkgs {
+				if i, ok := imported[pkg]; !ok || !i {
+					head.Write([]byte(fmt.Sprintf(goImport, pkg, imports[pkg])))
+					imported[pkg] = true
+				}
+			}
+			fields = append(fields, fmt.Sprintf(`
+	%s %s%s`, name, strings.Repeat(" ", nameMax-len(name)), spec))
+		}
 		body.Write([]byte(fmt.Sprintf(goObject, object.Name, strings.Join(fields, ""))))
 	}
 

@@ -11,6 +11,7 @@ import (
 
 type Type interface {
 	String() string
+	Go() (string, []string)
 }
 
 type Enum struct {
@@ -37,6 +38,10 @@ func (t SimpleType) String() string {
 	return string(t)
 }
 
+func (t SimpleType) Go() (string, []string) {
+	return string(t), nil
+}
+
 type ObjectType struct {
 	IsPtr bool
 	Pkg   string
@@ -55,6 +60,10 @@ func (t *ObjectType) String() string {
 	return s
 }
 
+func (t *ObjectType) Go() (string, []string) {
+	return t.String(), []string{t.Pkg}
+}
+
 type FixedPointType struct {
 	Precision int
 	Floor     int
@@ -62,6 +71,10 @@ type FixedPointType struct {
 
 func (t *FixedPointType) String() string {
 	return fmt.Sprintf("fixedpoint<%d, %d>", t.Precision, t.Floor)
+}
+
+func (t *FixedPointType) Go() (string, []string) {
+	return "float64", nil
 }
 
 type ListType struct {
@@ -72,6 +85,11 @@ func (t *ListType) String() string {
 	return fmt.Sprintf("[]%s", t.E)
 }
 
+func (t *ListType) Go() (string, []string) {
+	s, p := t.E.Go()
+	return fmt.Sprintf("[]%s", s), p
+}
+
 type DictType struct {
 	K Type
 	V Type
@@ -79,6 +97,12 @@ type DictType struct {
 
 func (t *DictType) String() string {
 	return fmt.Sprintf("map[%s]%s", t.K, t.V)
+}
+
+func (t *DictType) Go() (string, []string) {
+	ks, kp := t.K.Go()
+	vs, vp := t.V.Go()
+	return fmt.Sprintf("map[%s]%s", ks, vs), append(kp, vp...)
 }
 
 type VariantType struct {
@@ -91,4 +115,13 @@ func (t *VariantType) String() string {
 		ts = append(ts, t.String())
 	}
 	return fmt.Sprintf("variant<%s>", strings.Join(ts, ", "))
+}
+
+func (t *VariantType) Go() (string, []string) {
+	var p []string
+	for _, vt := range t.Ts {
+		_, vp := vt.Go()
+		p = append(p, vp...)
+	}
+	return "interface{}", p
 }
