@@ -5,24 +5,27 @@
 package tygo
 
 import (
+	"fmt"
 	"sort"
+	"strings"
 )
-
-type FixedPoint float64
 
 type Type interface {
 	String() string
-	TypeStr() *TypeStr
 }
 
-type Message map[string]Type
+type Enum struct {
+	Values map[string]int
+}
 
-func (message Message) sorted() (fields []string) {
-	for field := range message {
-		fields = append(fields, field)
-	}
-	sort.Strings(fields)
-	return
+type Method struct {
+	Params  []Type
+	Results []Type
+}
+
+type Object struct {
+	Fields  map[string]Type
+	Methods map[string]*Method
 }
 
 type SimpleType string
@@ -31,8 +34,31 @@ func (t SimpleType) String() string {
 	return string(t)
 }
 
-func (t SimpleType) TypeStr() *TypeStr {
-	return &TypeStr{Simple: t.String()}
+type ObjectType struct {
+	T     Type
+	isPtr bool
+	pkg   string
+}
+
+func (t *ObjectType) String() string {
+	s := ""
+	if t.isPtr {
+		s += "*"
+	}
+	if t.pkg != "" {
+		s += t.pkg + "."
+	}
+	s += t.T.String()
+	return s
+}
+
+type FixedPointType struct {
+	precision int
+	floor     int
+}
+
+func (t *FixedPointType) String() string {
+	return fmt.Sprintf("fixedpoint<%d, %d>", t.precision, t.floor)
 }
 
 type ListType struct {
@@ -40,11 +66,7 @@ type ListType struct {
 }
 
 func (t *ListType) String() string {
-	return "List(" + t.E.String() + ")"
-}
-
-func (t *ListType) TypeStr() *TypeStr {
-	return &TypeStr{List: t.E.TypeStr()}
+	return fmt.Sprintf("[]%s", t.E)
 }
 
 type DictType struct {
@@ -53,9 +75,13 @@ type DictType struct {
 }
 
 func (t *DictType) String() string {
-	return "Dict(" + t.K.String() + ", " + t.V.String() + ")"
+	return fmt.Sprintf("map[%s]%s", t.K, t.V)
 }
 
-func (t *DictType) TypeStr() *TypeStr {
-	return &TypeStr{Key: t.K.TypeStr(), Value: t.V.TypeStr()}
+type VariantType struct {
+	Ts []Type
+}
+
+func (t *VariantType) String() string {
+	return fmt.Sprintf("variant<%s>", strings.Join(t.Ts, ", "))
 }

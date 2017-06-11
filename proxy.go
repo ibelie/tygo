@@ -30,16 +30,6 @@ package %s
 var SRC_PATH = os.Getenv("GOPATH") + "/src/"
 
 func Inject(path string) {
-	pkg := Decorate(path)
-	for _, o := range pkg.Objects {
-		fmt.Println(o.Name, o.Path, o.Parents)
-		for _, f := range o.Fields {
-			fmt.Println("\t", f.Name, f.Type, f.Decorators)
-		}
-		for _, m := range o.Methods {
-			fmt.Println("\t", m.Name, m.Decorators, m.Params, m.Result)
-		}
-	}
 	buildPackage, err := build.Import(path, "", build.ImportComment)
 	if err != nil {
 		panic(fmt.Sprintf("[Tygo][Inject] Cannot import package:\n>>>>%v", err))
@@ -54,14 +44,14 @@ func Inject(path string) {
 		if err != nil {
 			panic(fmt.Sprintf("[Tygo][Inject] Cannot parse file:\n>>>>%v", err))
 		}
-		inject(path, pkg, file, filename)
+		inject(path, file, filename)
 	}
 }
 
-func inject(path string, pkg *Package, file *ast.File, filename string) {
+func inject(path string, file *ast.File, filename string) {
 	var head bytes.Buffer
 	var body bytes.Buffer
-	head.Write([]byte(fmt.Sprintf(goHeader, pkg.Name)))
+	head.Write([]byte(fmt.Sprintf(goHeader, "main")))
 	head.Write(body.Bytes())
 	ioutil.WriteFile(SRC_PATH+path+"/"+strings.Replace(filename, ".go", ".ty.go", 1), head.Bytes(), 0666)
 }

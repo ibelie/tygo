@@ -2,9 +2,9 @@
 // Use of this source code is governed by The MIT License
 // that can be found in the LICENSE file.
 
-// This is a parser of tygo decorator.
+// This is a parser of tygo parser.
 // To build it:
-// go tool yacc -o "decorator.y.go" -p "decorator" decorator.y
+// go tool yacc -o "parser.y.go" -p "tygo" parser.y
 
 %{
 
@@ -19,9 +19,13 @@ import (
 %}
 
 %union {
-	id            string
-	decorator    *Decorator
-	decorators []*Decorator
+	ident   string
+	spec    Type
+	params  []Type
+	methods map[string]*Method
+	fields  map[string]Type
+	enums   map[string]int
+	types   map[string]interface{}
 }
 
 %type	<decorator>  dec
