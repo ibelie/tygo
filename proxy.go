@@ -44,14 +44,30 @@ func Inject(path string) {
 		if err != nil {
 			panic(fmt.Sprintf("[Tygo][Inject] Cannot parse file:\n>>>>%v", err))
 		}
-		inject(path, file, filename)
+		for _, d := range file.Decls {
+			decl, ok := d.(*ast.GenDecl)
+			if !ok || decl.Tok != token.IMPORT {
+				continue
+			}
+			for _, s := range decl.Specs {
+				spec, ok := s.(*ast.ImportSpec)
+				if !ok || spec.Path.Value != "\"github.com/ibelie/tygo\"" {
+					continue
+				}
+				inject(path, filename, decl.Doc.Text(), file)
+			}
+		}
 	}
 }
 
-func inject(path string, file *ast.File, filename string) {
+func inject(path string, filename string, doc string, file *ast.File) {
+	parser := &tygoParserImpl{}
+	parser.Parse(&tygoLex{code: []byte(doc)})
+	fmt.Println(parser.lval.types)
 	var head bytes.Buffer
 	var body bytes.Buffer
 	head.Write([]byte(fmt.Sprintf(goHeader, file.Name)))
+	head.Write([]byte("/*\n" + doc + "\n*/"))
 	head.Write(body.Bytes())
 	ioutil.WriteFile(SRC_PATH+path+"/"+strings.Replace(filename, ".go", ".ty.go", 1), head.Bytes(), 0666)
 }

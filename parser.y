@@ -46,43 +46,42 @@ import (
 %%
 
 top:
-	top '\n'
-|	enum '}'
+	enum '}' newline
 	{
 		$$ = []interface{}{$1}
 	}
-|	object '}'
+|	object '}' newline
 	{
 		$$ = []interface{}{$1}
 	}
-|	top enum '}'
+|	top enum '}' newline
 	{
 		$$ = append($1, $2)
 	}
-|	top object '}'
+|	top object '}' newline
 	{
 		$$ = append($1, $2)
 	}
 
 enum:
-	TYPE IDENT ENUM '{' '\n'
+	TYPE IDENT ENUM '{' newline
 	{
 		eiota = 0
 		$$ = &Enum{Name: $2, Values: make(map[string]int)}
 	}
-|	enum '\t' IDENT '=' INTEGER '\n'
+|	enum '\t' IDENT '=' INTEGER newline
 	{
 		$$ = $1
 		$$.Values[$3] = $5
 		eiota++
 	}
-|	enum '\t' IDENT '=' IOTA '\n'
+|	enum '\t' IDENT '=' IOTA newline
 	{
 		$$ = $1
 		$$.Values[$3] = eiota
 		eiota++
 	}
-|	enum '\t' IDENT '\n'
+|	enum '\t' IDENT newline
 	{
 		$$ = $1
 		$$.Values[$3] = eiota
@@ -90,16 +89,16 @@ enum:
 	}
 
 object:
-	TYPE IDENT OBJECT '{' '\n'
+	TYPE IDENT OBJECT '{' newline
 	{
 		$$ = &Object{Name: $2, Fields: make(map[string]Type)}
 	}
-|	object '\t' IDENT spec '\n'
+|	object '\t' IDENT spec newline
 	{
 		$$ = $1
 		$$.Fields[$3] = $4
 	}
-|	object '\t' spec '\n'
+|	object '\t' spec newline
 	{
 		$$ = $1
 		$$.Parents = append($$.Parents, $3)
@@ -111,13 +110,13 @@ object:
 	}
 
 method:
-	method1 '\n'
-|	method1 spec '\n'
+	method1 newline
+|	method1 spec newline
 	{
 		$$ = $1
 		$$.Results = []Type{$2}
 	}
-|	method1 '(' specs ')' '\n'
+|	method1 '(' specs ')' newline
 	{
 		$$ = $1
 		$$.Results = $3
@@ -188,6 +187,10 @@ spec1:
 	{
 		$$ = &FixedPointType{Precision: $3, Floor: $5}
 	}
+
+newline:
+	'\n'
+|	newline '\n'
 
 
 %%

@@ -71,7 +71,7 @@ const tygoEofCode = 1
 const tygoErrCode = 2
 const tygoInitialStackSize = 16
 
-//line parser.y:193
+//line parser.y:196
 
 var eiota int
 
@@ -211,78 +211,83 @@ var tygoExca = [...]int{
 	-2, 0,
 }
 
-const tygoNprod = 32
+const tygoNprod = 33
 const tygoPrivate = 57344
 
 var tygoTokenNames []string
 var tygoStates []string
 
-const tygoLast = 109
+const tygoLast = 118
 
 var tygoAct = [...]int{
 
-	56, 46, 48, 24, 47, 50, 78, 41, 49, 20,
-	11, 60, 17, 72, 39, 52, 9, 31, 21, 25,
-	22, 42, 14, 34, 40, 15, 4, 45, 13, 24,
-	12, 33, 77, 32, 68, 20, 24, 53, 54, 67,
-	55, 44, 20, 58, 21, 25, 22, 11, 9, 34,
-	66, 21, 25, 22, 27, 28, 34, 29, 24, 10,
-	8, 5, 4, 74, 20, 75, 24, 30, 65, 43,
-	76, 57, 20, 21, 25, 22, 51, 38, 34, 35,
-	79, 21, 25, 22, 64, 69, 16, 36, 37, 64,
-	70, 71, 64, 62, 63, 61, 73, 62, 59, 33,
-	3, 2, 7, 6, 19, 26, 23, 18, 1,
+	14, 53, 52, 83, 65, 61, 10, 8, 55, 10,
+	17, 54, 77, 31, 32, 51, 19, 35, 13, 12,
+	40, 9, 57, 26, 36, 38, 44, 37, 47, 22,
+	8, 45, 16, 11, 50, 29, 30, 56, 23, 27,
+	24, 34, 7, 39, 4, 33, 62, 58, 59, 15,
+	84, 15, 69, 70, 71, 72, 73, 74, 75, 60,
+	48, 43, 63, 41, 69, 69, 76, 68, 26, 67,
+	42, 66, 46, 79, 22, 80, 26, 82, 78, 15,
+	81, 49, 22, 23, 27, 24, 67, 64, 39, 26,
+	38, 23, 27, 24, 21, 22, 39, 26, 3, 2,
+	6, 5, 28, 22, 23, 27, 24, 25, 20, 39,
+	1, 0, 23, 27, 24, 0, 0, 18,
 }
 var tygoPact = [...]int{
 
-	10, 46, 34, 33, 6, -1000, 2, -4, -1000, 1,
-	-1000, 62, 37, -1000, -1000, 52, 25, 64, -1000, -1000,
-	76, 78, 65, -1, -3, 57, 32, -23, -25, -17,
-	-1000, 61, -1000, -9, 93, -1000, 54, 54, 54, -1000,
-	56, 54, 92, -14, -1000, 86, 85, 53, 35, 24,
-	19, -1000, -1000, -1000, 74, 77, 90, -1000, 82, -11,
-	89, -1000, 54, -1000, 54, -1000, -1000, -1000, -1000, 54,
-	-1000, 17, -1000, -19, -1000, -1000, -1000, -1000, 67, -1000,
+	28, 28, 16, -5, 9, -7, -8, 34, 8, 34,
+	93, 18, 34, 34, 30, -1000, 36, 30, 19, 34,
+	-1000, -1000, 52, 60, 49, 64, 4, 48, 72, -25,
+	-26, 30, 30, -1000, -14, 30, 34, -1000, -2, 84,
+	30, 85, 85, 85, 30, 34, 85, 81, -21, -1000,
+	62, 58, 34, 34, 34, 34, 30, -1000, -1000, 46,
+	45, 79, 30, 57, -12, 71, -1000, 85, -1000, 85,
+	30, 30, 30, 30, 85, -1000, 34, -1000, -22, -1000,
+	-1000, -1000, 30, 37, -1000,
 }
 var tygoPgo = [...]int{
 
-	0, 108, 101, 100, 107, 106, 105, 1, 0, 104,
+	0, 110, 99, 98, 108, 107, 102, 15, 5, 94,
+	0,
 }
 var tygoR1 = [...]int{
 
-	0, 1, 1, 1, 1, 1, 2, 2, 2, 2,
-	3, 3, 3, 3, 4, 4, 4, 5, 5, 5,
-	6, 7, 7, 8, 8, 8, 8, 9, 9, 9,
-	9, 9,
+	0, 1, 1, 1, 1, 2, 2, 2, 2, 3,
+	3, 3, 3, 4, 4, 4, 5, 5, 5, 6,
+	7, 7, 8, 8, 8, 8, 9, 9, 9, 9,
+	9, 10, 10,
 }
 var tygoR2 = [...]int{
 
-	0, 2, 2, 2, 3, 3, 5, 6, 6, 4,
-	5, 5, 4, 3, 2, 3, 5, 2, 3, 3,
-	2, 3, 3, 1, 3, 5, 4, 1, 3, 2,
-	4, 6,
+	0, 3, 3, 4, 4, 5, 6, 6, 4, 5,
+	5, 4, 3, 2, 3, 5, 2, 3, 3, 2,
+	3, 3, 1, 3, 5, 4, 1, 3, 2, 4,
+	6, 1, 2,
 }
 var tygoChk = [...]int{
 
-	-1000, -1, -2, -3, 16, 15, -2, -3, 26, 14,
-	26, 14, 24, 26, 26, 24, 24, -8, -4, -9,
-	10, 19, 21, -5, 4, 20, -6, 17, 18, 5,
-	15, -8, 8, 6, 24, 15, 11, 10, 12, 15,
-	-8, 8, 24, 12, 9, -8, -7, 27, 27, 25,
-	22, 15, 24, -8, -8, -7, -8, 15, -7, 6,
-	25, 9, 7, 9, 7, 15, 15, 15, 15, 11,
-	13, 9, 24, 7, -8, -8, -8, 15, 25, 13,
+	-1000, -1, -2, -3, 16, -2, -3, 26, 14, 26,
+	14, 24, 26, 26, -10, 15, 24, -10, 24, -8,
+	-4, -9, 10, 19, 21, -5, 4, 20, -6, 17,
+	18, -10, -10, 15, 5, -10, -8, 8, 6, 24,
+	-10, 11, 10, 12, -10, -8, 8, 24, 12, 9,
+	-8, -7, 27, 27, 25, 22, -10, 24, -8, -8,
+	-7, -8, -10, -7, 6, 25, 9, 7, 9, 7,
+	-10, -10, -10, -10, 11, 13, 9, 24, 7, -8,
+	-8, -8, -10, 25, 13,
 }
 var tygoDef = [...]int{
 
-	0, -2, 0, 0, 0, 1, 0, 0, 2, 0,
-	3, 0, 0, 4, 5, 0, 27, 0, 13, 23,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	9, 0, 20, 0, 27, 12, 0, 0, 0, 14,
-	0, 0, 29, 0, 17, 0, 0, 0, 0, 0,
-	0, 11, 28, 24, 0, 0, 0, 15, 0, 0,
-	0, 18, 0, 19, 0, 6, 10, 7, 8, 0,
-	26, 0, 30, 0, 21, 22, 25, 16, 0, 31,
+	0, -2, 0, 0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 1, 31, 0, 2, 26, 0,
+	12, 22, 0, 0, 0, 0, 0, 0, 0, 0,
+	0, 3, 4, 32, 0, 8, 0, 19, 0, 26,
+	11, 0, 0, 0, 13, 0, 0, 28, 0, 16,
+	0, 0, 0, 0, 0, 0, 10, 27, 23, 0,
+	0, 0, 14, 0, 0, 0, 17, 0, 18, 0,
+	5, 9, 6, 7, 0, 25, 0, 29, 0, 20,
+	21, 24, 15, 0, 30,
 }
 var tygoTok1 = [...]int{
 
@@ -646,179 +651,179 @@ tygodefault:
 	// dummy call; replaced with literal code
 	switch tygont {
 
-	case 2:
-		tygoDollar = tygoS[tygopt-2 : tygopt+1]
-		//line parser.y:51
+	case 1:
+		tygoDollar = tygoS[tygopt-3 : tygopt+1]
+		//line parser.y:50
 		{
 			tygoVAL.types = []interface{}{tygoDollar[1].enum}
 		}
-	case 3:
-		tygoDollar = tygoS[tygopt-2 : tygopt+1]
-		//line parser.y:55
+	case 2:
+		tygoDollar = tygoS[tygopt-3 : tygopt+1]
+		//line parser.y:54
 		{
 			tygoVAL.types = []interface{}{tygoDollar[1].object}
 		}
-	case 4:
-		tygoDollar = tygoS[tygopt-3 : tygopt+1]
-		//line parser.y:59
+	case 3:
+		tygoDollar = tygoS[tygopt-4 : tygopt+1]
+		//line parser.y:58
 		{
 			tygoVAL.types = append(tygoDollar[1].types, tygoDollar[2].enum)
 		}
-	case 5:
-		tygoDollar = tygoS[tygopt-3 : tygopt+1]
-		//line parser.y:63
+	case 4:
+		tygoDollar = tygoS[tygopt-4 : tygopt+1]
+		//line parser.y:62
 		{
 			tygoVAL.types = append(tygoDollar[1].types, tygoDollar[2].object)
 		}
-	case 6:
+	case 5:
 		tygoDollar = tygoS[tygopt-5 : tygopt+1]
-		//line parser.y:69
+		//line parser.y:68
 		{
 			eiota = 0
 			tygoVAL.enum = &Enum{Name: tygoDollar[2].ident, Values: make(map[string]int)}
 		}
-	case 7:
+	case 6:
 		tygoDollar = tygoS[tygopt-6 : tygopt+1]
-		//line parser.y:74
+		//line parser.y:73
 		{
 			tygoVAL.enum = tygoDollar[1].enum
 			tygoVAL.enum.Values[tygoDollar[3].ident] = tygoDollar[5].integer
 			eiota++
 		}
-	case 8:
+	case 7:
 		tygoDollar = tygoS[tygopt-6 : tygopt+1]
-		//line parser.y:80
+		//line parser.y:79
+		{
+			tygoVAL.enum = tygoDollar[1].enum
+			tygoVAL.enum.Values[tygoDollar[3].ident] = eiota
+			eiota++
+		}
+	case 8:
+		tygoDollar = tygoS[tygopt-4 : tygopt+1]
+		//line parser.y:85
 		{
 			tygoVAL.enum = tygoDollar[1].enum
 			tygoVAL.enum.Values[tygoDollar[3].ident] = eiota
 			eiota++
 		}
 	case 9:
-		tygoDollar = tygoS[tygopt-4 : tygopt+1]
-		//line parser.y:86
-		{
-			tygoVAL.enum = tygoDollar[1].enum
-			tygoVAL.enum.Values[tygoDollar[3].ident] = eiota
-			eiota++
-		}
-	case 10:
 		tygoDollar = tygoS[tygopt-5 : tygopt+1]
-		//line parser.y:94
+		//line parser.y:93
 		{
 			tygoVAL.object = &Object{Name: tygoDollar[2].ident, Fields: make(map[string]Type)}
 		}
-	case 11:
+	case 10:
 		tygoDollar = tygoS[tygopt-5 : tygopt+1]
-		//line parser.y:98
+		//line parser.y:97
 		{
 			tygoVAL.object = tygoDollar[1].object
 			tygoVAL.object.Fields[tygoDollar[3].ident] = tygoDollar[4].spec
 		}
-	case 12:
+	case 11:
 		tygoDollar = tygoS[tygopt-4 : tygopt+1]
-		//line parser.y:103
+		//line parser.y:102
 		{
 			tygoVAL.object = tygoDollar[1].object
 			tygoVAL.object.Parents = append(tygoVAL.object.Parents, tygoDollar[3].spec)
 		}
-	case 13:
+	case 12:
 		tygoDollar = tygoS[tygopt-3 : tygopt+1]
-		//line parser.y:108
+		//line parser.y:107
 		{
 			tygoVAL.object = tygoDollar[1].object
 			tygoVAL.object.Methods = append(tygoVAL.object.Methods, tygoDollar[3].method)
 		}
-	case 15:
+	case 14:
 		tygoDollar = tygoS[tygopt-3 : tygopt+1]
-		//line parser.y:116
+		//line parser.y:115
 		{
 			tygoVAL.method = tygoDollar[1].method
 			tygoVAL.method.Results = []Type{tygoDollar[2].spec}
 		}
-	case 16:
+	case 15:
 		tygoDollar = tygoS[tygopt-5 : tygopt+1]
-		//line parser.y:121
+		//line parser.y:120
 		{
 			tygoVAL.method = tygoDollar[1].method
 			tygoVAL.method.Results = tygoDollar[3].specs
 		}
-	case 18:
+	case 17:
 		tygoDollar = tygoS[tygopt-3 : tygopt+1]
-		//line parser.y:129
+		//line parser.y:128
 		{
 			tygoVAL.method = tygoDollar[1].method
 			tygoVAL.method.Params = []Type{tygoDollar[2].spec}
 		}
-	case 19:
+	case 18:
 		tygoDollar = tygoS[tygopt-3 : tygopt+1]
-		//line parser.y:134
+		//line parser.y:133
 		{
 			tygoVAL.method = tygoDollar[1].method
 			tygoVAL.method.Params = tygoDollar[2].specs
 		}
-	case 20:
+	case 19:
 		tygoDollar = tygoS[tygopt-2 : tygopt+1]
-		//line parser.y:141
+		//line parser.y:140
 		{
 			tygoVAL.method = &Method{Name: tygoDollar[1].ident}
 		}
-	case 21:
+	case 20:
 		tygoDollar = tygoS[tygopt-3 : tygopt+1]
-		//line parser.y:147
+		//line parser.y:146
 		{
 			tygoVAL.specs = []Type{tygoDollar[1].spec, tygoDollar[3].spec}
 		}
-	case 22:
+	case 21:
 		tygoDollar = tygoS[tygopt-3 : tygopt+1]
-		//line parser.y:151
+		//line parser.y:150
 		{
 			tygoVAL.specs = append(tygoDollar[1].specs, tygoDollar[3].spec)
 		}
-	case 24:
+	case 23:
 		tygoDollar = tygoS[tygopt-3 : tygopt+1]
-		//line parser.y:158
+		//line parser.y:157
 		{
 			tygoVAL.spec = &ListType{E: tygoDollar[3].spec}
 		}
-	case 25:
+	case 24:
 		tygoDollar = tygoS[tygopt-5 : tygopt+1]
-		//line parser.y:162
+		//line parser.y:161
 		{
 			tygoVAL.spec = &DictType{K: tygoDollar[3].spec, V: tygoDollar[5].spec}
 		}
-	case 26:
+	case 25:
 		tygoDollar = tygoS[tygopt-4 : tygopt+1]
-		//line parser.y:166
+		//line parser.y:165
 		{
 			tygoVAL.spec = &VariantType{Ts: tygoDollar[3].specs}
 		}
-	case 27:
+	case 26:
 		tygoDollar = tygoS[tygopt-1 : tygopt+1]
-		//line parser.y:172
+		//line parser.y:171
 		{
 			tygoVAL.spec = SimpleType(tygoDollar[1].ident)
 		}
-	case 28:
+	case 27:
 		tygoDollar = tygoS[tygopt-3 : tygopt+1]
-		//line parser.y:176
+		//line parser.y:175
 		{
 			tygoVAL.spec = &ObjectType{Pkg: tygoDollar[1].ident, Name: tygoDollar[3].ident}
 		}
-	case 29:
+	case 28:
 		tygoDollar = tygoS[tygopt-2 : tygopt+1]
-		//line parser.y:180
+		//line parser.y:179
 		{
 			tygoVAL.spec = &ObjectType{IsPtr: true, Name: tygoDollar[2].ident}
 		}
-	case 30:
+	case 29:
 		tygoDollar = tygoS[tygopt-4 : tygopt+1]
-		//line parser.y:184
+		//line parser.y:183
 		{
 			tygoVAL.spec = &ObjectType{IsPtr: true, Pkg: tygoDollar[2].ident, Name: tygoDollar[4].ident}
 		}
-	case 31:
+	case 30:
 		tygoDollar = tygoS[tygopt-6 : tygopt+1]
-		//line parser.y:188
+		//line parser.y:187
 		{
 			tygoVAL.spec = &FixedPointType{Precision: tygoDollar[3].integer, Floor: tygoDollar[5].integer}
 		}
