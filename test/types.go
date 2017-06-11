@@ -18,7 +18,7 @@ type Corpus enum {
 type Vector2 object {
 	X float32
 	Y fixedpoint<1, -10>
-	B []byte
+	B bytes
 	S string
 	E Corpus
 	P *GoType
@@ -41,9 +41,9 @@ type Fighter_Part1 object {
 type Fighter_Part2 object {
 	Fighter_Part1
 	Fl []float32
-	Bl [][]byte
+	Bl []bytes
 	Sl []string
-	Bd map[string][]byte
+	Bd map[string]bytes
 	Sd map[int32]string
 	El []Corpus
 	Ed map[int32]Corpus
@@ -52,11 +52,11 @@ type Fighter_Part2 object {
 
 type Fighter object {
 	Fighter_Part2
-	V0  variant<int32, float32, []byte, *Vector2>
-	V1  variant<int32, float32, []byte, *Vector2>
-	V2  variant<int32, float32, []byte, *Vector2>
-	V3  variant<int32, float32, []byte, *Vector2>
-	V4  variant<int32, float32, []byte, *Vector2>
+	V0  variant<int32, float32, bytes, *Vector2>
+	V1  variant<int32, float32, bytes, *Vector2>
+	V2  variant<int32, float32, bytes, *Vector2>
+	V3  variant<int32, float32, bytes, *Vector2>
+	V4  variant<int32, float32, bytes, *Vector2>
 	Vl  []variant<int32, fixedpoint<3, 0>, string, *Vector2>
 	Vd  map[int32]variant<Corpus, float64, string, *Vector2>
 	Ld  map[int32][]variant<Corpus, float64, string, *Vector2>
