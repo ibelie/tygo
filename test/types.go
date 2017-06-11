@@ -4,24 +4,81 @@
 
 package main
 
+/*
+type Corpus enum {
+	UNIVERSAL = 0
+	WEB       = 1
+	IMAGES    = 2
+	LOCAL     = 3
+	NEWS      = 4
+	PRODUCTS  = 5
+	VIDEO     = 6
+}
+
+type Vector2 object {
+	X float32
+	Y fixedpoint<1, -10>
+	B []byte
+	S string
+	E Corpus
+	P *GoType
+}
+
+type Fighter_Part1 object {
+	Pos     *Vector2
+	IsAwake bool
+	Hp      float32
+	Poss    map[int32]*Vector2
+	Posi    map[int32]float32
+	Posl    []*Vector2
+	Posll   [][]*Vector2
+	Pyl     []*GoType
+	Pyd     map[int32]*GoType
+	Pyv1    variant<int32, *GoType>
+	Pyv2    variant<int32, *GoType>
+}
+
+type Fighter_Part2 object {
+	Fighter_Part1
+	Fl []float32
+	Bl [][]byte
+	Sl []string
+	Bd map[string][]byte
+	Sd map[int32]string
+	El []Corpus
+	Ed map[int32]Corpus
+	Ll [][]float32
+}
+
+type Fighter object {
+	Fighter_Part2
+	V0  variant<int32, float32, []byte, *Vector2>
+	V1  variant<int32, float32, []byte, *Vector2>
+	V2  variant<int32, float32, []byte, *Vector2>
+	V3  variant<int32, float32, []byte, *Vector2>
+	V4  variant<int32, float32, []byte, *Vector2>
+	Vl  []variant<int32, fixedpoint<3, 0>, string, *Vector2>
+	Vd  map[int32]variant<Corpus, float64, string, *Vector2>
+	Ld  map[int32][]variant<Corpus, float64, string, *Vector2>
+	Fld map[int32][]float32
+	Dd  map[int32]map[int32]variant<int32, Corpus, float64, string, *Vector2>
+	Fdd map[int32]map[int32]float32
+	Nv  variant<nil, int32>
+	Lv  variant<int32, []variant<float32, string>>
+	Flv variant<int32, []float32>
+	Dv  variant<int32, map[int32]variant<float32, string>>
+	Fdv variant<int32, map[int32]float32>
+	RPG(*Fighter, variant<nil, int32>, fixedpoint<3, 0>) *Vector2
+	GPR(map[int32]variant<Corpus, float64, string, *Vector2>) (*Fighter, int32)
+}
+
+*/
+import "github.com/ibelie/tygo"
+
 import (
 	"bytes"
-	"io"
-
 	"encoding/gob"
-	"github.com/ibelie/tygo"
-)
-
-type Corpus uint8
-
-const (
-	Corpus_UNIVERSAL Corpus = iota
-	Corpus_WEB
-	Corpus_IMAGES
-	Corpus_LOCAL
-	Corpus_NEWS
-	Corpus_PRODUCTS
-	Corpus_VIDEO
+	"io"
 )
 
 type GoType struct {
@@ -41,66 +98,6 @@ func (g *GoType) Serialize(w io.Writer) error {
 
 func (g *GoType) Deserialize(r io.Reader) error {
 	return gob.NewDecoder().Decode(g)
-}
-
-type Vector2 struct {
-	X float32         // @Property(坐标X)
-	Y tygo.FixedPoint // @Property(坐标Y) @FixedPoint(1, -10)
-	B []byte          // @Property
-	S string          // @Property
-	E Corpus          // @Property(Corpus)
-	P *GoType         // @Property(GoType)
-}
-
-type Fighter_Part1 struct {
-	Pos     *Vector2           // @Property(坐标)
-	IsAwake bool               // @Property
-	Hp      float32            // @Property(血量)
-	Poss    map[int32]*Vector2 // @Property
-	Posi    map[int32]float32  // @Property
-	Posl    []*Vector2         // @Property
-	Posll   [][]*Vector2       // @Property
-	Pyl     []*GoType          // @Property
-	Pyd     map[int32]*GoType  // @Property
-	Pyv1    interface{}        // @Property @Variant(int32, GoType)
-	Pyv2    interface{}        // @Property @Variant(int32, GoType)
-}
-
-type Fighter_Part2 struct {
-	Fighter_Part1
-	Fl []float32         // @Property
-	Bl [][]byte          // @Property
-	Sl []string          // @Property
-	Bd map[string][]byte // @Property
-	Sd map[int32]string  // @Property
-	El []Corpus          // @Property
-	Ed map[int32]Corpus  // @Property
-	Ll [][]float32       // @Property
-}
-
-type Fighter struct {
-	Fighter_Part2
-	V0  interface{}                     // @Property @Variant(int32, float32, []byte, Vector2)
-	V1  interface{}                     // @Property @Variant(int32, float32, []byte, Vector2)
-	V2  interface{}                     // @Property @Variant(int32, float32, []byte, Vector2)
-	V3  interface{}                     // @Property @Variant(int32, float32, []byte, Vector2)
-	V4  interface{}                     // @Property @Variant(int32, float32, []byte, Vector2)
-	Vl  []interface{}                   // @Property @Variant(int32, FixedPoint(3), string, Vector2)
-	Vd  map[int32]interface{}           // @Property @Variant(Corpus, float64, string, Vector2)
-	Ld  map[int32][]interface{}         // @Property @Variant(Corpus, float64, string, Vector2)
-	Fld map[int32][]float32             // @Property
-	Dd  map[int32]map[int32]interface{} // @Property @Variant(int32, Corpus, float64, string, Vector2)
-	Fdd map[int32]map[int32]float32     // @Property
-	Nv  interface{}                     // @Property @Variant(nil, int32)
-	Lv  interface{}                     // @Property @Variant(int32, List(float32, string))
-	Flv interface{}                     // @Property @Variant(int32, List(float32))
-	Dv  interface{}                     // @Property @Variant(int32, Dict(int32, float32, string))
-	Fdv interface{}                     // @Property @Variant(int32, Dict(int32, float32))
-}
-
-// @Procedure @Variant(nil, int32) @Variant(Corpus, float64, string, Vector2) FixedPoint(3)
-func (f *Fighter) RPG(fighter *Fighter, nv interface{}, vd map[int32]interface{}, h tygo.FixedPoint) *Vector2 {
-	return nil
 }
 
 var v *Vector2 = &Vector2{
