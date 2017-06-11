@@ -8,6 +8,7 @@ import (
 	"bytes"
 	"fmt"
 	"os"
+	"sort"
 	"strings"
 
 	"go/ast"
@@ -23,7 +24,7 @@ const (
 package %s
 
 `
-	goImport = `import %s "%s"
+	goImport = `import %s %s
 `
 )
 
@@ -60,22 +61,72 @@ func Inject(path string) {
 	}
 }
 
+const (
+	goEnum = `
+type %s int
+
+const (%s
+)
+
+func (i %s) String() {
+	switch i {%s
+	default:
+		log.Fatalf("[Tygo][%s] Unexpect enum value: %%d", i)
+	}
+}
+`
+	goObject = `
+type %s struct {%s
+}
+`
+)
+
 func inject(path string, filename string, doc string, file *ast.File) {
 	enums, objects := Parse(doc)
-	for _, enum := range enums {
-		fmt.Println(enum)
-	}
-	for _, object := range objects {
-		fmt.Println(object)
-		for _, method := range object.Methods {
-			fmt.Println(method)
+	imports := make(map[string]string)
+	for _, importSpec := range file.Imports {
+		if importSpec.Name == nil {
+			p := strings.Split(importSpec.Path.Value, "/")
+			imports[strings.TrimRight(p[len(p)-1], "\"")] = importSpec.Path.Value
+		} else {
+			imports[importSpec.Name.Name] = importSpec.Path.Value
 		}
 	}
 
 	var head bytes.Buffer
 	var body bytes.Buffer
 	head.Write([]byte(fmt.Sprintf(goHeader, file.Name)))
-	head.Write([]byte("/*\n" + doc + "\n*/"))
+
+	for _, enum := range enums {
+		var values []string
+		var names []string
+		var sortedValue []int
+		valueMap := map[int]string{}
+		nameMax := 0
+		for name, value := range enum.Values {
+			if nameMax < len(name) {
+				nameMax = len(name)
+			}
+			valueMap[value] = name
+			sortedValue = append(sortedValue, value)
+		}
+		sort.Ints(sortedValue)
+		for _, value := range sortedValue {
+			name := valueMap[value]
+			values = append(values, fmt.Sprintf(`
+	%s_%s %s%s = %d`, enum.Name, name, strings.Repeat(" ", nameMax-len(name)), enum.Name, value))
+			names = append(names, fmt.Sprintf(`
+	case %s_%s:
+		return "%s"`, enum.Name, name, name))
+		}
+		body.Write([]byte(fmt.Sprintf(goEnum, enum.Name, strings.Join(values, ""), enum.Name, strings.Join(names, ""), enum.Name)))
+	}
+
+	for _, object := range objects {
+		var fields []string
+		body.Write([]byte(fmt.Sprintf(goObject, object.Name, strings.Join(fields, ""))))
+	}
+
 	head.Write(body.Bytes())
 	ioutil.WriteFile(SRC_PATH+path+"/"+strings.Replace(filename, ".go", ".ty.go", 1), head.Bytes(), 0666)
 }
