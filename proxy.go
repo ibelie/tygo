@@ -61,9 +61,17 @@ func Inject(path string) {
 }
 
 func inject(path string, filename string, doc string, file *ast.File) {
-	parser := &tygoParserImpl{}
-	parser.Parse(&tygoLex{code: []byte(doc)})
-	fmt.Println(parser.lval)
+	enums, objects := Parse(doc)
+	for _, enum := range enums {
+		fmt.Println(enum)
+	}
+	for _, object := range objects {
+		fmt.Println(object)
+		for _, method := range object.Methods {
+			fmt.Println(method)
+		}
+	}
+
 	var head bytes.Buffer
 	var body bytes.Buffer
 	head.Write([]byte(fmt.Sprintf(goHeader, file.Name)))

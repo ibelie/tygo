@@ -28,10 +28,8 @@ import (
 	method  *Method
 	object  *Object
 	enum    *Enum
-	types   []interface{}
 }
 
-%type	<types>   top
 %type	<enum>    enum
 %type	<object>  object
 %type	<method>  method method1 method2
@@ -48,19 +46,19 @@ import (
 top:
 	enum '}' newline
 	{
-		$$ = []interface{}{$1}
-	}
-|	object '}' newline
-	{
-		$$ = []interface{}{$1}
+		enums = append(enums, $1)
 	}
 |	top enum '}' newline
 	{
-		$$ = append($1, $2)
+		enums = append(enums, $2)
+	}
+|	object '}' newline
+	{
+		objects = append(objects, $1)
 	}
 |	top object '}' newline
 	{
-		$$ = append($1, $2)
+		objects = append(objects, $2)
 	}
 
 enum:
@@ -196,6 +194,18 @@ newline:
 %%
 
 var eiota int
+
+var (
+	enums   []*Enum
+	objects []*Object
+)
+
+func Parse(code string) ([]*Enum, []*Object) {
+	enums   = nil
+	objects = nil
+	tygoParse(&tygoLex{code: []byte(code)})
+	return enums, objects
+}
 
 // The parser expects the lexer to return 0 on EOF.  Give it a name for clarity.
 const eof = 0
