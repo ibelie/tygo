@@ -51,7 +51,7 @@ func Inject(path string) {
 func inject(path string, file *ast.File, filename string) {
 	var head bytes.Buffer
 	var body bytes.Buffer
-	head.Write([]byte(fmt.Sprintf(goHeader, "main")))
+	head.Write([]byte(fmt.Sprintf(goHeader, file.Name)))
 	head.Write(body.Bytes())
 	ioutil.WriteFile(SRC_PATH+path+"/"+strings.Replace(filename, ".go", ".ty.go", 1), head.Bytes(), 0666)
 }

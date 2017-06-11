@@ -186,7 +186,7 @@ spec1:
 	}
 |	FIXEDPOINT '<' INTEGER ',' INTEGER '>'
 	{
-		$$ = &FixedPointType(Precision: $3, Floor: $5)
+		$$ = &FixedPointType{Precision: $3, Floor: $5}
 	}
 
 
@@ -244,7 +244,9 @@ func (x *tygoLex) integer(c rune, yylval *tygoSymType) int {
 	if c != eof {
 		x.peek = c
 	}
-	if yylval.integer, err := strconv.Atoi(b.String()); err != nil {
+	if i, err := strconv.Atoi(b.String()); err == nil {
+		yylval.integer = i
+	} else {
 		log.Fatalf("[Tygo][Parser] integer: %s", err)
 	}
 	return INTEGER
@@ -271,33 +273,26 @@ func (x *tygoLex) ident(c rune, yylval *tygoSymType) int {
 	if c != eof {
 		x.peek = c
 	}
-	switch s := b.String() {
-	case 'type':
-		yylval.keyword = s
+	yylval.keyword = b.String()
+	switch yylval.keyword {
+	case "type":
 		return TYPE
-	case 'enum':
-		yylval.keyword = s
+	case "enum":
 		return ENUM
-	case 'object':
-		yylval.keyword = s
+	case "object":
 		return OBJECT
-	case 'map':
-		yylval.keyword = s
+	case "map":
 		return MAP
-	case 'fixedpoint':
-		yylval.keyword = s
+	case "fixedpoint":
 		return FIXEDPOINT
-	case 'variant':
-		yylval.keyword = s
+	case "variant":
 		return VARIANT
-	case 'iota':
-		yylval.keyword = s
+	case "iota":
 		return IOTA
-	case 'nil':
-		yylval.keyword = s
+	case "nil":
 		return NIL
 	default:
-		yylval.ident = s
+		yylval.ident = yylval.keyword
 		return IDENT
 	}
 }

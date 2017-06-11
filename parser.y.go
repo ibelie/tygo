@@ -1,10 +1,9 @@
-
 //line parser.y:10
-
 package tygo
+
 import __yyfmt__ "fmt"
+
 //line parser.y:11
-		
 import (
 	"bytes"
 	"log"
@@ -12,10 +11,9 @@ import (
 	"unicode/utf8"
 )
 
-
 //line parser.y:22
 type tygoSymType struct {
-	yys int
+	yys     int
 	ident   string
 	keyword string
 	integer int
@@ -75,7 +73,6 @@ const tygoInitialStackSize = 16
 
 //line parser.y:193
 
-
 var eiota int
 
 // The parser expects the lexer to return 0 on EOF.  Give it a name for clarity.
@@ -116,7 +113,8 @@ func (x *tygoLex) integer(c rune, yylval *tygoSymType) int {
 	}
 	var b bytes.Buffer
 	add(&b, c)
-	L: for {
+L:
+	for {
 		c = x.next()
 		switch c {
 		case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
@@ -128,7 +126,9 @@ func (x *tygoLex) integer(c rune, yylval *tygoSymType) int {
 	if c != eof {
 		x.peek = c
 	}
-	if yylval.integer, err := strconv.Atoi(b.String()); err != nil {
+	if i, err := strconv.Atoi(b.String()); err == nil {
+		yylval.integer = i
+	} else {
 		log.Fatalf("[Tygo][Parser] integer: %s", err)
 	}
 	return INTEGER
@@ -143,7 +143,8 @@ func (x *tygoLex) ident(c rune, yylval *tygoSymType) int {
 	}
 	var b bytes.Buffer
 	add(&b, c)
-	L: for {
+L:
+	for {
 		c = x.next()
 		switch c {
 		case '*', '=', '.', ',', '(', ')', '[', ']', '<', '>', '\t', '\n', ' ', '\r':
@@ -155,33 +156,26 @@ func (x *tygoLex) ident(c rune, yylval *tygoSymType) int {
 	if c != eof {
 		x.peek = c
 	}
-	switch s := b.String() {
-	case 'type':
-		yylval.keyword = s
+	yylval.keyword = b.String()
+	switch yylval.keyword {
+	case "type":
 		return TYPE
-	case 'enum':
-		yylval.keyword = s
+	case "enum":
 		return ENUM
-	case 'object':
-		yylval.keyword = s
+	case "object":
 		return OBJECT
-	case 'map':
-		yylval.keyword = s
+	case "map":
 		return MAP
-	case 'fixedpoint':
-		yylval.keyword = s
+	case "fixedpoint":
 		return FIXEDPOINT
-	case 'variant':
-		yylval.keyword = s
+	case "variant":
 		return VARIANT
-	case 'iota':
-		yylval.keyword = s
+	case "iota":
 		return IOTA
-	case 'nil':
-		yylval.keyword = s
+	case "nil":
 		return NIL
 	default:
-		yylval.ident = s
+		yylval.ident = yylval.keyword
 		return IDENT
 	}
 }
@@ -319,8 +313,7 @@ var tygoErrorMessages = [...]struct {
 	state int
 	token int
 	msg   string
-}{
-}
+}{}
 
 //line yaccpar:1
 
@@ -654,38 +647,38 @@ tygodefault:
 	switch tygont {
 
 	case 2:
-		tygoDollar = tygoS[tygopt-2:tygopt+1]
+		tygoDollar = tygoS[tygopt-2 : tygopt+1]
 		//line parser.y:51
 		{
 			tygoVAL.types = []interface{}{tygoDollar[1].enum}
 		}
 	case 3:
-		tygoDollar = tygoS[tygopt-2:tygopt+1]
+		tygoDollar = tygoS[tygopt-2 : tygopt+1]
 		//line parser.y:55
 		{
 			tygoVAL.types = []interface{}{tygoDollar[1].object}
 		}
 	case 4:
-		tygoDollar = tygoS[tygopt-3:tygopt+1]
+		tygoDollar = tygoS[tygopt-3 : tygopt+1]
 		//line parser.y:59
 		{
 			tygoVAL.types = append(tygoDollar[1].types, tygoDollar[2].enum)
 		}
 	case 5:
-		tygoDollar = tygoS[tygopt-3:tygopt+1]
+		tygoDollar = tygoS[tygopt-3 : tygopt+1]
 		//line parser.y:63
 		{
 			tygoVAL.types = append(tygoDollar[1].types, tygoDollar[2].object)
 		}
 	case 6:
-		tygoDollar = tygoS[tygopt-5:tygopt+1]
+		tygoDollar = tygoS[tygopt-5 : tygopt+1]
 		//line parser.y:69
 		{
 			eiota = 0
 			tygoVAL.enum = &Enum{Name: tygoDollar[2].ident, Values: make(map[string]int)}
 		}
 	case 7:
-		tygoDollar = tygoS[tygopt-6:tygopt+1]
+		tygoDollar = tygoS[tygopt-6 : tygopt+1]
 		//line parser.y:74
 		{
 			tygoVAL.enum = tygoDollar[1].enum
@@ -693,7 +686,7 @@ tygodefault:
 			eiota++
 		}
 	case 8:
-		tygoDollar = tygoS[tygopt-6:tygopt+1]
+		tygoDollar = tygoS[tygopt-6 : tygopt+1]
 		//line parser.y:80
 		{
 			tygoVAL.enum = tygoDollar[1].enum
@@ -701,7 +694,7 @@ tygodefault:
 			eiota++
 		}
 	case 9:
-		tygoDollar = tygoS[tygopt-4:tygopt+1]
+		tygoDollar = tygoS[tygopt-4 : tygopt+1]
 		//line parser.y:86
 		{
 			tygoVAL.enum = tygoDollar[1].enum
@@ -709,125 +702,125 @@ tygodefault:
 			eiota++
 		}
 	case 10:
-		tygoDollar = tygoS[tygopt-5:tygopt+1]
+		tygoDollar = tygoS[tygopt-5 : tygopt+1]
 		//line parser.y:94
 		{
 			tygoVAL.object = &Object{Name: tygoDollar[2].ident, Fields: make(map[string]Type)}
 		}
 	case 11:
-		tygoDollar = tygoS[tygopt-5:tygopt+1]
+		tygoDollar = tygoS[tygopt-5 : tygopt+1]
 		//line parser.y:98
 		{
 			tygoVAL.object = tygoDollar[1].object
 			tygoVAL.object.Fields[tygoDollar[3].ident] = tygoDollar[4].spec
 		}
 	case 12:
-		tygoDollar = tygoS[tygopt-4:tygopt+1]
+		tygoDollar = tygoS[tygopt-4 : tygopt+1]
 		//line parser.y:103
 		{
 			tygoVAL.object = tygoDollar[1].object
 			tygoVAL.object.Parents = append(tygoVAL.object.Parents, tygoDollar[3].spec)
 		}
 	case 13:
-		tygoDollar = tygoS[tygopt-3:tygopt+1]
+		tygoDollar = tygoS[tygopt-3 : tygopt+1]
 		//line parser.y:108
 		{
 			tygoVAL.object = tygoDollar[1].object
 			tygoVAL.object.Methods = append(tygoVAL.object.Methods, tygoDollar[3].method)
 		}
 	case 15:
-		tygoDollar = tygoS[tygopt-3:tygopt+1]
+		tygoDollar = tygoS[tygopt-3 : tygopt+1]
 		//line parser.y:116
 		{
 			tygoVAL.method = tygoDollar[1].method
 			tygoVAL.method.Results = []Type{tygoDollar[2].spec}
 		}
 	case 16:
-		tygoDollar = tygoS[tygopt-5:tygopt+1]
+		tygoDollar = tygoS[tygopt-5 : tygopt+1]
 		//line parser.y:121
 		{
 			tygoVAL.method = tygoDollar[1].method
 			tygoVAL.method.Results = tygoDollar[3].specs
 		}
 	case 18:
-		tygoDollar = tygoS[tygopt-3:tygopt+1]
+		tygoDollar = tygoS[tygopt-3 : tygopt+1]
 		//line parser.y:129
 		{
 			tygoVAL.method = tygoDollar[1].method
 			tygoVAL.method.Params = []Type{tygoDollar[2].spec}
 		}
 	case 19:
-		tygoDollar = tygoS[tygopt-3:tygopt+1]
+		tygoDollar = tygoS[tygopt-3 : tygopt+1]
 		//line parser.y:134
 		{
 			tygoVAL.method = tygoDollar[1].method
 			tygoVAL.method.Params = tygoDollar[2].specs
 		}
 	case 20:
-		tygoDollar = tygoS[tygopt-2:tygopt+1]
+		tygoDollar = tygoS[tygopt-2 : tygopt+1]
 		//line parser.y:141
 		{
 			tygoVAL.method = &Method{Name: tygoDollar[1].ident}
 		}
 	case 21:
-		tygoDollar = tygoS[tygopt-3:tygopt+1]
+		tygoDollar = tygoS[tygopt-3 : tygopt+1]
 		//line parser.y:147
 		{
 			tygoVAL.specs = []Type{tygoDollar[1].spec, tygoDollar[3].spec}
 		}
 	case 22:
-		tygoDollar = tygoS[tygopt-3:tygopt+1]
+		tygoDollar = tygoS[tygopt-3 : tygopt+1]
 		//line parser.y:151
 		{
 			tygoVAL.specs = append(tygoDollar[1].specs, tygoDollar[3].spec)
 		}
 	case 24:
-		tygoDollar = tygoS[tygopt-3:tygopt+1]
+		tygoDollar = tygoS[tygopt-3 : tygopt+1]
 		//line parser.y:158
 		{
 			tygoVAL.spec = &ListType{E: tygoDollar[3].spec}
 		}
 	case 25:
-		tygoDollar = tygoS[tygopt-5:tygopt+1]
+		tygoDollar = tygoS[tygopt-5 : tygopt+1]
 		//line parser.y:162
 		{
 			tygoVAL.spec = &DictType{K: tygoDollar[3].spec, V: tygoDollar[5].spec}
 		}
 	case 26:
-		tygoDollar = tygoS[tygopt-4:tygopt+1]
+		tygoDollar = tygoS[tygopt-4 : tygopt+1]
 		//line parser.y:166
 		{
 			tygoVAL.spec = &VariantType{Ts: tygoDollar[3].specs}
 		}
 	case 27:
-		tygoDollar = tygoS[tygopt-1:tygopt+1]
+		tygoDollar = tygoS[tygopt-1 : tygopt+1]
 		//line parser.y:172
 		{
 			tygoVAL.spec = SimpleType(tygoDollar[1].ident)
 		}
 	case 28:
-		tygoDollar = tygoS[tygopt-3:tygopt+1]
+		tygoDollar = tygoS[tygopt-3 : tygopt+1]
 		//line parser.y:176
 		{
 			tygoVAL.spec = &ObjectType{Pkg: tygoDollar[1].ident, Name: tygoDollar[3].ident}
 		}
 	case 29:
-		tygoDollar = tygoS[tygopt-2:tygopt+1]
+		tygoDollar = tygoS[tygopt-2 : tygopt+1]
 		//line parser.y:180
 		{
 			tygoVAL.spec = &ObjectType{IsPtr: true, Name: tygoDollar[2].ident}
 		}
 	case 30:
-		tygoDollar = tygoS[tygopt-4:tygopt+1]
+		tygoDollar = tygoS[tygopt-4 : tygopt+1]
 		//line parser.y:184
 		{
 			tygoVAL.spec = &ObjectType{IsPtr: true, Pkg: tygoDollar[2].ident, Name: tygoDollar[4].ident}
 		}
 	case 31:
-		tygoDollar = tygoS[tygopt-6:tygopt+1]
+		tygoDollar = tygoS[tygopt-6 : tygopt+1]
 		//line parser.y:188
 		{
-			tygoVAL.spec = &FixedPointType(Precision: tygoDollar[3].integer, Floor: tygoDollar[5].integer)
+			tygoVAL.spec = &FixedPointType{Precision: tygoDollar[3].integer, Floor: tygoDollar[5].integer}
 		}
 	}
 	goto tygostack /* stack new state and value */

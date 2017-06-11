@@ -6,7 +6,6 @@ package tygo
 
 import (
 	"fmt"
-	"sort"
 	"strings"
 )
 
@@ -87,5 +86,9 @@ type VariantType struct {
 }
 
 func (t *VariantType) String() string {
-	return fmt.Sprintf("variant<%s>", strings.Join(t.Ts, ", "))
+	var ts []string
+	for _, t := range t.Ts {
+		ts = append(ts, t.String())
+	}
+	return fmt.Sprintf("variant<%s>", strings.Join(ts, ", "))
 }
