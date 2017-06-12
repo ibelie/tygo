@@ -39,56 +39,56 @@ func (i Corpus) String() string {
 }
 
 type Vector2 struct {
-	B []byte
-	E Corpus
-	P *GoType
-	S string
-	X float32
-	Y float64
+	B []byte  // bytes
+	E Corpus  // Corpus
+	P *GoType // *GoType
+	S string  // string
+	X float32 // float32
+	Y float64 // fixedpoint<1, -10>
 }
 
 type Fighter_Part1 struct {
-	Hp      float32
-	IsAwake bool
-	Pos     *Vector2
-	Posi    map[int32]float32
-	Posl    []*Vector2
-	Posll   [][]*Vector2
-	Poss    map[int32]*Vector2
-	Pyd     map[int32]*GoType
-	Pyl     []*GoType
-	Pyv1    interface{}
-	Pyv2    interface{}
+	Hp      float32            // float32
+	IsAwake bool               // bool
+	Pos     *Vector2           // *Vector2
+	Posi    map[int32]float32  // map[int32]float32
+	Posl    []*Vector2         // []*Vector2
+	Posll   [][]*Vector2       // [][]*Vector2
+	Poss    map[int32]*Vector2 // map[int32]*Vector2
+	Pyd     map[int32]*GoType  // map[int32]*GoType
+	Pyl     []*GoType          // []*GoType
+	Pyv1    interface{}        // variant<int32, *GoType>
+	Pyv2    interface{}        // variant<int32, *GoType>
 }
 
 type Fighter_Part2 struct {
 	Fighter_Part1
-	Bd map[string][]byte
-	Bl [][]byte
-	Ed map[int32]Corpus
-	El []Corpus
-	Fl []float32
-	Ll [][]float32
-	Sd map[int32]string
-	Sl []string
+	Bd map[string][]byte // map[string]bytes
+	Bl [][]byte          // []bytes
+	Ed map[int32]Corpus  // map[int32]Corpus
+	El []Corpus          // []Corpus
+	Fl []float32         // []float32
+	Ll [][]float32       // [][]float32
+	Sd map[int32]string  // map[int32]string
+	Sl []string          // []string
 }
 
 type Fighter struct {
 	Fighter_Part2
-	Dd  map[int32]map[int32]interface{}
-	Dv  interface{}
-	Fdd map[int32]map[int32]float32
-	Fdv interface{}
-	Fld map[int32][]float32
-	Flv interface{}
-	Ld  map[int32][]interface{}
-	Lv  interface{}
-	Nv  interface{}
-	V0  interface{}
-	V1  interface{}
-	V2  interface{}
-	V3  interface{}
-	V4  interface{}
-	Vd  map[int32]interface{}
-	Vl  []interface{}
+	Dd  map[int32]map[int32]interface{} // map[int32]map[int32]variant<int32, Corpus, float64, string, *Vector2>
+	Dv  interface{}                     // variant<int32, map[int32]variant<float32, string>>
+	Fdd map[int32]map[int32]float32     // map[int32]map[int32]float32
+	Fdv interface{}                     // variant<int32, map[int32]float32>
+	Fld map[int32][]float32             // map[int32][]float32
+	Flv interface{}                     // variant<int32, []float32>
+	Ld  map[int32][]interface{}         // map[int32][]variant<Corpus, float64, string, *Vector2>
+	Lv  interface{}                     // variant<int32, []variant<float32, string>>
+	Nv  interface{}                     // variant<nil, int32>
+	V0  interface{}                     // variant<int32, float32, bytes, *Vector2>
+	V1  interface{}                     // variant<int32, float32, bytes, *Vector2>
+	V2  interface{}                     // variant<int32, float32, bytes, *Vector2>
+	V3  interface{}                     // variant<int32, float32, bytes, *Vector2>
+	V4  interface{}                     // variant<int32, float32, bytes, *Vector2>
+	Vd  map[int32]interface{}           // map[int32]variant<Corpus, float64, string, *Vector2>
+	Vl  []interface{}                   // []variant<int32, fixedpoint<3, 0>, string, *Vector2>
 }

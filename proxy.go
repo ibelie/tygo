@@ -175,19 +175,27 @@ func (t *Object) Go() (string, [][2]string) {
 	}
 
 	nameMax := 0
+	typeMax := 0
 	var sortedField []string
-	for name, _ := range t.Fields {
+	fieldMap := make(map[string][2]string)
+	for name, field := range t.Fields {
+		s, p := field.Go()
+		pkgs = append(pkgs, p...)
 		if nameMax < len(name) {
 			nameMax = len(name)
 		}
+		if typeMax < len(s) {
+			typeMax = len(s)
+		}
+		fieldMap[name] = [2]string{s, field.String()}
 		sortedField = append(sortedField, name)
 	}
 	sort.Strings(sortedField)
 	for _, name := range sortedField {
-		s, p := t.Fields[name].Go()
-		pkgs = append(pkgs, p...)
+		f := fieldMap[name]
 		fields = append(fields, fmt.Sprintf(`
-	%s %s%s`, name, strings.Repeat(" ", nameMax-len(name)), s))
+	%s %s%s %s// %s`, name, strings.Repeat(" ", nameMax-len(name)),
+			f[0], strings.Repeat(" ", typeMax-len(f[0])), f[1]))
 	}
 
 	pkgDict := make(map[string]string)
