@@ -121,7 +121,7 @@ func (i %s) String() {
 		log.Fatalf("[Tygo][%s] Unexpect enum value: %%d", i)
 	}
 }
-`, t.Name, strings.Join(values, ""), t.Name, strings.Join(names, ""), t.Name), nil
+`, t.Name, strings.Join(values, ""), t.Name, strings.Join(names, ""), t.Name), [][2]string{[2]string{"", "log"}}
 }
 
 func (t *Object) Go() (string, [][2]string) {
@@ -175,6 +175,9 @@ type %s struct {%s
 }
 
 func (t SimpleType) Go() (string, [][2]string) {
+	if string(t) == "bytes" {
+		return "[]byte", nil
+	}
 	return string(t), nil
 }
 
