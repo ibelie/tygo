@@ -13,6 +13,7 @@ import (
 
 	"go/ast"
 	"go/build"
+	"go/doc"
 	"go/parser"
 	"go/token"
 	"io/ioutil"
@@ -66,15 +67,49 @@ func Inject(path string) {
 	}
 }
 
+func packageDoc(path string) *doc.Package {
+	p, err := build.Import(path, "", build.ImportComment)
+	if err != nil {
+		panic(fmt.Sprintf("[Tygo][Inject] Cannot import package:\n>>>>%v", err))
+	}
+	fs := token.NewFileSet()
+	// include tells parser.ParseDir which files to include.
+	// That means the file must be in the build package's GoFiles or CgoFiles
+	// list only (no tag-ignored files, tests, swig or other non-Go files).
+	include := func(info os.FileInfo) bool {
+		for _, name := range p.GoFiles {
+			if name == info.Name() {
+				return true
+			}
+		}
+		return false
+	}
+	pkgs, err := parser.ParseDir(fs, p.Dir, include, parser.ParseComments)
+	if err != nil {
+		panic(fmt.Sprintf("[Tygo][Inject] Cannot parse package:\n>>>>%v", err))
+	}
+	// Make sure they are all in one package.
+	if len(pkgs) != 1 {
+		panic(fmt.Sprintf("[Tygo][Inject] Multiple packages in directory %s", p.Dir))
+	}
+	return doc.New(pkgs[p.Name], p.ImportPath, doc.AllDecls)
+}
+
 func inject(filename string, doc string, file *ast.File) {
 	imports := make(map[string]string)
+	anonymousImports := make(map[string][2]string)
 	for _, importSpec := range file.Imports {
 		pkg := strings.Trim(importSpec.Path.Value, "\"")
 		if importSpec.Name == nil {
 			if p, err := build.Import(pkg, "", build.AllowBinary); err != nil {
 				panic(fmt.Sprintf("[Tygo][Inject] Cannot import package:\n>>>>%v", err))
 			} else {
-				imports[p.Name] = pkg
+				imports[p.Name] = p.ImportPath
+			}
+		} else if importSpec.Name.Name == "." {
+			doc := packageDoc(pkg)
+			for _, t := range doc.Types {
+				anonymousImports[t.Name] = [2]string{doc.Name, pkg}
 			}
 		} else {
 			imports[importSpec.Name.Name] = pkg
