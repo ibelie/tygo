@@ -171,7 +171,7 @@ spec1:
 	}
 |	IDENT '.' IDENT
 	{
-		$$ = &ObjectType{Pkg: $1, Name: $3}
+		$$ = &ObjectType{Pkg: parserImports[$1], Name: $3}
 	}
 |	'*' IDENT
 	{
@@ -179,7 +179,7 @@ spec1:
 	}
 |	'*' IDENT '.' IDENT
 	{
-		$$ = &ObjectType{IsPtr: true, Pkg: $2, Name: $4}
+		$$ = &ObjectType{IsPtr: true, Pkg: parserImports[$2], Name: $4}
 	}
 |	FIXEDPOINT '<' INTEGER ',' INTEGER '>'
 	{
@@ -198,11 +198,13 @@ var eiota int
 var (
 	parserEnums   []*Enum
 	parserObjects []*Object
+	parserImports map[string]string
 )
 
-func Parse(code string) ([]*Enum, []*Object) {
+func Parse(code string, imports map[string]string) ([]*Enum, []*Object) {
 	parserEnums   = nil
 	parserObjects = nil
+	parserImports = imports
 	tygoParse(&tygoLex{code: []byte(code)})
 	return parserEnums, parserObjects
 }

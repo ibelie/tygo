@@ -24,7 +24,7 @@ const (
 package %s
 
 `
-	goImport = `import %s %s
+	goImport = `import %s "%s"
 `
 )
 
@@ -87,16 +87,17 @@ type %s struct {%s
 )
 
 func inject(filename string, doc string, file *ast.File) {
-	enums, objects := Parse(doc)
 	imports := make(map[string]string)
 	for _, importSpec := range file.Imports {
+		pkg := strings.Trim(importSpec.Path.Value, "\"")
 		if importSpec.Name == nil {
-			p := strings.Split(importSpec.Path.Value, "/")
-			imports[strings.TrimRight(p[len(p)-1], "\"")] = importSpec.Path.Value
+			p := strings.Split(pkg, "/")
+			imports[p[len(p)-1]] = pkg
 		} else {
-			imports[importSpec.Name.Name] = importSpec.Path.Value
+			imports[importSpec.Name.Name] = pkg
 		}
 	}
+	enums, objects := Parse(doc, imports)
 
 	var head bytes.Buffer
 	var body bytes.Buffer
@@ -132,9 +133,9 @@ func inject(filename string, doc string, file *ast.File) {
 			spec, pkgs := parent.Go()
 			sortedParent = append(sortedParent, spec)
 			for _, pkg := range pkgs {
-				if i, ok := imported[pkg]; !ok || !i {
-					head.Write([]byte(fmt.Sprintf(goImport, pkg, imports[pkg])))
-					imported[pkg] = true
+				if i, ok := imported[pkg[0]]; !ok || !i {
+					head.Write([]byte(fmt.Sprintf(goImport, pkg[0], pkg[1])))
+					imported[pkg[0]] = true
 				}
 			}
 		}
@@ -146,9 +147,9 @@ func inject(filename string, doc string, file *ast.File) {
 		for _, name := range sortedField {
 			spec, pkgs := object.Fields[name].Go()
 			for _, pkg := range pkgs {
-				if i, ok := imported[pkg]; !ok || !i {
-					head.Write([]byte(fmt.Sprintf(goImport, pkg, imports[pkg])))
-					imported[pkg] = true
+				if i, ok := imported[pkg[0]]; !ok || !i {
+					head.Write([]byte(fmt.Sprintf(goImport, pkg[0], pkg[1])))
+					imported[pkg[0]] = true
 				}
 			}
 			fields = append(fields, fmt.Sprintf(`

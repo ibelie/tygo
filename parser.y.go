@@ -1,10 +1,9 @@
-//line parser.y:9
-
+//line parser.y:10
 package tygo
 
 import __yyfmt__ "fmt"
 
-//line parser.y:12
+//line parser.y:11
 import (
 	"bytes"
 	"log"
@@ -76,11 +75,13 @@ var eiota int
 var (
 	parserEnums   []*Enum
 	parserObjects []*Object
+	parserImports map[string]string
 )
 
-func Parse(code string) ([]*Enum, []*Object) {
+func Parse(code string, imports map[string]string) ([]*Enum, []*Object) {
 	parserEnums = nil
 	parserObjects = nil
+	parserImports = imports
 	tygoParse(&tygoLex{code: []byte(code)})
 	return parserEnums, parserObjects
 }
@@ -815,7 +816,7 @@ tygodefault:
 		tygoDollar = tygoS[tygopt-3 : tygopt+1]
 		//line parser.y:173
 		{
-			tygoVAL.spec = &ObjectType{Pkg: tygoDollar[1].ident, Name: tygoDollar[3].ident}
+			tygoVAL.spec = &ObjectType{Pkg: parserImports[tygoDollar[1].ident], Name: tygoDollar[3].ident}
 		}
 	case 28:
 		tygoDollar = tygoS[tygopt-2 : tygopt+1]
@@ -827,7 +828,7 @@ tygodefault:
 		tygoDollar = tygoS[tygopt-4 : tygopt+1]
 		//line parser.y:181
 		{
-			tygoVAL.spec = &ObjectType{IsPtr: true, Pkg: tygoDollar[2].ident, Name: tygoDollar[4].ident}
+			tygoVAL.spec = &ObjectType{IsPtr: true, Pkg: parserImports[tygoDollar[2].ident], Name: tygoDollar[4].ident}
 		}
 	case 30:
 		tygoDollar = tygoS[tygopt-6 : tygopt+1]

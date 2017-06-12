@@ -12,7 +12,7 @@ import (
 
 type Type interface {
 	String() string
-	Go() (string, []string)
+	Go() (string, [][2]string)
 }
 
 type Enum struct {
@@ -80,7 +80,7 @@ func (t SimpleType) String() string {
 	return string(t)
 }
 
-func (t SimpleType) Go() (string, []string) {
+func (t SimpleType) Go() (string, [][2]string) {
 	return string(t), nil
 }
 
@@ -102,11 +102,17 @@ func (t *ObjectType) String() string {
 	return s
 }
 
-func (t *ObjectType) Go() (string, []string) {
+func (t *ObjectType) Go() (string, [][2]string) {
 	if t.Pkg == "" {
 		return t.String(), nil
 	} else {
-		return t.String(), []string{t.Pkg}
+		s := ""
+		if t.IsPtr {
+			s += "*"
+		}
+		p := strings.Split(t.Pkg, "/")
+		s += p[len(p)-1] + "." + t.Name
+		return s, [][2]string{[2]string{p[len(p)-1], t.Pkg}}
 	}
 }
 
@@ -119,7 +125,7 @@ func (t *FixedPointType) String() string {
 	return fmt.Sprintf("fixedpoint<%d, %d>", t.Precision, t.Floor)
 }
 
-func (t *FixedPointType) Go() (string, []string) {
+func (t *FixedPointType) Go() (string, [][2]string) {
 	return "float64", nil
 }
 
@@ -131,7 +137,7 @@ func (t *ListType) String() string {
 	return fmt.Sprintf("[]%s", t.E)
 }
 
-func (t *ListType) Go() (string, []string) {
+func (t *ListType) Go() (string, [][2]string) {
 	s, p := t.E.Go()
 	return fmt.Sprintf("[]%s", s), p
 }
@@ -145,7 +151,7 @@ func (t *DictType) String() string {
 	return fmt.Sprintf("map[%s]%s", t.K, t.V)
 }
 
-func (t *DictType) Go() (string, []string) {
+func (t *DictType) Go() (string, [][2]string) {
 	ks, kp := t.K.Go()
 	vs, vp := t.V.Go()
 	return fmt.Sprintf("map[%s]%s", ks, vs), append(kp, vp...)
@@ -163,8 +169,8 @@ func (t *VariantType) String() string {
 	return fmt.Sprintf("variant<%s>", strings.Join(ts, ", "))
 }
 
-func (t *VariantType) Go() (string, []string) {
-	var p []string
+func (t *VariantType) Go() (string, [][2]string) {
+	var p [][2]string
 	for _, vt := range t.Ts {
 		_, vp := vt.Go()
 		p = append(p, vp...)
