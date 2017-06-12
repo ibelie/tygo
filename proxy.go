@@ -71,8 +71,11 @@ func inject(filename string, doc string, file *ast.File) {
 	for _, importSpec := range file.Imports {
 		pkg := strings.Trim(importSpec.Path.Value, "\"")
 		if importSpec.Name == nil {
-			p := strings.Split(pkg, "/")
-			imports[p[len(p)-1]] = pkg
+			if p, err := build.Import(pkg, "", build.AllowBinary); err != nil {
+				panic(fmt.Sprintf("[Tygo][Inject] Cannot import package:\n>>>>%v", err))
+			} else {
+				imports[p.Name] = pkg
+			}
 		} else {
 			imports[importSpec.Name.Name] = pkg
 		}
@@ -115,10 +118,11 @@ type %s int
 const (%s
 )
 
-func (i %s) String() {
+func (i %s) String() string {
 	switch i {%s
 	default:
 		log.Fatalf("[Tygo][%s] Unexpect enum value: %%d", i)
+		return "UNKNOWN"
 	}
 }
 `, t.Name, strings.Join(values, ""), t.Name, strings.Join(names, ""), t.Name), [][2]string{[2]string{"", "log"}}

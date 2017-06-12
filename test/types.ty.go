@@ -2,6 +2,7 @@
 
 package main
 
+import "log"
 
 type Corpus int
 
@@ -15,7 +16,7 @@ const (
 	Corpus_VIDEO     Corpus = 6
 )
 
-func (i Corpus) String() {
+func (i Corpus) String() string {
 	switch i {
 	case Corpus_UNIVERSAL:
 		return "UNIVERSAL"
@@ -33,11 +34,12 @@ func (i Corpus) String() {
 		return "VIDEO"
 	default:
 		log.Fatalf("[Tygo][Corpus] Unexpect enum value: %d", i)
+		return "UNKNOWN"
 	}
 }
 
 type Vector2 struct {
-	B bytes
+	B []byte
 	E Corpus
 	P *GoType
 	S string
@@ -61,8 +63,8 @@ type Fighter_Part1 struct {
 
 type Fighter_Part2 struct {
 	Fighter_Part1
-	Bd map[string]bytes
-	Bl []bytes
+	Bd map[string][]byte
+	Bl [][]byte
 	Ed map[int32]Corpus
 	El []Corpus
 	Fl []float32
