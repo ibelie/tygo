@@ -105,21 +105,9 @@ func inject(filename string, doc string, file *ast.File) {
 	for _, enum := range enums {
 		var values []string
 		var names []string
-		var sortedValue []int
-		valueMap := map[int]string{}
-		nameMax := 0
-		for name, value := range enum.Values {
-			if nameMax < len(name) {
-				nameMax = len(name)
-			}
-			valueMap[value] = name
-			sortedValue = append(sortedValue, value)
-		}
-		sort.Ints(sortedValue)
-		for _, value := range sortedValue {
-			name := valueMap[value]
+		for _, name := range enum.Sorted() {
 			values = append(values, fmt.Sprintf(`
-	%s_%s %s%s = %d`, enum.Name, name, strings.Repeat(" ", nameMax-len(name)), enum.Name, value))
+	%s_%s %s%s = %d`, enum.Name, name, strings.Repeat(" ", enum.NameMax()-len(name)), enum.Name, enum.Values[name]))
 			names = append(names, fmt.Sprintf(`
 	case %s_%s:
 		return "%s"`, enum.Name, name, name))

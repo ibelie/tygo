@@ -6,6 +6,7 @@ package tygo
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 )
 
@@ -15,8 +16,49 @@ type Type interface {
 }
 
 type Enum struct {
-	Name   string
-	Values map[string]int
+	nameMax int
+	sorted  []string
+	Name    string
+	Values  map[string]int
+}
+
+func (e *Enum) NameMax() int {
+	if e.nameMax <= 0 {
+		for name, _ := range e.Values {
+			if e.nameMax < len(name) {
+				e.nameMax = len(name)
+			}
+		}
+	}
+	return e.nameMax
+}
+
+func (e *Enum) Sorted() []string {
+	if e.sorted != nil && sort.IsSorted(e) {
+		return e.sorted
+	}
+	e.sorted = nil
+	e.nameMax = 0
+	for name, _ := range e.Values {
+		if e.nameMax < len(name) {
+			e.nameMax = len(name)
+		}
+		e.sorted = append(e.sorted, name)
+	}
+	sort.Sort(e)
+	return e.sorted
+}
+
+func (e *Enum) Len() int {
+	return len(e.sorted)
+}
+
+func (e *Enum) Swap(i, j int) {
+	e.sorted[i], e.sorted[j] = e.sorted[j], e.sorted[i]
+}
+
+func (e *Enum) Less(i, j int) bool {
+	return e.Values[e.sorted[i]] < e.Values[e.sorted[j]]
 }
 
 type Method struct {
