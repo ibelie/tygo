@@ -3,6 +3,7 @@
 package main
 
 import "log"
+import "io"
 
 type Corpus int
 
@@ -47,6 +48,18 @@ type Vector2 struct {
 	Y float64 // fixedpoint<1, -10>
 }
 
+func (s *Vector2) ByteSize() (int, error) {
+	return 0, nil
+}
+
+func (s *Vector2) Serialize(w io.Writer) error {
+	return nil
+}
+
+func (s *Vector2) Deserialize(r io.Reader) error {
+	return nil
+}
+
 type Fighter_Part1 struct {
 	Hp      float32            // float32
 	IsAwake bool               // bool
@@ -61,6 +74,18 @@ type Fighter_Part1 struct {
 	Pyv2    interface{}        // variant<int32, *GoType>
 }
 
+func (s *Fighter_Part1) ByteSize() (int, error) {
+	return 0, nil
+}
+
+func (s *Fighter_Part1) Serialize(w io.Writer) error {
+	return nil
+}
+
+func (s *Fighter_Part1) Deserialize(r io.Reader) error {
+	return nil
+}
+
 type Fighter_Part2 struct {
 	Fighter_Part1
 	Bd map[string][]byte // map[string]bytes
@@ -71,6 +96,18 @@ type Fighter_Part2 struct {
 	Ll [][]float32       // [][]float32
 	Sd map[int32]string  // map[int32]string
 	Sl []string          // []string
+}
+
+func (s *Fighter_Part2) ByteSize() (int, error) {
+	return 0, nil
+}
+
+func (s *Fighter_Part2) Serialize(w io.Writer) error {
+	return nil
+}
+
+func (s *Fighter_Part2) Deserialize(r io.Reader) error {
+	return nil
 }
 
 type Fighter struct {
@@ -91,4 +128,48 @@ type Fighter struct {
 	V4  interface{}                     // variant<int32, float32, bytes, *Vector2>
 	Vd  map[int32]interface{}           // map[int32]variant<Corpus, float64, string, *Vector2>
 	Vl  []interface{}                   // []variant<int32, fixedpoint<3, 0>, string, *Vector2>
+}
+
+func (s *Fighter) ByteSize() (int, error) {
+	return 0, nil
+}
+
+func (s *Fighter) Serialize(w io.Writer) error {
+	return nil
+}
+
+func (s *Fighter) Deserialize(r io.Reader) error {
+	return nil
+}
+
+func (s *Fighter) SerializeRPGParam(a0 *Fighter, a1 interface{}, a2 float64) (data string, err error) {
+	return
+}
+
+func (s *Fighter) DeserializeRPGParam(data string) (a0 *Fighter, a1 interface{}, a2 float64, err error) {
+	return
+}
+
+func (s *Fighter) SerializeRPGResult(a0 *Vector2) (data string, err error) {
+	return
+}
+
+func (s *Fighter) DeserializeRPGResult(data string) (a0 *Vector2, err error) {
+	return
+}
+
+func (s *Fighter) SerializeGPRParam(a0 map[int32]interface{}) (data string, err error) {
+	return
+}
+
+func (s *Fighter) DeserializeGPRParam(data string) (a0 map[int32]interface{}, err error) {
+	return
+}
+
+func (s *Fighter) SerializeGPRResult(a0 *Fighter, a1 int32) (data string, err error) {
+	return
+}
+
+func (s *Fighter) DeserializeGPRResult(data string) (a0 *Fighter, a1 int32, err error) {
+	return
 }

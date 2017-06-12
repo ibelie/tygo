@@ -159,9 +159,8 @@ func (i %s) String() string {
 }
 
 func (t *Object) Go() (string, [][2]string) {
+	pkgs := [][2]string{[2]string{"", "io"}}
 	var fields []string
-	var pkgs [][2]string
-
 	var sortedParent []string
 	for _, parent := range t.Parents {
 		s, p := parent.Go()
@@ -198,6 +197,45 @@ func (t *Object) Go() (string, [][2]string) {
 			f[0], strings.Repeat(" ", typeMax-len(f[0])), f[1]))
 	}
 
+	var methods []string
+	for _, method := range t.Methods {
+		var params []string
+		for i, param := range method.Params {
+			s, p := param.Go()
+			pkgs = append(pkgs, p...)
+			params = append(params, fmt.Sprintf("a%d %s", i, s))
+		}
+		if params != nil {
+			methods = append(methods, fmt.Sprintf(`
+func (s *%s) Serialize%sParam(%s) (data string, err error) {
+	return
+}
+
+func (s *%s) Deserialize%sParam(data string) (%s, err error) {
+	return
+}
+`, t.Name, method.Name, strings.Join(params, ", "), t.Name, method.Name, strings.Join(params, ", ")))
+		}
+
+		var results []string
+		for i, result := range method.Results {
+			s, p := result.Go()
+			pkgs = append(pkgs, p...)
+			results = append(results, fmt.Sprintf("a%d %s", i, s))
+		}
+		if results != nil {
+			methods = append(methods, fmt.Sprintf(`
+func (s *%s) Serialize%sResult(%s) (data string, err error) {
+	return
+}
+
+func (s *%s) Deserialize%sResult(data string) (%s, err error) {
+	return
+}
+`, t.Name, method.Name, strings.Join(results, ", "), t.Name, method.Name, strings.Join(results, ", ")))
+		}
+	}
+
 	pkgDict := make(map[string]string)
 	var sortedPkg []string
 	for _, pkg := range pkgs {
@@ -213,7 +251,19 @@ func (t *Object) Go() (string, [][2]string) {
 	return fmt.Sprintf(`
 type %s struct {%s
 }
-`, t.Name, strings.Join(fields, "")), pkgs
+
+func (s *%s) ByteSize() (int, error) {
+	return 0, nil
+}
+
+func (s *%s) Serialize(w io.Writer) error {
+	return nil
+}
+
+func (s *%s) Deserialize(r io.Reader) error {
+	return nil
+}
+%s`, t.Name, strings.Join(fields, ""), t.Name, t.Name, t.Name, strings.Join(methods, "")), pkgs
 }
 
 func (t SimpleType) Go() (string, [][2]string) {
