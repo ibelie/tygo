@@ -34,7 +34,7 @@ func (e *Enum) NameMax() int {
 }
 
 func (e *Enum) Sorted() []string {
-	if e.sorted != nil && sort.IsSorted(e) {
+	if e.sorted != nil && len(e.sorted) == len(e.Values) && sort.IsSorted(e) {
 		return e.sorted
 	}
 	e.sorted = nil
