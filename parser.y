@@ -167,7 +167,11 @@ spec:
 spec1:
 	IDENT
 	{
-		$$ = SimpleType($1)
+		if pkg, ok := parserTypePkg[$1]; ok {
+			$$ = &ObjectType{PkgName: pkg[0], PkgPath: pkg[1], Name: $1}
+		} else {
+			$$ = SimpleType($1)
+		}
 	}
 |	IDENT '.' IDENT
 	{
@@ -175,7 +179,11 @@ spec1:
 	}
 |	'*' IDENT
 	{
-		$$ = &ObjectType{IsPtr: true, Name: $2}
+		if pkg, ok := parserTypePkg[$2]; ok {
+			$$ = &ObjectType{IsPtr: true, PkgName: pkg[0], PkgPath: pkg[1], Name: $2}
+		} else {
+			$$ = &ObjectType{IsPtr: true, Name: $2}
+		}
 	}
 |	'*' IDENT '.' IDENT
 	{
@@ -198,11 +206,13 @@ var eiota int
 var (
 	parserTypes   []Type
 	parserImports map[string]string
+	parserTypePkg map[string][2]string
 )
 
-func Parse(code string, imports map[string]string) ([]Type) {
+func Parse(code string, imports map[string]string, typePkg map[string][2]string) ([]Type) {
 	parserTypes   = nil
 	parserImports = imports
+	parserTypePkg = typePkg
 	tygoParse(&tygoLex{code: []byte(code)})
 	return parserTypes
 }

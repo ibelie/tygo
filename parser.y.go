@@ -1,9 +1,10 @@
-//line parser.y:10
+//line parser.y:9
+
 package tygo
 
 import __yyfmt__ "fmt"
 
-//line parser.y:11
+//line parser.y:12
 import (
 	"bytes"
 	"log"
@@ -68,18 +69,20 @@ const tygoEofCode = 1
 const tygoErrCode = 2
 const tygoInitialStackSize = 16
 
-//line parser.y:194
+//line parser.y:202
 
 var eiota int
 
 var (
 	parserTypes   []Type
 	parserImports map[string]string
+	parserTypePkg map[string][2]string
 )
 
-func Parse(code string, imports map[string]string) []Type {
+func Parse(code string, imports map[string]string, typePkg map[string][2]string) []Type {
 	parserTypes = nil
 	parserImports = imports
+	parserTypePkg = typePkg
 	tygoParse(&tygoLex{code: []byte(code)})
 	return parserTypes
 }
@@ -808,29 +811,37 @@ tygodefault:
 		tygoDollar = tygoS[tygopt-1 : tygopt+1]
 		//line parser.y:169
 		{
-			tygoVAL.spec = SimpleType(tygoDollar[1].ident)
+			if pkg, ok := parserTypePkg[tygoDollar[1].ident]; ok {
+				tygoVAL.spec = &ObjectType{PkgName: pkg[0], PkgPath: pkg[1], Name: tygoDollar[1].ident}
+			} else {
+				tygoVAL.spec = SimpleType(tygoDollar[1].ident)
+			}
 		}
 	case 27:
 		tygoDollar = tygoS[tygopt-3 : tygopt+1]
-		//line parser.y:173
+		//line parser.y:177
 		{
 			tygoVAL.spec = &ObjectType{PkgName: tygoDollar[1].ident, PkgPath: parserImports[tygoDollar[1].ident], Name: tygoDollar[3].ident}
 		}
 	case 28:
 		tygoDollar = tygoS[tygopt-2 : tygopt+1]
-		//line parser.y:177
+		//line parser.y:181
 		{
-			tygoVAL.spec = &ObjectType{IsPtr: true, Name: tygoDollar[2].ident}
+			if pkg, ok := parserTypePkg[tygoDollar[2].ident]; ok {
+				tygoVAL.spec = &ObjectType{IsPtr: true, PkgName: pkg[0], PkgPath: pkg[1], Name: tygoDollar[2].ident}
+			} else {
+				tygoVAL.spec = &ObjectType{IsPtr: true, Name: tygoDollar[2].ident}
+			}
 		}
 	case 29:
 		tygoDollar = tygoS[tygopt-4 : tygopt+1]
-		//line parser.y:181
+		//line parser.y:189
 		{
 			tygoVAL.spec = &ObjectType{IsPtr: true, PkgName: tygoDollar[2].ident, PkgPath: parserImports[tygoDollar[2].ident], Name: tygoDollar[4].ident}
 		}
 	case 30:
 		tygoDollar = tygoS[tygopt-6 : tygopt+1]
-		//line parser.y:185
+		//line parser.y:193
 		{
 			tygoVAL.spec = &FixedPointType{Precision: tygoDollar[3].integer, Floor: tygoDollar[5].integer}
 		}

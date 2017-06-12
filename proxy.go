@@ -70,12 +70,9 @@ func Inject(path string) {
 func packageDoc(path string) *doc.Package {
 	p, err := build.Import(path, "", build.ImportComment)
 	if err != nil {
-		panic(fmt.Sprintf("[Tygo][Inject] Cannot import package:\n>>>>%v", err))
+		return nil
 	}
 	fs := token.NewFileSet()
-	// include tells parser.ParseDir which files to include.
-	// That means the file must be in the build package's GoFiles or CgoFiles
-	// list only (no tag-ignored files, tests, swig or other non-Go files).
 	include := func(info os.FileInfo) bool {
 		for _, name := range p.GoFiles {
 			if name == info.Name() {
@@ -84,20 +81,17 @@ func packageDoc(path string) *doc.Package {
 		}
 		return false
 	}
-	pkgs, err := parser.ParseDir(fs, p.Dir, include, parser.ParseComments)
-	if err != nil {
-		panic(fmt.Sprintf("[Tygo][Inject] Cannot parse package:\n>>>>%v", err))
+
+	if pkgs, err := parser.ParseDir(fs, p.Dir, include, parser.ParseComments); err != nil || len(pkgs) != 1 {
+		return nil
+	} else {
+		return doc.New(pkgs[p.Name], p.ImportPath, doc.AllDecls)
 	}
-	// Make sure they are all in one package.
-	if len(pkgs) != 1 {
-		panic(fmt.Sprintf("[Tygo][Inject] Multiple packages in directory %s", p.Dir))
-	}
-	return doc.New(pkgs[p.Name], p.ImportPath, doc.AllDecls)
 }
 
 func inject(filename string, doc string, file *ast.File) {
 	imports := make(map[string]string)
-	anonymousImports := make(map[string][2]string)
+	typePkg := make(map[string][2]string)
 	for _, importSpec := range file.Imports {
 		pkg := strings.Trim(importSpec.Path.Value, "\"")
 		if importSpec.Name == nil {
@@ -107,15 +101,16 @@ func inject(filename string, doc string, file *ast.File) {
 				imports[p.Name] = p.ImportPath
 			}
 		} else if importSpec.Name.Name == "." {
-			doc := packageDoc(pkg)
-			for _, t := range doc.Types {
-				anonymousImports[t.Name] = [2]string{doc.Name, pkg}
+			if doc := packageDoc(pkg); doc != nil {
+				for _, t := range doc.Types {
+					typePkg[t.Name] = [2]string{doc.Name, pkg}
+				}
 			}
 		} else {
 			imports[importSpec.Name.Name] = pkg
 		}
 	}
-	types := Parse(doc, imports)
+	types := Parse(doc, imports, typePkg)
 
 	var head bytes.Buffer
 	var body bytes.Buffer
