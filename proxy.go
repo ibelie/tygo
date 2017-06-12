@@ -193,15 +193,13 @@ func (t *ObjectType) Go() (string, [][2]string) {
 		if t.IsPtr {
 			s += "*"
 		}
-		s += t.PkgName + "." + t.Name
-		p := strings.Split(t.PkgPath, "/")
 		var a string
-		if t.PkgName == p[len(p)-1] {
+		if p, err := build.Import(t.PkgPath, "", build.AllowBinary); err == nil && p.Name == t.PkgName {
 			a = ""
 		} else {
 			a = t.PkgName + " "
 		}
-		return s, [][2]string{[2]string{a, t.PkgPath}}
+		return s + t.PkgName + "." + t.Name, [][2]string{[2]string{a, t.PkgPath}}
 	}
 }
 
