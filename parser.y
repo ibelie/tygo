@@ -171,7 +171,7 @@ spec1:
 	}
 |	IDENT '.' IDENT
 	{
-		$$ = &ObjectType{Pkg: parserImports[$1], Name: $3}
+		$$ = &ObjectType{PkgName: $1, PkgPath: parserImports[$1], Name: $3}
 	}
 |	'*' IDENT
 	{
@@ -179,7 +179,7 @@ spec1:
 	}
 |	'*' IDENT '.' IDENT
 	{
-		$$ = &ObjectType{IsPtr: true, Pkg: parserImports[$2], Name: $4}
+		$$ = &ObjectType{IsPtr: true, PkgName: $2, PkgPath: parserImports[$2], Name: $4}
 	}
 |	FIXEDPOINT '<' INTEGER ',' INTEGER '>'
 	{

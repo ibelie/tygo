@@ -24,7 +24,7 @@ const (
 package %s
 
 `
-	goImport = `import %s "%s"
+	goImport = `import %s"%s"
 `
 )
 

@@ -85,9 +85,10 @@ func (t SimpleType) Go() (string, [][2]string) {
 }
 
 type ObjectType struct {
-	IsPtr bool
-	Pkg   string
-	Name  string
+	IsPtr   bool
+	Name    string
+	PkgName string
+	PkgPath string
 }
 
 func (t *ObjectType) String() string {
@@ -95,24 +96,30 @@ func (t *ObjectType) String() string {
 	if t.IsPtr {
 		s += "*"
 	}
-	if t.Pkg != "" {
-		s += t.Pkg + "."
+	if t.PkgPath != "" {
+		s += t.PkgPath + "."
 	}
 	s += t.Name
 	return s
 }
 
 func (t *ObjectType) Go() (string, [][2]string) {
-	if t.Pkg == "" {
+	if t.PkgPath == "" {
 		return t.String(), nil
 	} else {
 		s := ""
 		if t.IsPtr {
 			s += "*"
 		}
-		p := strings.Split(t.Pkg, "/")
-		s += p[len(p)-1] + "." + t.Name
-		return s, [][2]string{[2]string{p[len(p)-1], t.Pkg}}
+		s += t.PkgName + "." + t.Name
+		p := strings.Split(t.PkgPath, "/")
+		var a string
+		if t.PkgName == p[len(p)-1] {
+			a = ""
+		} else {
+			a = t.PkgName + " "
+		}
+		return s, [][2]string{[2]string{a, t.PkgPath}}
 	}
 }
 

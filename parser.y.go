@@ -816,7 +816,7 @@ tygodefault:
 		tygoDollar = tygoS[tygopt-3 : tygopt+1]
 		//line parser.y:173
 		{
-			tygoVAL.spec = &ObjectType{Pkg: parserImports[tygoDollar[1].ident], Name: tygoDollar[3].ident}
+			tygoVAL.spec = &ObjectType{PkgName: tygoDollar[1].ident, PkgPath: parserImports[tygoDollar[1].ident], Name: tygoDollar[3].ident}
 		}
 	case 28:
 		tygoDollar = tygoS[tygopt-2 : tygopt+1]
@@ -828,7 +828,7 @@ tygodefault:
 		tygoDollar = tygoS[tygopt-4 : tygopt+1]
 		//line parser.y:181
 		{
-			tygoVAL.spec = &ObjectType{IsPtr: true, Pkg: parserImports[tygoDollar[2].ident], Name: tygoDollar[4].ident}
+			tygoVAL.spec = &ObjectType{IsPtr: true, PkgName: tygoDollar[2].ident, PkgPath: parserImports[tygoDollar[2].ident], Name: tygoDollar[4].ident}
 		}
 	case 30:
 		tygoDollar = tygoS[tygopt-6 : tygopt+1]
