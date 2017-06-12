@@ -46,19 +46,19 @@ import (
 top:
 	enum '}' newline
 	{
-		parserEnums = append(parserEnums, $1)
+		parserTypes = append(parserTypes, $1)
 	}
 |	top enum '}' newline
 	{
-		parserEnums = append(parserEnums, $2)
+		parserTypes = append(parserTypes, $2)
 	}
 |	object '}' newline
 	{
-		parserObjects = append(parserObjects, $1)
+		parserTypes = append(parserTypes, $1)
 	}
 |	top object '}' newline
 	{
-		parserObjects = append(parserObjects, $2)
+		parserTypes = append(parserTypes, $2)
 	}
 
 enum:
@@ -196,17 +196,15 @@ newline:
 var eiota int
 
 var (
-	parserEnums   []*Enum
-	parserObjects []*Object
+	parserTypes   []Type
 	parserImports map[string]string
 )
 
-func Parse(code string, imports map[string]string) ([]*Enum, []*Object) {
-	parserEnums   = nil
-	parserObjects = nil
+func Parse(code string, imports map[string]string) ([]Type) {
+	parserTypes   = nil
 	parserImports = imports
 	tygoParse(&tygoLex{code: []byte(code)})
-	return parserEnums, parserObjects
+	return parserTypes
 }
 
 // The parser expects the lexer to return 0 on EOF.  Give it a name for clarity.

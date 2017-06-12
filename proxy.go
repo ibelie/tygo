@@ -77,64 +77,39 @@ func inject(filename string, doc string, file *ast.File) {
 			imports[importSpec.Name.Name] = pkg
 		}
 	}
-	enums, objects := Parse(doc, imports)
+	types := Parse(doc, imports)
 
 	var head bytes.Buffer
 	var body bytes.Buffer
 	head.Write([]byte(fmt.Sprintf(goHeader, file.Name)))
 
-	for _, enum := range enums {
-		code, _ := enum.Go()
-		body.Write([]byte(code))
-	}
-
 	imported := map[string]bool{}
-	for _, object := range objects {
-		var fields []string
-		var sortedField []string
-		nameMax := 0
-		for name, _ := range object.Fields {
-			if nameMax < len(name) {
-				nameMax = len(name)
-			}
-			sortedField = append(sortedField, name)
-		}
-		sort.Strings(sortedField)
-		var sortedParent []string
-		for _, parent := range object.Parents {
-			spec, pkgs := parent.Go()
-			sortedParent = append(sortedParent, spec)
-			for _, pkg := range pkgs {
-				if i, ok := imported[pkg[0]]; !ok || !i {
-					head.Write([]byte(fmt.Sprintf(goImport, pkg[0], pkg[1])))
-					imported[pkg[0]] = true
-				}
+	for _, t := range types {
+		code, pkgs := t.Go()
+		for _, pkg := range pkgs {
+			if i, ok := imported[pkg[1]]; !ok || !i {
+				head.Write([]byte(fmt.Sprintf(goImport, pkg[0], pkg[1])))
+				imported[pkg[1]] = true
 			}
 		}
-		sort.Strings(sortedParent)
-		for _, parent := range sortedParent {
-			fields = append(fields, fmt.Sprintf(`
-	%s`, parent))
-		}
-		for _, name := range sortedField {
-			spec, pkgs := object.Fields[name].Go()
-			for _, pkg := range pkgs {
-				if i, ok := imported[pkg[0]]; !ok || !i {
-					head.Write([]byte(fmt.Sprintf(goImport, pkg[0], pkg[1])))
-					imported[pkg[0]] = true
-				}
-			}
-			fields = append(fields, fmt.Sprintf(`
-	%s %s%s`, name, strings.Repeat(" ", nameMax-len(name)), spec))
-		}
-		body.Write([]byte(fmt.Sprintf(goObject, object.Name, strings.Join(fields, ""))))
+		body.Write([]byte(code))
 	}
 
 	head.Write(body.Bytes())
 	ioutil.WriteFile(filename, head.Bytes(), 0666)
 }
 
-const goEnum = `
+func (t *Enum) Go() (string, [][2]string) {
+	var values []string
+	var names []string
+	for _, name := range t.Sorted() {
+		values = append(values, fmt.Sprintf(`
+	%s_%s %s%s = %d`, t.Name, name, strings.Repeat(" ", t.nameMax-len(name)), t.Name, t.Values[name]))
+		names = append(names, fmt.Sprintf(`
+	case %s_%s:
+		return "%s"`, t.Name, name, name))
+	}
+	return fmt.Sprintf(`
 type %s int
 
 const (%s
@@ -146,25 +121,58 @@ func (i %s) String() {
 		log.Fatalf("[Tygo][%s] Unexpect enum value: %%d", i)
 	}
 }
-`
-
-func (e *Enum) Go() (string, [][2]string) {
-	var values []string
-	var names []string
-	for _, name := range e.Sorted() {
-		values = append(values, fmt.Sprintf(`
-	%s_%s %s%s = %d`, e.Name, name, strings.Repeat(" ", e.nameMax-len(name)), e.Name, e.Values[name]))
-		names = append(names, fmt.Sprintf(`
-	case %s_%s:
-		return "%s"`, e.Name, name, name))
-	}
-	return fmt.Sprintf(goEnum, e.Name, strings.Join(values, ""), e.Name, strings.Join(names, ""), e.Name), nil
+`, t.Name, strings.Join(values, ""), t.Name, strings.Join(names, ""), t.Name), nil
 }
 
-const goObject = `
+func (t *Object) Go() (string, [][2]string) {
+	var fields []string
+	var pkgs [][2]string
+
+	var sortedParent []string
+	for _, parent := range t.Parents {
+		s, p := parent.Go()
+		sortedParent = append(sortedParent, s)
+		pkgs = append(pkgs, p...)
+	}
+	sort.Strings(sortedParent)
+	for _, parent := range sortedParent {
+		fields = append(fields, fmt.Sprintf(`
+	%s`, parent))
+	}
+
+	nameMax := 0
+	var sortedField []string
+	for name, _ := range t.Fields {
+		if nameMax < len(name) {
+			nameMax = len(name)
+		}
+		sortedField = append(sortedField, name)
+	}
+	sort.Strings(sortedField)
+	for _, name := range sortedField {
+		s, p := t.Fields[name].Go()
+		pkgs = append(pkgs, p...)
+		fields = append(fields, fmt.Sprintf(`
+	%s %s%s`, name, strings.Repeat(" ", nameMax-len(name)), s))
+	}
+
+	pkgDict := make(map[string]string)
+	var sortedPkg []string
+	for _, pkg := range pkgs {
+		sortedPkg = append(sortedPkg, pkg[1])
+		pkgDict[pkg[1]] = pkg[0]
+	}
+	sort.Strings(sortedPkg)
+	pkgs = nil
+	for _, pkg := range sortedPkg {
+		pkgs = append(pkgs, [2]string{pkgDict[pkg], pkg})
+	}
+
+	return fmt.Sprintf(`
 type %s struct {%s
 }
-`
+`, t.Name, strings.Join(fields, "")), pkgs
+}
 
 func (t SimpleType) Go() (string, [][2]string) {
 	return string(t), nil

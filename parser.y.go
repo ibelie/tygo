@@ -73,17 +73,15 @@ const tygoInitialStackSize = 16
 var eiota int
 
 var (
-	parserEnums   []*Enum
-	parserObjects []*Object
+	parserTypes   []Type
 	parserImports map[string]string
 )
 
-func Parse(code string, imports map[string]string) ([]*Enum, []*Object) {
-	parserEnums = nil
-	parserObjects = nil
+func Parse(code string, imports map[string]string) []Type {
+	parserTypes = nil
 	parserImports = imports
 	tygoParse(&tygoLex{code: []byte(code)})
-	return parserEnums, parserObjects
+	return parserTypes
 }
 
 // The parser expects the lexer to return 0 on EOF.  Give it a name for clarity.
@@ -664,25 +662,25 @@ tygodefault:
 		tygoDollar = tygoS[tygopt-3 : tygopt+1]
 		//line parser.y:48
 		{
-			parserEnums = append(parserEnums, tygoDollar[1].enum)
+			parserTypes = append(parserTypes, tygoDollar[1].enum)
 		}
 	case 2:
 		tygoDollar = tygoS[tygopt-4 : tygopt+1]
 		//line parser.y:52
 		{
-			parserEnums = append(parserEnums, tygoDollar[2].enum)
+			parserTypes = append(parserTypes, tygoDollar[2].enum)
 		}
 	case 3:
 		tygoDollar = tygoS[tygopt-3 : tygopt+1]
 		//line parser.y:56
 		{
-			parserObjects = append(parserObjects, tygoDollar[1].object)
+			parserTypes = append(parserTypes, tygoDollar[1].object)
 		}
 	case 4:
 		tygoDollar = tygoS[tygopt-4 : tygopt+1]
 		//line parser.y:60
 		{
-			parserObjects = append(parserObjects, tygoDollar[2].object)
+			parserTypes = append(parserTypes, tygoDollar[2].object)
 		}
 	case 5:
 		tygoDollar = tygoS[tygopt-5 : tygopt+1]

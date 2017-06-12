@@ -104,6 +104,39 @@ func (t *Enum) String() string {
 	return fmt.Sprintf("%s[%s]", t.Name, strings.Join(values, ", "))
 }
 
+func (t *Object) String() string {
+	var fields []string
+
+	var sortedParent []string
+	for _, parent := range t.Parents {
+		sortedParent = append(sortedParent, parent.String())
+	}
+	sort.Strings(sortedParent)
+	for _, parent := range sortedParent {
+		fields = append(fields, fmt.Sprintf(`
+	%s`, parent))
+	}
+
+	nameMax := 0
+	var sortedField []string
+	for name, _ := range t.Fields {
+		if nameMax < len(name) {
+			nameMax = len(name)
+		}
+		sortedField = append(sortedField, name)
+	}
+	sort.Strings(sortedField)
+	for _, name := range sortedField {
+		fields = append(fields, fmt.Sprintf(`
+	%s %s%s`, name, strings.Repeat(" ", nameMax-len(name)), t.Fields[name].String()))
+	}
+
+	return fmt.Sprintf(`
+%s{%s
+}
+`, t.Name, strings.Join(fields, ""))
+}
+
 func (t SimpleType) String() string {
 	return string(t)
 }
