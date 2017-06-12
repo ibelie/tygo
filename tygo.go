@@ -22,45 +22,6 @@ type Enum struct {
 	Values  map[string]int
 }
 
-func (e *Enum) NameMax() int {
-	if e.nameMax <= 0 {
-		for name, _ := range e.Values {
-			if e.nameMax < len(name) {
-				e.nameMax = len(name)
-			}
-		}
-	}
-	return e.nameMax
-}
-
-func (e *Enum) Sorted() []string {
-	if e.sorted != nil && len(e.sorted) == len(e.Values) && sort.IsSorted(e) {
-		return e.sorted
-	}
-	e.sorted = nil
-	e.nameMax = 0
-	for name, _ := range e.Values {
-		if e.nameMax < len(name) {
-			e.nameMax = len(name)
-		}
-		e.sorted = append(e.sorted, name)
-	}
-	sort.Sort(e)
-	return e.sorted
-}
-
-func (e *Enum) Len() int {
-	return len(e.sorted)
-}
-
-func (e *Enum) Swap(i, j int) {
-	e.sorted[i], e.sorted[j] = e.sorted[j], e.sorted[i]
-}
-
-func (e *Enum) Less(i, j int) bool {
-	return e.Values[e.sorted[i]] < e.Values[e.sorted[j]]
-}
-
 type Method struct {
 	Name    string
 	Params  []Type
@@ -76,19 +37,75 @@ type Object struct {
 
 type SimpleType string
 
-func (t SimpleType) String() string {
-	return string(t)
-}
-
-func (t SimpleType) Go() (string, [][2]string) {
-	return string(t), nil
-}
-
 type ObjectType struct {
 	IsPtr   bool
 	Name    string
 	PkgName string
 	PkgPath string
+}
+
+type FixedPointType struct {
+	Precision int
+	Floor     int
+}
+
+type ListType struct {
+	E Type
+}
+
+type DictType struct {
+	K Type
+	V Type
+}
+
+type VariantType struct {
+	Ts []Type
+}
+
+func (t *Enum) Sorted() []string {
+	if t.sorted == nil || len(t.sorted) != len(t.Values) {
+		t.sorted = nil
+		for name, _ := range t.Values {
+			if t.nameMax < len(name) {
+				t.nameMax = len(name)
+			}
+			t.sorted = append(t.sorted, name)
+		}
+	} else if t.nameMax <= 0 {
+		for name, _ := range t.Values {
+			if t.nameMax < len(name) {
+				t.nameMax = len(name)
+			}
+		}
+	}
+	if !sort.IsSorted(t) {
+		sort.Sort(t)
+	}
+	return t.sorted
+}
+
+func (t *Enum) Len() int {
+	return len(t.sorted)
+}
+
+func (t *Enum) Swap(i, j int) {
+	t.sorted[i], t.sorted[j] = t.sorted[j], t.sorted[i]
+}
+
+func (t *Enum) Less(i, j int) bool {
+	return t.Values[t.sorted[i]] < t.Values[t.sorted[j]]
+}
+
+func (t *Enum) String() string {
+	var values []string
+	for _, name := range t.Sorted() {
+		values = append(values, fmt.Sprintf(`%s: %d`, name, t.Values[name]))
+	}
+	return fmt.Sprintf("%s[%s]", t.Name, strings.Join(values, ", "))
+}
+
+func (t SimpleType) String() string {
+	return string(t)
 }
 
 func (t *ObjectType) String() string {
@@ -103,69 +120,16 @@ func (t *ObjectType) String() string {
 	return s
 }
 
-func (t *ObjectType) Go() (string, [][2]string) {
-	if t.PkgPath == "" {
-		return t.String(), nil
-	} else {
-		s := ""
-		if t.IsPtr {
-			s += "*"
-		}
-		s += t.PkgName + "." + t.Name
-		p := strings.Split(t.PkgPath, "/")
-		var a string
-		if t.PkgName == p[len(p)-1] {
-			a = ""
-		} else {
-			a = t.PkgName + " "
-		}
-		return s, [][2]string{[2]string{a, t.PkgPath}}
-	}
-}
-
-type FixedPointType struct {
-	Precision int
-	Floor     int
-}
-
 func (t *FixedPointType) String() string {
 	return fmt.Sprintf("fixedpoint<%d, %d>", t.Precision, t.Floor)
-}
-
-func (t *FixedPointType) Go() (string, [][2]string) {
-	return "float64", nil
-}
-
-type ListType struct {
-	E Type
 }
 
 func (t *ListType) String() string {
 	return fmt.Sprintf("[]%s", t.E)
 }
 
-func (t *ListType) Go() (string, [][2]string) {
-	s, p := t.E.Go()
-	return fmt.Sprintf("[]%s", s), p
-}
-
-type DictType struct {
-	K Type
-	V Type
-}
-
 func (t *DictType) String() string {
 	return fmt.Sprintf("map[%s]%s", t.K, t.V)
-}
-
-func (t *DictType) Go() (string, [][2]string) {
-	ks, kp := t.K.Go()
-	vs, vp := t.V.Go()
-	return fmt.Sprintf("map[%s]%s", ks, vs), append(kp, vp...)
-}
-
-type VariantType struct {
-	Ts []Type
 }
 
 func (t *VariantType) String() string {
@@ -174,13 +138,4 @@ func (t *VariantType) String() string {
 		ts = append(ts, t.String())
 	}
 	return fmt.Sprintf("variant<%s>", strings.Join(ts, ", "))
-}
-
-func (t *VariantType) Go() (string, [][2]string) {
-	var p [][2]string
-	for _, vt := range t.Ts {
-		_, vp := vt.Go()
-		p = append(p, vp...)
-	}
-	return "interface{}", p
 }

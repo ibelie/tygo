@@ -66,26 +66,6 @@ func Inject(path string) {
 	}
 }
 
-const (
-	goEnum = `
-type %s int
-
-const (%s
-)
-
-func (i %s) String() {
-	switch i {%s
-	default:
-		log.Fatalf("[Tygo][%s] Unexpect enum value: %%d", i)
-	}
-}
-`
-	goObject = `
-type %s struct {%s
-}
-`
-)
-
 func inject(filename string, doc string, file *ast.File) {
 	imports := make(map[string]string)
 	for _, importSpec := range file.Imports {
@@ -104,16 +84,8 @@ func inject(filename string, doc string, file *ast.File) {
 	head.Write([]byte(fmt.Sprintf(goHeader, file.Name)))
 
 	for _, enum := range enums {
-		var values []string
-		var names []string
-		for _, name := range enum.Sorted() {
-			values = append(values, fmt.Sprintf(`
-	%s_%s %s%s = %d`, enum.Name, name, strings.Repeat(" ", enum.NameMax()-len(name)), enum.Name, enum.Values[name]))
-			names = append(names, fmt.Sprintf(`
-	case %s_%s:
-		return "%s"`, enum.Name, name, name))
-		}
-		body.Write([]byte(fmt.Sprintf(goEnum, enum.Name, strings.Join(values, ""), enum.Name, strings.Join(names, ""), enum.Name)))
+		code, _ := enum.Go()
+		body.Write([]byte(code))
 	}
 
 	imported := map[string]bool{}
@@ -160,4 +132,84 @@ func inject(filename string, doc string, file *ast.File) {
 
 	head.Write(body.Bytes())
 	ioutil.WriteFile(filename, head.Bytes(), 0666)
+}
+
+const goEnum = `
+type %s int
+
+const (%s
+)
+
+func (i %s) String() {
+	switch i {%s
+	default:
+		log.Fatalf("[Tygo][%s] Unexpect enum value: %%d", i)
+	}
+}
+`
+
+func (e *Enum) Go() (string, [][2]string) {
+	var values []string
+	var names []string
+	for _, name := range e.Sorted() {
+		values = append(values, fmt.Sprintf(`
+	%s_%s %s%s = %d`, e.Name, name, strings.Repeat(" ", e.nameMax-len(name)), e.Name, e.Values[name]))
+		names = append(names, fmt.Sprintf(`
+	case %s_%s:
+		return "%s"`, e.Name, name, name))
+	}
+	return fmt.Sprintf(goEnum, e.Name, strings.Join(values, ""), e.Name, strings.Join(names, ""), e.Name), nil
+}
+
+const goObject = `
+type %s struct {%s
+}
+`
+
+func (t SimpleType) Go() (string, [][2]string) {
+	return string(t), nil
+}
+
+func (t *ObjectType) Go() (string, [][2]string) {
+	if t.PkgPath == "" {
+		return t.String(), nil
+	} else {
+		s := ""
+		if t.IsPtr {
+			s += "*"
+		}
+		s += t.PkgName + "." + t.Name
+		p := strings.Split(t.PkgPath, "/")
+		var a string
+		if t.PkgName == p[len(p)-1] {
+			a = ""
+		} else {
+			a = t.PkgName + " "
+		}
+		return s, [][2]string{[2]string{a, t.PkgPath}}
+	}
+}
+
+func (t *FixedPointType) Go() (string, [][2]string) {
+	return "float64", nil
+}
+
+func (t *ListType) Go() (string, [][2]string) {
+	s, p := t.E.Go()
+	return fmt.Sprintf("[]%s", s), p
+}
+
+func (t *DictType) Go() (string, [][2]string) {
+	ks, kp := t.K.Go()
+	vs, vp := t.V.Go()
+	return fmt.Sprintf("map[%s]%s", ks, vs), append(kp, vp...)
+}
+
+func (t *VariantType) Go() (string, [][2]string) {
+	var p [][2]string
+	for _, vt := range t.Ts {
+		_, vp := vt.Go()
+		p = append(p, vp...)
+	}
+	return "interface{}", p
 }
