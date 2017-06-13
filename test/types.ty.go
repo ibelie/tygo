@@ -5,7 +5,7 @@ package main
 import "fmt"
 import "github.com/ibelie/tygo"
 
-type Corpus int
+type Corpus uint
 
 const (
 	Corpus_UNIVERSAL Corpus = 0
@@ -39,6 +39,20 @@ func (i Corpus) String() string {
 	}
 }
 
+func (i Corpus) ByteSize() int {
+	return tygo.SizeVarint(uint64(i))
+}
+
+func (i Corpus) Serialize(output *tygo.ProtoBuf) {
+	output.WriteUvarint(uint64(i))
+}
+
+func (i *Corpus) Deserialize(input *tygo.ProtoBuf) (err error) {
+	x, err := input.ReadUvarint()
+	*i = Corpus(x)
+	return
+}
+
 type Vector2 struct {
 	tygo.Tygo
 	X float32 // float32
@@ -49,12 +63,11 @@ type Vector2 struct {
 	P *GoType // *GoType
 }
 
-func (s *Vector2) ByteSize() (size int, err error) {
+func (s *Vector2) ByteSize() (size int) {
 	return
 }
 
-func (s *Vector2) Serialize(output *tygo.ProtoBuf) (err error) {
-	return
+func (s *Vector2) Serialize(output *tygo.ProtoBuf) {
 }
 
 func (s *Vector2) Deserialize(input *tygo.ProtoBuf) (err error) {
@@ -76,12 +89,11 @@ type Fighter_Part1 struct {
 	Pyv2    interface{}        // variant<int32, *GoType>
 }
 
-func (s *Fighter_Part1) ByteSize() (size int, err error) {
+func (s *Fighter_Part1) ByteSize() (size int) {
 	return
 }
 
-func (s *Fighter_Part1) Serialize(output *tygo.ProtoBuf) (err error) {
-	return
+func (s *Fighter_Part1) Serialize(output *tygo.ProtoBuf) {
 }
 
 func (s *Fighter_Part1) Deserialize(input *tygo.ProtoBuf) (err error) {
@@ -100,12 +112,11 @@ type Fighter_Part2 struct {
 	Ll [][]float32       // [][]float32
 }
 
-func (s *Fighter_Part2) ByteSize() (size int, err error) {
+func (s *Fighter_Part2) ByteSize() (size int) {
 	return
 }
 
-func (s *Fighter_Part2) Serialize(output *tygo.ProtoBuf) (err error) {
-	return
+func (s *Fighter_Part2) Serialize(output *tygo.ProtoBuf) {
 }
 
 func (s *Fighter_Part2) Deserialize(input *tygo.ProtoBuf) (err error) {
@@ -132,19 +143,19 @@ type Fighter struct {
 	Fdv interface{}                     // variant<int32, map[int32]float32>
 }
 
-func (s *Fighter) ByteSize() (size int, err error) {
+func (s *Fighter) ByteSize() (size int) {
 	return
 }
 
-func (s *Fighter) Serialize(output *tygo.ProtoBuf) (err error) {
-	return
+func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 }
 
 func (s *Fighter) Deserialize(input *tygo.ProtoBuf) (err error) {
 	return
 }
 
-func (s *Fighter) SerializeRPGParam(a0 *Fighter, a1 interface{}, a2 float64) (data []byte, err error) {
+// RPG Params(a0: *Fighter, a1: variant<nil, int32>, a2: fixedpoint<3, 0>)
+func (s *Fighter) SerializeRPGParam(a0 *Fighter, a1 interface{}, a2 float64) (data []byte) {
 	size := 0
 	if size <= 0 {
 		return
@@ -153,11 +164,13 @@ func (s *Fighter) SerializeRPGParam(a0 *Fighter, a1 interface{}, a2 float64) (da
 	return
 }
 
+// RPG Params(a0: *Fighter, a1: variant<nil, int32>, a2: fixedpoint<3, 0>)
 func (s *Fighter) DeserializeRPGParam(data []byte) (a0 *Fighter, a1 interface{}, a2 float64, err error) {
 	return
 }
 
-func (s *Fighter) SerializeRPGResult(a0 *Vector2) (data []byte, err error) {
+// RPG Results(a0: *Vector2)
+func (s *Fighter) SerializeRPGResult(a0 *Vector2) (data []byte) {
 	size := 0
 	if size <= 0 {
 		return
@@ -166,11 +179,13 @@ func (s *Fighter) SerializeRPGResult(a0 *Vector2) (data []byte, err error) {
 	return
 }
 
+// RPG Results(a0: *Vector2)
 func (s *Fighter) DeserializeRPGResult(data []byte) (a0 *Vector2, err error) {
 	return
 }
 
-func (s *Fighter) SerializeGPRParam(a0 map[int32]interface{}) (data []byte, err error) {
+// GPR Params(a0: map[int32]variant<Corpus, float64, string, *Vector2>)
+func (s *Fighter) SerializeGPRParam(a0 map[int32]interface{}) (data []byte) {
 	size := 0
 	if size <= 0 {
 		return
@@ -179,11 +194,13 @@ func (s *Fighter) SerializeGPRParam(a0 map[int32]interface{}) (data []byte, err 
 	return
 }
 
+// GPR Params(a0: map[int32]variant<Corpus, float64, string, *Vector2>)
 func (s *Fighter) DeserializeGPRParam(data []byte) (a0 map[int32]interface{}, err error) {
 	return
 }
 
-func (s *Fighter) SerializeGPRResult(a0 *Fighter, a1 int32) (data []byte, err error) {
+// GPR Results(a0: *Fighter, a1: int32)
+func (s *Fighter) SerializeGPRResult(a0 *Fighter, a1 int32) (data []byte) {
 	size := 0
 	if size <= 0 {
 		return
@@ -192,6 +209,7 @@ func (s *Fighter) SerializeGPRResult(a0 *Fighter, a1 int32) (data []byte, err er
 	return
 }
 
+// GPR Results(a0: *Fighter, a1: int32)
 func (s *Fighter) DeserializeGPRResult(data []byte) (a0 *Fighter, a1 int32, err error) {
 	return
 }

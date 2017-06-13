@@ -19,6 +19,7 @@ type Tygo struct {
 type Type interface {
 	String() string
 	Go() (string, map[string]string)
+	BsGo(string, string) (string, map[string]string)
 }
 
 type Enum struct {

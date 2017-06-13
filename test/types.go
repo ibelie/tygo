@@ -86,14 +86,17 @@ type GoType struct {
 	AP string
 }
 
-func (g *GoType) ByteSize() (int, error) {
+func (g *GoType) ByteSize() int {
 	var w bytes.Buffer
-	err := gob.NewEncoder(&w).Encode(g)
-	return w.Len(), err
+	if err := gob.NewEncoder(&w).Encode(g); err == nil {
+		return w.Len()
+	} else {
+		return 0
+	}
 }
 
-func (g *GoType) Serialize(w io.Writer) error {
-	return gob.NewEncoder(w).Encode(g)
+func (g *GoType) Serialize(w io.Writer) {
+	gob.NewEncoder(w).Encode(g)
 }
 
 func (g *GoType) Deserialize(r io.Reader) error {

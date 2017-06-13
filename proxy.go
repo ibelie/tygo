@@ -146,7 +146,7 @@ func (t *Enum) Go() (string, map[string]string) {
 		return "%s"`, t.Name, name, name))
 	}
 	return fmt.Sprintf(`
-type %s int
+type %s uint
 
 const (%s
 )
@@ -158,21 +158,40 @@ func (i %s) String() string {
 		return "UNKNOWN"
 	}
 }
-`, t.Name, strings.Join(values, ""), t.Name, strings.Join(names, ""), t.Name), map[string]string{"fmt": ""}
+
+func (i %s) ByteSize() int {
+	return tygo.SizeVarint(uint64(i))
+}
+
+func (i %s) Serialize(output *tygo.ProtoBuf) {
+	output.WriteUvarint(uint64(i))
+}
+
+func (i *%s) Deserialize(input *tygo.ProtoBuf) (err error) {
+	x, err := input.ReadUvarint()
+	*i = %s(x)
+	return
+}
+`, t.Name, strings.Join(values, ""), t.Name, strings.Join(names, ""),
+		t.Name, t.Name, t.Name, t.Name, t.Name), map[string]string{"fmt": "", TYGO_PATH: ""}
 }
 
 func (t *Method) Go() (string, map[string]string) {
 	var s string
 	var pkgs map[string]string
 	var params []string
+	var paramsComment []string
 	for i, param := range t.Params {
 		param_s, param_p := param.Go()
 		pkgs = update(pkgs, param_p)
 		params = append(params, fmt.Sprintf("a%d %s", i, param_s))
+		paramsComment = append(paramsComment, fmt.Sprintf("a%d: %s", i, param))
 	}
+	paramComment := strings.Join(paramsComment, ", ")
 	if params != nil {
 		s += fmt.Sprintf(`
-func Serialize%sParam(%s) (data []byte, err error) {
+// %s Params(%s)
+func Serialize%sParam(%s) (data []byte) {
 	size := 0
 	if size <= 0 {
 		return
@@ -181,21 +200,27 @@ func Serialize%sParam(%s) (data []byte, err error) {
 	return
 }
 
+// %s Params(%s)
 func Deserialize%sParam(data []byte) (%s, err error) {
 	return
 }
-`, t.Name, strings.Join(params, ", "), t.Name, strings.Join(params, ", "))
+`, t.Name, paramComment, t.Name, strings.Join(params, ", "),
+			t.Name, paramComment, t.Name, strings.Join(params, ", "))
 	}
 
 	var results []string
+	var resultsComment []string
 	for i, result := range t.Results {
 		result_s, result_p := result.Go()
 		pkgs = update(pkgs, result_p)
 		results = append(results, fmt.Sprintf("a%d %s", i, result_s))
+		resultsComment = append(resultsComment, fmt.Sprintf("a%d: %s", i, result))
 	}
+	resultComment := strings.Join(resultsComment, ", ")
 	if results != nil {
 		s += fmt.Sprintf(`
-func Serialize%sResult(%s) (data []byte, err error) {
+// %s Results(%s)
+func Serialize%sResult(%s) (data []byte) {
 	size := 0
 	if size <= 0 {
 		return
@@ -204,10 +229,12 @@ func Serialize%sResult(%s) (data []byte, err error) {
 	return
 }
 
+// %s Results(%s)
 func Deserialize%sResult(data []byte) (%s, err error) {
 	return
 }
-`, t.Name, strings.Join(results, ", "), t.Name, strings.Join(results, ", "))
+`, t.Name, resultComment, t.Name, strings.Join(results, ", "),
+			t.Name, resultComment, t.Name, strings.Join(results, ", "))
 	}
 	return s, pkgs
 }
@@ -253,12 +280,11 @@ func (t *Object) Go() (string, map[string]string) {
 type %s struct {%s
 }
 
-func (s *%s) ByteSize() (size int, err error) {
+func (s *%s) ByteSize() (size int) {
 	return
 }
 
-func (s *%s) Serialize(output *tygo.ProtoBuf) (err error) {
-	return
+func (s *%s) Serialize(output *tygo.ProtoBuf) {
 }
 
 func (s *%s) Deserialize(input *tygo.ProtoBuf) (err error) {

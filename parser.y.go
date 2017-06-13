@@ -1,9 +1,10 @@
-//line E:\test\microserver\/go/src/github.com/ibelie/tygo/parser.y:10
+//line parser.y:9
+
 package tygo
 
 import __yyfmt__ "fmt"
 
-//line E:\test\microserver\/go/src/github.com/ibelie/tygo/parser.y:11
+//line parser.y:12
 import (
 	"bytes"
 	"log"
@@ -11,7 +12,7 @@ import (
 	"unicode/utf8"
 )
 
-//line E:\test\microserver\/go/src/github.com/ibelie/tygo/parser.y:22
+//line parser.y:22
 type tygoSymType struct {
 	yys     int
 	ident   string
@@ -68,7 +69,7 @@ const tygoEofCode = 1
 const tygoErrCode = 2
 const tygoInitialStackSize = 16
 
-//line E:\test\microserver\/go/src/github.com/ibelie/tygo/parser.y:211
+//line parser.y:211
 
 var eiota int
 
@@ -662,19 +663,19 @@ tygodefault:
 
 	case 1:
 		tygoDollar = tygoS[tygopt-3 : tygopt+1]
-		//line E:\test\microserver\/go/src/github.com/ibelie/tygo/parser.y:48
+		//line parser.y:48
 		{
 			parserTypes = append(parserTypes, tygoDollar[1].enum)
 		}
 	case 2:
 		tygoDollar = tygoS[tygopt-4 : tygopt+1]
-		//line E:\test\microserver\/go/src/github.com/ibelie/tygo/parser.y:52
+		//line parser.y:52
 		{
 			parserTypes = append(parserTypes, tygoDollar[2].enum)
 		}
 	case 3:
 		tygoDollar = tygoS[tygopt-3 : tygopt+1]
-		//line E:\test\microserver\/go/src/github.com/ibelie/tygo/parser.y:56
+		//line parser.y:56
 		{
 			if tygoDollar[1].object.Parent == nil {
 				tygoDollar[1].object.Parent = &ObjectType{PkgName: "tygo", PkgPath: TYGO_PATH, Name: "Tygo"}
@@ -683,7 +684,7 @@ tygodefault:
 		}
 	case 4:
 		tygoDollar = tygoS[tygopt-4 : tygopt+1]
-		//line E:\test\microserver\/go/src/github.com/ibelie/tygo/parser.y:63
+		//line parser.y:63
 		{
 			if tygoDollar[2].object.Parent == nil {
 				tygoDollar[2].object.Parent = &ObjectType{PkgName: "tygo", PkgPath: TYGO_PATH, Name: "Tygo"}
@@ -692,14 +693,14 @@ tygodefault:
 		}
 	case 5:
 		tygoDollar = tygoS[tygopt-5 : tygopt+1]
-		//line E:\test\microserver\/go/src/github.com/ibelie/tygo/parser.y:72
+		//line parser.y:72
 		{
 			eiota = 0
 			tygoVAL.enum = &Enum{Name: tygoDollar[2].ident, Values: make(map[string]int)}
 		}
 	case 6:
 		tygoDollar = tygoS[tygopt-6 : tygopt+1]
-		//line E:\test\microserver\/go/src/github.com/ibelie/tygo/parser.y:77
+		//line parser.y:77
 		{
 			tygoVAL.enum = tygoDollar[1].enum
 			tygoVAL.enum.Values[tygoDollar[3].ident] = tygoDollar[5].integer
@@ -707,7 +708,7 @@ tygodefault:
 		}
 	case 7:
 		tygoDollar = tygoS[tygopt-6 : tygopt+1]
-		//line E:\test\microserver\/go/src/github.com/ibelie/tygo/parser.y:83
+		//line parser.y:83
 		{
 			tygoVAL.enum = tygoDollar[1].enum
 			tygoVAL.enum.Values[tygoDollar[3].ident] = eiota
@@ -715,7 +716,7 @@ tygodefault:
 		}
 	case 8:
 		tygoDollar = tygoS[tygopt-4 : tygopt+1]
-		//line E:\test\microserver\/go/src/github.com/ibelie/tygo/parser.y:89
+		//line parser.y:89
 		{
 			tygoVAL.enum = tygoDollar[1].enum
 			tygoVAL.enum.Values[tygoDollar[3].ident] = eiota
@@ -723,20 +724,20 @@ tygodefault:
 		}
 	case 9:
 		tygoDollar = tygoS[tygopt-5 : tygopt+1]
-		//line E:\test\microserver\/go/src/github.com/ibelie/tygo/parser.y:97
+		//line parser.y:97
 		{
 			tygoVAL.object = &Object{Name: tygoDollar[2].ident}
 		}
 	case 10:
 		tygoDollar = tygoS[tygopt-5 : tygopt+1]
-		//line E:\test\microserver\/go/src/github.com/ibelie/tygo/parser.y:101
+		//line parser.y:101
 		{
 			tygoVAL.object = tygoDollar[1].object
 			tygoVAL.object.Fields = append(tygoVAL.object.Fields, &Field{Type: tygoDollar[4].spec, Name: tygoDollar[3].ident})
 		}
 	case 11:
 		tygoDollar = tygoS[tygopt-4 : tygopt+1]
-		//line E:\test\microserver\/go/src/github.com/ibelie/tygo/parser.y:106
+		//line parser.y:106
 		{
 			if tygoDollar[1].object.Parent != nil {
 				log.Fatalf("[Tygo][Parser] Multiple inheritance is not allowed!")
@@ -746,84 +747,84 @@ tygodefault:
 		}
 	case 12:
 		tygoDollar = tygoS[tygopt-3 : tygopt+1]
-		//line E:\test\microserver\/go/src/github.com/ibelie/tygo/parser.y:114
+		//line parser.y:114
 		{
 			tygoVAL.object = tygoDollar[1].object
 			tygoVAL.object.Methods = append(tygoVAL.object.Methods, tygoDollar[3].method)
 		}
 	case 14:
 		tygoDollar = tygoS[tygopt-3 : tygopt+1]
-		//line E:\test\microserver\/go/src/github.com/ibelie/tygo/parser.y:122
+		//line parser.y:122
 		{
 			tygoVAL.method = tygoDollar[1].method
 			tygoVAL.method.Results = []Type{tygoDollar[2].spec}
 		}
 	case 15:
 		tygoDollar = tygoS[tygopt-5 : tygopt+1]
-		//line E:\test\microserver\/go/src/github.com/ibelie/tygo/parser.y:127
+		//line parser.y:127
 		{
 			tygoVAL.method = tygoDollar[1].method
 			tygoVAL.method.Results = tygoDollar[3].specs
 		}
 	case 17:
 		tygoDollar = tygoS[tygopt-3 : tygopt+1]
-		//line E:\test\microserver\/go/src/github.com/ibelie/tygo/parser.y:135
+		//line parser.y:135
 		{
 			tygoVAL.method = tygoDollar[1].method
 			tygoVAL.method.Params = []Type{tygoDollar[2].spec}
 		}
 	case 18:
 		tygoDollar = tygoS[tygopt-3 : tygopt+1]
-		//line E:\test\microserver\/go/src/github.com/ibelie/tygo/parser.y:140
+		//line parser.y:140
 		{
 			tygoVAL.method = tygoDollar[1].method
 			tygoVAL.method.Params = tygoDollar[2].specs
 		}
 	case 19:
 		tygoDollar = tygoS[tygopt-2 : tygopt+1]
-		//line E:\test\microserver\/go/src/github.com/ibelie/tygo/parser.y:147
+		//line parser.y:147
 		{
 			tygoVAL.method = &Method{Name: tygoDollar[1].ident}
 		}
 	case 20:
 		tygoDollar = tygoS[tygopt-3 : tygopt+1]
-		//line E:\test\microserver\/go/src/github.com/ibelie/tygo/parser.y:153
+		//line parser.y:153
 		{
 			tygoVAL.specs = []Type{tygoDollar[1].spec, tygoDollar[3].spec}
 		}
 	case 21:
 		tygoDollar = tygoS[tygopt-3 : tygopt+1]
-		//line E:\test\microserver\/go/src/github.com/ibelie/tygo/parser.y:157
+		//line parser.y:157
 		{
 			tygoVAL.specs = append(tygoDollar[1].specs, tygoDollar[3].spec)
 		}
 	case 23:
 		tygoDollar = tygoS[tygopt-3 : tygopt+1]
-		//line E:\test\microserver\/go/src/github.com/ibelie/tygo/parser.y:164
+		//line parser.y:164
 		{
 			tygoVAL.spec = &ListType{E: tygoDollar[3].spec}
 		}
 	case 24:
 		tygoDollar = tygoS[tygopt-5 : tygopt+1]
-		//line E:\test\microserver\/go/src/github.com/ibelie/tygo/parser.y:168
+		//line parser.y:168
 		{
 			tygoVAL.spec = &DictType{K: tygoDollar[3].spec, V: tygoDollar[5].spec}
 		}
 	case 25:
 		tygoDollar = tygoS[tygopt-4 : tygopt+1]
-		//line E:\test\microserver\/go/src/github.com/ibelie/tygo/parser.y:172
+		//line parser.y:172
 		{
 			tygoVAL.spec = &VariantType{Ts: tygoDollar[3].specs}
 		}
 	case 26:
 		tygoDollar = tygoS[tygopt-6 : tygopt+1]
-		//line E:\test\microserver\/go/src/github.com/ibelie/tygo/parser.y:176
+		//line parser.y:176
 		{
 			tygoVAL.spec = &FixedPointType{Precision: tygoDollar[3].integer, Floor: tygoDollar[5].integer}
 		}
 	case 27:
 		tygoDollar = tygoS[tygopt-1 : tygopt+1]
-		//line E:\test\microserver\/go/src/github.com/ibelie/tygo/parser.y:182
+		//line parser.y:182
 		{
 			if pkg, ok := parserTypePkg[tygoDollar[1].ident]; ok {
 				tygoVAL.spec = &ObjectType{PkgName: pkg[0], PkgPath: pkg[1], Name: tygoDollar[1].ident}
@@ -833,13 +834,13 @@ tygodefault:
 		}
 	case 28:
 		tygoDollar = tygoS[tygopt-3 : tygopt+1]
-		//line E:\test\microserver\/go/src/github.com/ibelie/tygo/parser.y:190
+		//line parser.y:190
 		{
 			tygoVAL.spec = &ObjectType{PkgName: tygoDollar[1].ident, PkgPath: parserImports[tygoDollar[1].ident], Name: tygoDollar[3].ident}
 		}
 	case 29:
 		tygoDollar = tygoS[tygopt-2 : tygopt+1]
-		//line E:\test\microserver\/go/src/github.com/ibelie/tygo/parser.y:194
+		//line parser.y:194
 		{
 			if pkg, ok := parserTypePkg[tygoDollar[2].ident]; ok {
 				tygoVAL.spec = &ObjectType{IsPtr: true, PkgName: pkg[0], PkgPath: pkg[1], Name: tygoDollar[2].ident}
@@ -849,7 +850,7 @@ tygodefault:
 		}
 	case 30:
 		tygoDollar = tygoS[tygopt-4 : tygopt+1]
-		//line E:\test\microserver\/go/src/github.com/ibelie/tygo/parser.y:202
+		//line parser.y:202
 		{
 			tygoVAL.spec = &ObjectType{IsPtr: true, PkgName: tygoDollar[2].ident, PkgPath: parserImports[tygoDollar[2].ident], Name: tygoDollar[4].ident}
 		}
