@@ -1,10 +1,9 @@
-//line parser.y:9
-
+//line parser.y:10
 package tygo
 
 import __yyfmt__ "fmt"
 
-//line parser.y:12
+//line parser.y:11
 import (
 	"bytes"
 	"log"
@@ -227,77 +226,77 @@ const tygoPrivate = 57344
 var tygoTokenNames []string
 var tygoStates []string
 
-const tygoLast = 120
+const tygoLast = 111
 
 var tygoAct = [...]int{
 
-	14, 55, 83, 54, 65, 61, 77, 57, 47, 16,
-	17, 11, 4, 31, 32, 51, 19, 35, 29, 30,
-	40, 34, 33, 26, 36, 15, 44, 46, 84, 22,
-	42, 45, 48, 15, 50, 13, 15, 56, 10, 43,
-	23, 27, 24, 53, 39, 52, 62, 58, 59, 12,
-	74, 41, 8, 70, 71, 72, 73, 9, 7, 60,
-	10, 8, 63, 69, 26, 69, 38, 76, 37, 78,
-	22, 75, 69, 79, 68, 80, 67, 82, 66, 67,
-	81, 23, 27, 24, 26, 39, 1, 64, 38, 49,
-	22, 26, 3, 2, 6, 5, 21, 22, 26, 28,
-	25, 23, 27, 24, 22, 39, 20, 0, 23, 27,
-	24, 0, 39, 0, 0, 23, 27, 24, 0, 18,
+	14, 83, 61, 47, 51, 73, 50, 21, 74, 53,
+	17, 41, 16, 26, 27, 11, 4, 30, 21, 28,
+	40, 31, 44, 42, 35, 43, 46, 84, 18, 24,
+	25, 15, 52, 29, 15, 36, 38, 37, 13, 39,
+	12, 10, 49, 8, 59, 15, 65, 57, 60, 66,
+	67, 68, 69, 9, 79, 56, 10, 70, 71, 7,
+	72, 21, 8, 33, 48, 32, 76, 35, 77, 21,
+	78, 54, 55, 34, 45, 35, 81, 21, 36, 38,
+	37, 82, 39, 35, 19, 80, 36, 38, 37, 65,
+	39, 75, 63, 58, 36, 38, 37, 65, 39, 64,
+	63, 33, 62, 3, 2, 6, 5, 1, 23, 22,
+	20,
 }
 var tygoPact = [...]int{
 
-	-6, -6, 45, 44, -14, 36, 22, 8, -16, 8,
-	94, -1, 8, 8, 5, -1000, 16, 5, 60, 8,
-	-1000, -1000, 40, 20, 25, 19, -17, 18, 80, 33,
-	31, 5, 5, -1000, -23, 5, 8, -1000, -18, 82,
-	5, 87, 87, 87, 5, 8, 87, 81, -22, -1000,
-	69, 65, 8, 8, 8, 8, 5, -1000, -1000, 39,
-	56, 72, 5, 58, -19, 62, -1000, 87, -1000, 87,
-	5, 5, 5, 5, 87, -1000, 8, -1000, -24, -1000,
-	-1000, -1000, 5, 13, -1000,
+	-2, -2, 46, 40, -10, 27, 25, 17, -13, 17,
+	3, 10, 17, 17, 2, -1000, 28, 2, 57, 17,
+	-1000, -14, 14, 65, 52, 30, 2, 2, -1000, -20,
+	2, 17, -1000, -16, -1000, 60, 62, 41, 33, 95,
+	2, 87, 2, 17, 73, -1000, 93, 90, 17, 17,
+	17, 17, 2, -1000, 73, 73, 73, -21, -17, 2,
+	82, 85, -1000, 73, -1000, 73, 2, 2, 2, 2,
+	-1000, 59, 39, 78, -1000, 17, -1000, -1000, 73, -1000,
+	-25, 2, -1000, 12, -1000,
 }
 var tygoPgo = [...]int{
 
-	0, 93, 92, 106, 100, 99, 15, 5, 96, 86,
+	0, 104, 103, 110, 109, 108, 3, 2, 73, 107,
 	0,
 }
 var tygoR1 = [...]int{
 
 	0, 9, 9, 9, 9, 1, 1, 1, 1, 2,
 	2, 2, 2, 3, 3, 3, 4, 4, 4, 5,
-	6, 6, 7, 7, 7, 7, 8, 8, 8, 8,
+	6, 6, 7, 7, 7, 7, 7, 8, 8, 8,
 	8, 10, 10,
 }
 var tygoR2 = [...]int{
 
 	0, 3, 4, 3, 4, 5, 6, 6, 4, 5,
 	5, 4, 3, 2, 3, 5, 2, 3, 3, 2,
-	3, 3, 1, 3, 5, 4, 1, 3, 2, 4,
-	6, 1, 2,
+	3, 3, 1, 3, 5, 4, 6, 1, 3, 2,
+	4, 1, 2,
 }
 var tygoChk = [...]int{
 
 	-1000, -9, -1, -2, 18, -1, -2, 13, 16, 13,
-	16, 25, 13, 13, -10, 17, 25, -10, 25, -7,
-	-3, -8, 10, 21, 23, -4, 4, 22, -5, 19,
-	20, -10, -10, 17, 5, -10, -7, 8, 6, 25,
-	-10, 11, 10, 14, -10, -7, 8, 25, 14, 9,
-	-7, -6, 12, 12, 26, 24, -10, 25, -7, -7,
-	-6, -7, -10, -6, 6, 26, 9, 7, 9, 7,
-	-10, -10, -10, -10, 11, 15, 9, 25, 7, -7,
-	-7, -7, -10, 26, 15,
+	16, 25, 13, 13, -10, 17, 25, -10, 25, -8,
+	-3, 4, -4, -5, 19, 20, -10, -10, 17, 5,
+	-10, -7, 8, 6, -8, 10, 21, 23, 22, 25,
+	-10, 25, -10, -7, 8, 9, -7, -6, 12, 12,
+	26, 24, -10, 25, 11, 10, 14, 14, 6, -10,
+	-6, -7, 9, 7, 9, 7, -10, -10, -10, -10,
+	-7, -7, -6, 26, 25, 9, -7, -7, 11, 15,
+	7, -10, -7, 26, 15,
 }
 var tygoDef = [...]int{
 
 	0, -2, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 1, 31, 0, 3, 26, 0,
-	12, 22, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 2, 4, 32, 0, 8, 0, 19, 0, 26,
-	11, 0, 0, 0, 13, 0, 0, 28, 0, 16,
-	0, 0, 0, 0, 0, 0, 10, 27, 23, 0,
-	0, 0, 14, 0, 0, 0, 17, 0, 18, 0,
-	5, 9, 6, 7, 0, 25, 0, 29, 0, 20,
-	21, 24, 15, 0, 30,
+	0, 0, 0, 0, 1, 31, 0, 3, 27, 0,
+	12, 0, 0, 0, 0, 0, 2, 4, 32, 0,
+	8, 0, 19, 0, 22, 0, 0, 0, 0, 27,
+	11, 29, 13, 0, 0, 16, 0, 0, 0, 0,
+	0, 0, 10, 28, 0, 0, 0, 0, 0, 14,
+	0, 0, 17, 0, 18, 0, 5, 9, 6, 7,
+	23, 0, 0, 0, 30, 0, 20, 21, 0, 25,
+	0, 15, 24, 0, 26,
 }
 var tygoTok1 = [...]int{
 
@@ -808,8 +807,14 @@ tygodefault:
 			tygoVAL.spec = &VariantType{Ts: tygoDollar[3].specs}
 		}
 	case 26:
+		tygoDollar = tygoS[tygopt-6 : tygopt+1]
+		//line parser.y:167
+		{
+			tygoVAL.spec = &FixedPointType{Precision: tygoDollar[3].integer, Floor: tygoDollar[5].integer}
+		}
+	case 27:
 		tygoDollar = tygoS[tygopt-1 : tygopt+1]
-		//line parser.y:169
+		//line parser.y:173
 		{
 			if pkg, ok := parserTypePkg[tygoDollar[1].ident]; ok {
 				tygoVAL.spec = &ObjectType{PkgName: pkg[0], PkgPath: pkg[1], Name: tygoDollar[1].ident}
@@ -817,15 +822,15 @@ tygodefault:
 				tygoVAL.spec = SimpleType(tygoDollar[1].ident)
 			}
 		}
-	case 27:
+	case 28:
 		tygoDollar = tygoS[tygopt-3 : tygopt+1]
-		//line parser.y:177
+		//line parser.y:181
 		{
 			tygoVAL.spec = &ObjectType{PkgName: tygoDollar[1].ident, PkgPath: parserImports[tygoDollar[1].ident], Name: tygoDollar[3].ident}
 		}
-	case 28:
+	case 29:
 		tygoDollar = tygoS[tygopt-2 : tygopt+1]
-		//line parser.y:181
+		//line parser.y:185
 		{
 			if pkg, ok := parserTypePkg[tygoDollar[2].ident]; ok {
 				tygoVAL.spec = &ObjectType{IsPtr: true, PkgName: pkg[0], PkgPath: pkg[1], Name: tygoDollar[2].ident}
@@ -833,17 +838,11 @@ tygodefault:
 				tygoVAL.spec = &ObjectType{IsPtr: true, Name: tygoDollar[2].ident}
 			}
 		}
-	case 29:
-		tygoDollar = tygoS[tygopt-4 : tygopt+1]
-		//line parser.y:189
-		{
-			tygoVAL.spec = &ObjectType{IsPtr: true, PkgName: tygoDollar[2].ident, PkgPath: parserImports[tygoDollar[2].ident], Name: tygoDollar[4].ident}
-		}
 	case 30:
-		tygoDollar = tygoS[tygopt-6 : tygopt+1]
+		tygoDollar = tygoS[tygopt-4 : tygopt+1]
 		//line parser.y:193
 		{
-			tygoVAL.spec = &FixedPointType{Precision: tygoDollar[3].integer, Floor: tygoDollar[5].integer}
+			tygoVAL.spec = &ObjectType{IsPtr: true, PkgName: tygoDollar[2].ident, PkgPath: parserImports[tygoDollar[2].ident], Name: tygoDollar[4].ident}
 		}
 	}
 	goto tygostack /* stack new state and value */

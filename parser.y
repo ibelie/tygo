@@ -96,7 +96,7 @@ object:
 		$$ = $1
 		$$.Fields[$3] = $4
 	}
-|	object '\t' spec newline
+|	object '\t' spec1 newline
 	{
 		$$ = $1
 		$$.Parents = append($$.Parents, $3)
@@ -163,6 +163,10 @@ spec:
 	{
 		$$ = &VariantType{Ts: $3}
 	}
+|	FIXEDPOINT '<' INTEGER ',' INTEGER '>'
+	{
+		$$ = &FixedPointType{Precision: $3, Floor: $5}
+	}
 
 spec1:
 	IDENT
@@ -188,10 +192,6 @@ spec1:
 |	'*' IDENT '.' IDENT
 	{
 		$$ = &ObjectType{IsPtr: true, PkgName: $2, PkgPath: parserImports[$2], Name: $4}
-	}
-|	FIXEDPOINT '<' INTEGER ',' INTEGER '>'
-	{
-		$$ = &FixedPointType{Precision: $3, Floor: $5}
 	}
 
 newline:
