@@ -3,6 +3,7 @@
 package main
 
 import "fmt"
+import "github.com/ibelie/tygo"
 import "io"
 
 type Corpus int
@@ -40,6 +41,7 @@ func (i Corpus) String() string {
 }
 
 type Vector2 struct {
+	tygo.Tygo
 	B []byte  // bytes
 	E Corpus  // Corpus
 	P *GoType // *GoType
@@ -61,6 +63,7 @@ func (s *Vector2) Deserialize(r io.Reader) error {
 }
 
 type Fighter_Part1 struct {
+	tygo.Tygo
 	Hp      float32            // float32
 	IsAwake bool               // bool
 	Pos     *Vector2           // *Vector2

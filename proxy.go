@@ -53,7 +53,7 @@ func Inject(path string) {
 			}
 			for _, s := range decl.Specs {
 				spec, ok := s.(*ast.ImportSpec)
-				if !ok || spec.Path.Value != "\"github.com/ibelie/tygo\"" {
+				if !ok || strings.Trim(spec.Path.Value, "\"") != TYGO_PATH {
 					continue
 				}
 				injectfile := SRC_PATH + path + "/" + strings.Replace(filename, ".go", ".ty.go", 1)

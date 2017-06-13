@@ -10,6 +10,12 @@ import (
 	"strings"
 )
 
+const TYGO_PATH = "github.com/ibelie/tygo"
+
+type Tygo struct {
+	cachedSize int
+}
+
 type Type interface {
 	String() string
 	Go() (string, [][2]string)

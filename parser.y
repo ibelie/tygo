@@ -54,10 +54,16 @@ top:
 	}
 |	object '}' newline
 	{
+		if $1.Parents == nil {
+			$1.Parents = append($1.Parents, &ObjectType{PkgName: "tygo", PkgPath: TYGO_PATH, Name: "Tygo"})
+		}
 		parserTypes = append(parserTypes, $1)
 	}
 |	top object '}' newline
 	{
+		if $2.Parents == nil {
+			$2.Parents = append($2.Parents, &ObjectType{PkgName: "tygo", PkgPath: TYGO_PATH, Name: "Tygo"})
+		}
 		parserTypes = append(parserTypes, $2)
 	}
 
