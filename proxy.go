@@ -169,11 +169,11 @@ func (t *Method) Go() (string, [][2]string) {
 	}
 	if params != nil {
 		s += fmt.Sprintf(`
-func Serialize%sParam(%s) (data string, err error) {
+func Serialize%sParam(%s) (data []byte, err error) {
 	return
 }
 
-func Deserialize%sParam(data string) (%s, err error) {
+func Deserialize%sParam(data []byte) (%s, err error) {
 	return
 }
 `, t.Name, strings.Join(params, ", "), t.Name, strings.Join(params, ", "))
@@ -187,11 +187,11 @@ func Deserialize%sParam(data string) (%s, err error) {
 	}
 	if results != nil {
 		s += fmt.Sprintf(`
-func Serialize%sResult(%s) (data string, err error) {
+func Serialize%sResult(%s) (data []byte, err error) {
 	return
 }
 
-func Deserialize%sResult(data string) (%s, err error) {
+func Deserialize%sResult(data []byte) (%s, err error) {
 	return
 }
 `, t.Name, strings.Join(results, ", "), t.Name, strings.Join(results, ", "))
@@ -200,8 +200,8 @@ func Deserialize%sResult(data string) (%s, err error) {
 }
 
 func (t *Object) Go() (string, [][2]string) {
-	pkgs := [][2]string{[2]string{"", "io"}}
 	var fields []string
+	var pkgs [][2]string
 	parent_s, parent_p := t.Parent.Go()
 	pkgs = append(pkgs, parent_p...)
 	fields = append(fields, fmt.Sprintf(`
@@ -256,11 +256,11 @@ func (s *%s) ByteSize() (int, error) {
 	return 0, nil
 }
 
-func (s *%s) Serialize(w io.Writer) error {
+func (s *%s) Serialize(output []byte) error {
 	return nil
 }
 
-func (s *%s) Deserialize(r io.Reader) error {
+func (s *%s) Deserialize(input []byte) error {
 	return nil
 }
 %s`, t.Name, strings.Join(fields, ""), t.Name, t.Name, t.Name, strings.Join(methods, "")), pkgs

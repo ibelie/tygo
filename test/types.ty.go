@@ -4,7 +4,6 @@ package main
 
 import "fmt"
 import "github.com/ibelie/tygo"
-import "io"
 
 type Corpus int
 
@@ -54,11 +53,11 @@ func (s *Vector2) ByteSize() (int, error) {
 	return 0, nil
 }
 
-func (s *Vector2) Serialize(w io.Writer) error {
+func (s *Vector2) Serialize(output []byte) error {
 	return nil
 }
 
-func (s *Vector2) Deserialize(r io.Reader) error {
+func (s *Vector2) Deserialize(input []byte) error {
 	return nil
 }
 
@@ -81,11 +80,11 @@ func (s *Fighter_Part1) ByteSize() (int, error) {
 	return 0, nil
 }
 
-func (s *Fighter_Part1) Serialize(w io.Writer) error {
+func (s *Fighter_Part1) Serialize(output []byte) error {
 	return nil
 }
 
-func (s *Fighter_Part1) Deserialize(r io.Reader) error {
+func (s *Fighter_Part1) Deserialize(input []byte) error {
 	return nil
 }
 
@@ -105,11 +104,11 @@ func (s *Fighter_Part2) ByteSize() (int, error) {
 	return 0, nil
 }
 
-func (s *Fighter_Part2) Serialize(w io.Writer) error {
+func (s *Fighter_Part2) Serialize(output []byte) error {
 	return nil
 }
 
-func (s *Fighter_Part2) Deserialize(r io.Reader) error {
+func (s *Fighter_Part2) Deserialize(input []byte) error {
 	return nil
 }
 
@@ -137,42 +136,42 @@ func (s *Fighter) ByteSize() (int, error) {
 	return 0, nil
 }
 
-func (s *Fighter) Serialize(w io.Writer) error {
+func (s *Fighter) Serialize(output []byte) error {
 	return nil
 }
 
-func (s *Fighter) Deserialize(r io.Reader) error {
+func (s *Fighter) Deserialize(input []byte) error {
 	return nil
 }
 
-func (s *Fighter) SerializeRPGParam(a0 *Fighter, a1 interface{}, a2 float64) (data string, err error) {
+func (s *Fighter) SerializeRPGParam(a0 *Fighter, a1 interface{}, a2 float64) (data []byte, err error) {
 	return
 }
 
-func (s *Fighter) DeserializeRPGParam(data string) (a0 *Fighter, a1 interface{}, a2 float64, err error) {
+func (s *Fighter) DeserializeRPGParam(data []byte) (a0 *Fighter, a1 interface{}, a2 float64, err error) {
 	return
 }
 
-func (s *Fighter) SerializeRPGResult(a0 *Vector2) (data string, err error) {
+func (s *Fighter) SerializeRPGResult(a0 *Vector2) (data []byte, err error) {
 	return
 }
 
-func (s *Fighter) DeserializeRPGResult(data string) (a0 *Vector2, err error) {
+func (s *Fighter) DeserializeRPGResult(data []byte) (a0 *Vector2, err error) {
 	return
 }
 
-func (s *Fighter) SerializeGPRParam(a0 map[int32]interface{}) (data string, err error) {
+func (s *Fighter) SerializeGPRParam(a0 map[int32]interface{}) (data []byte, err error) {
 	return
 }
 
-func (s *Fighter) DeserializeGPRParam(data string) (a0 map[int32]interface{}, err error) {
+func (s *Fighter) DeserializeGPRParam(data []byte) (a0 map[int32]interface{}, err error) {
 	return
 }
 
-func (s *Fighter) SerializeGPRResult(a0 *Fighter, a1 int32) (data string, err error) {
+func (s *Fighter) SerializeGPRResult(a0 *Fighter, a1 int32) (data []byte, err error) {
 	return
 }
 
-func (s *Fighter) DeserializeGPRResult(data string) (a0 *Fighter, a1 int32, err error) {
+func (s *Fighter) DeserializeGPRResult(data []byte) (a0 *Fighter, a1 int32, err error) {
 	return
 }
