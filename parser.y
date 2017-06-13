@@ -104,6 +104,9 @@ object:
 	}
 |	object '\t' spec1 newline
 	{
+		if $1.Parent != nil {
+			log.Fatalf("[Tygo][Parser] Multiple inheritance is not allowed!")
+		}
 		$$ = $1
 		$$.Parent = $3
 	}
