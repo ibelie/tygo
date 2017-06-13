@@ -18,7 +18,7 @@ type Tygo struct {
 
 type Type interface {
 	String() string
-	Go() (string, [][2]string)
+	Go() (string, map[string]string)
 }
 
 type Enum struct {
@@ -196,4 +196,16 @@ func (t *VariantType) String() string {
 		ts = append(ts, t.String())
 	}
 	return fmt.Sprintf("variant<%s>", strings.Join(ts, ", "))
+}
+
+func update(a map[string]string, b map[string]string) map[string]string {
+	if b == nil {
+		return a
+	} else if a == nil {
+		return b
+	}
+	for k, v := range b {
+		a[k] = v
+	}
+	return a
 }

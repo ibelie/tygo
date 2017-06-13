@@ -116,23 +116,26 @@ func inject(filename string, doc string, file *ast.File) {
 	var body bytes.Buffer
 	head.Write([]byte(fmt.Sprintf(goHeader, file.Name)))
 
-	imported := map[string]bool{}
+	var pkgs map[string]string
 	for _, t := range types {
-		code, pkgs := t.Go()
-		for _, pkg := range pkgs {
-			if i, ok := imported[pkg[1]]; !ok || !i {
-				head.Write([]byte(fmt.Sprintf(goImport, pkg[0], pkg[1])))
-				imported[pkg[1]] = true
-			}
-		}
-		body.Write([]byte(code))
+		type_s, type_p := t.Go()
+		pkgs = update(pkgs, type_p)
+		body.Write([]byte(type_s))
+	}
+	var sortedPkg []string
+	for path, _ := range pkgs {
+		sortedPkg = append(sortedPkg, path)
+	}
+	sort.Strings(sortedPkg)
+	for _, path := range sortedPkg {
+		head.Write([]byte(fmt.Sprintf(goImport, pkgs[path], path)))
 	}
 
 	head.Write(body.Bytes())
 	ioutil.WriteFile(filename, head.Bytes(), 0666)
 }
 
-func (t *Enum) Go() (string, [][2]string) {
+func (t *Enum) Go() (string, map[string]string) {
 	var values []string
 	var names []string
 	for _, name := range t.Sorted() {
@@ -155,16 +158,16 @@ func (i %s) String() string {
 		return "UNKNOWN"
 	}
 }
-`, t.Name, strings.Join(values, ""), t.Name, strings.Join(names, ""), t.Name), [][2]string{[2]string{"", "fmt"}}
+`, t.Name, strings.Join(values, ""), t.Name, strings.Join(names, ""), t.Name), map[string]string{"fmt": ""}
 }
 
-func (t *Method) Go() (string, [][2]string) {
+func (t *Method) Go() (string, map[string]string) {
 	var s string
-	var pkgs [][2]string
+	var pkgs map[string]string
 	var params []string
 	for i, param := range t.Params {
 		param_s, param_p := param.Go()
-		pkgs = append(pkgs, param_p...)
+		pkgs = update(pkgs, param_p)
 		params = append(params, fmt.Sprintf("a%d %s", i, param_s))
 	}
 	if params != nil {
@@ -187,7 +190,7 @@ func Deserialize%sParam(data []byte) (%s, err error) {
 	var results []string
 	for i, result := range t.Results {
 		result_s, result_p := result.Go()
-		pkgs = append(pkgs, result_p...)
+		pkgs = update(pkgs, result_p)
 		results = append(results, fmt.Sprintf("a%d %s", i, result_s))
 	}
 	if results != nil {
@@ -209,11 +212,11 @@ func Deserialize%sResult(data []byte) (%s, err error) {
 	return s, pkgs
 }
 
-func (t *Object) Go() (string, [][2]string) {
+func (t *Object) Go() (string, map[string]string) {
 	var fields []string
-	pkgs := [][2]string{[2]string{"", TYGO_PATH}}
+	pkgs := map[string]string{TYGO_PATH: ""}
 	parent_s, parent_p := t.Parent.Go()
-	pkgs = append(pkgs, parent_p...)
+	pkgs = update(pkgs, parent_p)
 	fields = append(fields, fmt.Sprintf(`
 	%s`, parent_s))
 
@@ -222,7 +225,7 @@ func (t *Object) Go() (string, [][2]string) {
 	var preparedFields [][3]string
 	for _, field := range t.Fields {
 		field_s, field_p := field.Go()
-		pkgs = append(pkgs, field_p...)
+		pkgs = update(pkgs, field_p)
 		if nameMax < len(field.Name) {
 			nameMax = len(field.Name)
 		}
@@ -240,22 +243,10 @@ func (t *Object) Go() (string, [][2]string) {
 	var methods []string
 	for _, method := range t.Methods {
 		method_s, method_p := method.Go()
-		pkgs = append(pkgs, method_p...)
+		pkgs = update(pkgs, method_p)
 		method_s = strings.Replace(method_s, "func Serialize", fmt.Sprintf("func (s *%s) Serialize", t.Name), -1)
 		method_s = strings.Replace(method_s, "func Deserialize", fmt.Sprintf("func (s *%s) Deserialize", t.Name), -1)
 		methods = append(methods, method_s)
-	}
-
-	pkgDict := make(map[string]string)
-	var sortedPkg []string
-	for _, pkg := range pkgs {
-		sortedPkg = append(sortedPkg, pkg[1])
-		pkgDict[pkg[1]] = pkg[0]
-	}
-	sort.Strings(sortedPkg)
-	pkgs = nil
-	for _, pkg := range sortedPkg {
-		pkgs = append(pkgs, [2]string{pkgDict[pkg], pkg})
 	}
 
 	return fmt.Sprintf(`
@@ -276,14 +267,14 @@ func (s *%s) Deserialize(input *tygo.ProtoBuf) (err error) {
 %s`, t.Name, strings.Join(fields, ""), t.Name, t.Name, t.Name, strings.Join(methods, "")), pkgs
 }
 
-func (t SimpleType) Go() (string, [][2]string) {
+func (t SimpleType) Go() (string, map[string]string) {
 	if string(t) == "bytes" {
 		return "[]byte", nil
 	}
 	return string(t), nil
 }
 
-func (t *ObjectType) Go() (string, [][2]string) {
+func (t *ObjectType) Go() (string, map[string]string) {
 	if t.PkgPath == "" {
 		return t.String(), nil
 	} else {
@@ -297,30 +288,30 @@ func (t *ObjectType) Go() (string, [][2]string) {
 		} else {
 			a = t.PkgName + " "
 		}
-		return s + t.PkgName + "." + t.Name, [][2]string{[2]string{a, t.PkgPath}}
+		return s + t.PkgName + "." + t.Name, map[string]string{t.PkgPath: a}
 	}
 }
 
-func (t *FixedPointType) Go() (string, [][2]string) {
+func (t *FixedPointType) Go() (string, map[string]string) {
 	return "float64", nil
 }
 
-func (t *ListType) Go() (string, [][2]string) {
+func (t *ListType) Go() (string, map[string]string) {
 	s, p := t.E.Go()
 	return fmt.Sprintf("[]%s", s), p
 }
 
-func (t *DictType) Go() (string, [][2]string) {
+func (t *DictType) Go() (string, map[string]string) {
 	ks, kp := t.K.Go()
 	vs, vp := t.V.Go()
-	return fmt.Sprintf("map[%s]%s", ks, vs), append(kp, vp...)
+	return fmt.Sprintf("map[%s]%s", ks, vs), update(kp, vp)
 }
 
-func (t *VariantType) Go() (string, [][2]string) {
-	var p [][2]string
+func (t *VariantType) Go() (string, map[string]string) {
+	var p map[string]string
 	for _, vt := range t.Ts {
 		_, vp := vt.Go()
-		p = append(p, vp...)
+		p = update(p, vp)
 	}
 	return "interface{}", p
 }
