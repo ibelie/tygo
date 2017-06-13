@@ -676,8 +676,8 @@ tygodefault:
 		tygoDollar = tygoS[tygopt-3 : tygopt+1]
 		//line parser.y:56
 		{
-			if tygoDollar[1].object.Parents == nil {
-				tygoDollar[1].object.Parents = append(tygoDollar[1].object.Parents, &ObjectType{PkgName: "tygo", PkgPath: TYGO_PATH, Name: "Tygo"})
+			if tygoDollar[1].object.Parent == nil {
+				tygoDollar[1].object.Parent = &ObjectType{PkgName: "tygo", PkgPath: TYGO_PATH, Name: "Tygo"}
 			}
 			parserTypes = append(parserTypes, tygoDollar[1].object)
 		}
@@ -685,8 +685,8 @@ tygodefault:
 		tygoDollar = tygoS[tygopt-4 : tygopt+1]
 		//line parser.y:63
 		{
-			if tygoDollar[2].object.Parents == nil {
-				tygoDollar[2].object.Parents = append(tygoDollar[2].object.Parents, &ObjectType{PkgName: "tygo", PkgPath: TYGO_PATH, Name: "Tygo"})
+			if tygoDollar[2].object.Parent == nil {
+				tygoDollar[2].object.Parent = &ObjectType{PkgName: "tygo", PkgPath: TYGO_PATH, Name: "Tygo"}
 			}
 			parserTypes = append(parserTypes, tygoDollar[2].object)
 		}
@@ -725,21 +725,21 @@ tygodefault:
 		tygoDollar = tygoS[tygopt-5 : tygopt+1]
 		//line parser.y:97
 		{
-			tygoVAL.object = &Object{Name: tygoDollar[2].ident, Fields: make(map[string]Type)}
+			tygoVAL.object = &Object{Name: tygoDollar[2].ident}
 		}
 	case 10:
 		tygoDollar = tygoS[tygopt-5 : tygopt+1]
 		//line parser.y:101
 		{
 			tygoVAL.object = tygoDollar[1].object
-			tygoVAL.object.Fields[tygoDollar[3].ident] = tygoDollar[4].spec
+			tygoVAL.object.Fields = append(tygoVAL.object.Fields, &Field{Type: tygoDollar[4].spec, Name: tygoDollar[3].ident})
 		}
 	case 11:
 		tygoDollar = tygoS[tygopt-4 : tygopt+1]
 		//line parser.y:106
 		{
 			tygoVAL.object = tygoDollar[1].object
-			tygoVAL.object.Parents = append(tygoVAL.object.Parents, tygoDollar[3].spec)
+			tygoVAL.object.Parent = tygoDollar[3].spec
 		}
 	case 12:
 		tygoDollar = tygoS[tygopt-3 : tygopt+1]

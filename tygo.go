@@ -28,6 +28,11 @@ type Enum struct {
 	Values  map[string]int
 }
 
+type Field struct {
+	Type
+	Name string
+}
+
 type Method struct {
 	Name    string
 	Params  []Type
@@ -36,8 +41,8 @@ type Method struct {
 
 type Object struct {
 	Name    string
-	Fields  map[string]Type
-	Parents []Type
+	Parent  Type
+	Fields  []*Field
 	Methods []*Method
 }
 
@@ -110,31 +115,45 @@ func (t *Enum) String() string {
 	return fmt.Sprintf("%s[%s]", t.Name, strings.Join(values, ", "))
 }
 
+func (t *Method) String() string {
+	var params []string
+	for _, param := range t.Params {
+		params = append(params, param.String())
+	}
+	s := fmt.Sprintf("%s(%s)", t.Name, strings.Join(params, ", "))
+
+	var results []string
+	for _, result := range t.Results {
+		results = append(results, result.String())
+	}
+	if len(results) == 1 {
+		s = fmt.Sprintf("%s %s", s, results[0])
+	} else if len(results) > 1 {
+		s = fmt.Sprintf("%s (%s)", s, strings.Join(results, ", "))
+	}
+
+	return s
+}
+
 func (t *Object) String() string {
 	var fields []string
 
-	var sortedParent []string
-	for _, parent := range t.Parents {
-		sortedParent = append(sortedParent, parent.String())
-	}
-	sort.Strings(sortedParent)
-	for _, parent := range sortedParent {
-		fields = append(fields, fmt.Sprintf(`
-	%s`, parent))
-	}
+	fields = append(fields, fmt.Sprintf(`
+	%s`, t.Parent))
 
 	nameMax := 0
-	var sortedField []string
-	for name, _ := range t.Fields {
-		if nameMax < len(name) {
-			nameMax = len(name)
+	for _, field := range t.Fields {
+		if nameMax < len(field.Name) {
+			nameMax = len(field.Name)
 		}
-		sortedField = append(sortedField, name)
 	}
-	sort.Strings(sortedField)
-	for _, name := range sortedField {
+	for _, field := range t.Fields {
 		fields = append(fields, fmt.Sprintf(`
-	%s %s%s`, name, strings.Repeat(" ", nameMax-len(name)), t.Fields[name].String()))
+	%s %s%s`, field.Name, strings.Repeat(" ", nameMax-len(field.Name)), field))
+	}
+	for _, method := range t.Methods {
+		fields = append(fields, fmt.Sprintf(`
+	%s`, method))
 	}
 
 	return fmt.Sprintf(`

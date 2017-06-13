@@ -54,15 +54,15 @@ top:
 	}
 |	object '}' newline
 	{
-		if $1.Parents == nil {
-			$1.Parents = append($1.Parents, &ObjectType{PkgName: "tygo", PkgPath: TYGO_PATH, Name: "Tygo"})
+		if $1.Parent == nil {
+			$1.Parent = &ObjectType{PkgName: "tygo", PkgPath: TYGO_PATH, Name: "Tygo"}
 		}
 		parserTypes = append(parserTypes, $1)
 	}
 |	top object '}' newline
 	{
-		if $2.Parents == nil {
-			$2.Parents = append($2.Parents, &ObjectType{PkgName: "tygo", PkgPath: TYGO_PATH, Name: "Tygo"})
+		if $2.Parent == nil {
+			$2.Parent = &ObjectType{PkgName: "tygo", PkgPath: TYGO_PATH, Name: "Tygo"}
 		}
 		parserTypes = append(parserTypes, $2)
 	}
@@ -95,17 +95,17 @@ enum:
 object:
 	TYPE IDENT OBJECT '{' newline
 	{
-		$$ = &Object{Name: $2, Fields: make(map[string]Type)}
+		$$ = &Object{Name: $2}
 	}
 |	object '\t' IDENT spec newline
 	{
 		$$ = $1
-		$$.Fields[$3] = $4
+		$$.Fields = append($$.Fields, &Field{Type: $4, Name: $3})
 	}
 |	object '\t' spec1 newline
 	{
 		$$ = $1
-		$$.Parents = append($$.Parents, $3)
+		$$.Parent = $3
 	}
 |	object '\t' method
 	{

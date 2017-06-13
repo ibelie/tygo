@@ -158,82 +158,82 @@ func (i %s) String() string {
 `, t.Name, strings.Join(values, ""), t.Name, strings.Join(names, ""), t.Name), [][2]string{[2]string{"", "fmt"}}
 }
 
+func (t *Method) Go() (string, [][2]string) {
+	var s string
+	var pkgs [][2]string
+	var params []string
+	for i, param := range t.Params {
+		param_s, param_p := param.Go()
+		pkgs = append(pkgs, param_p...)
+		params = append(params, fmt.Sprintf("a%d %s", i, param_s))
+	}
+	if params != nil {
+		s += fmt.Sprintf(`
+func Serialize%sParam(%s) (data string, err error) {
+	return
+}
+
+func Deserialize%sParam(data string) (%s, err error) {
+	return
+}
+`, t.Name, strings.Join(params, ", "), t.Name, strings.Join(params, ", "))
+	}
+
+	var results []string
+	for i, result := range t.Results {
+		result_s, result_p := result.Go()
+		pkgs = append(pkgs, result_p...)
+		results = append(results, fmt.Sprintf("a%d %s", i, result_s))
+	}
+	if results != nil {
+		s += fmt.Sprintf(`
+func Serialize%sResult(%s) (data string, err error) {
+	return
+}
+
+func Deserialize%sResult(data string) (%s, err error) {
+	return
+}
+`, t.Name, strings.Join(results, ", "), t.Name, strings.Join(results, ", "))
+	}
+	return s, pkgs
+}
+
 func (t *Object) Go() (string, [][2]string) {
 	pkgs := [][2]string{[2]string{"", "io"}}
 	var fields []string
-	var sortedParent []string
-	for _, parent := range t.Parents {
-		s, p := parent.Go()
-		sortedParent = append(sortedParent, s)
-		pkgs = append(pkgs, p...)
-	}
-	sort.Strings(sortedParent)
-	for _, parent := range sortedParent {
-		fields = append(fields, fmt.Sprintf(`
-	%s`, parent))
-	}
+	parent_s, parent_p := t.Parent.Go()
+	pkgs = append(pkgs, parent_p...)
+	fields = append(fields, fmt.Sprintf(`
+	%s`, parent_s))
 
 	nameMax := 0
 	typeMax := 0
-	var sortedField []string
-	fieldMap := make(map[string][2]string)
-	for name, field := range t.Fields {
-		s, p := field.Go()
-		pkgs = append(pkgs, p...)
-		if nameMax < len(name) {
-			nameMax = len(name)
+	var preparedFields [][3]string
+	for _, field := range t.Fields {
+		field_s, field_p := field.Go()
+		pkgs = append(pkgs, field_p...)
+		if nameMax < len(field.Name) {
+			nameMax = len(field.Name)
 		}
-		if typeMax < len(s) {
-			typeMax = len(s)
+		if typeMax < len(field_s) {
+			typeMax = len(field_s)
 		}
-		fieldMap[name] = [2]string{s, field.String()}
-		sortedField = append(sortedField, name)
+		preparedFields = append(preparedFields, [3]string{field.Name, field_s, field.String()})
 	}
-	sort.Strings(sortedField)
-	for _, name := range sortedField {
-		f := fieldMap[name]
+	for _, field := range preparedFields {
 		fields = append(fields, fmt.Sprintf(`
-	%s %s%s %s// %s`, name, strings.Repeat(" ", nameMax-len(name)),
-			f[0], strings.Repeat(" ", typeMax-len(f[0])), f[1]))
+	%s %s%s %s// %s`, field[0], strings.Repeat(" ", nameMax-len(field[0])),
+			field[1], strings.Repeat(" ", typeMax-len(field[1])), field[2]))
 	}
 
 	var methods []string
 	for _, method := range t.Methods {
-		var params []string
-		for i, param := range method.Params {
-			s, p := param.Go()
-			pkgs = append(pkgs, p...)
-			params = append(params, fmt.Sprintf("a%d %s", i, s))
-		}
-		if params != nil {
-			methods = append(methods, fmt.Sprintf(`
-func (s *%s) Serialize%sParam(%s) (data string, err error) {
-	return
-}
-
-func (s *%s) Deserialize%sParam(data string) (%s, err error) {
-	return
-}
-`, t.Name, method.Name, strings.Join(params, ", "), t.Name, method.Name, strings.Join(params, ", ")))
-		}
-
-		var results []string
-		for i, result := range method.Results {
-			s, p := result.Go()
-			pkgs = append(pkgs, p...)
-			results = append(results, fmt.Sprintf("a%d %s", i, s))
-		}
-		if results != nil {
-			methods = append(methods, fmt.Sprintf(`
-func (s *%s) Serialize%sResult(%s) (data string, err error) {
-	return
-}
-
-func (s *%s) Deserialize%sResult(data string) (%s, err error) {
-	return
-}
-`, t.Name, method.Name, strings.Join(results, ", "), t.Name, method.Name, strings.Join(results, ", ")))
-		}
+		method_s, method_p := method.Go()
+		pkgs = append(pkgs, method_p...)
+		method_s = strings.Replace(method_s, "func Serialize", fmt.Sprintf("func (s *%s) Serialize", t.Name), -1)
+		method_s = strings.Replace(method_s, "func Deserialize", fmt.Sprintf("func (s *%s) Deserialize", t.Name), -1)
+		methods = append(methods, method_s)
 	}
 
 	pkgDict := make(map[string]string)
