@@ -170,6 +170,11 @@ func (t *Method) Go() (string, [][2]string) {
 	if params != nil {
 		s += fmt.Sprintf(`
 func Serialize%sParam(%s) (data []byte, err error) {
+	size := 0
+	if size <= 0 {
+		return
+	}
+	data = make([]byte, size)
 	return
 }
 
@@ -188,6 +193,11 @@ func Deserialize%sParam(data []byte) (%s, err error) {
 	if results != nil {
 		s += fmt.Sprintf(`
 func Serialize%sResult(%s) (data []byte, err error) {
+	size := 0
+	if size <= 0 {
+		return
+	}
+	data = make([]byte, size)
 	return
 }
 
@@ -201,7 +211,7 @@ func Deserialize%sResult(data []byte) (%s, err error) {
 
 func (t *Object) Go() (string, [][2]string) {
 	var fields []string
-	var pkgs [][2]string
+	pkgs := [][2]string{[2]string{"", TYGO_PATH}}
 	parent_s, parent_p := t.Parent.Go()
 	pkgs = append(pkgs, parent_p...)
 	fields = append(fields, fmt.Sprintf(`
@@ -252,16 +262,16 @@ func (t *Object) Go() (string, [][2]string) {
 type %s struct {%s
 }
 
-func (s *%s) ByteSize() (int, error) {
-	return 0, nil
+func (s *%s) ByteSize() (size int, err error) {
+	return
 }
 
-func (s *%s) Serialize(output []byte) error {
-	return nil
+func (s *%s) Serialize(output *tygo.ProtoBuf) (err error) {
+	return
 }
 
-func (s *%s) Deserialize(input []byte) error {
-	return nil
+func (s *%s) Deserialize(input *tygo.ProtoBuf) (err error) {
+	return
 }
 %s`, t.Name, strings.Join(fields, ""), t.Name, t.Name, t.Name, strings.Join(methods, "")), pkgs
 }

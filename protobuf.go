@@ -40,6 +40,11 @@ func TAG_WIRE(tag uint32) uint32 {
 	return tag & WireTypeMask
 }
 
+type ProtoBuf struct {
+	offset int
+	Buffer []byte
+}
+
 func ReadTag(reader io.Reader, cutoff uint32) (uint32, error) {
 	return 0, nil
 }

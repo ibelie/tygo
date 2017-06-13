@@ -49,16 +49,16 @@ type Vector2 struct {
 	P *GoType // *GoType
 }
 
-func (s *Vector2) ByteSize() (int, error) {
-	return 0, nil
+func (s *Vector2) ByteSize() (size int, err error) {
+	return
 }
 
-func (s *Vector2) Serialize(output []byte) error {
-	return nil
+func (s *Vector2) Serialize(output *tygo.ProtoBuf) (err error) {
+	return
 }
 
-func (s *Vector2) Deserialize(input []byte) error {
-	return nil
+func (s *Vector2) Deserialize(input *tygo.ProtoBuf) (err error) {
+	return
 }
 
 type Fighter_Part1 struct {
@@ -76,16 +76,16 @@ type Fighter_Part1 struct {
 	Pyv2    interface{}        // variant<int32, *GoType>
 }
 
-func (s *Fighter_Part1) ByteSize() (int, error) {
-	return 0, nil
+func (s *Fighter_Part1) ByteSize() (size int, err error) {
+	return
 }
 
-func (s *Fighter_Part1) Serialize(output []byte) error {
-	return nil
+func (s *Fighter_Part1) Serialize(output *tygo.ProtoBuf) (err error) {
+	return
 }
 
-func (s *Fighter_Part1) Deserialize(input []byte) error {
-	return nil
+func (s *Fighter_Part1) Deserialize(input *tygo.ProtoBuf) (err error) {
+	return
 }
 
 type Fighter_Part2 struct {
@@ -100,16 +100,16 @@ type Fighter_Part2 struct {
 	Ll [][]float32       // [][]float32
 }
 
-func (s *Fighter_Part2) ByteSize() (int, error) {
-	return 0, nil
+func (s *Fighter_Part2) ByteSize() (size int, err error) {
+	return
 }
 
-func (s *Fighter_Part2) Serialize(output []byte) error {
-	return nil
+func (s *Fighter_Part2) Serialize(output *tygo.ProtoBuf) (err error) {
+	return
 }
 
-func (s *Fighter_Part2) Deserialize(input []byte) error {
-	return nil
+func (s *Fighter_Part2) Deserialize(input *tygo.ProtoBuf) (err error) {
+	return
 }
 
 type Fighter struct {
@@ -132,19 +132,24 @@ type Fighter struct {
 	Fdv interface{}                     // variant<int32, map[int32]float32>
 }
 
-func (s *Fighter) ByteSize() (int, error) {
-	return 0, nil
+func (s *Fighter) ByteSize() (size int, err error) {
+	return
 }
 
-func (s *Fighter) Serialize(output []byte) error {
-	return nil
+func (s *Fighter) Serialize(output *tygo.ProtoBuf) (err error) {
+	return
 }
 
-func (s *Fighter) Deserialize(input []byte) error {
-	return nil
+func (s *Fighter) Deserialize(input *tygo.ProtoBuf) (err error) {
+	return
 }
 
 func (s *Fighter) SerializeRPGParam(a0 *Fighter, a1 interface{}, a2 float64) (data []byte, err error) {
+	size := 0
+	if size <= 0 {
+		return
+	}
+	data = make([]byte, size)
 	return
 }
 
@@ -153,6 +158,11 @@ func (s *Fighter) DeserializeRPGParam(data []byte) (a0 *Fighter, a1 interface{},
 }
 
 func (s *Fighter) SerializeRPGResult(a0 *Vector2) (data []byte, err error) {
+	size := 0
+	if size <= 0 {
+		return
+	}
+	data = make([]byte, size)
 	return
 }
 
@@ -161,6 +171,11 @@ func (s *Fighter) DeserializeRPGResult(data []byte) (a0 *Vector2, err error) {
 }
 
 func (s *Fighter) SerializeGPRParam(a0 map[int32]interface{}) (data []byte, err error) {
+	size := 0
+	if size <= 0 {
+		return
+	}
+	data = make([]byte, size)
 	return
 }
 
@@ -169,6 +184,11 @@ func (s *Fighter) DeserializeGPRParam(data []byte) (a0 map[int32]interface{}, er
 }
 
 func (s *Fighter) SerializeGPRResult(a0 *Fighter, a1 int32) (data []byte, err error) {
+	size := 0
+	if size <= 0 {
+		return
+	}
+	data = make([]byte, size)
 	return
 }
 
