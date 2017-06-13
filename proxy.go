@@ -151,11 +151,11 @@ const (%s
 func (i %s) String() string {
 	switch i {%s
 	default:
-		log.Fatalf("[Tygo][%s] Unexpect enum value: %%d", i)
+		panic(fmt.Sprintf("[Tygo][%s] Unexpect enum value: %%d", i))
 		return "UNKNOWN"
 	}
 }
-`, t.Name, strings.Join(values, ""), t.Name, strings.Join(names, ""), t.Name), [][2]string{[2]string{"", "log"}}
+`, t.Name, strings.Join(values, ""), t.Name, strings.Join(names, ""), t.Name), [][2]string{[2]string{"", "fmt"}}
 }
 
 func (t *Object) Go() (string, [][2]string) {

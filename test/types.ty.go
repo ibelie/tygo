@@ -2,7 +2,7 @@
 
 package main
 
-import "log"
+import "fmt"
 import "io"
 
 type Corpus int
@@ -34,7 +34,7 @@ func (i Corpus) String() string {
 	case Corpus_VIDEO:
 		return "VIDEO"
 	default:
-		log.Fatalf("[Tygo][Corpus] Unexpect enum value: %d", i)
+		panic(fmt.Sprintf("[Tygo][Corpus] Unexpect enum value: %d", i))
 		return "UNKNOWN"
 	}
 }
