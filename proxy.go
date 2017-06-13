@@ -7,6 +7,7 @@ package tygo
 import (
 	"bytes"
 	"fmt"
+	"log"
 	"os"
 	"sort"
 	"strings"
@@ -34,7 +35,7 @@ var SRC_PATH = os.Getenv("GOPATH") + "/src/"
 func Inject(path string) {
 	buildPackage, err := build.Import(path, "", build.ImportComment)
 	if err != nil {
-		panic(fmt.Sprintf("[Tygo][Inject] Cannot import package:\n>>>>%v", err))
+		log.Fatalf("[Tygo][Inject] Cannot import package:\n>>>>%v", err)
 		return
 	}
 	fs := token.NewFileSet()
@@ -44,7 +45,7 @@ func Inject(path string) {
 		}
 		file, err := parser.ParseFile(fs, buildPackage.Dir+"/"+filename, nil, parser.ParseComments)
 		if err != nil {
-			panic(fmt.Sprintf("[Tygo][Inject] Cannot parse file:\n>>>>%v", err))
+			log.Fatalf("[Tygo][Inject] Cannot parse file:\n>>>>%v", err)
 		}
 		for _, d := range file.Decls {
 			decl, ok := d.(*ast.GenDecl)
@@ -96,7 +97,7 @@ func inject(filename string, doc string, file *ast.File) {
 		pkg := strings.Trim(importSpec.Path.Value, "\"")
 		if importSpec.Name == nil {
 			if p, err := build.Import(pkg, "", build.AllowBinary); err != nil {
-				panic(fmt.Sprintf("[Tygo][Inject] Cannot import package:\n>>>>%v", err))
+				log.Fatalf("[Tygo][Inject] Cannot import package:\n>>>>%v", err)
 			} else {
 				imports[p.Name] = p.ImportPath
 			}

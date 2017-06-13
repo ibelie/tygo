@@ -7,6 +7,7 @@ package tygo
 import (
 	"fmt"
 	"io"
+	"log"
 )
 
 const (
@@ -62,6 +63,24 @@ type ProtoBuf struct {
 	Buffer []byte
 }
 
+func (p *ProtoBuf) Write(b []byte) (n int, err error) {
+	n = copy(p.Buffer[p.offset:], b)
+	p.offset += n
+	if len(b) > n {
+		err = fmt.Errorf("[Tygo][ProtoBuf] Write out of range: %d", len(b)-n)
+	}
+	return
+}
+
+func (p *ProtoBuf) Read(b []byte) (n int, err error) {
+	n = copy(b, p.Buffer[p.offset:])
+	p.offset += n
+	if n == 0 && len(b) != 0 {
+		err = io.EOF
+	}
+	return
+}
+
 func (p *ProtoBuf) WriteUvarint(x uint64) {
 	for x >= 0x80 {
 		p.Buffer[p.offset] = byte(x) | 0x80
@@ -77,7 +96,7 @@ func (p *ProtoBuf) ReadUvarint() (uint64, error) {
 	for i, b := range p.Buffer[p.offset:] {
 		if b < 0x80 {
 			if i > 9 || i == 9 && b > 1 {
-				return 0, fmt.Errorf("[Tygo][ProtoBuf] ReadUvarint: %v", p.Buffer[:i+1])
+				return 0, fmt.Errorf("[Tygo][ProtoBuf] ReadUvarint overflow: %v", p.Buffer[:i+1])
 			}
 			p.offset += i + 1
 			return x | uint64(b)<<s, nil
@@ -88,11 +107,11 @@ func (p *ProtoBuf) ReadUvarint() (uint64, error) {
 	return 0, io.EOF
 }
 
-func ReadTag(reader io.Reader, cutoff uint32) (uint32, error) {
+func (p *ProtoBuf) ReadTag(cutoff uint32) (uint32, error) {
 	return 0, nil
 }
 
-func SkipField(reader io.Reader, fieldNum uint32) error {
+func (p *ProtoBuf) SkipField(fieldNum uint32) error {
 	return nil
 }
 
@@ -109,6 +128,19 @@ func (t *Object) BsGo(name string, tagsize string) (string, map[string]string) {
 }
 
 func (t SimpleType) BsGo(name string, tagsize string) (string, map[string]string) {
+	switch string(t) {
+	case "bool":
+	case "bytes":
+	case "string":
+	case "int32":
+	case "int64":
+	case "uint32":
+	case "uint64":
+	case "float32":
+	case "float64":
+	default:
+		log.Fatalf("[Tygo][SimpleType] Unexpect type: %s", t)
+	}
 	return "", nil
 }
 

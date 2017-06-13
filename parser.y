@@ -340,7 +340,7 @@ func (x *tygoLex) next() rune {
 	c, size := utf8.DecodeRune(x.code)
 	x.code = x.code[size:]
 	if c == utf8.RuneError && size == 1 {
-		log.Print("[Tygo][Parser] Invalid utf8")
+		log.Fatalf("[Tygo][Parser] Invalid utf8")
 		return x.next()
 	}
 	return c
@@ -348,5 +348,5 @@ func (x *tygoLex) next() rune {
 
 // The parser calls this method on a parse error.
 func (x *tygoLex) Error(s string) {
-	log.Printf("[Tygo][Parser] Parse error: %s", s)
+	log.Fatalf("[Tygo][Parser] Parse error: %s", s)
 }
