@@ -96,7 +96,7 @@ func (p *ProtoBuf) ReadVarint() (uint64, error) {
 	for i, b := range p.Buffer[p.offset:] {
 		if b < 0x80 {
 			if i > 9 || i == 9 && b > 1 {
-				return 0, fmt.Errorf("[Tygo][ProtoBuf] ReadUvarint overflow: %v", p.Buffer[:i+1])
+				return 0, fmt.Errorf("[Tygo][ProtoBuf] ReadVarint overflow: %v", p.Buffer[:i+1])
 			}
 			p.offset += i + 1
 			return x | uint64(b)<<s, nil
@@ -131,38 +131,44 @@ func (t *Object) ByteSizeGo(name string, tagsize string) (string, map[string]str
 
 func (t SimpleType) ByteSizeGo(name string, tagsize string) (string, map[string]string) {
 	switch string(t) {
-	case "bool":
+	case "int32":
+		fallthrough
+	case "int64":
+		fallthrough
+	case "uint32":
+		fallthrough
+	case "uint64":
 		return fmt.Sprintf(`
-	if %s {
-		size += %s + 1
-	}`, name, tagsize), nil
+	if %s != 0 {
+		size += %s + tygo.SizeVarint(uint64(%s))
+	}`, name, tagsize, name), map[string]string{TYGO_PATH: ""}
 	case "bytes":
-		return fmt.Sprintf(`
-	if len(%s) > 0 {
-		l := len(%s)
-		size += %s + tygo.SizeVarint(l) + l
-	}`, name, name, tagsize), map[string]string{TYGO_PATH: ""}
+		fallthrough
 	case "string":
 		return fmt.Sprintf(`
 	if len(%s) > 0 {
 		l := len([]byte(%s))
 		size += %s + tygo.SizeVarint(l) + l
 	}`, name, name, tagsize), map[string]string{TYGO_PATH: ""}
-	case "int32":
+	case "bool":
 		return fmt.Sprintf(`
-	if %s != 0 {
-		l := len([]byte(%s))
-		size += %s + tygo.SizeVarint(l) + l
-	}`, name, name, tagsize), map[string]string{TYGO_PATH: ""}
-	case "int64":
-	case "uint32":
-	case "uint64":
+	if %s {
+		size += %s + 1
+	}`, name, tagsize), nil
 	case "float32":
+		return fmt.Sprintf(`
+	if %s {
+		size += %s + 4
+	}`, name, tagsize), nil
 	case "float64":
+		return fmt.Sprintf(`
+	if %s {
+		size += %s + 8
+	}`, name, tagsize), nil
 	default:
 		log.Fatalf("[Tygo][SimpleType] Unexpect type: %s", t)
+		return "", nil
 	}
-	return "", nil
 }
 
 func (t *ObjectType) ByteSizeGo(name string, tagsize string) (string, map[string]string) {
