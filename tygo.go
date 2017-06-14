@@ -44,7 +44,7 @@ type Method struct {
 
 type Object struct {
 	Name    string
-	Parent  Type
+	Parent  *InstanceType
 	Fields  []*Field
 	Methods []*Method
 }
@@ -219,6 +219,21 @@ func (t *Method) String() string {
 	}
 
 	return s
+}
+
+func (t *Object) HasParent() bool {
+	return t.Parent.Name != "Tygo" || t.Parent.PkgName != "tygo" || t.Parent.PkgPath != TYGO_PATH
+}
+
+func (t *Object) MaxFieldNum() (string, int) {
+	if !t.HasParent() {
+		return "", len(t.Fields)
+	} else if t.Parent.PkgPath == "" {
+		name, num := t.Parent.Object.MaxFieldNum()
+		return name, num + len(t.Fields)
+	} else {
+		return t.Parent.Name, len(t.Fields)
+	}
 }
 
 func (t *Object) String() string {

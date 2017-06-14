@@ -112,7 +112,7 @@ object:
 			log.Fatalf("[Tygo][Parser] Multiple inheritance is not allowed!")
 		}
 		$$ = $1
-		$$.Parent = $3
+		$$.Parent = $3.(*InstanceType)
 	}
 |	object '\t' method
 	{

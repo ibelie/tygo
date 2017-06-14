@@ -39,8 +39,11 @@ func (i Corpus) String() string {
 	}
 }
 
-func (i Corpus) ByteSize() int {
-	return tygo.SizeVarint(uint64(i))
+func (i Corpus) ByteSize() (size int) {
+	if i != 0 {
+		size += tygo.SizeVarint(uint64(i))
+	}
+	return
 }
 
 func (i Corpus) Serialize(output *tygo.ProtoBuf) {
@@ -61,6 +64,10 @@ type Vector2 struct {
 	S string  // string
 	E Corpus  // Corpus
 	P *GoType // *GoType
+}
+
+func (s *Vector2) MaxFieldNum() int {
+	return 6
 }
 
 func (s *Vector2) ByteSize() (size int) {
@@ -89,6 +96,10 @@ type Fighter_Part1 struct {
 	Pyv2    interface{}        // variant<int32, *GoType>
 }
 
+func (s *Fighter_Part1) MaxFieldNum() int {
+	return 11
+}
+
 func (s *Fighter_Part1) ByteSize() (size int) {
 	return
 }
@@ -110,6 +121,10 @@ type Fighter_Part2 struct {
 	El []Corpus          // []Corpus
 	Ed map[int32]Corpus  // map[int32]Corpus
 	Ll [][]float32       // [][]float32
+}
+
+func (s *Fighter_Part2) MaxFieldNum() int {
+	return 19
 }
 
 func (s *Fighter_Part2) ByteSize() (size int) {
@@ -141,6 +156,10 @@ type Fighter struct {
 	Flv interface{}                     // variant<int32, []float32>
 	Dv  interface{}                     // variant<int32, map[int32]variant<float32, string>>
 	Fdv interface{}                     // variant<int32, map[int32]float32>
+}
+
+func (s *Fighter) MaxFieldNum() int {
+	return 35
 }
 
 func (s *Fighter) ByteSize() (size int) {

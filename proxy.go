@@ -114,15 +114,18 @@ func inject(filename string, doc string, file *ast.File) {
 }
 
 func (t *Enum) Go() (string, map[string]string) {
-	var values []string
 	var names []string
+	var values []string
+	pkgs := map[string]string{"fmt": "", TYGO_PATH: ""}
 	for _, name := range t.Sorted() {
-		values = append(values, fmt.Sprintf(`
-	%s_%s %s%s = %d`, t.Name, name, strings.Repeat(" ", t.nameMax-len(name)), t.Name, t.Values[name]))
 		names = append(names, fmt.Sprintf(`
 	case %s_%s:
 		return "%s"`, t.Name, name, name))
+		values = append(values, fmt.Sprintf(`
+	%s_%s %s%s = %d`, t.Name, name, strings.Repeat(" ", t.nameMax-len(name)), t.Name, t.Values[name]))
 	}
+	enum_s, enum_p := t.ByteSizeGo("size", "i", "")
+	pkgs = update(pkgs, enum_p)
 	return fmt.Sprintf(`
 type %s uint
 
@@ -137,8 +140,8 @@ func (i %s) String() string {
 	}
 }
 
-func (i %s) ByteSize() int {
-	return tygo.SizeVarint(uint64(i))
+func (i %s) ByteSize() (size int) {%s
+	return
 }
 
 func (i %s) Serialize(output *tygo.ProtoBuf) {
@@ -151,7 +154,7 @@ func (i *%s) Deserialize(input *tygo.ProtoBuf) (err error) {
 	return
 }
 `, t.Name, strings.Join(values, ""), t.Name, strings.Join(names, ""),
-		t.Name, t.Name, t.Name, t.Name, t.Name), map[string]string{"fmt": "", TYGO_PATH: ""}
+		t.Name, t.Name, enum_s, t.Name, t.Name, t.Name), pkgs
 }
 
 func (t *Method) Go() (string, map[string]string) {
@@ -254,8 +257,17 @@ func (t *Object) Go() (string, map[string]string) {
 		methods = append(methods, method_s)
 	}
 
+	mfn_n, mfn_i := t.MaxFieldNum()
+	if mfn_n != "" {
+		mfn_n = fmt.Sprintf("s.%s.MaxFieldNum() + ", mfn_n)
+	}
+
 	return fmt.Sprintf(`
 type %s struct {%s
+}
+
+func (s *%s) MaxFieldNum() int {
+	return %s%d
 }
 
 func (s *%s) ByteSize() (size int) {
@@ -268,11 +280,11 @@ func (s *%s) Serialize(output *tygo.ProtoBuf) {
 func (s *%s) Deserialize(input *tygo.ProtoBuf) (err error) {
 	return
 }
-%s`, t.Name, strings.Join(fields, ""), t.Name, t.Name, t.Name, strings.Join(methods, "")), pkgs
+%s`, t.Name, strings.Join(fields, ""), t.Name, mfn_n, mfn_i, t.Name, t.Name, t.Name, strings.Join(methods, "")), pkgs
 }
 
 func (t UnknownType) Go() (string, map[string]string) {
-	return "", nil
+	return string(t), nil
 }
 
 func (t SimpleType) Go() (string, map[string]string) {

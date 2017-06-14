@@ -748,7 +748,7 @@ tygodefault:
 				log.Fatalf("[Tygo][Parser] Multiple inheritance is not allowed!")
 			}
 			tygoVAL.object = tygoDollar[1].object
-			tygoVAL.object.Parent = tygoDollar[3].spec
+			tygoVAL.object.Parent = tygoDollar[3].spec.(*InstanceType)
 		}
 	case 12:
 		tygoDollar = tygoS[tygopt-3 : tygopt+1]
