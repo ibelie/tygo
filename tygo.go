@@ -19,8 +19,9 @@ type Tygo struct {
 
 type Type interface {
 	String() string
+	IsPrimitive() bool
 	Go() (string, map[string]string)
-	ByteSizeGo(string, string) (string, map[string]string)
+	ByteSizeGo(string, string, string) (string, map[string]string)
 }
 
 type Enum struct {
@@ -80,7 +81,7 @@ type InstanceType struct {
 }
 
 type FixedPointType struct {
-	Precision int
+	Precision uint
 	Floor     int
 }
 
@@ -95,6 +96,67 @@ type DictType struct {
 
 type VariantType struct {
 	Ts []Type
+}
+
+func (t *Enum) IsPrimitive() bool {
+	return false
+}
+
+func (t *Method) IsPrimitive() bool {
+	return false
+}
+
+func (t *Object) IsPrimitive() bool {
+	return false
+}
+
+func (t UnknownType) IsPrimitive() bool {
+	return false
+}
+
+func (t SimpleType) IsPrimitive() bool {
+	switch t {
+	case SimpleType_INT32:
+		fallthrough
+	case SimpleType_INT64:
+		fallthrough
+	case SimpleType_UINT32:
+		fallthrough
+	case SimpleType_UINT64:
+		fallthrough
+	case SimpleType_BOOL:
+		fallthrough
+	case SimpleType_FLOAT32:
+		fallthrough
+	case SimpleType_FLOAT64:
+		return true
+	default:
+		return false
+	}
+}
+
+func (t *EnumType) IsPrimitive() bool {
+	return true
+}
+
+func (t *InstanceType) IsPrimitive() bool {
+	return false
+}
+
+func (t *FixedPointType) IsPrimitive() bool {
+	return true
+}
+
+func (t *ListType) IsPrimitive() bool {
+	return false
+}
+
+func (t *DictType) IsPrimitive() bool {
+	return false
+}
+
+func (t *VariantType) IsPrimitive() bool {
+	return false
 }
 
 func (t *Enum) Sorted() []string {

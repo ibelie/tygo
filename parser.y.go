@@ -825,7 +825,7 @@ tygodefault:
 		tygoDollar = tygoS[tygopt-6 : tygopt+1]
 		//line parser.y:180
 		{
-			tygoVAL.spec = &FixedPointType{Precision: tygoDollar[3].integer, Floor: tygoDollar[5].integer}
+			tygoVAL.spec = &FixedPointType{Precision: uint(tygoDollar[3].integer), Floor: tygoDollar[5].integer}
 		}
 	case 27:
 		tygoDollar = tygoS[tygopt-1 : tygopt+1]

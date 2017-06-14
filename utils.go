@@ -14,6 +14,14 @@ import (
 	"go/token"
 )
 
+func pow10(x uint) uint {
+	if x == 0 {
+		return 1
+	} else {
+		return pow10(x-1) * 10
+	}
+}
+
 func update(a map[string]string, b map[string]string) map[string]string {
 	if b == nil {
 		return a

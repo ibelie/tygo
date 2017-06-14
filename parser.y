@@ -178,7 +178,7 @@ spec:
 	}
 |	FIXEDPOINT '<' INTEGER ',' INTEGER '>'
 	{
-		$$ = &FixedPointType{Precision: $3, Floor: $5}
+		$$ = &FixedPointType{Precision: uint($3), Floor: $5}
 	}
 
 spec1:
