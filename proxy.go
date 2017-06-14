@@ -14,7 +14,6 @@ import (
 
 	"go/ast"
 	"go/build"
-	"go/doc"
 	"go/parser"
 	"go/token"
 	"io/ioutil"
@@ -65,28 +64,6 @@ func Inject(path string) {
 				}
 			}
 		}
-	}
-}
-
-func packageDoc(path string) *doc.Package {
-	p, err := build.Import(path, "", build.ImportComment)
-	if err != nil {
-		return nil
-	}
-	fs := token.NewFileSet()
-	include := func(info os.FileInfo) bool {
-		for _, name := range p.GoFiles {
-			if name == info.Name() {
-				return true
-			}
-		}
-		return false
-	}
-
-	if pkgs, err := parser.ParseDir(fs, p.Dir, include, parser.ParseComments); err != nil || len(pkgs) != 1 {
-		return nil
-	} else {
-		return doc.New(pkgs[p.Name], p.ImportPath, doc.AllDecls)
 	}
 }
 
@@ -165,11 +142,11 @@ func (i %s) ByteSize() int {
 }
 
 func (i %s) Serialize(output *tygo.ProtoBuf) {
-	output.WriteUvarint(uint64(i))
+	output.WriteVarint(uint64(i))
 }
 
 func (i *%s) Deserialize(input *tygo.ProtoBuf) (err error) {
-	x, err := input.ReadUvarint()
+	x, err := input.ReadVarint()
 	*i = %s(x)
 	return
 }

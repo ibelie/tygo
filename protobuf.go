@@ -26,18 +26,6 @@ const (
 	WireFixed32
 )
 
-func SizeVarint(x uint64) int {
-	n := 0
-	for {
-		n++
-		x >>= 7
-		if x == 0 {
-			break
-		}
-	}
-	return n
-}
-
 func MAKE_TAG(fieldNum uint32, wireType WireType) uint32 {
 	return (fieldNum << WireTypeBits) | uint32(wireType)
 }
@@ -56,6 +44,18 @@ func TAG_FIELD(tag uint32) uint32 {
 
 func TAG_WIRE(tag uint32) uint32 {
 	return tag & WireTypeMask
+}
+
+func SizeVarint(x uint64) int {
+	n := 0
+	for {
+		n++
+		x >>= 7
+		if x == 0 {
+			break
+		}
+	}
+	return n
 }
 
 type ProtoBuf struct {
@@ -81,7 +81,7 @@ func (p *ProtoBuf) Read(b []byte) (n int, err error) {
 	return
 }
 
-func (p *ProtoBuf) WriteUvarint(x uint64) {
+func (p *ProtoBuf) WriteVarint(x uint64) {
 	for x >= 0x80 {
 		p.Buffer[p.offset] = byte(x) | 0x80
 		x >>= 7
@@ -90,7 +90,7 @@ func (p *ProtoBuf) WriteUvarint(x uint64) {
 	p.Buffer[p.offset] = byte(x)
 }
 
-func (p *ProtoBuf) ReadUvarint() (uint64, error) {
+func (p *ProtoBuf) ReadVarint() (uint64, error) {
 	var x uint64
 	var s uint
 	for i, b := range p.Buffer[p.offset:] {
@@ -115,24 +115,45 @@ func (p *ProtoBuf) SkipField(fieldNum uint32) error {
 	return nil
 }
 
-func (t *Enum) BsGo(name string, tagsize string) (string, map[string]string) {
+//=============================================================================
+
+func (t *Enum) ByteSizeGo(name string, tagsize string) (string, map[string]string) {
 	return "", nil
 }
 
-func (t *Method) BsGo(name string, tagsize string) (string, map[string]string) {
+func (t *Method) ByteSizeGo(name string, tagsize string) (string, map[string]string) {
 	return "", nil
 }
 
-func (t *Object) BsGo(name string, tagsize string) (string, map[string]string) {
+func (t *Object) ByteSizeGo(name string, tagsize string) (string, map[string]string) {
 	return "", nil
 }
 
-func (t SimpleType) BsGo(name string, tagsize string) (string, map[string]string) {
+func (t SimpleType) ByteSizeGo(name string, tagsize string) (string, map[string]string) {
 	switch string(t) {
 	case "bool":
+		return fmt.Sprintf(`
+	if %s {
+		size += %s + 1
+	}`, name, tagsize), nil
 	case "bytes":
+		return fmt.Sprintf(`
+	if len(%s) > 0 {
+		l := len(%s)
+		size += %s + tygo.SizeVarint(l) + l
+	}`, name, name, tagsize), map[string]string{TYGO_PATH: ""}
 	case "string":
+		return fmt.Sprintf(`
+	if len(%s) > 0 {
+		l := len([]byte(%s))
+		size += %s + tygo.SizeVarint(l) + l
+	}`, name, name, tagsize), map[string]string{TYGO_PATH: ""}
 	case "int32":
+		return fmt.Sprintf(`
+	if %s != 0 {
+		l := len([]byte(%s))
+		size += %s + tygo.SizeVarint(l) + l
+	}`, name, name, tagsize), map[string]string{TYGO_PATH: ""}
 	case "int64":
 	case "uint32":
 	case "uint64":
@@ -144,22 +165,22 @@ func (t SimpleType) BsGo(name string, tagsize string) (string, map[string]string
 	return "", nil
 }
 
-func (t *ObjectType) BsGo(name string, tagsize string) (string, map[string]string) {
+func (t *ObjectType) ByteSizeGo(name string, tagsize string) (string, map[string]string) {
 	return "", nil
 }
 
-func (t *FixedPointType) BsGo(name string, tagsize string) (string, map[string]string) {
+func (t *FixedPointType) ByteSizeGo(name string, tagsize string) (string, map[string]string) {
 	return "", nil
 }
 
-func (t *ListType) BsGo(name string, tagsize string) (string, map[string]string) {
+func (t *ListType) ByteSizeGo(name string, tagsize string) (string, map[string]string) {
 	return "", nil
 }
 
-func (t *DictType) BsGo(name string, tagsize string) (string, map[string]string) {
+func (t *DictType) ByteSizeGo(name string, tagsize string) (string, map[string]string) {
 	return "", nil
 }
 
-func (t *VariantType) BsGo(name string, tagsize string) (string, map[string]string) {
+func (t *VariantType) ByteSizeGo(name string, tagsize string) (string, map[string]string) {
 	return "", nil
 }

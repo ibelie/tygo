@@ -44,11 +44,11 @@ func (i Corpus) ByteSize() int {
 }
 
 func (i Corpus) Serialize(output *tygo.ProtoBuf) {
-	output.WriteUvarint(uint64(i))
+	output.WriteVarint(uint64(i))
 }
 
 func (i *Corpus) Deserialize(input *tygo.ProtoBuf) (err error) {
-	x, err := input.ReadUvarint()
+	x, err := input.ReadVarint()
 	*i = Corpus(x)
 	return
 }
