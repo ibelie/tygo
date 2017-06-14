@@ -9,6 +9,6 @@ import (
 )
 
 func main() {
-	a := &Vector2{P: &GoType{}}
-	fmt.Println("Test", a.P)
+	fmt.Println(v.ByteSize())
+	fmt.Println(fighter.ByteSize())
 }

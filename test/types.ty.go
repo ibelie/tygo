@@ -71,6 +71,47 @@ func (s *Vector2) MaxFieldNum() int {
 }
 
 func (s *Vector2) ByteSize() (size int) {
+	if s != nil {
+		// property: s.X
+		// type: float32
+		if s.X != 0 {
+			size += 1 + 4
+		}
+
+		// property: s.Y
+		// type: fixedpoint<1, -10>
+		if s.Y != -10 {
+			size += 1 + tygo.SizeVarint(uint64((s.Y - -10) * 10))
+		}
+
+		// property: s.B
+		// type: bytes
+		if len(s.B) > 0 {
+			l := len([]byte(s.B))
+			size += 1 + tygo.SizeVarint(uint64(l)) + l
+		}
+
+		// property: s.S
+		// type: string
+		if len(s.S) > 0 {
+			l := len([]byte(s.S))
+			size += 1 + tygo.SizeVarint(uint64(l)) + l
+		}
+
+		// property: s.E
+		// type: Corpus
+		if s.E != 0 {
+			size += 1 + tygo.SizeVarint(uint64(s.E))
+		}
+
+		// property: s.P
+		// type: *GoType
+		if s.P != nil {
+			s := s.P.ByteSize()
+			size += 1 + tygo.SizeVarint(uint64(s)) + s
+		}
+
+	}
 	return
 }
 
@@ -101,6 +142,201 @@ func (s *Fighter_Part1) MaxFieldNum() int {
 }
 
 func (s *Fighter_Part1) ByteSize() (size int) {
+	if s != nil {
+		// property: s.Pos
+		// type: *Vector2
+		if s.Pos != nil {
+			s := s.Pos.ByteSize()
+			size += 1 + tygo.SizeVarint(uint64(s)) + s
+		}
+
+		// property: s.IsAwake
+		// type: bool
+		if s.IsAwake {
+			size += 1 + 1
+		}
+
+		// property: s.Hp
+		// type: float32
+		if s.Hp != 0 {
+			size += 1 + 4
+		}
+
+		// property: s.Poss
+		// type: map[int32]*Vector2
+		if len(s.Poss) > 0 {
+			for k, v := range s.Poss {
+				si := 0
+				// dict key
+				// type: int32
+				if k != 0 {
+					si += 1 + tygo.SizeVarint(uint64(k))
+				}
+				// dict value
+				// type: *Vector2
+				if v != nil {
+					s := v.ByteSize()
+					si += 1 + tygo.SizeVarint(uint64(s)) + s
+				}
+				size += 1 + tygo.SizeVarint(uint64(si)) + si
+			}
+		}
+
+		// property: s.Posi
+		// type: map[int32]float32
+		if len(s.Posi) > 0 {
+			for k, v := range s.Posi {
+				si := 0
+				// dict key
+				// type: int32
+				if k != 0 {
+					si += 1 + tygo.SizeVarint(uint64(k))
+				}
+				// dict value
+				// type: float32
+				if v != 0 {
+					si += 1 + 4
+				}
+				size += 1 + tygo.SizeVarint(uint64(si)) + si
+			}
+		}
+
+		// property: s.Posl
+		// type: []*Vector2
+		if len(s.Posl) > 0 {
+			for _, e := range s.Posl {
+				// list element
+				// type: *Vector2
+				if e != nil {
+					s := e.ByteSize()
+					size += 1 + tygo.SizeVarint(uint64(s)) + s
+				} else {
+					size += 1 + 1
+				}
+			}
+		}
+
+		// property: s.Posll
+		// type: [][]*Vector2
+		if len(s.Posll) > 0 {
+			for _, e := range s.Posll {
+				// list element
+				// type: []*Vector2
+				if len(e) > 0 {
+					for _, e := range e {
+						// list element
+						// type: *Vector2
+						if e != nil {
+							s := e.ByteSize()
+							size += 1 + tygo.SizeVarint(uint64(s)) + s
+						} else {
+							size += 1 + 1
+						}
+					}
+				} else {
+					size += 1 + 1
+				}
+			}
+		}
+
+		// property: s.Pyl
+		// type: []*GoType
+		if len(s.Pyl) > 0 {
+			for _, e := range s.Pyl {
+				// list element
+				// type: *GoType
+				if e != nil {
+					s := e.ByteSize()
+					size += 1 + tygo.SizeVarint(uint64(s)) + s
+				} else {
+					size += 1 + 1
+				}
+			}
+		}
+
+		// property: s.Pyd
+		// type: map[int32]*GoType
+		if len(s.Pyd) > 0 {
+			for k, v := range s.Pyd {
+				si := 0
+				// dict key
+				// type: int32
+				if k != 0 {
+					si += 1 + tygo.SizeVarint(uint64(k))
+				}
+				// dict value
+				// type: *GoType
+				if v != nil {
+					s := v.ByteSize()
+					si += 1 + tygo.SizeVarint(uint64(s)) + s
+				}
+				size += 1 + tygo.SizeVarint(uint64(si)) + si
+			}
+		}
+
+		// property: s.Pyv1
+		// type: variant<int32, *GoType>
+		if s.Pyv1 != nil {
+			si := 0
+			switch v := s.Pyv1.(type) {
+			// variant type: int32
+			case int32:
+				// type: int32
+				if v != 0 {
+					si += 1 + tygo.SizeVarint(uint64(v))
+				} else {
+					si += 1 + 1
+				}
+			// variant type: *GoType
+			case *GoType:
+				// type: *GoType
+				if v != nil {
+					s := v.ByteSize()
+					si += 1 + tygo.SizeVarint(uint64(s)) + s
+				} else {
+					si += 1 + 1
+				}
+			// addition type: int
+			case int:
+				si += 1 + tygo.SizeVarint(uint64(v))
+			default:
+				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, *GoType>: %v", v))
+			}
+			size += 1 + tygo.SizeVarint(uint64(si)) + si
+		}
+
+		// property: s.Pyv2
+		// type: variant<int32, *GoType>
+		if s.Pyv2 != nil {
+			si := 0
+			switch v := s.Pyv2.(type) {
+			// variant type: int32
+			case int32:
+				// type: int32
+				if v != 0 {
+					si += 1 + tygo.SizeVarint(uint64(v))
+				} else {
+					si += 1 + 1
+				}
+			// variant type: *GoType
+			case *GoType:
+				// type: *GoType
+				if v != nil {
+					s := v.ByteSize()
+					si += 1 + tygo.SizeVarint(uint64(s)) + s
+				} else {
+					si += 1 + 1
+				}
+			// addition type: int
+			case int:
+				si += 1 + tygo.SizeVarint(uint64(v))
+			default:
+				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, *GoType>: %v", v))
+			}
+			size += 1 + tygo.SizeVarint(uint64(si)) + si
+		}
+
+	}
 	return
 }
 
@@ -128,6 +364,155 @@ func (s *Fighter_Part2) MaxFieldNum() int {
 }
 
 func (s *Fighter_Part2) ByteSize() (size int) {
+	if s != nil {
+		size += s.Fighter_Part1.ByteSize()
+		// property: s.Fl
+		// type: []float32
+		if len(s.Fl) > 0 {
+			si := 0
+			for _, e := range s.Fl {
+				// list element
+				// type: float32
+				if e != 0 {
+					si += 4
+				} else {
+					si++
+				}
+			}
+			size += 1 + tygo.SizeVarint(uint64(si)) + si
+		}
+
+		// property: s.Bl
+		// type: []bytes
+		if len(s.Bl) > 0 {
+			for _, e := range s.Bl {
+				// list element
+				// type: bytes
+				if len(e) > 0 {
+					l := len([]byte(e))
+					size += 1 + tygo.SizeVarint(uint64(l)) + l
+				} else {
+					size += 1 + 1
+				}
+			}
+		}
+
+		// property: s.Sl
+		// type: []string
+		if len(s.Sl) > 0 {
+			for _, e := range s.Sl {
+				// list element
+				// type: string
+				if len(e) > 0 {
+					l := len([]byte(e))
+					size += 1 + tygo.SizeVarint(uint64(l)) + l
+				} else {
+					size += 1 + 1
+				}
+			}
+		}
+
+		// property: s.Bd
+		// type: map[string]bytes
+		if len(s.Bd) > 0 {
+			for k, v := range s.Bd {
+				si := 0
+				// dict key
+				// type: string
+				if len(k) > 0 {
+					l := len([]byte(k))
+					si += 1 + tygo.SizeVarint(uint64(l)) + l
+				}
+				// dict value
+				// type: bytes
+				if len(v) > 0 {
+					l := len([]byte(v))
+					si += 1 + tygo.SizeVarint(uint64(l)) + l
+				}
+				size += 1 + tygo.SizeVarint(uint64(si)) + si
+			}
+		}
+
+		// property: s.Sd
+		// type: map[int32]string
+		if len(s.Sd) > 0 {
+			for k, v := range s.Sd {
+				si := 0
+				// dict key
+				// type: int32
+				if k != 0 {
+					si += 1 + tygo.SizeVarint(uint64(k))
+				}
+				// dict value
+				// type: string
+				if len(v) > 0 {
+					l := len([]byte(v))
+					si += 1 + tygo.SizeVarint(uint64(l)) + l
+				}
+				size += 2 + tygo.SizeVarint(uint64(si)) + si
+			}
+		}
+
+		// property: s.El
+		// type: []Corpus
+		if len(s.El) > 0 {
+			si := 0
+			for _, e := range s.El {
+				// list element
+				// type: Corpus
+				if e != 0 {
+					si += tygo.SizeVarint(uint64(e))
+				} else {
+					si++
+				}
+			}
+			size += 2 + tygo.SizeVarint(uint64(si)) + si
+		}
+
+		// property: s.Ed
+		// type: map[int32]Corpus
+		if len(s.Ed) > 0 {
+			for k, v := range s.Ed {
+				si := 0
+				// dict key
+				// type: int32
+				if k != 0 {
+					si += 1 + tygo.SizeVarint(uint64(k))
+				}
+				// dict value
+				// type: Corpus
+				if v != 0 {
+					si += 1 + tygo.SizeVarint(uint64(v))
+				}
+				size += 2 + tygo.SizeVarint(uint64(si)) + si
+			}
+		}
+
+		// property: s.Ll
+		// type: [][]float32
+		if len(s.Ll) > 0 {
+			for _, e := range s.Ll {
+				// list element
+				// type: []float32
+				if len(e) > 0 {
+					si := 0
+					for _, e := range e {
+						// list element
+						// type: float32
+						if e != 0 {
+							si += 4
+						} else {
+							si++
+						}
+					}
+					size += 2 + tygo.SizeVarint(uint64(si)) + si
+				} else {
+					size += 2 + 1
+				}
+			}
+		}
+
+	}
 	return
 }
 
@@ -163,6 +548,835 @@ func (s *Fighter) MaxFieldNum() int {
 }
 
 func (s *Fighter) ByteSize() (size int) {
+	if s != nil {
+		size += s.Fighter_Part2.ByteSize()
+		// property: s.V0
+		// type: variant<int32, float32, bytes, *Vector2>
+		if s.V0 != nil {
+			si := 0
+			switch v := s.V0.(type) {
+			// variant type: int32
+			case int32:
+				// type: int32
+				if v != 0 {
+					si += 1 + tygo.SizeVarint(uint64(v))
+				} else {
+					si += 1 + 1
+				}
+			// variant type: float32
+			case float32:
+				// type: float32
+				if v != 0 {
+					si += 1 + 4
+				} else {
+					si += 1 + 1
+				}
+			// variant type: bytes
+			case []byte:
+				// type: bytes
+				if len(v) > 0 {
+					l := len([]byte(v))
+					si += 1 + tygo.SizeVarint(uint64(l)) + l
+				} else {
+					si += 1 + 1
+				}
+			// variant type: *Vector2
+			case *Vector2:
+				// type: *Vector2
+				if v != nil {
+					s := v.ByteSize()
+					si += 1 + tygo.SizeVarint(uint64(s)) + s
+				} else {
+					si += 1 + 1
+				}
+			// addition type: int
+			case int:
+				si += 1 + tygo.SizeVarint(uint64(v))
+			// addition type: float64 -> float32
+			case float64:
+				si += 5
+			default:
+				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, float32, bytes, *Vector2>: %v", v))
+			}
+			size += 2 + tygo.SizeVarint(uint64(si)) + si
+		}
+
+		// property: s.V1
+		// type: variant<int32, float32, bytes, *Vector2>
+		if s.V1 != nil {
+			si := 0
+			switch v := s.V1.(type) {
+			// variant type: int32
+			case int32:
+				// type: int32
+				if v != 0 {
+					si += 1 + tygo.SizeVarint(uint64(v))
+				} else {
+					si += 1 + 1
+				}
+			// variant type: float32
+			case float32:
+				// type: float32
+				if v != 0 {
+					si += 1 + 4
+				} else {
+					si += 1 + 1
+				}
+			// variant type: bytes
+			case []byte:
+				// type: bytes
+				if len(v) > 0 {
+					l := len([]byte(v))
+					si += 1 + tygo.SizeVarint(uint64(l)) + l
+				} else {
+					si += 1 + 1
+				}
+			// variant type: *Vector2
+			case *Vector2:
+				// type: *Vector2
+				if v != nil {
+					s := v.ByteSize()
+					si += 1 + tygo.SizeVarint(uint64(s)) + s
+				} else {
+					si += 1 + 1
+				}
+			// addition type: int
+			case int:
+				si += 1 + tygo.SizeVarint(uint64(v))
+			// addition type: float64 -> float32
+			case float64:
+				si += 5
+			default:
+				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, float32, bytes, *Vector2>: %v", v))
+			}
+			size += 2 + tygo.SizeVarint(uint64(si)) + si
+		}
+
+		// property: s.V2
+		// type: variant<int32, float32, bytes, *Vector2>
+		if s.V2 != nil {
+			si := 0
+			switch v := s.V2.(type) {
+			// variant type: int32
+			case int32:
+				// type: int32
+				if v != 0 {
+					si += 1 + tygo.SizeVarint(uint64(v))
+				} else {
+					si += 1 + 1
+				}
+			// variant type: float32
+			case float32:
+				// type: float32
+				if v != 0 {
+					si += 1 + 4
+				} else {
+					si += 1 + 1
+				}
+			// variant type: bytes
+			case []byte:
+				// type: bytes
+				if len(v) > 0 {
+					l := len([]byte(v))
+					si += 1 + tygo.SizeVarint(uint64(l)) + l
+				} else {
+					si += 1 + 1
+				}
+			// variant type: *Vector2
+			case *Vector2:
+				// type: *Vector2
+				if v != nil {
+					s := v.ByteSize()
+					si += 1 + tygo.SizeVarint(uint64(s)) + s
+				} else {
+					si += 1 + 1
+				}
+			// addition type: int
+			case int:
+				si += 1 + tygo.SizeVarint(uint64(v))
+			// addition type: float64 -> float32
+			case float64:
+				si += 5
+			default:
+				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, float32, bytes, *Vector2>: %v", v))
+			}
+			size += 2 + tygo.SizeVarint(uint64(si)) + si
+		}
+
+		// property: s.V3
+		// type: variant<int32, float32, bytes, *Vector2>
+		if s.V3 != nil {
+			si := 0
+			switch v := s.V3.(type) {
+			// variant type: int32
+			case int32:
+				// type: int32
+				if v != 0 {
+					si += 1 + tygo.SizeVarint(uint64(v))
+				} else {
+					si += 1 + 1
+				}
+			// variant type: float32
+			case float32:
+				// type: float32
+				if v != 0 {
+					si += 1 + 4
+				} else {
+					si += 1 + 1
+				}
+			// variant type: bytes
+			case []byte:
+				// type: bytes
+				if len(v) > 0 {
+					l := len([]byte(v))
+					si += 1 + tygo.SizeVarint(uint64(l)) + l
+				} else {
+					si += 1 + 1
+				}
+			// variant type: *Vector2
+			case *Vector2:
+				// type: *Vector2
+				if v != nil {
+					s := v.ByteSize()
+					si += 1 + tygo.SizeVarint(uint64(s)) + s
+				} else {
+					si += 1 + 1
+				}
+			// addition type: int
+			case int:
+				si += 1 + tygo.SizeVarint(uint64(v))
+			// addition type: float64 -> float32
+			case float64:
+				si += 5
+			default:
+				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, float32, bytes, *Vector2>: %v", v))
+			}
+			size += 2 + tygo.SizeVarint(uint64(si)) + si
+		}
+
+		// property: s.V4
+		// type: variant<int32, float32, bytes, *Vector2>
+		if s.V4 != nil {
+			si := 0
+			switch v := s.V4.(type) {
+			// variant type: int32
+			case int32:
+				// type: int32
+				if v != 0 {
+					si += 1 + tygo.SizeVarint(uint64(v))
+				} else {
+					si += 1 + 1
+				}
+			// variant type: float32
+			case float32:
+				// type: float32
+				if v != 0 {
+					si += 1 + 4
+				} else {
+					si += 1 + 1
+				}
+			// variant type: bytes
+			case []byte:
+				// type: bytes
+				if len(v) > 0 {
+					l := len([]byte(v))
+					si += 1 + tygo.SizeVarint(uint64(l)) + l
+				} else {
+					si += 1 + 1
+				}
+			// variant type: *Vector2
+			case *Vector2:
+				// type: *Vector2
+				if v != nil {
+					s := v.ByteSize()
+					si += 1 + tygo.SizeVarint(uint64(s)) + s
+				} else {
+					si += 1 + 1
+				}
+			// addition type: int
+			case int:
+				si += 1 + tygo.SizeVarint(uint64(v))
+			// addition type: float64 -> float32
+			case float64:
+				si += 5
+			default:
+				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, float32, bytes, *Vector2>: %v", v))
+			}
+			size += 2 + tygo.SizeVarint(uint64(si)) + si
+		}
+
+		// property: s.Vl
+		// type: []variant<int32, fixedpoint<3, 0>, string, *Vector2>
+		if len(s.Vl) > 0 {
+			for _, e := range s.Vl {
+				// list element
+				// type: variant<int32, fixedpoint<3, 0>, string, *Vector2>
+				if e != nil {
+					si := 0
+					switch v := e.(type) {
+					// variant type: int32
+					case int32:
+						// type: int32
+						if v != 0 {
+							si += 1 + tygo.SizeVarint(uint64(v))
+						} else {
+							si += 1 + 1
+						}
+					// variant type: fixedpoint<3, 0>
+					case float64:
+						// type: fixedpoint<3, 0>
+						if v != 0 {
+							si += 1 + tygo.SizeVarint(uint64((v - 0) * 1000))
+						} else {
+							si += 1 + 1
+						}
+					// variant type: string
+					case string:
+						// type: string
+						if len(v) > 0 {
+							l := len([]byte(v))
+							si += 1 + tygo.SizeVarint(uint64(l)) + l
+						} else {
+							si += 1 + 1
+						}
+					// variant type: *Vector2
+					case *Vector2:
+						// type: *Vector2
+						if v != nil {
+							s := v.ByteSize()
+							si += 1 + tygo.SizeVarint(uint64(s)) + s
+						} else {
+							si += 1 + 1
+						}
+					// addition type: int
+					case int:
+						si += 1 + tygo.SizeVarint(uint64(v))
+					default:
+						panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, fixedpoint<3, 0>, string, *Vector2>: %v", v))
+					}
+					size += 2 + tygo.SizeVarint(uint64(si)) + si
+				} else {
+					size += 2 + 1
+				}
+			}
+		}
+
+		// property: s.Vd
+		// type: map[int32]variant<Corpus, float64, string, *Vector2>
+		if len(s.Vd) > 0 {
+			for k, v := range s.Vd {
+				si := 0
+				// dict key
+				// type: int32
+				if k != 0 {
+					si += 1 + tygo.SizeVarint(uint64(k))
+				}
+				// dict value
+				// type: variant<Corpus, float64, string, *Vector2>
+				if v != nil {
+					si := 0
+					switch v := v.(type) {
+					// variant type: Corpus
+					case Corpus:
+						// type: Corpus
+						if v != 0 {
+							si += 1 + tygo.SizeVarint(uint64(v))
+						} else {
+							si += 1 + 1
+						}
+					// variant type: float64
+					case float64:
+						// type: float64
+						if v != 0 {
+							si += 1 + 8
+						} else {
+							si += 1 + 1
+						}
+					// variant type: string
+					case string:
+						// type: string
+						if len(v) > 0 {
+							l := len([]byte(v))
+							si += 1 + tygo.SizeVarint(uint64(l)) + l
+						} else {
+							si += 1 + 1
+						}
+					// variant type: *Vector2
+					case *Vector2:
+						// type: *Vector2
+						if v != nil {
+							s := v.ByteSize()
+							si += 1 + tygo.SizeVarint(uint64(s)) + s
+						} else {
+							si += 1 + 1
+						}
+					// addition type: int -> float64
+					case int:
+						si += 9
+					default:
+						panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<Corpus, float64, string, *Vector2>: %v", v))
+					}
+					si += 1 + tygo.SizeVarint(uint64(si)) + si
+				}
+				size += 2 + tygo.SizeVarint(uint64(si)) + si
+			}
+		}
+
+		// property: s.Ld
+		// type: map[int32][]variant<Corpus, float64, string, *Vector2>
+		if len(s.Ld) > 0 {
+			for k, v := range s.Ld {
+				si := 0
+				// dict key
+				// type: int32
+				if k != 0 {
+					si += 1 + tygo.SizeVarint(uint64(k))
+				}
+				// dict value
+				// type: []variant<Corpus, float64, string, *Vector2>
+				if len(v) > 0 {
+					for _, e := range v {
+						// list element
+						// type: variant<Corpus, float64, string, *Vector2>
+						if e != nil {
+							si := 0
+							switch v := e.(type) {
+							// variant type: Corpus
+							case Corpus:
+								// type: Corpus
+								if v != 0 {
+									si += 1 + tygo.SizeVarint(uint64(v))
+								} else {
+									si += 1 + 1
+								}
+							// variant type: float64
+							case float64:
+								// type: float64
+								if v != 0 {
+									si += 1 + 8
+								} else {
+									si += 1 + 1
+								}
+							// variant type: string
+							case string:
+								// type: string
+								if len(v) > 0 {
+									l := len([]byte(v))
+									si += 1 + tygo.SizeVarint(uint64(l)) + l
+								} else {
+									si += 1 + 1
+								}
+							// variant type: *Vector2
+							case *Vector2:
+								// type: *Vector2
+								if v != nil {
+									s := v.ByteSize()
+									si += 1 + tygo.SizeVarint(uint64(s)) + s
+								} else {
+									si += 1 + 1
+								}
+							// addition type: int -> float64
+							case int:
+								si += 9
+							default:
+								panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<Corpus, float64, string, *Vector2>: %v", v))
+							}
+							si += 1 + tygo.SizeVarint(uint64(si)) + si
+						} else {
+							si += 1 + 1
+						}
+					}
+				}
+				size += 2 + tygo.SizeVarint(uint64(si)) + si
+			}
+		}
+
+		// property: s.Fld
+		// type: map[int32][]float32
+		if len(s.Fld) > 0 {
+			for k, v := range s.Fld {
+				si := 0
+				// dict key
+				// type: int32
+				if k != 0 {
+					si += 1 + tygo.SizeVarint(uint64(k))
+				}
+				// dict value
+				// type: []float32
+				if len(v) > 0 {
+					si := 0
+					for _, e := range v {
+						// list element
+						// type: float32
+						if e != 0 {
+							si += 4
+						} else {
+							si++
+						}
+					}
+					si += 1 + tygo.SizeVarint(uint64(si)) + si
+				}
+				size += 2 + tygo.SizeVarint(uint64(si)) + si
+			}
+		}
+
+		// property: s.Dd
+		// type: map[int32]map[int32]variant<int32, Corpus, float64, string, *Vector2>
+		if len(s.Dd) > 0 {
+			for k, v := range s.Dd {
+				si := 0
+				// dict key
+				// type: int32
+				if k != 0 {
+					si += 1 + tygo.SizeVarint(uint64(k))
+				}
+				// dict value
+				// type: map[int32]variant<int32, Corpus, float64, string, *Vector2>
+				if len(v) > 0 {
+					for k, v := range v {
+						si := 0
+						// dict key
+						// type: int32
+						if k != 0 {
+							si += 1 + tygo.SizeVarint(uint64(k))
+						}
+						// dict value
+						// type: variant<int32, Corpus, float64, string, *Vector2>
+						if v != nil {
+							si := 0
+							switch v := v.(type) {
+							// variant type: int32
+							case int32:
+								// type: int32
+								if v != 0 {
+									si += 1 + tygo.SizeVarint(uint64(v))
+								} else {
+									si += 1 + 1
+								}
+							// variant type: Corpus
+							case Corpus:
+								// type: Corpus
+								if v != 0 {
+									si += 1 + tygo.SizeVarint(uint64(v))
+								} else {
+									si += 1 + 1
+								}
+							// variant type: float64
+							case float64:
+								// type: float64
+								if v != 0 {
+									si += 1 + 8
+								} else {
+									si += 1 + 1
+								}
+							// variant type: string
+							case string:
+								// type: string
+								if len(v) > 0 {
+									l := len([]byte(v))
+									si += 1 + tygo.SizeVarint(uint64(l)) + l
+								} else {
+									si += 1 + 1
+								}
+							// variant type: *Vector2
+							case *Vector2:
+								// type: *Vector2
+								if v != nil {
+									s := v.ByteSize()
+									si += 1 + tygo.SizeVarint(uint64(s)) + s
+								} else {
+									si += 1 + 1
+								}
+							// addition type: int
+							case int:
+								si += 1 + tygo.SizeVarint(uint64(v))
+							default:
+								panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, Corpus, float64, string, *Vector2>: %v", v))
+							}
+							si += 1 + tygo.SizeVarint(uint64(si)) + si
+						}
+						si += 1 + tygo.SizeVarint(uint64(si)) + si
+					}
+				}
+				size += 2 + tygo.SizeVarint(uint64(si)) + si
+			}
+		}
+
+		// property: s.Fdd
+		// type: map[int32]map[int32]float32
+		if len(s.Fdd) > 0 {
+			for k, v := range s.Fdd {
+				si := 0
+				// dict key
+				// type: int32
+				if k != 0 {
+					si += 1 + tygo.SizeVarint(uint64(k))
+				}
+				// dict value
+				// type: map[int32]float32
+				if len(v) > 0 {
+					for k, v := range v {
+						si := 0
+						// dict key
+						// type: int32
+						if k != 0 {
+							si += 1 + tygo.SizeVarint(uint64(k))
+						}
+						// dict value
+						// type: float32
+						if v != 0 {
+							si += 1 + 4
+						}
+						si += 1 + tygo.SizeVarint(uint64(si)) + si
+					}
+				}
+				size += 2 + tygo.SizeVarint(uint64(si)) + si
+			}
+		}
+
+		// property: s.Nv
+		// type: variant<nil, int32>
+		if s.Nv != nil {
+			si := 0
+			switch v := s.Nv.(type) {
+			// variant type: int32
+			case int32:
+				// type: int32
+				if v != 0 {
+					si += 1 + tygo.SizeVarint(uint64(v))
+				} else {
+					si += 1 + 1
+				}
+			// addition type: int
+			case int:
+				si += 1 + tygo.SizeVarint(uint64(v))
+			default:
+				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<nil, int32>: %v", v))
+			}
+			size += 2 + tygo.SizeVarint(uint64(si)) + si
+		}
+
+		// property: s.Lv
+		// type: variant<int32, []variant<float32, string>>
+		if s.Lv != nil {
+			si := 0
+			switch v := s.Lv.(type) {
+			// variant type: int32
+			case int32:
+				// type: int32
+				if v != 0 {
+					si += 1 + tygo.SizeVarint(uint64(v))
+				} else {
+					si += 1 + 1
+				}
+			// variant type: []variant<float32, string>
+			case []interface{}:
+				// type: []variant<float32, string>
+				if len(v) > 0 {
+					for _, e := range v {
+						// list element
+						// type: variant<float32, string>
+						if e != nil {
+							si := 0
+							switch v := e.(type) {
+							// variant type: float32
+							case float32:
+								// type: float32
+								if v != 0 {
+									si += 1 + 4
+								} else {
+									si += 1 + 1
+								}
+							// variant type: string
+							case string:
+								// type: string
+								if len(v) > 0 {
+									l := len([]byte(v))
+									si += 1 + tygo.SizeVarint(uint64(l)) + l
+								} else {
+									si += 1 + 1
+								}
+							// addition type: int -> float32
+							case int:
+								si += 5
+							// addition type: float64 -> float32
+							case float64:
+								si += 5
+							default:
+								panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<float32, string>: %v", v))
+							}
+							si += 1 + tygo.SizeVarint(uint64(si)) + si
+						} else {
+							si += 1 + 1
+						}
+					}
+				} else {
+					si += 1 + 1
+				}
+			// addition type: int
+			case int:
+				si += 1 + tygo.SizeVarint(uint64(v))
+			default:
+				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, []variant<float32, string>>: %v", v))
+			}
+			size += 2 + tygo.SizeVarint(uint64(si)) + si
+		}
+
+		// property: s.Flv
+		// type: variant<int32, []float32>
+		if s.Flv != nil {
+			si := 0
+			switch v := s.Flv.(type) {
+			// variant type: int32
+			case int32:
+				// type: int32
+				if v != 0 {
+					si += 1 + tygo.SizeVarint(uint64(v))
+				} else {
+					si += 1 + 1
+				}
+			// variant type: []float32
+			case []float32:
+				// type: []float32
+				if len(v) > 0 {
+					si := 0
+					for _, e := range v {
+						// list element
+						// type: float32
+						if e != 0 {
+							si += 4
+						} else {
+							si++
+						}
+					}
+					si += 1 + tygo.SizeVarint(uint64(si)) + si
+				} else {
+					si += 1 + 1
+				}
+			// addition type: int
+			case int:
+				si += 1 + tygo.SizeVarint(uint64(v))
+			default:
+				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, []float32>: %v", v))
+			}
+			size += 2 + tygo.SizeVarint(uint64(si)) + si
+		}
+
+		// property: s.Dv
+		// type: variant<int32, map[int32]variant<float32, string>>
+		if s.Dv != nil {
+			si := 0
+			switch v := s.Dv.(type) {
+			// variant type: int32
+			case int32:
+				// type: int32
+				if v != 0 {
+					si += 1 + tygo.SizeVarint(uint64(v))
+				} else {
+					si += 1 + 1
+				}
+			// variant type: map[int32]variant<float32, string>
+			case map[int32]interface{}:
+				// type: map[int32]variant<float32, string>
+				if len(v) > 0 {
+					for k, v := range v {
+						si := 0
+						// dict key
+						// type: int32
+						if k != 0 {
+							si += 1 + tygo.SizeVarint(uint64(k))
+						}
+						// dict value
+						// type: variant<float32, string>
+						if v != nil {
+							si := 0
+							switch v := v.(type) {
+							// variant type: float32
+							case float32:
+								// type: float32
+								if v != 0 {
+									si += 1 + 4
+								} else {
+									si += 1 + 1
+								}
+							// variant type: string
+							case string:
+								// type: string
+								if len(v) > 0 {
+									l := len([]byte(v))
+									si += 1 + tygo.SizeVarint(uint64(l)) + l
+								} else {
+									si += 1 + 1
+								}
+							// addition type: int -> float32
+							case int:
+								si += 5
+							// addition type: float64 -> float32
+							case float64:
+								si += 5
+							default:
+								panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<float32, string>: %v", v))
+							}
+							si += 1 + tygo.SizeVarint(uint64(si)) + si
+						}
+						si += 1 + tygo.SizeVarint(uint64(si)) + si
+					}
+				} else {
+					si += 1 + 1
+				}
+			// addition type: int
+			case int:
+				si += 1 + tygo.SizeVarint(uint64(v))
+			default:
+				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, map[int32]variant<float32, string>>: %v", v))
+			}
+			size += 2 + tygo.SizeVarint(uint64(si)) + si
+		}
+
+		// property: s.Fdv
+		// type: variant<int32, map[int32]float32>
+		if s.Fdv != nil {
+			si := 0
+			switch v := s.Fdv.(type) {
+			// variant type: int32
+			case int32:
+				// type: int32
+				if v != 0 {
+					si += 1 + tygo.SizeVarint(uint64(v))
+				} else {
+					si += 1 + 1
+				}
+			// variant type: map[int32]float32
+			case map[int32]float32:
+				// type: map[int32]float32
+				if len(v) > 0 {
+					for k, v := range v {
+						si := 0
+						// dict key
+						// type: int32
+						if k != 0 {
+							si += 1 + tygo.SizeVarint(uint64(k))
+						}
+						// dict value
+						// type: float32
+						if v != 0 {
+							si += 1 + 4
+						}
+						si += 1 + tygo.SizeVarint(uint64(si)) + si
+					}
+				} else {
+					si += 1 + 1
+				}
+			// addition type: int
+			case int:
+				si += 1 + tygo.SizeVarint(uint64(v))
+			default:
+				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, map[int32]float32>: %v", v))
+			}
+			size += 2 + tygo.SizeVarint(uint64(si)) + si
+		}
+
+	}
 	return
 }
 

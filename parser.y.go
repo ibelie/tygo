@@ -1,9 +1,10 @@
-//line parser.y:10
+//line parser.y:9
+
 package tygo
 
 import __yyfmt__ "fmt"
 
-//line parser.y:11
+//line parser.y:12
 import (
 	"bytes"
 	"log"

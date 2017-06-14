@@ -262,6 +262,9 @@ func (t *Object) Go() (string, map[string]string) {
 		mfn_n = fmt.Sprintf("s.%s.MaxFieldNum() + ", mfn_n)
 	}
 
+	bytesize_s, bytesize_p := t.ByteSizeGo("size", "s", "")
+	pkgs = update(pkgs, bytesize_p)
+
 	return fmt.Sprintf(`
 type %s struct {%s
 }
@@ -270,7 +273,7 @@ func (s *%s) MaxFieldNum() int {
 	return %s%d
 }
 
-func (s *%s) ByteSize() (size int) {
+func (s *%s) ByteSize() (size int) {%s
 	return
 }
 
@@ -280,7 +283,8 @@ func (s *%s) Serialize(output *tygo.ProtoBuf) {
 func (s *%s) Deserialize(input *tygo.ProtoBuf) (err error) {
 	return
 }
-%s`, t.Name, strings.Join(fields, ""), t.Name, mfn_n, mfn_i, t.Name, t.Name, t.Name, strings.Join(methods, "")), pkgs
+%s`, t.Name, strings.Join(fields, ""), t.Name, mfn_n, mfn_i, t.Name, bytesize_s,
+		t.Name, t.Name, strings.Join(methods, "")), pkgs
 }
 
 func (t UnknownType) Go() (string, map[string]string) {
