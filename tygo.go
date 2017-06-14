@@ -21,7 +21,7 @@ type Type interface {
 	String() string
 	IsPrimitive() bool
 	Go() (string, map[string]string)
-	ByteSizeGo(string, string, string) (string, map[string]string)
+	ByteSizeGo(string, string, string, bool) (string, map[string]string)
 }
 
 type Enum struct {

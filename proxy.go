@@ -124,7 +124,7 @@ func (t *Enum) Go() (string, map[string]string) {
 		values = append(values, fmt.Sprintf(`
 	%s_%s %s%s = %d`, t.Name, name, strings.Repeat(" ", t.nameMax-len(name)), t.Name, t.Values[name]))
 	}
-	enum_s, enum_p := t.ByteSizeGo("size", "i", "")
+	enum_s, enum_p := t.ByteSizeGo("size", "i", "", true)
 	pkgs = update(pkgs, enum_p)
 	return fmt.Sprintf(`
 type %s uint
@@ -262,7 +262,7 @@ func (t *Object) Go() (string, map[string]string) {
 		mfn_n = fmt.Sprintf("s.%s.MaxFieldNum() + ", mfn_n)
 	}
 
-	bytesize_s, bytesize_p := t.ByteSizeGo("size", "s", "")
+	bytesize_s, bytesize_p := t.ByteSizeGo("size", "s", "", true)
 	pkgs = update(pkgs, bytesize_p)
 
 	return fmt.Sprintf(`

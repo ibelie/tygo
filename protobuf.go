@@ -118,18 +118,18 @@ func (p *ProtoBuf) SkipField(fieldNum uint32) error {
 
 //=============================================================================
 
-func (t *Enum) ByteSizeGo(size string, name string, tagsize string) (string, map[string]string) {
+func (t *Enum) ByteSizeGo(size string, name string, tagsize string, ignore bool) (string, map[string]string) {
 	return fmt.Sprintf(`
 	if %s != 0 {
 		%s += %stygo.SizeVarint(uint64(%s))
 	}`, name, size, tagsize, name), map[string]string{TYGO_PATH: ""}
 }
 
-func (t *Method) ByteSizeGo(size string, name string, tagsize string) (string, map[string]string) {
+func (t *Method) ByteSizeGo(size string, name string, tagsize string, ignore bool) (string, map[string]string) {
 	return "", nil
 }
 
-func (t *Object) ByteSizeGo(size string, name string, tagsize string) (string, map[string]string) {
+func (t *Object) ByteSizeGo(size string, name string, tagsize string, ignore bool) (string, map[string]string) {
 	pkgs := map[string]string{TYGO_PATH: ""}
 	var fields []string
 	if t.HasParent() {
@@ -158,7 +158,7 @@ func (t *Object) ByteSizeGo(size string, name string, tagsize string) (string, m
 		} else {
 			ts = fmt.Sprintf("tygo.TAG_SIZE(preFieldNum + %d) + ", p_num+i+1)
 		}
-		field_s, field_p := field.ByteSizeGo(size, fmt.Sprintf("%s.%s", name, field.Name), ts)
+		field_s, field_p := field.ByteSizeGo(size, fmt.Sprintf("%s.%s", name, field.Name), ts, true)
 		pkgs = update(pkgs, field_p)
 		fields = append(fields, fmt.Sprintf(`
 		// property: %s.%s%s
@@ -170,11 +170,11 @@ func (t *Object) ByteSizeGo(size string, name string, tagsize string) (string, m
 	}`, name, strings.Join(fields, "")), pkgs
 }
 
-func (t UnknownType) ByteSizeGo(size string, name string, tagsize string) (string, map[string]string) {
+func (t UnknownType) ByteSizeGo(size string, name string, tagsize string, ignore bool) (string, map[string]string) {
 	return "", nil
 }
 
-func (t SimpleType) ByteSizeGo(size string, name string, tagsize string) (string, map[string]string) {
+func (t SimpleType) ByteSizeGo(size string, name string, tagsize string, ignore bool) (string, map[string]string) {
 	switch t {
 	case SimpleType_INT32:
 		fallthrough
@@ -183,97 +183,134 @@ func (t SimpleType) ByteSizeGo(size string, name string, tagsize string) (string
 	case SimpleType_UINT32:
 		fallthrough
 	case SimpleType_UINT64:
-		return fmt.Sprintf(`
+		if ignore {
+			return fmt.Sprintf(`
 	// type: %s
 	if %s != 0 {
 		%s += %stygo.SizeVarint(uint64(%s))
 	}`, t, name, size, tagsize, name), map[string]string{TYGO_PATH: ""}
+		} else {
+			return fmt.Sprintf(`
+	// type: %s
+	%s += %stygo.SizeVarint(uint64(%s))`, t, size, tagsize, name), map[string]string{TYGO_PATH: ""}
+		}
 	case SimpleType_BYTES:
 		fallthrough
 	case SimpleType_STRING:
-		return fmt.Sprintf(`
+		if ignore {
+			return fmt.Sprintf(`
 	// type: %s
 	if len(%s) > 0 {
 		l := len([]byte(%s))
 		%s += %stygo.SizeVarint(uint64(l)) + l
 	}`, t, name, name, size, tagsize), map[string]string{TYGO_PATH: ""}
+		} else {
+			return fmt.Sprintf(`
+	// type: %s
+	{
+		l := len([]byte(%s))
+		%s += %stygo.SizeVarint(uint64(l)) + l
+	}`, t, name, size, tagsize), map[string]string{TYGO_PATH: ""}
+		}
 	case SimpleType_BOOL:
-		return fmt.Sprintf(`
+		if ignore {
+			return fmt.Sprintf(`
 	// type: %s
 	if %s {
 		%s += %s1
 	}`, t, name, size, tagsize), nil
+		} else {
+			return fmt.Sprintf(`
+	// type: %s
+	%s += %s1`, t, size, tagsize), nil
+		}
 	case SimpleType_FLOAT32:
-		return fmt.Sprintf(`
+		if ignore {
+			return fmt.Sprintf(`
 	// type: %s
 	if %s != 0 {
 		%s += %s4
 	}`, t, name, size, tagsize), nil
+		} else {
+			return fmt.Sprintf(`
+	// type: %s
+	%s += %s4`, t, size, tagsize), nil
+		}
 	case SimpleType_FLOAT64:
-		return fmt.Sprintf(`
+		if ignore {
+			return fmt.Sprintf(`
 	// type: %s
 	if %s != 0 {
 		%s += %s8
 	}`, t, name, size, tagsize), nil
+		} else {
+			return fmt.Sprintf(`
+	// type: %s
+	%s += %s8`, t, size, tagsize), nil
+		}
 	default:
 		log.Fatalf("[Tygo][SimpleType] Unexpect enum value: %d", t)
 		return "", nil
 	}
 }
 
-func (t *EnumType) ByteSizeGo(size string, name string, tagsize string) (string, map[string]string) {
-	return fmt.Sprintf(`
+func (t *EnumType) ByteSizeGo(size string, name string, tagsize string, ignore bool) (string, map[string]string) {
+	if ignore {
+		return fmt.Sprintf(`
 	// type: %s
 	if %s != 0 {
 		%s += %stygo.SizeVarint(uint64(%s))
 	}`, t, name, size, tagsize, name), map[string]string{TYGO_PATH: ""}
+	} else {
+		return fmt.Sprintf(`
+	// type: %s
+	%s += %stygo.SizeVarint(uint64(%s))`, t, size, tagsize, name), map[string]string{TYGO_PATH: ""}
+	}
 }
 
-func (t *InstanceType) ByteSizeGo(size string, name string, tagsize string) (string, map[string]string) {
-	var zero string
-	if t.IsPtr {
-		zero = "nil"
-	} else {
-		zero = "0"
-	}
-
-	return fmt.Sprintf(`
+func (t *InstanceType) ByteSizeGo(size string, name string, tagsize string, ignore bool) (string, map[string]string) {
+	if ignore {
+		var zero string
+		if t.IsPtr {
+			zero = "nil"
+		} else {
+			zero = "0"
+		}
+		return fmt.Sprintf(`
 	// type: %s
 	if %s != %s {
-		s := %s.ByteSize()
-		%s += %stygo.SizeVarint(uint64(s)) + s
+		si := %s.ByteSize()
+		%s += %stygo.SizeVarint(uint64(si)) + si
 	}`, t, name, zero, name, size, tagsize), map[string]string{TYGO_PATH: ""}
+	} else {
+		return fmt.Sprintf(`
+	// type: %s
+	{
+		si := %s.ByteSize()
+		%s += %stygo.SizeVarint(uint64(si)) + si
+	}`, t, name, size, tagsize), map[string]string{TYGO_PATH: ""}
+	}
 }
 
-func (t *FixedPointType) ByteSizeGo(size string, name string, tagsize string) (string, map[string]string) {
-	return fmt.Sprintf(`
+func (t *FixedPointType) ByteSizeGo(size string, name string, tagsize string, ignore bool) (string, map[string]string) {
+	if ignore {
+		return fmt.Sprintf(`
 	// type: %s
 	if %s != %d {
 		%s += %stygo.SizeVarint(uint64((%s - %d) * %d))
 	}`, t, name, t.Floor, size, tagsize, name, t.Floor, pow10(t.Precision)), map[string]string{TYGO_PATH: ""}
-}
-
-func (t *ListType) ByteSizeGo(size string, name string, tagsize string) (string, map[string]string) {
-	pkgs := map[string]string{TYGO_PATH: ""}
-
-	if t.E.IsPrimitive() {
-		element_s, element_p := t.E.ByteSizeGo("si", "e", "")
-		pkgs = update(pkgs, element_p)
-
+	} else {
 		return fmt.Sprintf(`
 	// type: %s
-	if len(%s) > 0 {
-		si := 0
-		for _, e := range %s {
-			// list element%s else {
-				si++
-			}
-		}
-		%s += %stygo.SizeVarint(uint64(si)) + si
-	}`, t, name, name, addIndent(element_s, 2), size, tagsize), pkgs
+	%s += %stygo.SizeVarint(uint64((%s - %d) * %d))`, t, size, tagsize, name, t.Floor, pow10(t.Precision)), map[string]string{TYGO_PATH: ""}
+	}
+}
 
-	} else {
-		element_s, element_p := t.E.ByteSizeGo(size, "e", tagsize)
+func (t *ListType) ByteSizeGo(size string, name string, tagsize string, ignore bool) (string, map[string]string) {
+	pkgs := map[string]string{TYGO_PATH: ""}
+
+	if !t.E.IsPrimitive() {
+		element_s, element_p := t.E.ByteSizeGo(size, "e", tagsize, true)
 		pkgs = update(pkgs, element_p)
 
 		return fmt.Sprintf(`
@@ -285,12 +322,47 @@ func (t *ListType) ByteSizeGo(size string, name string, tagsize string) (string,
 			}
 		}
 	}`, t, name, name, addIndent(element_s, 2), size, tagsize), pkgs
+
+	} else if st, ok := t.E.(SimpleType); ok && st == SimpleType_BOOL {
+		return fmt.Sprintf(`
+	// type: %s
+	if len(%s) > 0 {
+		si := len(%s)
+		%s += %stygo.SizeVarint(uint64(si)) + si
+	}`, t, name, name, size, tagsize), pkgs
+	} else if ok && st == SimpleType_FLOAT32 {
+		return fmt.Sprintf(`
+	// type: %s
+	if len(%s) > 0 {
+		si := len(%s) * 4
+		%s += %stygo.SizeVarint(uint64(si)) + si
+	}`, t, name, name, size, tagsize), pkgs
+	} else if ok && st == SimpleType_FLOAT64 {
+		return fmt.Sprintf(`
+	// type: %s
+	if len(%s) > 0 {
+		si := len(%s) * 8
+		%s += %stygo.SizeVarint(uint64(si)) + si
+	}`, t, name, name, size, tagsize), pkgs
+	} else {
+		element_s, element_p := t.E.ByteSizeGo("si", "e", "", false)
+		pkgs = update(pkgs, element_p)
+
+		return fmt.Sprintf(`
+	// type: %s
+	if len(%s) > 0 {
+		si := 0
+		for _, e := range %s {
+			// list element%s
+		}
+		%s += %stygo.SizeVarint(uint64(si)) + si
+	}`, t, name, name, addIndent(element_s, 2), size, tagsize), pkgs
 	}
 }
 
-func (t *DictType) ByteSizeGo(size string, name string, tagsize string) (string, map[string]string) {
-	key_s, key_p := t.K.ByteSizeGo("si", "k", "1 + ")
-	value_s, value_p := t.V.ByteSizeGo("si", "v", "1 + ")
+func (t *DictType) ByteSizeGo(size string, name string, tagsize string, ignore bool) (string, map[string]string) {
+	key_s, key_p := t.K.ByteSizeGo("si", "k", "1 + ", true)
+	value_s, value_p := t.V.ByteSizeGo("si", "v", "1 + ", true)
 	pkgs := map[string]string{TYGO_PATH: ""}
 	pkgs = update(pkgs, key_p)
 	pkgs = update(pkgs, value_p)
@@ -307,7 +379,7 @@ func (t *DictType) ByteSizeGo(size string, name string, tagsize string) (string,
 	}`, t, name, name, addIndent(key_s, 2), addIndent(value_s, 2), size, tagsize), pkgs
 }
 
-func (t *VariantType) ByteSizeGo(size string, name string, tagsize string) (string, map[string]string) {
+func (t *VariantType) ByteSizeGo(size string, name string, tagsize string, ignore bool) (string, map[string]string) {
 	var cases []string
 	tagInteger := 0
 	tagFloat32 := 0
@@ -335,12 +407,10 @@ func (t *VariantType) ByteSizeGo(size string, name string, tagsize string) (stri
 			}
 		}
 
-		variant_s, variant_p := st.ByteSizeGo("si", "v", fmt.Sprintf("%d + ", TAG_SIZE(i+1)))
+		variant_s, variant_p := st.ByteSizeGo("si", "v", fmt.Sprintf("%d + ", TAG_SIZE(i+1)), false)
 		cases = append(cases, fmt.Sprintf(`
 		// variant type: %s
-		case %s:%s else {
-				si += %d + 1
-			}`, st, type_s, addIndent(variant_s, 2), TAG_SIZE(i+1)))
+		case %s:%s`, st, type_s, addIndent(variant_s, 2)))
 		pkgs = update(pkgs, type_p)
 		pkgs = update(pkgs, variant_p)
 	}
@@ -369,14 +439,19 @@ func (t *VariantType) ByteSizeGo(size string, name string, tagsize string) (stri
 			si += %d`, TAG_SIZE(tagFloat32)+4))
 	}
 
+	var compareZero string
+	if ignore {
+		compareZero = fmt.Sprintf("if %s != nil ", name)
+	}
+
 	return fmt.Sprintf(`
 	// type: %s
-	if %s != nil {
+	%s{
 		si := 0
 		switch v := %s.(type) {%s
 		default:
 			panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for %s: %%v", v))
 		}
 		%s += %stygo.SizeVarint(uint64(si)) + si
-	}`, t, name, name, strings.Join(cases, ""), t, size, tagsize), pkgs
+	}`, t, compareZero, name, strings.Join(cases, ""), t, size, tagsize), pkgs
 }
