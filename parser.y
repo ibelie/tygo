@@ -2,7 +2,7 @@
 // Use of this source code is governed by The MIT License
 // that can be found in the LICENSE file.
 
-// This is a parser of tygo parser.
+// This is a parser of tygo.
 // To build it:
 // go tool yacc -o "parser.y.go" -p "tygo" parser.y
 
@@ -47,24 +47,28 @@ top:
 	enum '}' newline
 	{
 		parserTypes = append(parserTypes, $1)
+		parserTypeMap[$1.Name] = $1
 	}
 |	top enum '}' newline
 	{
 		parserTypes = append(parserTypes, $2)
+		parserTypeMap[$2.Name] = $2
 	}
 |	object '}' newline
 	{
 		if $1.Parent == nil {
-			$1.Parent = &ObjectType{PkgName: "tygo", PkgPath: TYGO_PATH, Name: "Tygo"}
+			$1.Parent = &InstanceType{PkgName: "tygo", PkgPath: TYGO_PATH, Name: "Tygo"}
 		}
 		parserTypes = append(parserTypes, $1)
+		parserTypeMap[$1.Name] = $1
 	}
 |	top object '}' newline
 	{
 		if $2.Parent == nil {
-			$2.Parent = &ObjectType{PkgName: "tygo", PkgPath: TYGO_PATH, Name: "Tygo"}
+			$2.Parent = &InstanceType{PkgName: "tygo", PkgPath: TYGO_PATH, Name: "Tygo"}
 		}
 		parserTypes = append(parserTypes, $2)
+		parserTypeMap[$2.Name] = $2
 	}
 
 enum:
@@ -180,27 +184,38 @@ spec:
 spec1:
 	IDENT
 	{
-		if pkg, ok := parserTypePkg[$1]; ok {
-			$$ = &ObjectType{PkgName: pkg[0], PkgPath: pkg[1], Name: $1}
+		if t, ok := parserTypeMap[$1]; ok {
+			switch i := t.(type) {
+			case *Enum:
+				$$ = &EnumType{Enum: i, Name: $1}
+			case *Object:
+				$$ = &InstanceType{Object: i, Name: $1}
+			default:
+				log.Fatalf("[Tygo][InstanceType] Unexpect type: %v", t)
+			}
+		} else if pkg, ok := parserTypePkg[$1]; ok {
+			$$ = &InstanceType{PkgName: pkg[0], PkgPath: pkg[1], Name: $1}
 		} else {
-			$$ = SimpleType($1)
+			$$ = SimpleType_FromString($1)
 		}
 	}
 |	IDENT '.' IDENT
 	{
-		$$ = &ObjectType{PkgName: $1, PkgPath: parserImports[$1], Name: $3}
+		$$ = &InstanceType{PkgName: $1, PkgPath: parserImports[$1], Name: $3}
 	}
 |	'*' IDENT
 	{
-		if pkg, ok := parserTypePkg[$2]; ok {
-			$$ = &ObjectType{IsPtr: true, PkgName: pkg[0], PkgPath: pkg[1], Name: $2}
+		if t, ok := parserTypeMap[$2]; ok {
+			$$ = &InstanceType{Object: t.(*Object), IsPtr: true, Name: $2}
+		} else if pkg, ok := parserTypePkg[$2]; ok {
+			$$ = &InstanceType{IsPtr: true, PkgName: pkg[0], PkgPath: pkg[1], Name: $2}
 		} else {
-			$$ = &ObjectType{IsPtr: true, Name: $2}
+			$$ = &InstanceType{IsPtr: true, Name: $2}
 		}
 	}
 |	'*' IDENT '.' IDENT
 	{
-		$$ = &ObjectType{IsPtr: true, PkgName: $2, PkgPath: parserImports[$2], Name: $4}
+		$$ = &InstanceType{IsPtr: true, PkgName: $2, PkgPath: parserImports[$2], Name: $4}
 	}
 
 newline:
@@ -214,12 +229,14 @@ var eiota int
 
 var (
 	parserTypes   []Type
+	parserTypeMap map[string]Type
 	parserImports map[string]string
 	parserTypePkg map[string][2]string
 )
 
 func Parse(code string, imports map[string]string, typePkg map[string][2]string) ([]Type) {
 	parserTypes   = nil
+	parserTypeMap = make(map[string]Type)
 	parserImports = imports
 	parserTypePkg = typePkg
 	tygoParse(&tygoLex{code: []byte(code)})

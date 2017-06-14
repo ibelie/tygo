@@ -271,14 +271,24 @@ func (s *%s) Deserialize(input *tygo.ProtoBuf) (err error) {
 %s`, t.Name, strings.Join(fields, ""), t.Name, t.Name, t.Name, strings.Join(methods, "")), pkgs
 }
 
-func (t SimpleType) Go() (string, map[string]string) {
-	if string(t) == "bytes" {
-		return "[]byte", nil
-	}
-	return string(t), nil
+func (t UnknownType) Go() (string, map[string]string) {
+	return "", nil
 }
 
-func (t *ObjectType) Go() (string, map[string]string) {
+func (t SimpleType) Go() (string, map[string]string) {
+	switch t {
+	case SimpleType_BYTES:
+		return "[]byte", nil
+	default:
+		return t.String(), nil
+	}
+}
+
+func (t *EnumType) Go() (string, map[string]string) {
+	return t.String(), nil
+}
+
+func (t *InstanceType) Go() (string, map[string]string) {
 	if t.PkgPath == "" {
 		return t.String(), nil
 	} else {

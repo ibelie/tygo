@@ -6,6 +6,7 @@ package tygo
 
 import (
 	"fmt"
+	"log"
 	"sort"
 	"strings"
 )
@@ -47,9 +48,31 @@ type Object struct {
 	Methods []*Method
 }
 
-type SimpleType string
+type UnknownType string
 
-type ObjectType struct {
+type SimpleType uint
+
+const (
+	SimpleType_UNKNOWN SimpleType = iota
+	SimpleType_NIL
+	SimpleType_INT32
+	SimpleType_INT64
+	SimpleType_UINT32
+	SimpleType_UINT64
+	SimpleType_BYTES
+	SimpleType_STRING
+	SimpleType_BOOL
+	SimpleType_FLOAT32
+	SimpleType_FLOAT64
+)
+
+type EnumType struct {
+	*Enum
+	Name string
+}
+
+type InstanceType struct {
+	*Object
 	IsPtr   bool
 	Name    string
 	PkgName string
@@ -163,11 +186,70 @@ func (t *Object) String() string {
 `, t.Name, strings.Join(fields, ""))
 }
 
-func (t SimpleType) String() string {
+func (t UnknownType) String() string {
 	return string(t)
 }
 
-func (t *ObjectType) String() string {
+func SimpleType_FromString(s string) Type {
+	switch s {
+	case "nil":
+		return SimpleType_NIL
+	case "int32":
+		return SimpleType_INT32
+	case "int64":
+		return SimpleType_INT64
+	case "uint32":
+		return SimpleType_UINT32
+	case "uint64":
+		return SimpleType_UINT64
+	case "bytes":
+		return SimpleType_BYTES
+	case "string":
+		return SimpleType_STRING
+	case "bool":
+		return SimpleType_BOOL
+	case "float32":
+		return SimpleType_FLOAT32
+	case "float64":
+		return SimpleType_FLOAT64
+	default:
+		return UnknownType(s)
+	}
+}
+
+func (t SimpleType) String() string {
+	switch t {
+	case SimpleType_NIL:
+		return "nil"
+	case SimpleType_INT32:
+		return "int32"
+	case SimpleType_INT64:
+		return "int64"
+	case SimpleType_UINT32:
+		return "uint32"
+	case SimpleType_UINT64:
+		return "uint64"
+	case SimpleType_BYTES:
+		return "bytes"
+	case SimpleType_STRING:
+		return "string"
+	case SimpleType_BOOL:
+		return "bool"
+	case SimpleType_FLOAT32:
+		return "float32"
+	case SimpleType_FLOAT64:
+		return "float64"
+	default:
+		log.Fatalf("[Tygo][SimpleType] Unexpect enum value: %d", t)
+		return "unknown"
+	}
+}
+
+func (t *EnumType) String() string {
+	return t.Name
+}
+
+func (t *InstanceType) String() string {
 	s := ""
 	if t.IsPtr {
 		s += "*"

@@ -129,49 +129,57 @@ func (t *Object) ByteSizeGo(name string, tagsize string) (string, map[string]str
 	return "", nil
 }
 
+func (t UnknownType) ByteSizeGo(name string, tagsize string) (string, map[string]string) {
+	return "", nil
+}
+
 func (t SimpleType) ByteSizeGo(name string, tagsize string) (string, map[string]string) {
-	switch string(t) {
-	case "int32":
+	switch t {
+	case SimpleType_INT32:
 		fallthrough
-	case "int64":
+	case SimpleType_INT64:
 		fallthrough
-	case "uint32":
+	case SimpleType_UINT32:
 		fallthrough
-	case "uint64":
+	case SimpleType_UINT64:
 		return fmt.Sprintf(`
 	if %s != 0 {
 		size += %s + tygo.SizeVarint(uint64(%s))
 	}`, name, tagsize, name), map[string]string{TYGO_PATH: ""}
-	case "bytes":
+	case SimpleType_BYTES:
 		fallthrough
-	case "string":
+	case SimpleType_STRING:
 		return fmt.Sprintf(`
 	if len(%s) > 0 {
 		l := len([]byte(%s))
 		size += %s + tygo.SizeVarint(l) + l
 	}`, name, name, tagsize), map[string]string{TYGO_PATH: ""}
-	case "bool":
+	case SimpleType_BOOL:
 		return fmt.Sprintf(`
 	if %s {
 		size += %s + 1
 	}`, name, tagsize), nil
-	case "float32":
+	case SimpleType_FLOAT32:
 		return fmt.Sprintf(`
 	if %s {
 		size += %s + 4
 	}`, name, tagsize), nil
-	case "float64":
+	case SimpleType_FLOAT64:
 		return fmt.Sprintf(`
 	if %s {
 		size += %s + 8
 	}`, name, tagsize), nil
 	default:
-		log.Fatalf("[Tygo][SimpleType] Unexpect type: %s", t)
+		log.Fatalf("[Tygo][SimpleType] Unexpect enum value: %d", t)
 		return "", nil
 	}
 }
 
-func (t *ObjectType) ByteSizeGo(name string, tagsize string) (string, map[string]string) {
+func (t *EnumType) ByteSizeGo(name string, tagsize string) (string, map[string]string) {
+	return "", nil
+}
+
+func (t *InstanceType) ByteSizeGo(name string, tagsize string) (string, map[string]string) {
 	return "", nil
 }
 
