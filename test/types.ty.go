@@ -484,7 +484,6 @@ func (s *Fighter_Part1) Serialize(output *tygo.ProtoBuf) {
 				output.WriteBytes(50) // tag: 50 MAKE_TAG(6, WireBytes=2)
 				// type: *Vector2
 				if e != nil {
-					output.WriteBytes(50) // tag: 50 MAKE_TAG(6, WireBytes=2)
 					output.WriteVarint(uint64(e.CachedSize()))
 					e.Serialize(output)
 				} else {
@@ -539,7 +538,6 @@ func (s *Fighter_Part1) Serialize(output *tygo.ProtoBuf) {
 				output.WriteBytes(66) // tag: 66 MAKE_TAG(8, WireBytes=2)
 				// type: *GoType
 				if e != nil {
-					output.WriteBytes(66) // tag: 66 MAKE_TAG(8, WireBytes=2)
 					output.WriteVarint(uint64(e.CachedSize()))
 					e.Serialize(output)
 				} else {
@@ -855,7 +853,6 @@ func (s *Fighter_Part2) Serialize(output *tygo.ProtoBuf) {
 				output.WriteBytes(106) // tag: 106 MAKE_TAG(13, WireBytes=2)
 				// type: bytes
 				if len(e) > 0 {
-					output.WriteBytes(106) // tag: 106 MAKE_TAG(13, WireBytes=2)
 					d := []byte(e)
 					output.WriteVarint(uint64(len(d)))
 					output.Write(d)
@@ -873,7 +870,6 @@ func (s *Fighter_Part2) Serialize(output *tygo.ProtoBuf) {
 				output.WriteBytes(114) // tag: 114 MAKE_TAG(14, WireBytes=2)
 				// type: string
 				if len(e) > 0 {
-					output.WriteBytes(114) // tag: 114 MAKE_TAG(14, WireBytes=2)
 					d := []byte(e)
 					output.WriteVarint(uint64(len(d)))
 					output.Write(d)
@@ -2159,7 +2155,6 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 					default:
 						panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, fixedpoint<3, 0>, string, *Vector2>: %v", v))
 					}
-					output.WriteBytes(202, 1) // tag: 202 MAKE_TAG(25, WireBytes=2)
 					output.WriteVarint(uint64(tSize))
 					switch v := e.(type) {
 					// variant type serialize: int32
@@ -2428,7 +2423,6 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 							default:
 								panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<Corpus, float64, string, *Vector2>: %v", v))
 							}
-							output.WriteBytes(18) // tag: 18 MAKE_TAG(2, WireBytes=2)
 							output.WriteVarint(uint64(tSizee))
 							switch v := e.(type) {
 							// variant type serialize: Corpus
@@ -2916,7 +2910,6 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 							default:
 								panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<float32, string>: %v", v))
 							}
-							output.WriteBytes(18) // tag: 18 MAKE_TAG(2, WireBytes=2)
 							output.WriteVarint(uint64(tSizee))
 							switch v := e.(type) {
 							// variant type serialize: float32

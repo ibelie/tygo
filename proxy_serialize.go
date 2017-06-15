@@ -259,7 +259,7 @@ func (t *ListType) SerializeGo(size string, name string, preFieldNum string, fie
 	}`, t, name, name, tempSize, addIndent(bytesize_s, 2), writeTag(preFieldNum, fieldNum, WireBytes, 2), tempSize, addIndent(serialize_s, 2)), pkgs
 		}
 	} else if !t.E.IsPrimitive() {
-		element_s, element_p := t.E.SerializeGo(size, "e", preFieldNum, fieldNum, true)
+		element_s, element_p := t.E.SerializeGo(size, "e", "", 0, true)
 		pkgs = update(pkgs, element_p)
 
 		return fmt.Sprintf(`

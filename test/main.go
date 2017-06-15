@@ -6,9 +6,14 @@ package main
 
 import (
 	"fmt"
+	"github.com/ibelie/tygo"
 )
 
 func main() {
-	fmt.Println(v.ByteSize())
-	fmt.Println(fighter.ByteSize())
+	vd := &tygo.ProtoBuf{Buffer: make([]byte, v.ByteSize())}
+	v.Serialize(vd)
+	fmt.Println(len(vd.Buffer), vd.Buffer)
+	fd := &tygo.ProtoBuf{Buffer: make([]byte, fighter.ByteSize())}
+	fighter.Serialize(fd)
+	fmt.Println(len(fd.Buffer))
 }
