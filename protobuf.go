@@ -309,7 +309,21 @@ func (t *FixedPointType) ByteSizeGo(size string, name string, tagsize string, ig
 func (t *ListType) ByteSizeGo(size string, name string, tagsize string, ignore bool) (string, map[string]string) {
 	pkgs := map[string]string{TYGO_PATH: ""}
 
-	if !t.E.IsPrimitive() {
+	if _, ok := t.E.(*ListType); ok {
+		element_s, element_p := t.E.ByteSizeGo("si", "e", "", true)
+		pkgs = update(pkgs, element_p)
+
+		return fmt.Sprintf(`
+	// type: %s
+	if len(%s) > 0 {
+		for _, e := range %s {
+			si := 0
+			// list element%s
+			%s += %stygo.SizeVarint(uint64(si)) + si
+		}
+	}`, t, name, name, addIndent(element_s, 2), size, tagsize), pkgs
+
+	} else if !t.E.IsPrimitive() {
 		element_s, element_p := t.E.ByteSizeGo(size, "e", tagsize, true)
 		pkgs = update(pkgs, element_p)
 

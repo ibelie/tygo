@@ -220,6 +220,7 @@ func (s *Fighter_Part1) ByteSize() (size int) {
 		// type: [][]*Vector2
 		if len(s.Posll) > 0 {
 			for _, e := range s.Posll {
+				si := 0
 				// list element
 				// type: []*Vector2
 				if len(e) > 0 {
@@ -228,14 +229,13 @@ func (s *Fighter_Part1) ByteSize() (size int) {
 						// type: *Vector2
 						if e != nil {
 							si := e.ByteSize()
-							size += 1 + tygo.SizeVarint(uint64(si)) + si
+							si += tygo.SizeVarint(uint64(si)) + si
 						} else {
-							size += 1 + 1
+							si += 1
 						}
 					}
-				} else {
-					size += 1 + 1
 				}
+				size += 1 + tygo.SizeVarint(uint64(si)) + si
 			}
 		}
 
@@ -467,14 +467,14 @@ func (s *Fighter_Part2) ByteSize() (size int) {
 		// type: [][]float32
 		if len(s.Ll) > 0 {
 			for _, e := range s.Ll {
+				si := 0
 				// list element
 				// type: []float32
 				if len(e) > 0 {
 					si := len(e) * 4
-					size += 2 + tygo.SizeVarint(uint64(si)) + si
-				} else {
-					size += 2 + 1
+					si += tygo.SizeVarint(uint64(si)) + si
 				}
+				size += 2 + tygo.SizeVarint(uint64(si)) + si
 			}
 		}
 
