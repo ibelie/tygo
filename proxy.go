@@ -175,16 +175,22 @@ func typeListGo(owner string, name string, typ string, ts []Type) (string, map[s
 	var items []string
 	var itemsComment []string
 	var itemsByteSize []string
+	var itemsSerialize []string
 	for i, t := range ts {
 		item_s, item_p := t.Go()
-		bytesize_s, bytesize_p := t.ByteSizeGo("size", fmt.Sprintf("a%d", i), "", i, true)
+		bytesize_s, bytesize_p := t.ByteSizeGo("size", fmt.Sprintf("a%d", i), "", i+1, true)
+		serialize_s, serialize_p := t.SerializeGo("size", fmt.Sprintf("a%d", i), "", i+1, true)
 		pkgs = update(pkgs, item_p)
 		pkgs = update(pkgs, bytesize_p)
+		pkgs = update(pkgs, serialize_p)
 		items = append(items, fmt.Sprintf("a%d %s", i, item_s))
 		itemsComment = append(itemsComment, fmt.Sprintf("a%d: %s", i, t))
 		itemsByteSize = append(itemsByteSize, fmt.Sprintf(`
-	// %s: a%d%s
+	// %s size: a%d%s
 `, typ, i, bytesize_s))
+		itemsSerialize = append(itemsSerialize, fmt.Sprintf(`
+	// %s serialize: a%d%s
+`, typ, i, serialize_s))
 	}
 
 	Typ := strings.Title(typ)
@@ -198,6 +204,8 @@ func %sSerialize%s%s(%s) (data []byte) {
 		return
 	}
 	data = make([]byte, size)
+	output := &tygo.ProtoBuf{Buffer: data}
+%s
 	return
 }
 
@@ -206,7 +214,7 @@ func %sDeserialize%s%s(data []byte) (%s, err error) {
 	return
 }
 `, name, Typ, itemComment, owner, name, Typ, strings.Join(items, ", "),
-		strings.Join(itemsByteSize, ""),
+		strings.Join(itemsByteSize, ""), strings.Join(itemsSerialize, ""),
 		name, Typ, itemComment, owner, name, Typ, strings.Join(items, ", ")), pkgs
 }
 
