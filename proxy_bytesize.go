@@ -10,8 +10,6 @@ import (
 	"strings"
 )
 
-const SIZE_PREFIX = "tSize"
-
 func tagSize(preFieldNum string, fieldNum int) (string, map[string]string) {
 	if preFieldNum == "" {
 		if fieldNum <= 0 {
@@ -20,7 +18,7 @@ func tagSize(preFieldNum string, fieldNum int) (string, map[string]string) {
 			return fmt.Sprintf("%d + ", TAG_SIZE(fieldNum)), nil
 		}
 	} else {
-		return fmt.Sprintf("tygo.TAG_SIZE(%s + %d) + ", preFieldNum, fieldNum), map[string]string{TYGO_PATH: ""}
+		return fmt.Sprintf("tygo.TAG_SIZE(%s + %d) + ", preFieldNum, fieldNum), updateTygo(nil)
 	}
 }
 
@@ -28,7 +26,7 @@ func (t *Enum) ByteSizeGo(size string, name string, preFieldNum string, fieldNum
 	return fmt.Sprintf(`
 	if %s != 0 {
 		%s = tygo.SizeVarint(uint64(%s))
-	}`, name, size, name), map[string]string{TYGO_PATH: ""}
+	}`, name, size, name), updateTygo(nil)
 }
 
 func (t *Method) ByteSizeGo(size string, name string, preFieldNum string, fieldNum int, ignore bool) (string, map[string]string) {
@@ -36,7 +34,7 @@ func (t *Method) ByteSizeGo(size string, name string, preFieldNum string, fieldN
 }
 
 func (t *Object) ByteSizeGo(size string, name string, preFieldNum string, fieldNum int, ignore bool) (string, map[string]string) {
-	pkgs := map[string]string{TYGO_PATH: ""}
+	var pkgs map[string]string
 	var fields []string
 	if t.HasParent() {
 		fields = append(fields, fmt.Sprintf(`
@@ -246,7 +244,7 @@ func (t *ListType) _ByteSizeGo(size string, name string, preFieldNum string, fie
 	if isCached {
 		bytesizeMethod = t.E.CachedSizeGo
 	}
-	pkgs := map[string]string{TYGO_PATH: ""}
+	var pkgs map[string]string
 	tagsize_s, tagsize_p := tagSize(preFieldNum, fieldNum)
 	pkgs = update(pkgs, tagsize_p)
 
@@ -274,7 +272,7 @@ func (t *ListType) _ByteSizeGo(size string, name string, preFieldNum string, fie
 			// list element%s
 			%s += %stygo.SizeVarint(uint64(%s)) + %s
 		}
-	}`, t, name, name, tempSize, addIndent(element_s, 2), size, tagsize_s, tempSize, tempSize), pkgs
+	}`, t, name, name, tempSize, addIndent(element_s, 2), size, tagsize_s, tempSize, tempSize), updateTygo(pkgs)
 		}
 	} else if !t.E.IsPrimitive() {
 		element_s, element_p := bytesizeMethod(size, "e", preFieldNum, fieldNum, true)
@@ -296,21 +294,21 @@ func (t *ListType) _ByteSizeGo(size string, name string, preFieldNum string, fie
 	if len(%s) > 0 {
 		%s := len(%s)
 		%s += %stygo.SizeVarint(uint64(%s)) + %s
-	}`, t, name, tempSize, name, size, tagsize_s, tempSize, tempSize), pkgs
+	}`, t, name, tempSize, name, size, tagsize_s, tempSize, tempSize), updateTygo(pkgs)
 	} else if ok && st == SimpleType_FLOAT32 {
 		return fmt.Sprintf(`
 	// type: %s
 	if len(%s) > 0 {
 		%s := len(%s) * 4
 		%s += %stygo.SizeVarint(uint64(%s)) + %s
-	}`, t, name, tempSize, name, size, tagsize_s, tempSize, tempSize), pkgs
+	}`, t, name, tempSize, name, size, tagsize_s, tempSize, tempSize), updateTygo(pkgs)
 	} else if ok && st == SimpleType_FLOAT64 {
 		return fmt.Sprintf(`
 	// type: %s
 	if len(%s) > 0 {
 		%s := len(%s) * 8
 		%s += %stygo.SizeVarint(uint64(%s)) + %s
-	}`, t, name, tempSize, name, size, tagsize_s, tempSize, tempSize), pkgs
+	}`, t, name, tempSize, name, size, tagsize_s, tempSize, tempSize), updateTygo(pkgs)
 	} else {
 		element_s, element_p := bytesizeMethod(tempSize, "e", "", 0, false)
 		pkgs = update(pkgs, element_p)
@@ -323,7 +321,7 @@ func (t *ListType) _ByteSizeGo(size string, name string, preFieldNum string, fie
 			// list element%s
 		}
 		%s += %stygo.SizeVarint(uint64(%s)) + %s
-	}`, t, name, tempSize, name, addIndent(element_s, 2), size, tagsize_s, tempSize, tempSize), pkgs
+	}`, t, name, tempSize, name, addIndent(element_s, 2), size, tagsize_s, tempSize, tempSize), updateTygo(pkgs)
 	}
 }
 
@@ -343,7 +341,7 @@ func (t *DictType) _ByteSizeGo(size string, name string, preFieldNum string, fie
 	}
 	value_s, value_p := bytesizeMethod(tempSize, "v", "", 2, true)
 	tagsize_s, tagsize_p := tagSize(preFieldNum, fieldNum)
-	pkgs := map[string]string{TYGO_PATH: ""}
+	pkgs := updateTygo(nil)
 	pkgs = update(pkgs, key_p)
 	pkgs = update(pkgs, value_p)
 	pkgs = update(pkgs, tagsize_p)
@@ -370,7 +368,7 @@ func (t *VariantType) _ByteSizeGo(size string, name string, preFieldNum string, 
 	tagFloat32 := 0
 	tagFloat64 := 0
 	tagsize_s, tagsize_p := tagSize(preFieldNum, fieldNum)
-	pkgs := map[string]string{TYGO_PATH: ""}
+	pkgs := updateTygo(nil)
 	pkgs = update(pkgs, tagsize_p)
 
 	for i, st := range t.Ts {

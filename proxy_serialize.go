@@ -44,7 +44,7 @@ func (t *Method) SerializeGo(size string, name string, preFieldNum string, field
 }
 
 func (t *Object) SerializeGo(size string, name string, preFieldNum string, fieldNum int, ignore bool) (string, map[string]string) {
-	pkgs := map[string]string{TYGO_PATH: ""}
+	var pkgs map[string]string
 	var fields []string
 	if t.HasParent() {
 		fields = append(fields, fmt.Sprintf(`
@@ -145,11 +145,11 @@ func (t SimpleType) SerializeGo(size string, name string, preFieldNum string, fi
 	// type: %s
 	if %s != 0 {%s
 		output.WriteFixed32(math.Float32bits(%s))
-	}`, t, name, writeTag(preFieldNum, fieldNum, WireFixed32, 1), name), map[string]string{"math": ""}
+	}`, t, name, writeTag(preFieldNum, fieldNum, WireFixed32, 1), name), MATH_PKG
 		} else {
 			return fmt.Sprintf(`
 	// type: %s%s
-	output.WriteFixed32(math.Float32bits(%s))`, t, writeTag(preFieldNum, fieldNum, WireFixed32, 0), name), map[string]string{"math": ""}
+	output.WriteFixed32(math.Float32bits(%s))`, t, writeTag(preFieldNum, fieldNum, WireFixed32, 0), name), MATH_PKG
 		}
 	case SimpleType_FLOAT64:
 		if ignore {
@@ -157,11 +157,11 @@ func (t SimpleType) SerializeGo(size string, name string, preFieldNum string, fi
 	// type: %s
 	if %s != 0 {%s
 		output.WriteFixed64(math.Float64bits(%s))
-	}`, t, name, writeTag(preFieldNum, fieldNum, WireFixed64, 1), name), map[string]string{"math": ""}
+	}`, t, name, writeTag(preFieldNum, fieldNum, WireFixed64, 1), name), MATH_PKG
 		} else {
 			return fmt.Sprintf(`
 	// type: %s%s
-	output.WriteFixed64(math.Float64bits(%s))`, t, writeTag(preFieldNum, fieldNum, WireFixed64, 0), name), map[string]string{"math": ""}
+	output.WriteFixed64(math.Float64bits(%s))`, t, writeTag(preFieldNum, fieldNum, WireFixed64, 0), name), MATH_PKG
 		}
 	default:
 		log.Fatalf("[Tygo][SimpleType] Unexpect enum value: %d", t)
@@ -400,7 +400,7 @@ func (t *VariantType) SerializeGo(size string, name string, preFieldNum string, 
 		// addition type serialize: int -> float32
 		case int:%s
 			output.WriteFixed32(math.Float32bits(float32(v)))`, writeTag("", tagFloat32, WireFixed32, 2)))
-		pkgs = update(pkgs, map[string]string{"math": ""})
+		pkgs = update(pkgs, MATH_PKG)
 	} else if tagFloat64 != 0 {
 		bytesize_cases = append(bytesize_cases, fmt.Sprintf(`
 		// addition type size: int -> float64
@@ -410,7 +410,7 @@ func (t *VariantType) SerializeGo(size string, name string, preFieldNum string, 
 		// addition type serialize: int -> float64
 		case int:%s
 			output.WriteFixed64(math.Float64bits(float64(v)))`, writeTag("", tagFloat64, WireFixed64, 2)))
-		pkgs = update(pkgs, map[string]string{"math": ""})
+		pkgs = update(pkgs, MATH_PKG)
 	}
 
 	if tagFloat32 != 0 && tagFloat64 == 0 {
@@ -422,7 +422,7 @@ func (t *VariantType) SerializeGo(size string, name string, preFieldNum string, 
 		// addition type serialize: float64 -> float32
 		case float64:%s
 			output.WriteFixed32(math.Float32bits(float32(v)))`, writeTag("", tagFloat32, WireFixed32, 2)))
-		pkgs = update(pkgs, map[string]string{"math": ""})
+		pkgs = update(pkgs, MATH_PKG)
 	}
 
 	var compareZero string
