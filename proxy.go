@@ -124,8 +124,8 @@ func (t *Enum) Go() (string, map[string]string) {
 		values = append(values, fmt.Sprintf(`
 	%s_%s %s%s = %d`, t.Name, name, strings.Repeat(" ", t.nameMax-len(name)), t.Name, t.Values[name]))
 	}
-	bytesize_s, bytesize_p := t.ByteSizeGo("size", "i", "", true)
-	serialize_s, serialize_p := t.SerializeGo("i", "", true)
+	bytesize_s, bytesize_p := t.ByteSizeGo("size", "i", "", 0, true)
+	serialize_s, serialize_p := t.SerializeGo("size", "i", "", 0, true)
 	pkgs = update(pkgs, bytesize_p)
 	pkgs = update(pkgs, serialize_p)
 	return fmt.Sprintf(`
@@ -177,7 +177,7 @@ func typeListGo(owner string, name string, typ string, ts []Type) (string, map[s
 	var itemsByteSize []string
 	for i, t := range ts {
 		item_s, item_p := t.Go()
-		bytesize_s, bytesize_p := t.ByteSizeGo("size", fmt.Sprintf("a%d", i), fmt.Sprintf("%d + ", TAG_SIZE(i+1)), true)
+		bytesize_s, bytesize_p := t.ByteSizeGo("size", fmt.Sprintf("a%d", i), "", i, true)
 		pkgs = update(pkgs, item_p)
 		pkgs = update(pkgs, bytesize_p)
 		items = append(items, fmt.Sprintf("a%d %s", i, item_s))
@@ -253,8 +253,8 @@ func (t *Object) Go() (string, map[string]string) {
 		mfn_n = fmt.Sprintf("s.%s.MaxFieldNum() + ", mfn_n)
 	}
 
-	bytesize_s, bytesize_p := t.ByteSizeGo("size", "s", "", true)
-	serialize_s, serialize_p := t.SerializeGo("s", "", true)
+	bytesize_s, bytesize_p := t.ByteSizeGo("size", "s", "", 0, true)
+	serialize_s, serialize_p := t.SerializeGo("size", "s", "", 0, true)
 	pkgs = update(pkgs, bytesize_p)
 	pkgs = update(pkgs, serialize_p)
 

@@ -14,7 +14,7 @@ const (
 	WireTypeMask = (1 << WireTypeBits) - 1
 )
 
-type WireType uint8
+type WireType int
 
 const (
 	WireVarint WireType = iota
@@ -25,11 +25,31 @@ const (
 	WireFixed32
 )
 
-func MAKE_TAG(fieldNum uint32, wireType WireType) uint32 {
-	return (fieldNum << WireTypeBits) | uint32(wireType)
+func (i WireType) String() string {
+	switch i {
+	case WireVarint:
+		return "WireVarint"
+	case WireFixed64:
+		return "WireFixed64"
+	case WireBytes:
+		return "WireBytes"
+	case WireStartGroup:
+		return "WireStartGroup"
+	case WireEndGroup:
+		return "WireEndGroup"
+	case WireFixed32:
+		return "WireFixed32"
+	default:
+		panic(fmt.Sprintf("[Tygo][WireType] Unexpect enum value: %d", i))
+		return "Unknown"
+	}
 }
 
-func MAX_TAG(fieldNum uint32) uint32 {
+func MAKE_TAG(fieldNum int, wireType WireType) int {
+	return (fieldNum << WireTypeBits) | int(wireType)
+}
+
+func MAX_TAG(fieldNum int) int {
 	return MAKE_TAG(fieldNum, WireTypeMask)
 }
 
@@ -37,11 +57,11 @@ func TAG_SIZE(fieldNum int) int {
 	return SizeVarint(uint64(fieldNum << WireTypeBits))
 }
 
-func TAG_FIELD(tag uint32) uint32 {
+func TAG_FIELD(tag int) int {
 	return tag >> WireTypeBits
 }
 
-func TAG_WIRE(tag uint32) uint32 {
+func TAG_WIRE(tag int) int {
 	return tag & WireTypeMask
 }
 
@@ -114,13 +134,13 @@ func (p *ProtoBuf) WriteBytes(x ...byte) {
 	}
 }
 
-func (p *ProtoBuf) ReadByte() (byte, error) {
+func (p *ProtoBuf) ReadBool() (bool, error) {
 	if p.offset >= len(p.Buffer) {
-		return 0, io.EOF
+		return false, io.EOF
 	} else {
 		b := p.Buffer[p.offset]
 		p.offset++
-		return b, nil
+		return b != 0, nil
 	}
 }
 
@@ -161,27 +181,27 @@ func (p *ProtoBuf) ReadFixed64() (uint64, error) {
 	if p.offset+8 > len(p.Buffer) {
 		return 0, io.EOF
 	} else {
-		x := uint32(p.Buffer[p.offset+0]) |
-			uint32(p.Buffer[p.offset+1])<<8 |
-			uint32(p.Buffer[p.offset+2])<<16 |
-			uint32(p.Buffer[p.offset+3])<<24 |
-			uint32(p.Buffer[p.offset+4])<<32 |
-			uint32(p.Buffer[p.offset+5])<<40 |
-			uint32(p.Buffer[p.offset+6])<<48 |
-			uint32(p.Buffer[p.offset+7])<<56
+		x := uint64(p.Buffer[p.offset+0]) |
+			uint64(p.Buffer[p.offset+1])<<8 |
+			uint64(p.Buffer[p.offset+2])<<16 |
+			uint64(p.Buffer[p.offset+3])<<24 |
+			uint64(p.Buffer[p.offset+4])<<32 |
+			uint64(p.Buffer[p.offset+5])<<40 |
+			uint64(p.Buffer[p.offset+6])<<48 |
+			uint64(p.Buffer[p.offset+7])<<56
 		p.offset += 8
 		return x, nil
 	}
 }
 
-func (p *ProtoBuf) WriteTag(fieldNum uint32, wireType WireType) {
+func (p *ProtoBuf) WriteTag(fieldNum int, wireType WireType) {
 	p.WriteVarint(uint64(MAKE_TAG(fieldNum, wireType)))
 }
 
-func (p *ProtoBuf) ReadTag(cutoff uint32) (uint32, error) {
+func (p *ProtoBuf) ReadTag(cutoff uint32) (int, error) {
 	return 0, nil
 }
 
-func (p *ProtoBuf) SkipField(fieldNum uint32) error {
+func (p *ProtoBuf) SkipField(fieldNum int) error {
 	return nil
 }

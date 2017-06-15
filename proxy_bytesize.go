@@ -55,10 +55,11 @@ func (t *Object) ByteSizeGo(size string, name string, preFieldNum string, fieldN
 	if p_name != "" {
 		fields = append(fields, fmt.Sprintf(`
 		preFieldNum := %s.%s.MaxFieldNum()`, name, p_name))
+		p_name = "preFieldNum"
 	}
 
 	for i, field := range t.Fields {
-		field_s, field_p := field.ByteSizeGo(size, fmt.Sprintf("%s.%s", name, field.Name), "preFieldNum", p_num+i+1, true)
+		field_s, field_p := field.ByteSizeGo(size, fmt.Sprintf("%s.%s", name, field.Name), p_name, p_num+i+1, true)
 		pkgs = update(pkgs, field_p)
 		fields = append(fields, fmt.Sprintf(`
 		// property: %s.%s%s
@@ -276,7 +277,7 @@ func (t *ListType) _ByteSizeGo(size string, name string, preFieldNum string, fie
 	}`, t, name, name, tempSize, addIndent(element_s, 2), size, tagsize_s, tempSize, tempSize), pkgs
 		}
 	} else if !t.E.IsPrimitive() {
-		element_s, element_p := bytesizeMethod(size, "e", pre, tag, true)
+		element_s, element_p := bytesizeMethod(size, "e", preFieldNum, fieldNum, true)
 		pkgs = update(pkgs, element_p)
 
 		return fmt.Sprintf(`

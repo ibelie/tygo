@@ -20,10 +20,10 @@ func writeTag(preFieldNum string, fieldNum int, wireType WireType, indent int) s
 			tagbuf.WriteTag(fieldNum, wireType)
 			var tagbytes []string
 			for _, i := range tagbuf.Buffer {
-				tagbytes = append(tagbytes, strconv.Itoa(i))
+				tagbytes = append(tagbytes, strconv.Itoa(int(i)))
 			}
 			return fmt.Sprintf(`
-	%soutput.WriteBytes(%s) // tag: %d MAKE_TAG(%d, %s(%d))`, strings.Repeat("\t", indent),
+	%soutput.WriteBytes(%s) // tag: %d MAKE_TAG(%d, %s=%d)`, strings.Repeat("\t", indent),
 				strings.Join(tagbytes, ", "), MAKE_TAG(fieldNum, wireType), fieldNum, wireType, wireType)
 		}
 	} else {
@@ -63,10 +63,11 @@ func (t *Object) SerializeGo(size string, name string, preFieldNum string, field
 	if p_name != "" {
 		fields = append(fields, fmt.Sprintf(`
 		preFieldNum := %s.%s.MaxFieldNum()`, name, p_name))
+		p_name = "preFieldNum"
 	}
 
 	for i, field := range t.Fields {
-		field_s, field_p := field.SerializeGo(size, fmt.Sprintf("%s.%s", name, field.Name), "preFieldNum", p_num+i+1, true)
+		field_s, field_p := field.SerializeGo(size, fmt.Sprintf("%s.%s", name, field.Name), p_name, p_num+i+1, true)
 		pkgs = update(pkgs, field_p)
 		fields = append(fields, fmt.Sprintf(`
 		// property: %s.%s%s
@@ -127,12 +128,16 @@ func (t SimpleType) SerializeGo(size string, name string, preFieldNum string, fi
 			return fmt.Sprintf(`
 	// type: %s
 	if %s {%s
-		output.WriteBytes(byte(%s))
-	}`, t, name, writeTag(preFieldNum, fieldNum, WireVarint, 1), name), nil
+		output.WriteBytes(1)
+	}`, t, name, writeTag(preFieldNum, fieldNum, WireVarint, 1)), nil
 		} else {
 			return fmt.Sprintf(`
 	// type: %s%s
-	output.WriteBytes(byte(%s))`, t, writeTag(preFieldNum, fieldNum, WireVarint, 0), name), nil
+	if %s {
+		output.WriteBytes(1)
+	} else {
+		output.WriteBytes(0)
+	}`, t, writeTag(preFieldNum, fieldNum, WireVarint, 1), name), nil
 		}
 	case SimpleType_FLOAT32:
 		if ignore {
@@ -268,23 +273,37 @@ func (t *ListType) SerializeGo(size string, name string, preFieldNum string, fie
 	}`, t, name, name, writeTag(preFieldNum, fieldNum, WireBytes, 2), addIndent(element_s, 2)), pkgs
 
 	} else {
-		bytesize_s, bytesize_p := t.E.CachedSizeGo(tempSize, "e", "", 0, false)
+		var bytesize_s string
+		var bytesize_p map[string]string
+		if st, ok := t.E.(SimpleType); ok && st == SimpleType_BOOL {
+			bytesize_s = fmt.Sprintf(`
+		%s := len(%s)`, tempSize, name)
+		} else if ok && st == SimpleType_FLOAT32 {
+			bytesize_s = fmt.Sprintf(`
+		%s := len(%s) * 4`, tempSize, name)
+		} else if ok && st == SimpleType_FLOAT64 {
+			bytesize_s = fmt.Sprintf(`
+		%s := len(%s) * 8`, tempSize, name)
+		} else {
+			bytesize_s, bytesize_p = t.E.CachedSizeGo(tempSize, "e", "", 0, false)
+			bytesize_s = fmt.Sprintf(`
+		%s := 0
+		for _, e := range %s {
+			// list element size%s
+		}`, tempSize, name, addIndent(bytesize_s, 2))
+			pkgs = update(pkgs, bytesize_p)
+		}
 		serialize_s, serialize_p := t.E.SerializeGo(tempSize, "e", "", 0, false)
-		pkgs = update(pkgs, bytesize_p)
 		pkgs = update(pkgs, serialize_p)
 
 		return fmt.Sprintf(`
 	// type: %s
-	if len(%s) > 0 {
-		%s := 0
-		for _, e := range %s {
-			// list element size%s
-		}%s
+	if len(%s) > 0 {%s%s
 		output.WriteVarint(uint64(%s))
 		for _, e := range %s {
 			// list element serialize%s
 		}
-	}`, t, name, tempSize, name, addIndent(bytesize_p, 2), writeTag(preFieldNum, fieldNum, WireBytes, 1), tempSize, name, addIndent(serialize_s, 2)), pkgs
+	}`, t, name, bytesize_s, writeTag(preFieldNum, fieldNum, WireBytes, 1), tempSize, name, addIndent(serialize_s, 2)), pkgs
 	}
 }
 
@@ -324,10 +343,10 @@ func (t *VariantType) SerializeGo(size string, name string, preFieldNum string, 
 	}
 	var bytesize_cases []string
 	var serialize_cases []string
+	var pkgs map[string]string
 	tagInteger := 0
 	tagFloat32 := 0
 	tagFloat64 := 0
-	pkgs := nil
 
 	for i, st := range t.Ts {
 		type_s, type_p := st.Go()
@@ -357,7 +376,7 @@ func (t *VariantType) SerializeGo(size string, name string, preFieldNum string, 
 		pkgs = update(pkgs, serialize_p)
 		bytesize_cases = append(bytesize_cases, fmt.Sprintf(`
 		// variant type size: %s
-		case %s:%s`, st, type_s, addIndent(variant_s, 2)))
+		case %s:%s`, st, type_s, addIndent(bytesize_s, 2)))
 		serialize_cases = append(serialize_cases, fmt.Sprintf(`
 		// variant type serialize: %s
 		case %s:%s`, st, type_s, addIndent(serialize_s, 2)))
@@ -380,7 +399,7 @@ func (t *VariantType) SerializeGo(size string, name string, preFieldNum string, 
 		serialize_cases = append(serialize_cases, fmt.Sprintf(`
 		// addition type serialize: int -> float32
 		case int:%s
-			output.WriteFixed32(math.Float32bits(v))`, writeTag("", tagFloat32, WireFixed32, 2)))
+			output.WriteFixed32(math.Float32bits(float32(v)))`, writeTag("", tagFloat32, WireFixed32, 2)))
 		pkgs = update(pkgs, map[string]string{"math": ""})
 	} else if tagFloat64 != 0 {
 		bytesize_cases = append(bytesize_cases, fmt.Sprintf(`
@@ -390,7 +409,7 @@ func (t *VariantType) SerializeGo(size string, name string, preFieldNum string, 
 		serialize_cases = append(serialize_cases, fmt.Sprintf(`
 		// addition type serialize: int -> float64
 		case int:%s
-			output.WriteFixed64(math.Float64bits(v))`, writeTag("", tagFloat64, WireFixed64, 2)))
+			output.WriteFixed64(math.Float64bits(float64(v)))`, writeTag("", tagFloat64, WireFixed64, 2)))
 		pkgs = update(pkgs, map[string]string{"math": ""})
 	}
 
@@ -402,7 +421,7 @@ func (t *VariantType) SerializeGo(size string, name string, preFieldNum string, 
 		serialize_cases = append(serialize_cases, fmt.Sprintf(`
 		// addition type serialize: float64 -> float32
 		case float64:%s
-			output.WriteFixed32(math.Float32bits(v))`, writeTag("", tagFloat32, WireFixed32, 2)))
+			output.WriteFixed32(math.Float32bits(float32(v)))`, writeTag("", tagFloat32, WireFixed32, 2)))
 		pkgs = update(pkgs, map[string]string{"math": ""})
 	}
 
