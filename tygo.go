@@ -14,15 +14,24 @@ import (
 const TYGO_PATH = "github.com/ibelie/tygo"
 
 type Tygo struct {
-	CachedSize int
+	cachedSize int
+}
+
+func (t *Tygo) SetCachedSize(cachedSize int) {
+	t.cachedSize = cachedSize
+}
+
+func (t *Tygo) CachedSize() int {
+	return t.cachedSize
 }
 
 type Type interface {
 	String() string
 	IsPrimitive() bool
 	Go() (string, map[string]string)
-	ByteSizeGo(string, string, string, bool) (string, map[string]string)
-	// SerializeGo(string, string, bool) (string, map[string]string)
+	ByteSizeGo(string, string, string, int, bool) (string, map[string]string)
+	CachedSizeGo(string, string, string, int, bool) (string, map[string]string)
+	SerializeGo(string, string, string, int, bool) (string, map[string]string)
 }
 
 type Enum struct {
@@ -68,6 +77,11 @@ const (
 	SimpleType_FLOAT64
 )
 
+type FixedPointType struct {
+	Precision uint
+	Floor     int
+}
+
 type EnumType struct {
 	*Enum
 	Name string
@@ -79,11 +93,6 @@ type InstanceType struct {
 	Name    string
 	PkgName string
 	PkgPath string
-}
-
-type FixedPointType struct {
-	Precision uint
-	Floor     int
 }
 
 type ListType struct {
@@ -136,16 +145,16 @@ func (t SimpleType) IsPrimitive() bool {
 	}
 }
 
+func (t *FixedPointType) IsPrimitive() bool {
+	return true
+}
+
 func (t *EnumType) IsPrimitive() bool {
 	return true
 }
 
 func (t *InstanceType) IsPrimitive() bool {
 	return false
-}
-
-func (t *FixedPointType) IsPrimitive() bool {
-	return true
 }
 
 func (t *ListType) IsPrimitive() bool {
@@ -323,6 +332,10 @@ func (t SimpleType) String() string {
 	}
 }
 
+func (t *FixedPointType) String() string {
+	return fmt.Sprintf("fixedpoint<%d, %d>", t.Precision, t.Floor)
+}
+
 func (t *EnumType) String() string {
 	return t.Name
 }
@@ -337,10 +350,6 @@ func (t *InstanceType) String() string {
 	}
 	s += t.Name
 	return s
-}
-
-func (t *FixedPointType) String() string {
-	return fmt.Sprintf("fixedpoint<%d, %d>", t.Precision, t.Floor)
 }
 
 func (t *ListType) String() string {

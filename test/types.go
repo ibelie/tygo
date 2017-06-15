@@ -95,6 +95,10 @@ func (g *GoType) ByteSize() int {
 	}
 }
 
+func (g *GoType) CachedSize() int {
+	return g.ByteSize()
+}
+
 func (g *GoType) Serialize(w io.Writer) {
 	gob.NewEncoder(w).Encode(g)
 }

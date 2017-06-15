@@ -107,6 +107,77 @@ func (p *ProtoBuf) ReadVarint() (uint64, error) {
 	return 0, io.EOF
 }
 
+func (p *ProtoBuf) WriteBytes(x ...byte) {
+	for _, b := range x {
+		p.Buffer[p.offset] = b
+		p.offset++
+	}
+}
+
+func (p *ProtoBuf) ReadByte() (byte, error) {
+	if p.offset >= len(p.Buffer) {
+		return 0, io.EOF
+	} else {
+		b := p.Buffer[p.offset]
+		p.offset++
+		return b, nil
+	}
+}
+
+func (p *ProtoBuf) WriteFixed32(x uint32) {
+	p.Buffer[p.offset+0] = byte(x)
+	p.Buffer[p.offset+1] = byte(x >> 8)
+	p.Buffer[p.offset+2] = byte(x >> 16)
+	p.Buffer[p.offset+3] = byte(x >> 24)
+	p.offset += 4
+}
+
+func (p *ProtoBuf) ReadFixed32() (uint32, error) {
+	if p.offset+4 > len(p.Buffer) {
+		return 0, io.EOF
+	} else {
+		x := uint32(p.Buffer[p.offset+0]) |
+			uint32(p.Buffer[p.offset+1])<<8 |
+			uint32(p.Buffer[p.offset+2])<<16 |
+			uint32(p.Buffer[p.offset+3])<<24
+		p.offset += 4
+		return x, nil
+	}
+}
+
+func (p *ProtoBuf) WriteFixed64(x uint64) {
+	p.Buffer[p.offset+0] = byte(x)
+	p.Buffer[p.offset+1] = byte(x >> 8)
+	p.Buffer[p.offset+2] = byte(x >> 16)
+	p.Buffer[p.offset+3] = byte(x >> 24)
+	p.Buffer[p.offset+4] = byte(x >> 32)
+	p.Buffer[p.offset+5] = byte(x >> 40)
+	p.Buffer[p.offset+6] = byte(x >> 48)
+	p.Buffer[p.offset+7] = byte(x >> 56)
+	p.offset += 8
+}
+
+func (p *ProtoBuf) ReadFixed64() (uint64, error) {
+	if p.offset+8 > len(p.Buffer) {
+		return 0, io.EOF
+	} else {
+		x := uint32(p.Buffer[p.offset+0]) |
+			uint32(p.Buffer[p.offset+1])<<8 |
+			uint32(p.Buffer[p.offset+2])<<16 |
+			uint32(p.Buffer[p.offset+3])<<24 |
+			uint32(p.Buffer[p.offset+4])<<32 |
+			uint32(p.Buffer[p.offset+5])<<40 |
+			uint32(p.Buffer[p.offset+6])<<48 |
+			uint32(p.Buffer[p.offset+7])<<56
+		p.offset += 8
+		return x, nil
+	}
+}
+
+func (p *ProtoBuf) WriteTag(fieldNum uint32, wireType WireType) {
+	p.WriteVarint(uint64(MAKE_TAG(fieldNum, wireType)))
+}
+
 func (p *ProtoBuf) ReadTag(cutoff uint32) (uint32, error) {
 	return 0, nil
 }

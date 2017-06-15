@@ -34,6 +34,14 @@ func update(a map[string]string, b map[string]string) map[string]string {
 	return a
 }
 
+func updateTygo(a map[string]string) map[string]string {
+	if a == nil {
+		return map[string]string{TYGO_PATH: ""}
+	}
+	a[TYGO_PATH] = ""
+	return a
+}
+
 func addIndent(text string, indent int) string {
 	if indent <= 0 || strings.TrimSpace(text) == "" {
 		return text

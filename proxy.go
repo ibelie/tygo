@@ -124,8 +124,10 @@ func (t *Enum) Go() (string, map[string]string) {
 		values = append(values, fmt.Sprintf(`
 	%s_%s %s%s = %d`, t.Name, name, strings.Repeat(" ", t.nameMax-len(name)), t.Name, t.Values[name]))
 	}
-	enum_s, enum_p := t.ByteSizeGo("size", "i", "", true)
-	pkgs = update(pkgs, enum_p)
+	bytesize_s, bytesize_p := t.ByteSizeGo("size", "i", "", true)
+	serialize_s, serialize_p := t.SerializeGo("i", "", true)
+	pkgs = update(pkgs, bytesize_p)
+	pkgs = update(pkgs, serialize_p)
 	return fmt.Sprintf(`
 type %s uint
 
@@ -144,8 +146,11 @@ func (i %s) ByteSize() (size int) {%s
 	return
 }
 
-func (i %s) Serialize(output *tygo.ProtoBuf) {
-	output.WriteVarint(uint64(i))
+func (i %s) CachedSize() int {
+	return i.ByteSize()
+}
+
+func (i %s) Serialize(output *tygo.ProtoBuf) {%s
 }
 
 func (i *%s) Deserialize(input *tygo.ProtoBuf) (err error) {
@@ -154,7 +159,7 @@ func (i *%s) Deserialize(input *tygo.ProtoBuf) (err error) {
 	return
 }
 `, t.Name, strings.Join(values, ""), t.Name, strings.Join(names, ""),
-		t.Name, t.Name, enum_s, t.Name, t.Name, t.Name), pkgs
+		t.Name, t.Name, bytesize_s, t.Name, t.Name, serialize_s, t.Name, t.Name), pkgs
 }
 
 func (t *Method) Go() (string, map[string]string) {
@@ -249,7 +254,9 @@ func (t *Object) Go() (string, map[string]string) {
 	}
 
 	bytesize_s, bytesize_p := t.ByteSizeGo("size", "s", "", true)
+	serialize_s, serialize_p := t.SerializeGo("s", "", true)
 	pkgs = update(pkgs, bytesize_p)
+	pkgs = update(pkgs, serialize_p)
 
 	return fmt.Sprintf(`
 type %s struct {%s
@@ -260,18 +267,18 @@ func (s *%s) MaxFieldNum() int {
 }
 
 func (s *%s) ByteSize() (size int) {%s
-	s.CachedSize = size
+	s.SetCachedSize(size)
 	return
 }
 
-func (s *%s) Serialize(output *tygo.ProtoBuf) {
+func (s *%s) Serialize(output *tygo.ProtoBuf) {%s
 }
 
 func (s *%s) Deserialize(input *tygo.ProtoBuf) (err error) {
 	return
 }
 %s`, t.Name, strings.Join(fields, ""), t.Name, mfn_n, mfn_i, t.Name, bytesize_s,
-		t.Name, t.Name, strings.Join(methods, "")), pkgs
+		t.Name, serialize_s, t.Name, strings.Join(methods, "")), pkgs
 }
 
 func (t UnknownType) Go() (string, map[string]string) {
