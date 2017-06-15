@@ -22,6 +22,7 @@ type Type interface {
 	IsPrimitive() bool
 	Go() (string, map[string]string)
 	ByteSizeGo(string, string, string, bool) (string, map[string]string)
+	// SerializeGo(string, string, bool) (string, map[string]string)
 }
 
 type Enum struct {
