@@ -14,7 +14,7 @@ import (
 const TYGO_PATH = "github.com/ibelie/tygo"
 
 type Tygo struct {
-	cachedSize int
+	CachedSize int
 }
 
 type Type interface {

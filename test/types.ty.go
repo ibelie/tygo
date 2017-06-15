@@ -112,6 +112,7 @@ func (s *Vector2) ByteSize() (size int) {
 		}
 
 	}
+	s.CachedSize = size
 	return
 }
 
@@ -325,6 +326,7 @@ func (s *Fighter_Part1) ByteSize() (size int) {
 		}
 
 	}
+	s.CachedSize = size
 	return
 }
 
@@ -479,6 +481,7 @@ func (s *Fighter_Part2) ByteSize() (size int) {
 		}
 
 	}
+	s.CachedSize = size
 	return
 }
 
@@ -1173,6 +1176,7 @@ func (s *Fighter) ByteSize() (size int) {
 		}
 
 	}
+	s.CachedSize = size
 	return
 }
 
@@ -1183,9 +1187,40 @@ func (s *Fighter) Deserialize(input *tygo.ProtoBuf) (err error) {
 	return
 }
 
-// RPG Params(a0: *Fighter, a1: variant<nil, int32>, a2: fixedpoint<3, 0>)
+// RPG Param(a0: *Fighter, a1: variant<nil, int32>, a2: fixedpoint<3, 0>)
 func (s *Fighter) SerializeRPGParam(a0 *Fighter, a1 interface{}, a2 float64) (data []byte) {
 	size := 0
+	// param: a0
+	// type: *Fighter
+	if a0 != nil {
+		tSize := a0.ByteSize()
+		size += 1 + tygo.SizeVarint(uint64(tSize)) + tSize
+	}
+
+	// param: a1
+	// type: variant<nil, int32>
+	if a1 != nil {
+		tSize := 0
+		switch v := a1.(type) {
+		// variant type: int32
+		case int32:
+			// type: int32
+			tSize += 1 + tygo.SizeVarint(uint64(v))
+		// addition type: int
+		case int:
+			tSize += 1 + tygo.SizeVarint(uint64(v))
+		default:
+			panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<nil, int32>: %v", v))
+		}
+		size += 1 + tygo.SizeVarint(uint64(tSize)) + tSize
+	}
+
+	// param: a2
+	// type: fixedpoint<3, 0>
+	if a2 != 0 {
+		size += 1 + tygo.SizeVarint(uint64((a2 - 0) * 1000))
+	}
+
 	if size <= 0 {
 		return
 	}
@@ -1193,14 +1228,45 @@ func (s *Fighter) SerializeRPGParam(a0 *Fighter, a1 interface{}, a2 float64) (da
 	return
 }
 
-// RPG Params(a0: *Fighter, a1: variant<nil, int32>, a2: fixedpoint<3, 0>)
+// RPG Param(a0: *Fighter, a1: variant<nil, int32>, a2: fixedpoint<3, 0>)
 func (s *Fighter) DeserializeRPGParam(data []byte) (a0 *Fighter, a1 interface{}, a2 float64, err error) {
 	return
 }
 
-// RPG Results(a0: *Vector2)
-func (s *Fighter) SerializeRPGResult(a0 *Vector2) (data []byte) {
+// RPG Result(a0: *Fighter, a1: variant<nil, int32>, a2: fixedpoint<3, 0>)
+func (s *Fighter) SerializeRPGResult(a0 *Fighter, a1 interface{}, a2 float64) (data []byte) {
 	size := 0
+	// result: a0
+	// type: *Fighter
+	if a0 != nil {
+		tSize := a0.ByteSize()
+		size += 1 + tygo.SizeVarint(uint64(tSize)) + tSize
+	}
+
+	// result: a1
+	// type: variant<nil, int32>
+	if a1 != nil {
+		tSize := 0
+		switch v := a1.(type) {
+		// variant type: int32
+		case int32:
+			// type: int32
+			tSize += 1 + tygo.SizeVarint(uint64(v))
+		// addition type: int
+		case int:
+			tSize += 1 + tygo.SizeVarint(uint64(v))
+		default:
+			panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<nil, int32>: %v", v))
+		}
+		size += 1 + tygo.SizeVarint(uint64(tSize)) + tSize
+	}
+
+	// result: a2
+	// type: fixedpoint<3, 0>
+	if a2 != 0 {
+		size += 1 + tygo.SizeVarint(uint64((a2 - 0) * 1000))
+	}
+
 	if size <= 0 {
 		return
 	}
@@ -1208,14 +1274,63 @@ func (s *Fighter) SerializeRPGResult(a0 *Vector2) (data []byte) {
 	return
 }
 
-// RPG Results(a0: *Vector2)
-func (s *Fighter) DeserializeRPGResult(data []byte) (a0 *Vector2, err error) {
+// RPG Result(a0: *Fighter, a1: variant<nil, int32>, a2: fixedpoint<3, 0>)
+func (s *Fighter) DeserializeRPGResult(data []byte) (a0 *Fighter, a1 interface{}, a2 float64, err error) {
 	return
 }
 
-// GPR Params(a0: map[int32]variant<Corpus, float64, string, *Vector2>)
+// GPR Param(a0: map[int32]variant<Corpus, float64, string, *Vector2>)
 func (s *Fighter) SerializeGPRParam(a0 map[int32]interface{}) (data []byte) {
 	size := 0
+	// param: a0
+	// type: map[int32]variant<Corpus, float64, string, *Vector2>
+	if len(a0) > 0 {
+		for k, v := range a0 {
+			tSize := 0
+			// dict key
+			// type: int32
+			if k != 0 {
+				tSize += 1 + tygo.SizeVarint(uint64(k))
+			}
+			// dict value
+			// type: variant<Corpus, float64, string, *Vector2>
+			if v != nil {
+				tSizee := 0
+				switch v := v.(type) {
+				// variant type: Corpus
+				case Corpus:
+					// type: Corpus
+					tSizee += 1 + tygo.SizeVarint(uint64(v))
+				// variant type: float64
+				case float64:
+					// type: float64
+					tSizee += 1 + 8
+				// variant type: string
+				case string:
+					// type: string
+					{
+						l := len([]byte(v))
+						tSizee += 1 + tygo.SizeVarint(uint64(l)) + l
+					}
+				// variant type: *Vector2
+				case *Vector2:
+					// type: *Vector2
+					{
+						tSizeee := v.ByteSize()
+						tSizee += 1 + tygo.SizeVarint(uint64(tSizeee)) + tSizeee
+					}
+				// addition type: int -> float64
+				case int:
+					tSizee += 9
+				default:
+					panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<Corpus, float64, string, *Vector2>: %v", v))
+				}
+				tSize += 1 + tygo.SizeVarint(uint64(tSizee)) + tSizee
+			}
+			size += 1 + tygo.SizeVarint(uint64(tSize)) + tSize
+		}
+	}
+
 	if size <= 0 {
 		return
 	}
@@ -1223,14 +1338,63 @@ func (s *Fighter) SerializeGPRParam(a0 map[int32]interface{}) (data []byte) {
 	return
 }
 
-// GPR Params(a0: map[int32]variant<Corpus, float64, string, *Vector2>)
+// GPR Param(a0: map[int32]variant<Corpus, float64, string, *Vector2>)
 func (s *Fighter) DeserializeGPRParam(data []byte) (a0 map[int32]interface{}, err error) {
 	return
 }
 
-// GPR Results(a0: *Fighter, a1: int32)
-func (s *Fighter) SerializeGPRResult(a0 *Fighter, a1 int32) (data []byte) {
+// GPR Result(a0: map[int32]variant<Corpus, float64, string, *Vector2>)
+func (s *Fighter) SerializeGPRResult(a0 map[int32]interface{}) (data []byte) {
 	size := 0
+	// result: a0
+	// type: map[int32]variant<Corpus, float64, string, *Vector2>
+	if len(a0) > 0 {
+		for k, v := range a0 {
+			tSize := 0
+			// dict key
+			// type: int32
+			if k != 0 {
+				tSize += 1 + tygo.SizeVarint(uint64(k))
+			}
+			// dict value
+			// type: variant<Corpus, float64, string, *Vector2>
+			if v != nil {
+				tSizee := 0
+				switch v := v.(type) {
+				// variant type: Corpus
+				case Corpus:
+					// type: Corpus
+					tSizee += 1 + tygo.SizeVarint(uint64(v))
+				// variant type: float64
+				case float64:
+					// type: float64
+					tSizee += 1 + 8
+				// variant type: string
+				case string:
+					// type: string
+					{
+						l := len([]byte(v))
+						tSizee += 1 + tygo.SizeVarint(uint64(l)) + l
+					}
+				// variant type: *Vector2
+				case *Vector2:
+					// type: *Vector2
+					{
+						tSizeee := v.ByteSize()
+						tSizee += 1 + tygo.SizeVarint(uint64(tSizeee)) + tSizeee
+					}
+				// addition type: int -> float64
+				case int:
+					tSizee += 9
+				default:
+					panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<Corpus, float64, string, *Vector2>: %v", v))
+				}
+				tSize += 1 + tygo.SizeVarint(uint64(tSizee)) + tSizee
+			}
+			size += 1 + tygo.SizeVarint(uint64(tSize)) + tSize
+		}
+	}
+
 	if size <= 0 {
 		return
 	}
@@ -1238,7 +1402,7 @@ func (s *Fighter) SerializeGPRResult(a0 *Fighter, a1 int32) (data []byte) {
 	return
 }
 
-// GPR Results(a0: *Fighter, a1: int32)
-func (s *Fighter) DeserializeGPRResult(data []byte) (a0 *Fighter, a1 int32, err error) {
+// GPR Result(a0: map[int32]variant<Corpus, float64, string, *Vector2>)
+func (s *Fighter) DeserializeGPRResult(data []byte) (a0 map[int32]interface{}, err error) {
 	return
 }

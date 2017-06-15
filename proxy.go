@@ -158,22 +158,37 @@ func (i *%s) Deserialize(input *tygo.ProtoBuf) (err error) {
 }
 
 func (t *Method) Go() (string, map[string]string) {
-	var s string
+	return "", nil
+}
+
+func typeListGo(owner string, name string, typ string, ts []Type) (string, map[string]string) {
+	if ts == nil {
+		return "", nil
+	}
+
 	var pkgs map[string]string
-	var params []string
-	var paramsComment []string
-	for i, param := range t.Params {
-		param_s, param_p := param.Go()
-		pkgs = update(pkgs, param_p)
-		params = append(params, fmt.Sprintf("a%d %s", i, param_s))
-		paramsComment = append(paramsComment, fmt.Sprintf("a%d: %s", i, param))
+	var items []string
+	var itemsComment []string
+	var itemsByteSize []string
+	for i, t := range ts {
+		item_s, item_p := t.Go()
+		bytesize_s, bytesize_p := t.ByteSizeGo("size", fmt.Sprintf("a%d", i), fmt.Sprintf("%d + ", TAG_SIZE(i+1)), true)
+		pkgs = update(pkgs, item_p)
+		pkgs = update(pkgs, bytesize_p)
+		items = append(items, fmt.Sprintf("a%d %s", i, item_s))
+		itemsComment = append(itemsComment, fmt.Sprintf("a%d: %s", i, t))
+		itemsByteSize = append(itemsByteSize, fmt.Sprintf(`
+	// %s: a%d%s
+`, typ, i, bytesize_s))
 	}
-	paramComment := strings.Join(paramsComment, ", ")
-	if params != nil {
-		s += fmt.Sprintf(`
-// %s Params(%s)
-func Serialize%sParam(%s) (data []byte) {
-	size := 0
+
+	Typ := strings.Title(typ)
+	itemComment := strings.Join(itemsComment, ", ")
+
+	return fmt.Sprintf(`
+// %s %s(%s)
+func %sSerialize%s%s(%s) (data []byte) {
+	size := 0%s
 	if size <= 0 {
 		return
 	}
@@ -181,43 +196,13 @@ func Serialize%sParam(%s) (data []byte) {
 	return
 }
 
-// %s Params(%s)
-func Deserialize%sParam(data []byte) (%s, err error) {
+// %s %s(%s)
+func %sDeserialize%s%s(data []byte) (%s, err error) {
 	return
 }
-`, t.Name, paramComment, t.Name, strings.Join(params, ", "),
-			t.Name, paramComment, t.Name, strings.Join(params, ", "))
-	}
-
-	var results []string
-	var resultsComment []string
-	for i, result := range t.Results {
-		result_s, result_p := result.Go()
-		pkgs = update(pkgs, result_p)
-		results = append(results, fmt.Sprintf("a%d %s", i, result_s))
-		resultsComment = append(resultsComment, fmt.Sprintf("a%d: %s", i, result))
-	}
-	resultComment := strings.Join(resultsComment, ", ")
-	if results != nil {
-		s += fmt.Sprintf(`
-// %s Results(%s)
-func Serialize%sResult(%s) (data []byte) {
-	size := 0
-	if size <= 0 {
-		return
-	}
-	data = make([]byte, size)
-	return
-}
-
-// %s Results(%s)
-func Deserialize%sResult(data []byte) (%s, err error) {
-	return
-}
-`, t.Name, resultComment, t.Name, strings.Join(results, ", "),
-			t.Name, resultComment, t.Name, strings.Join(results, ", "))
-	}
-	return s, pkgs
+`, name, Typ, itemComment, owner, name, Typ, strings.Join(items, ", "),
+		strings.Join(itemsByteSize, ""),
+		name, Typ, itemComment, owner, name, Typ, strings.Join(items, ", ")), pkgs
 }
 
 func (t *Object) Go() (string, map[string]string) {
@@ -250,11 +235,12 @@ func (t *Object) Go() (string, map[string]string) {
 
 	var methods []string
 	for _, method := range t.Methods {
-		method_s, method_p := method.Go()
-		pkgs = update(pkgs, method_p)
-		method_s = strings.Replace(method_s, "func Serialize", fmt.Sprintf("func (s *%s) Serialize", t.Name), -1)
-		method_s = strings.Replace(method_s, "func Deserialize", fmt.Sprintf("func (s *%s) Deserialize", t.Name), -1)
-		methods = append(methods, method_s)
+		param_s, param_p := typeListGo(fmt.Sprintf("(s *%s) ", t.Name), method.Name, "param", method.Params)
+		result_s, result_p := typeListGo(fmt.Sprintf("(s *%s) ", t.Name), method.Name, "result", method.Params)
+		pkgs = update(pkgs, param_p)
+		pkgs = update(pkgs, result_p)
+		methods = append(methods, param_s)
+		methods = append(methods, result_s)
 	}
 
 	mfn_n, mfn_i := t.MaxFieldNum()
@@ -274,6 +260,7 @@ func (s *%s) MaxFieldNum() int {
 }
 
 func (s *%s) ByteSize() (size int) {%s
+	s.CachedSize = size
 	return
 }
 
