@@ -130,8 +130,10 @@ func (t *Enum) Go() (string, map[string]string) {
 	}
 	bytesize_s, bytesize_p := t.ByteSizeGo("size", "i", "", 0, true)
 	serialize_s, serialize_p := t.SerializeGo("size", "i", "", 0, true)
+	deserialize_s, deserialize_p := t.SerializeGo("i", "", 0)
 	pkgs = update(pkgs, bytesize_p)
 	pkgs = update(pkgs, serialize_p)
+	pkgs = update(pkgs, deserialize_p)
 	return fmt.Sprintf(`
 type %s uint
 
@@ -157,13 +159,11 @@ func (i %s) CachedSize() int {
 func (i %s) Serialize(output *tygo.ProtoBuf) {%s
 }
 
-func (i *%s) Deserialize(input *tygo.ProtoBuf) (err error) {
-	x, err := input.ReadVarint()
-	*i = %s(x)
+func (i *%s) Deserialize(input *tygo.ProtoBuf) (err error) {%s
 	return
 }
 `, t.Name, strings.Join(values, ""), t.Name, strings.Join(names, ""),
-		t.Name, t.Name, bytesize_s, t.Name, t.Name, serialize_s, t.Name, t.Name), pkgs
+		t.Name, t.Name, bytesize_s, t.Name, t.Name, serialize_s, t.Name, deserialize_s), pkgs
 }
 
 func (t *Method) Go() (string, map[string]string) {

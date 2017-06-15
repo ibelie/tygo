@@ -134,13 +134,13 @@ func (p *ProtoBuf) WriteBytes(x ...byte) {
 	}
 }
 
-func (p *ProtoBuf) ReadBool() (bool, error) {
+func (p *ProtoBuf) ReadByte() (byte, error) {
 	if p.offset >= len(p.Buffer) {
 		return false, io.EOF
 	} else {
 		b := p.Buffer[p.offset]
 		p.offset++
-		return b != 0, nil
+		return b, nil
 	}
 }
 
