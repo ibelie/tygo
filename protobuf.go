@@ -136,7 +136,7 @@ func (p *ProtoBuf) WriteBytes(x ...byte) {
 
 func (p *ProtoBuf) ReadByte() (byte, error) {
 	if p.offset >= len(p.Buffer) {
-		return false, io.EOF
+		return 0, io.EOF
 	} else {
 		b := p.Buffer[p.offset]
 		p.offset++
