@@ -204,9 +204,9 @@ func (t *VariantType) ByteSizeGo(size string, name string, preFieldNum string, f
 
 func (t *InstanceType) _ByteSizeGo(size string, name string, preFieldNum string, fieldNum int, ignore bool, isCached bool) (string, map[string]string) {
 	tagsize_s, tagsize_p := tagSize(preFieldNum, fieldNum)
-	tempSize := SIZE_PREFIX
-	if strings.HasPrefix(size, SIZE_PREFIX) {
-		tempSize = size + "e"
+	tempSize := TEMP_PREFIX
+	if strings.HasPrefix(size, TEMP_PREFIX) {
+		tempSize = size + "p"
 	}
 	bytesizeMethod := "ByteSize"
 	if isCached {
@@ -236,9 +236,9 @@ func (t *InstanceType) _ByteSizeGo(size string, name string, preFieldNum string,
 }
 
 func (t *ListType) _ByteSizeGo(size string, name string, preFieldNum string, fieldNum int, ignore bool, isCached bool) (string, map[string]string) {
-	tempSize := SIZE_PREFIX
-	if strings.HasPrefix(size, SIZE_PREFIX) {
-		tempSize = size + "e"
+	tempSize := TEMP_PREFIX
+	if strings.HasPrefix(size, TEMP_PREFIX) {
+		tempSize = size + "p"
 	}
 	bytesizeMethod := t.E.ByteSizeGo
 	if isCached {
@@ -326,9 +326,9 @@ func (t *ListType) _ByteSizeGo(size string, name string, preFieldNum string, fie
 }
 
 func (t *DictType) _ByteSizeGo(size string, name string, preFieldNum string, fieldNum int, ignore bool, isCached bool) (string, map[string]string) {
-	tempSize := SIZE_PREFIX
-	if strings.HasPrefix(size, SIZE_PREFIX) {
-		tempSize = size + "e"
+	tempSize := TEMP_PREFIX
+	if strings.HasPrefix(size, TEMP_PREFIX) {
+		tempSize = size + "p"
 	}
 	bytesizeMethod := t.K.ByteSizeGo
 	if isCached {
@@ -359,9 +359,9 @@ func (t *DictType) _ByteSizeGo(size string, name string, preFieldNum string, fie
 }
 
 func (t *VariantType) _ByteSizeGo(size string, name string, preFieldNum string, fieldNum int, ignore bool, isCached bool) (string, map[string]string) {
-	tempSize := SIZE_PREFIX
-	if strings.HasPrefix(size, SIZE_PREFIX) {
-		tempSize = size + "e"
+	tempSize := TEMP_PREFIX
+	if strings.HasPrefix(size, TEMP_PREFIX) {
+		tempSize = size + "p"
 	}
 	var cases []string
 	tagInteger := 0

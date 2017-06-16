@@ -24,11 +24,11 @@ func writeTag(preFieldNum string, fieldNum int, wireType WireType, indent int) s
 			}
 			return fmt.Sprintf(`
 	%soutput.WriteBytes(%s) // tag: %d MAKE_TAG(%d, %s=%d)`, strings.Repeat("\t", indent),
-				strings.Join(tagbytes, ", "), MAKE_TAG(fieldNum, wireType), fieldNum, wireType, wireType)
+				strings.Join(tagbytes, ", "), _MAKE_TAG(fieldNum, wireType), fieldNum, wireType, wireType)
 		}
 	} else {
 		return fmt.Sprintf(`
-	%soutput.WriteTag(%s + %d)`, strings.Repeat("\t", indent), preFieldNum, fieldNum)
+	%soutput.WriteTag(%s + %d, %d)`, strings.Repeat("\t", indent), preFieldNum, fieldNum, wireType)
 	}
 }
 
@@ -110,17 +110,13 @@ func (t SimpleType) SerializeGo(size string, name string, preFieldNum string, fi
 			return fmt.Sprintf(`
 	// type: %s
 	if len(%s) > 0 {%s
-		d := []byte(%s)
-		output.WriteVarint(uint64(len(d)))
-		output.Write(d)
+		output.WriteBuf([]byte(%s))
 	}`, t, name, writeTag(preFieldNum, fieldNum, WireBytes, 1), name), nil
 		} else {
 			return fmt.Sprintf(`
 	// type: %s
 	{%s
-		d := []byte(%s)
-		output.WriteVarint(uint64(len(d)))
-		output.Write(d)
+		output.WriteBuf([]byte(%s))
 	}`, t, writeTag(preFieldNum, fieldNum, WireBytes, 1), name), nil
 		}
 	case SimpleType_BOOL:
@@ -222,9 +218,9 @@ func (t *InstanceType) SerializeGo(size string, name string, preFieldNum string,
 }
 
 func (t *ListType) SerializeGo(size string, name string, preFieldNum string, fieldNum int, ignore bool) (string, map[string]string) {
-	tempSize := SIZE_PREFIX
-	if strings.HasPrefix(size, SIZE_PREFIX) {
-		tempSize = size + "e"
+	tempSize := TEMP_PREFIX
+	if strings.HasPrefix(size, TEMP_PREFIX) {
+		tempSize = size + "p"
 	}
 	var pkgs map[string]string
 
@@ -308,9 +304,9 @@ func (t *ListType) SerializeGo(size string, name string, preFieldNum string, fie
 }
 
 func (t *DictType) SerializeGo(size string, name string, preFieldNum string, fieldNum int, ignore bool) (string, map[string]string) {
-	tempSize := SIZE_PREFIX
-	if strings.HasPrefix(size, SIZE_PREFIX) {
-		tempSize = size + "e"
+	tempSize := TEMP_PREFIX
+	if strings.HasPrefix(size, TEMP_PREFIX) {
+		tempSize = size + "p"
 	}
 	key_b_s, key_b_p := t.K.CachedSizeGo(tempSize, "k", "", 1, true)
 	key_s_s, key_s_p := t.K.SerializeGo(tempSize, "k", "", 1, true)
@@ -337,9 +333,9 @@ func (t *DictType) SerializeGo(size string, name string, preFieldNum string, fie
 }
 
 func (t *VariantType) SerializeGo(size string, name string, preFieldNum string, fieldNum int, ignore bool) (string, map[string]string) {
-	tempSize := SIZE_PREFIX
-	if strings.HasPrefix(size, SIZE_PREFIX) {
-		tempSize = size + "e"
+	tempSize := TEMP_PREFIX
+	if strings.HasPrefix(size, TEMP_PREFIX) {
+		tempSize = size + "p"
 	}
 	var bytesize_cases []string
 	var serialize_cases []string

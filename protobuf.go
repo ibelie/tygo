@@ -5,6 +5,7 @@
 package tygo
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 )
@@ -45,24 +46,24 @@ func (i WireType) String() string {
 	}
 }
 
-func MAKE_TAG(fieldNum int, wireType WireType) int {
+func _MAKE_TAG(fieldNum int, wireType WireType) int {
 	return (fieldNum << WireTypeBits) | int(wireType)
 }
 
-func MAX_TAG(fieldNum int) int {
-	return MAKE_TAG(fieldNum, WireTypeMask)
+func _MAX_TAG(fieldNum int) int {
+	return _MAKE_TAG(fieldNum, WireTypeMask)
+}
+
+func _TAG_FIELD(tag int) int {
+	return tag >> WireTypeBits
+}
+
+func _TAG_WIRE(tag int) int {
+	return tag & WireTypeMask
 }
 
 func TAG_SIZE(fieldNum int) int {
 	return SizeVarint(uint64(fieldNum << WireTypeBits))
-}
-
-func TAG_FIELD(tag int) int {
-	return tag >> WireTypeBits
-}
-
-func TAG_WIRE(tag int) int {
-	return tag & WireTypeMask
 }
 
 func SizeVarint(x uint64) int {
@@ -100,6 +101,22 @@ func (p *ProtoBuf) Read(b []byte) (n int, err error) {
 	return
 }
 
+func (p *ProtoBuf) WriteBuf(b []byte) {
+	p.WriteVarint(len(b))
+	p.offset += copy(p.Buffer[p.offset:], b)
+}
+
+func (p *ProtoBuf) ReadBuf() ([]byte, error) {
+	if l, err := p.ReadVarint(); err != nil {
+		return nil, err
+	} else if p.offset+l > len(p.Buffer) {
+		return nil, io.EOF
+	} else {
+		p.offset += l
+		return p.Buffer[p.offset-l : p.offset], nil
+	}
+}
+
 func (p *ProtoBuf) WriteVarint(x uint64) {
 	for x >= 0x80 {
 		p.Buffer[p.offset] = byte(x) | 0x80
@@ -128,10 +145,7 @@ func (p *ProtoBuf) ReadVarint() (uint64, error) {
 }
 
 func (p *ProtoBuf) WriteBytes(x ...byte) {
-	for _, b := range x {
-		p.Buffer[p.offset] = b
-		p.offset++
-	}
+	p.offset += copy(p.Buffer[p.offset:], b)
 }
 
 func (p *ProtoBuf) ReadByte() (byte, error) {
@@ -195,11 +209,25 @@ func (p *ProtoBuf) ReadFixed64() (uint64, error) {
 }
 
 func (p *ProtoBuf) WriteTag(fieldNum int, wireType WireType) {
-	p.WriteVarint(uint64(MAKE_TAG(fieldNum, wireType)))
+	p.WriteVarint(uint64(_MAKE_TAG(fieldNum, wireType)))
 }
 
-func (p *ProtoBuf) ReadTag(cutoff uint32) (int, error) {
+func (p *ProtoBuf) ReadTag(cutoff int) (int, error) {
 	return 0, nil
+}
+
+func (p *ProtoBuf) ExpectTag(fieldNum int, wireType WireType) bool {
+	return false
+}
+
+func (p *ProtoBuf) ExpectBytes(x ...byte) bool {
+	if p.offset+len(x) > len(p.Buffer) {
+		return false
+	} else if bytes.Compare(x, p.Buffer[p.offset:p.offset+len(x)]) != 0 {
+		return false
+	}
+	p.offset += len(x)
+	return true
 }
 
 func (p *ProtoBuf) SkipField(fieldNum int) error {
