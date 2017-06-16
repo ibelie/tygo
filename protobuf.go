@@ -102,18 +102,18 @@ func (p *ProtoBuf) Read(b []byte) (n int, err error) {
 }
 
 func (p *ProtoBuf) WriteBuf(b []byte) {
-	p.WriteVarint(len(b))
+	p.WriteVarint(uint64(len(b)))
 	p.offset += copy(p.Buffer[p.offset:], b)
 }
 
 func (p *ProtoBuf) ReadBuf() ([]byte, error) {
 	if l, err := p.ReadVarint(); err != nil {
 		return nil, err
-	} else if p.offset+l > len(p.Buffer) {
+	} else if p.offset+int(l) > len(p.Buffer) {
 		return nil, io.EOF
 	} else {
-		p.offset += l
-		return p.Buffer[p.offset-l : p.offset], nil
+		p.offset += int(l)
+		return p.Buffer[p.offset-int(l) : p.offset], nil
 	}
 }
 
@@ -145,7 +145,7 @@ func (p *ProtoBuf) ReadVarint() (uint64, error) {
 }
 
 func (p *ProtoBuf) WriteBytes(x ...byte) {
-	p.offset += copy(p.Buffer[p.offset:], b)
+	p.offset += copy(p.Buffer[p.offset:], x)
 }
 
 func (p *ProtoBuf) ReadByte() (byte, error) {

@@ -58,8 +58,6 @@ func (i Corpus) Serialize(output *tygo.ProtoBuf) {
 }
 
 func (i *Corpus) Deserialize(input *tygo.ProtoBuf) (err error) {
-	x, err := input.ReadVarint()
-	*i = Corpus(x)
 	return
 }
 
@@ -114,8 +112,8 @@ func (s *Vector2) ByteSize() (size int) {
 		// property: s.P
 		// type: *GoType
 		if s.P != nil {
-			tSize := s.P.ByteSize()
-			size += 1 + tygo.SizeVarint(uint64(tSize)) + tSize
+			tmp := s.P.ByteSize()
+			size += 1 + tygo.SizeVarint(uint64(tmp)) + tmp
 		}
 
 	}
@@ -143,18 +141,14 @@ func (s *Vector2) Serialize(output *tygo.ProtoBuf) {
 		// type: bytes
 		if len(s.B) > 0 {
 			output.WriteBytes(26) // tag: 26 MAKE_TAG(3, WireBytes=2)
-			d := []byte(s.B)
-			output.WriteVarint(uint64(len(d)))
-			output.Write(d)
+			output.WriteBuf([]byte(s.B))
 		}
 
 		// property: s.S
 		// type: string
 		if len(s.S) > 0 {
 			output.WriteBytes(34) // tag: 34 MAKE_TAG(4, WireBytes=2)
-			d := []byte(s.S)
-			output.WriteVarint(uint64(len(d)))
-			output.Write(d)
+			output.WriteBuf([]byte(s.S))
 		}
 
 		// property: s.E
@@ -203,8 +197,8 @@ func (s *Fighter_Part1) ByteSize() (size int) {
 		// property: s.Pos
 		// type: *Vector2
 		if s.Pos != nil {
-			tSize := s.Pos.ByteSize()
-			size += 1 + tygo.SizeVarint(uint64(tSize)) + tSize
+			tmp := s.Pos.ByteSize()
+			size += 1 + tygo.SizeVarint(uint64(tmp)) + tmp
 		}
 
 		// property: s.IsAwake
@@ -223,19 +217,19 @@ func (s *Fighter_Part1) ByteSize() (size int) {
 		// type: map[int32]*Vector2
 		if len(s.Poss) > 0 {
 			for k, v := range s.Poss {
-				tSize := 0
+				tmp := 0
 				// dict key
 				// type: int32
 				if k != 0 {
-					tSize += 1 + tygo.SizeVarint(uint64(k))
+					tmp += 1 + tygo.SizeVarint(uint64(k))
 				}
 				// dict value
 				// type: *Vector2
 				if v != nil {
-					tSizee := v.ByteSize()
-					tSize += 1 + tygo.SizeVarint(uint64(tSizee)) + tSizee
+					tmpp := v.ByteSize()
+					tmp += 1 + tygo.SizeVarint(uint64(tmpp)) + tmpp
 				}
-				size += 1 + tygo.SizeVarint(uint64(tSize)) + tSize
+				size += 1 + tygo.SizeVarint(uint64(tmp)) + tmp
 			}
 		}
 
@@ -243,18 +237,18 @@ func (s *Fighter_Part1) ByteSize() (size int) {
 		// type: map[int32]float32
 		if len(s.Posi) > 0 {
 			for k, v := range s.Posi {
-				tSize := 0
+				tmp := 0
 				// dict key
 				// type: int32
 				if k != 0 {
-					tSize += 1 + tygo.SizeVarint(uint64(k))
+					tmp += 1 + tygo.SizeVarint(uint64(k))
 				}
 				// dict value
 				// type: float32
 				if v != 0 {
-					tSize += 1 + 4
+					tmp += 1 + 4
 				}
-				size += 1 + tygo.SizeVarint(uint64(tSize)) + tSize
+				size += 1 + tygo.SizeVarint(uint64(tmp)) + tmp
 			}
 		}
 
@@ -265,8 +259,8 @@ func (s *Fighter_Part1) ByteSize() (size int) {
 				// list element
 				// type: *Vector2
 				if e != nil {
-					tSize := e.ByteSize()
-					size += 1 + tygo.SizeVarint(uint64(tSize)) + tSize
+					tmp := e.ByteSize()
+					size += 1 + tygo.SizeVarint(uint64(tmp)) + tmp
 				} else {
 					size += 1 + 1
 				}
@@ -277,7 +271,7 @@ func (s *Fighter_Part1) ByteSize() (size int) {
 		// type: [][]*Vector2
 		if len(s.Posll) > 0 {
 			for _, e := range s.Posll {
-				tSize := 0
+				tmp := 0
 				// list element
 				// type: []*Vector2
 				if len(e) > 0 {
@@ -285,14 +279,14 @@ func (s *Fighter_Part1) ByteSize() (size int) {
 						// list element
 						// type: *Vector2
 						if e != nil {
-							tSizee := e.ByteSize()
-							tSize += tygo.SizeVarint(uint64(tSizee)) + tSizee
+							tmpp := e.ByteSize()
+							tmp += tygo.SizeVarint(uint64(tmpp)) + tmpp
 						} else {
-							tSize += 1
+							tmp += 1
 						}
 					}
 				}
-				size += 1 + tygo.SizeVarint(uint64(tSize)) + tSize
+				size += 1 + tygo.SizeVarint(uint64(tmp)) + tmp
 			}
 		}
 
@@ -303,8 +297,8 @@ func (s *Fighter_Part1) ByteSize() (size int) {
 				// list element
 				// type: *GoType
 				if e != nil {
-					tSize := e.ByteSize()
-					size += 1 + tygo.SizeVarint(uint64(tSize)) + tSize
+					tmp := e.ByteSize()
+					size += 1 + tygo.SizeVarint(uint64(tmp)) + tmp
 				} else {
 					size += 1 + 1
 				}
@@ -315,70 +309,70 @@ func (s *Fighter_Part1) ByteSize() (size int) {
 		// type: map[int32]*GoType
 		if len(s.Pyd) > 0 {
 			for k, v := range s.Pyd {
-				tSize := 0
+				tmp := 0
 				// dict key
 				// type: int32
 				if k != 0 {
-					tSize += 1 + tygo.SizeVarint(uint64(k))
+					tmp += 1 + tygo.SizeVarint(uint64(k))
 				}
 				// dict value
 				// type: *GoType
 				if v != nil {
-					tSizee := v.ByteSize()
-					tSize += 1 + tygo.SizeVarint(uint64(tSizee)) + tSizee
+					tmpp := v.ByteSize()
+					tmp += 1 + tygo.SizeVarint(uint64(tmpp)) + tmpp
 				}
-				size += 1 + tygo.SizeVarint(uint64(tSize)) + tSize
+				size += 1 + tygo.SizeVarint(uint64(tmp)) + tmp
 			}
 		}
 
 		// property: s.Pyv1
 		// type: variant<int32, *GoType>
 		if s.Pyv1 != nil {
-			tSize := 0
+			tmp := 0
 			switch v := s.Pyv1.(type) {
 			// variant type: int32
 			case int32:
 				// type: int32
-				tSize += 1 + tygo.SizeVarint(uint64(v))
+				tmp += 1 + tygo.SizeVarint(uint64(v))
 			// variant type: *GoType
 			case *GoType:
 				// type: *GoType
 				{
-					tSizee := v.ByteSize()
-					tSize += 1 + tygo.SizeVarint(uint64(tSizee)) + tSizee
+					tmpp := v.ByteSize()
+					tmp += 1 + tygo.SizeVarint(uint64(tmpp)) + tmpp
 				}
 			// addition type: int
 			case int:
-				tSize += 1 + tygo.SizeVarint(uint64(v))
+				tmp += 1 + tygo.SizeVarint(uint64(v))
 			default:
 				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, *GoType>: %v", v))
 			}
-			size += 1 + tygo.SizeVarint(uint64(tSize)) + tSize
+			size += 1 + tygo.SizeVarint(uint64(tmp)) + tmp
 		}
 
 		// property: s.Pyv2
 		// type: variant<int32, *GoType>
 		if s.Pyv2 != nil {
-			tSize := 0
+			tmp := 0
 			switch v := s.Pyv2.(type) {
 			// variant type: int32
 			case int32:
 				// type: int32
-				tSize += 1 + tygo.SizeVarint(uint64(v))
+				tmp += 1 + tygo.SizeVarint(uint64(v))
 			// variant type: *GoType
 			case *GoType:
 				// type: *GoType
 				{
-					tSizee := v.ByteSize()
-					tSize += 1 + tygo.SizeVarint(uint64(tSizee)) + tSizee
+					tmpp := v.ByteSize()
+					tmp += 1 + tygo.SizeVarint(uint64(tmpp)) + tmpp
 				}
 			// addition type: int
 			case int:
-				tSize += 1 + tygo.SizeVarint(uint64(v))
+				tmp += 1 + tygo.SizeVarint(uint64(v))
 			default:
 				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, *GoType>: %v", v))
 			}
-			size += 1 + tygo.SizeVarint(uint64(tSize)) + tSize
+			size += 1 + tygo.SizeVarint(uint64(tmp)) + tmp
 		}
 
 	}
@@ -414,20 +408,20 @@ func (s *Fighter_Part1) Serialize(output *tygo.ProtoBuf) {
 		// type: map[int32]*Vector2
 		if len(s.Poss) > 0 {
 			for k, v := range s.Poss {
-				tSize := 0
+				tmp := 0
 				// dict key size
 				// type: int32
 				if k != 0 {
-					tSize += 1 + tygo.SizeVarint(uint64(k))
+					tmp += 1 + tygo.SizeVarint(uint64(k))
 				}
 				// dict value size
 				// type: *Vector2
 				if v != nil {
-					tSizee := v.CachedSize()
-					tSize += 1 + tygo.SizeVarint(uint64(tSizee)) + tSizee
+					tmpp := v.CachedSize()
+					tmp += 1 + tygo.SizeVarint(uint64(tmpp)) + tmpp
 				}
 				output.WriteBytes(34) // tag: 34 MAKE_TAG(4, WireBytes=2)
-				output.WriteVarint(uint64(tSize))
+				output.WriteVarint(uint64(tmp))
 				// dict key serialize
 				// type: int32
 				if k != 0 {
@@ -448,19 +442,19 @@ func (s *Fighter_Part1) Serialize(output *tygo.ProtoBuf) {
 		// type: map[int32]float32
 		if len(s.Posi) > 0 {
 			for k, v := range s.Posi {
-				tSize := 0
+				tmp := 0
 				// dict key size
 				// type: int32
 				if k != 0 {
-					tSize += 1 + tygo.SizeVarint(uint64(k))
+					tmp += 1 + tygo.SizeVarint(uint64(k))
 				}
 				// dict value size
 				// type: float32
 				if v != 0 {
-					tSize += 1 + 4
+					tmp += 1 + 4
 				}
 				output.WriteBytes(42) // tag: 42 MAKE_TAG(5, WireBytes=2)
-				output.WriteVarint(uint64(tSize))
+				output.WriteVarint(uint64(tmp))
 				// dict key serialize
 				// type: int32
 				if k != 0 {
@@ -496,7 +490,7 @@ func (s *Fighter_Part1) Serialize(output *tygo.ProtoBuf) {
 		// type: [][]*Vector2
 		if len(s.Posll) > 0 {
 			for _, e := range s.Posll {
-				tSize := 0
+				tmp := 0
 				// list element size
 				// type: []*Vector2
 				if len(e) > 0 {
@@ -504,15 +498,15 @@ func (s *Fighter_Part1) Serialize(output *tygo.ProtoBuf) {
 						// list element
 						// type: *Vector2
 						if e != nil {
-							tSizee := e.CachedSize()
-							tSize += tygo.SizeVarint(uint64(tSizee)) + tSizee
+							tmpp := e.CachedSize()
+							tmp += tygo.SizeVarint(uint64(tmpp)) + tmpp
 						} else {
-							tSize += 1
+							tmp += 1
 						}
 					}
 				}
 				output.WriteBytes(58) // tag: 58 MAKE_TAG(7, WireBytes=2)
-				output.WriteVarint(uint64(tSize))
+				output.WriteVarint(uint64(tmp))
 				// list element serialize
 				// type: []*Vector2
 				if len(e) > 0 {
@@ -550,20 +544,20 @@ func (s *Fighter_Part1) Serialize(output *tygo.ProtoBuf) {
 		// type: map[int32]*GoType
 		if len(s.Pyd) > 0 {
 			for k, v := range s.Pyd {
-				tSize := 0
+				tmp := 0
 				// dict key size
 				// type: int32
 				if k != 0 {
-					tSize += 1 + tygo.SizeVarint(uint64(k))
+					tmp += 1 + tygo.SizeVarint(uint64(k))
 				}
 				// dict value size
 				// type: *GoType
 				if v != nil {
-					tSizee := v.CachedSize()
-					tSize += 1 + tygo.SizeVarint(uint64(tSizee)) + tSizee
+					tmpp := v.CachedSize()
+					tmp += 1 + tygo.SizeVarint(uint64(tmpp)) + tmpp
 				}
 				output.WriteBytes(74) // tag: 74 MAKE_TAG(9, WireBytes=2)
-				output.WriteVarint(uint64(tSize))
+				output.WriteVarint(uint64(tmp))
 				// dict key serialize
 				// type: int32
 				if k != 0 {
@@ -583,27 +577,27 @@ func (s *Fighter_Part1) Serialize(output *tygo.ProtoBuf) {
 		// property: s.Pyv1
 		// type: variant<int32, *GoType>
 		if s.Pyv1 != nil {
-			tSize := 0
+			tmp := 0
 			switch v := s.Pyv1.(type) {
 			// variant type size: int32
 			case int32:
 				// type: int32
-				tSize += 1 + tygo.SizeVarint(uint64(v))
+				tmp += 1 + tygo.SizeVarint(uint64(v))
 			// variant type size: *GoType
 			case *GoType:
 				// type: *GoType
 				{
-					tSizee := v.CachedSize()
-					tSize += 1 + tygo.SizeVarint(uint64(tSizee)) + tSizee
+					tmpp := v.CachedSize()
+					tmp += 1 + tygo.SizeVarint(uint64(tmpp)) + tmpp
 				}
 			// addition type size: int
 			case int:
-				tSize += 1 + tygo.SizeVarint(uint64(v))
+				tmp += 1 + tygo.SizeVarint(uint64(v))
 			default:
 				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, *GoType>: %v", v))
 			}
 			output.WriteBytes(82) // tag: 82 MAKE_TAG(10, WireBytes=2)
-			output.WriteVarint(uint64(tSize))
+			output.WriteVarint(uint64(tmp))
 			switch v := s.Pyv1.(type) {
 			// variant type serialize: int32
 			case int32:
@@ -630,27 +624,27 @@ func (s *Fighter_Part1) Serialize(output *tygo.ProtoBuf) {
 		// property: s.Pyv2
 		// type: variant<int32, *GoType>
 		if s.Pyv2 != nil {
-			tSize := 0
+			tmp := 0
 			switch v := s.Pyv2.(type) {
 			// variant type size: int32
 			case int32:
 				// type: int32
-				tSize += 1 + tygo.SizeVarint(uint64(v))
+				tmp += 1 + tygo.SizeVarint(uint64(v))
 			// variant type size: *GoType
 			case *GoType:
 				// type: *GoType
 				{
-					tSizee := v.CachedSize()
-					tSize += 1 + tygo.SizeVarint(uint64(tSizee)) + tSizee
+					tmpp := v.CachedSize()
+					tmp += 1 + tygo.SizeVarint(uint64(tmpp)) + tmpp
 				}
 			// addition type size: int
 			case int:
-				tSize += 1 + tygo.SizeVarint(uint64(v))
+				tmp += 1 + tygo.SizeVarint(uint64(v))
 			default:
 				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, *GoType>: %v", v))
 			}
 			output.WriteBytes(90) // tag: 90 MAKE_TAG(11, WireBytes=2)
-			output.WriteVarint(uint64(tSize))
+			output.WriteVarint(uint64(tmp))
 			switch v := s.Pyv2.(type) {
 			// variant type serialize: int32
 			case int32:
@@ -703,8 +697,8 @@ func (s *Fighter_Part2) ByteSize() (size int) {
 		// property: s.Fl
 		// type: []float32
 		if len(s.Fl) > 0 {
-			tSize := len(s.Fl) * 4
-			size += 1 + tygo.SizeVarint(uint64(tSize)) + tSize
+			tmp := len(s.Fl) * 4
+			size += 1 + tygo.SizeVarint(uint64(tmp)) + tmp
 		}
 
 		// property: s.Bl
@@ -741,20 +735,20 @@ func (s *Fighter_Part2) ByteSize() (size int) {
 		// type: map[string]bytes
 		if len(s.Bd) > 0 {
 			for k, v := range s.Bd {
-				tSize := 0
+				tmp := 0
 				// dict key
 				// type: string
 				if len(k) > 0 {
 					l := len([]byte(k))
-					tSize += 1 + tygo.SizeVarint(uint64(l)) + l
+					tmp += 1 + tygo.SizeVarint(uint64(l)) + l
 				}
 				// dict value
 				// type: bytes
 				if len(v) > 0 {
 					l := len([]byte(v))
-					tSize += 1 + tygo.SizeVarint(uint64(l)) + l
+					tmp += 1 + tygo.SizeVarint(uint64(l)) + l
 				}
-				size += 1 + tygo.SizeVarint(uint64(tSize)) + tSize
+				size += 1 + tygo.SizeVarint(uint64(tmp)) + tmp
 			}
 		}
 
@@ -762,50 +756,50 @@ func (s *Fighter_Part2) ByteSize() (size int) {
 		// type: map[int32]string
 		if len(s.Sd) > 0 {
 			for k, v := range s.Sd {
-				tSize := 0
+				tmp := 0
 				// dict key
 				// type: int32
 				if k != 0 {
-					tSize += 1 + tygo.SizeVarint(uint64(k))
+					tmp += 1 + tygo.SizeVarint(uint64(k))
 				}
 				// dict value
 				// type: string
 				if len(v) > 0 {
 					l := len([]byte(v))
-					tSize += 1 + tygo.SizeVarint(uint64(l)) + l
+					tmp += 1 + tygo.SizeVarint(uint64(l)) + l
 				}
-				size += 2 + tygo.SizeVarint(uint64(tSize)) + tSize
+				size += 2 + tygo.SizeVarint(uint64(tmp)) + tmp
 			}
 		}
 
 		// property: s.El
 		// type: []Corpus
 		if len(s.El) > 0 {
-			tSize := 0
+			tmp := 0
 			for _, e := range s.El {
 				// list element
 				// type: Corpus
-				tSize += tygo.SizeVarint(uint64(e))
+				tmp += tygo.SizeVarint(uint64(e))
 			}
-			size += 2 + tygo.SizeVarint(uint64(tSize)) + tSize
+			size += 2 + tygo.SizeVarint(uint64(tmp)) + tmp
 		}
 
 		// property: s.Ed
 		// type: map[int32]Corpus
 		if len(s.Ed) > 0 {
 			for k, v := range s.Ed {
-				tSize := 0
+				tmp := 0
 				// dict key
 				// type: int32
 				if k != 0 {
-					tSize += 1 + tygo.SizeVarint(uint64(k))
+					tmp += 1 + tygo.SizeVarint(uint64(k))
 				}
 				// dict value
 				// type: Corpus
 				if v != 0 {
-					tSize += 1 + tygo.SizeVarint(uint64(v))
+					tmp += 1 + tygo.SizeVarint(uint64(v))
 				}
-				size += 2 + tygo.SizeVarint(uint64(tSize)) + tSize
+				size += 2 + tygo.SizeVarint(uint64(tmp)) + tmp
 			}
 		}
 
@@ -816,8 +810,8 @@ func (s *Fighter_Part2) ByteSize() (size int) {
 				// list element
 				// type: []float32
 				if len(e) > 0 {
-					tSize := len(e) * 4
-					size += 2 + tygo.SizeVarint(uint64(tSize)) + tSize
+					tmp := len(e) * 4
+					size += 2 + tygo.SizeVarint(uint64(tmp)) + tmp
 				} else {
 					size += 2 + 1
 				}
@@ -835,9 +829,9 @@ func (s *Fighter_Part2) Serialize(output *tygo.ProtoBuf) {
 		// property: s.Fl
 		// type: []float32
 		if len(s.Fl) > 0 {
-			tSize := len(s.Fl) * 4
+			tmp := len(s.Fl) * 4
 			output.WriteBytes(98) // tag: 98 MAKE_TAG(12, WireBytes=2)
-			output.WriteVarint(uint64(tSize))
+			output.WriteVarint(uint64(tmp))
 			for _, e := range s.Fl {
 				// list element serialize
 				// type: float32
@@ -853,9 +847,7 @@ func (s *Fighter_Part2) Serialize(output *tygo.ProtoBuf) {
 				output.WriteBytes(106) // tag: 106 MAKE_TAG(13, WireBytes=2)
 				// type: bytes
 				if len(e) > 0 {
-					d := []byte(e)
-					output.WriteVarint(uint64(len(d)))
-					output.Write(d)
+					output.WriteBuf([]byte(e))
 				} else {
 					output.WriteBytes(0)
 				}
@@ -870,9 +862,7 @@ func (s *Fighter_Part2) Serialize(output *tygo.ProtoBuf) {
 				output.WriteBytes(114) // tag: 114 MAKE_TAG(14, WireBytes=2)
 				// type: string
 				if len(e) > 0 {
-					d := []byte(e)
-					output.WriteVarint(uint64(len(d)))
-					output.Write(d)
+					output.WriteBuf([]byte(e))
 				} else {
 					output.WriteBytes(0)
 				}
@@ -883,36 +873,32 @@ func (s *Fighter_Part2) Serialize(output *tygo.ProtoBuf) {
 		// type: map[string]bytes
 		if len(s.Bd) > 0 {
 			for k, v := range s.Bd {
-				tSize := 0
+				tmp := 0
 				// dict key size
 				// type: string
 				if len(k) > 0 {
 					l := len([]byte(k))
-					tSize += 1 + tygo.SizeVarint(uint64(l)) + l
+					tmp += 1 + tygo.SizeVarint(uint64(l)) + l
 				}
 				// dict value size
 				// type: bytes
 				if len(v) > 0 {
 					l := len([]byte(v))
-					tSize += 1 + tygo.SizeVarint(uint64(l)) + l
+					tmp += 1 + tygo.SizeVarint(uint64(l)) + l
 				}
 				output.WriteBytes(122) // tag: 122 MAKE_TAG(15, WireBytes=2)
-				output.WriteVarint(uint64(tSize))
+				output.WriteVarint(uint64(tmp))
 				// dict key serialize
 				// type: string
 				if len(k) > 0 {
 					output.WriteBytes(10) // tag: 10 MAKE_TAG(1, WireBytes=2)
-					d := []byte(k)
-					output.WriteVarint(uint64(len(d)))
-					output.Write(d)
+					output.WriteBuf([]byte(k))
 				}
 				// dict value serialize
 				// type: bytes
 				if len(v) > 0 {
 					output.WriteBytes(18) // tag: 18 MAKE_TAG(2, WireBytes=2)
-					d := []byte(v)
-					output.WriteVarint(uint64(len(d)))
-					output.Write(d)
+					output.WriteBuf([]byte(v))
 				}
 			}
 		}
@@ -921,20 +907,20 @@ func (s *Fighter_Part2) Serialize(output *tygo.ProtoBuf) {
 		// type: map[int32]string
 		if len(s.Sd) > 0 {
 			for k, v := range s.Sd {
-				tSize := 0
+				tmp := 0
 				// dict key size
 				// type: int32
 				if k != 0 {
-					tSize += 1 + tygo.SizeVarint(uint64(k))
+					tmp += 1 + tygo.SizeVarint(uint64(k))
 				}
 				// dict value size
 				// type: string
 				if len(v) > 0 {
 					l := len([]byte(v))
-					tSize += 1 + tygo.SizeVarint(uint64(l)) + l
+					tmp += 1 + tygo.SizeVarint(uint64(l)) + l
 				}
 				output.WriteBytes(130, 1) // tag: 130 MAKE_TAG(16, WireBytes=2)
-				output.WriteVarint(uint64(tSize))
+				output.WriteVarint(uint64(tmp))
 				// dict key serialize
 				// type: int32
 				if k != 0 {
@@ -945,9 +931,7 @@ func (s *Fighter_Part2) Serialize(output *tygo.ProtoBuf) {
 				// type: string
 				if len(v) > 0 {
 					output.WriteBytes(18) // tag: 18 MAKE_TAG(2, WireBytes=2)
-					d := []byte(v)
-					output.WriteVarint(uint64(len(d)))
-					output.Write(d)
+					output.WriteBuf([]byte(v))
 				}
 			}
 		}
@@ -955,14 +939,14 @@ func (s *Fighter_Part2) Serialize(output *tygo.ProtoBuf) {
 		// property: s.El
 		// type: []Corpus
 		if len(s.El) > 0 {
-			tSize := 0
+			tmp := 0
 			for _, e := range s.El {
 				// list element size
 				// type: Corpus
-				tSize += tygo.SizeVarint(uint64(e))
+				tmp += tygo.SizeVarint(uint64(e))
 			}
 			output.WriteBytes(138, 1) // tag: 138 MAKE_TAG(17, WireBytes=2)
-			output.WriteVarint(uint64(tSize))
+			output.WriteVarint(uint64(tmp))
 			for _, e := range s.El {
 				// list element serialize
 				// type: Corpus
@@ -974,19 +958,19 @@ func (s *Fighter_Part2) Serialize(output *tygo.ProtoBuf) {
 		// type: map[int32]Corpus
 		if len(s.Ed) > 0 {
 			for k, v := range s.Ed {
-				tSize := 0
+				tmp := 0
 				// dict key size
 				// type: int32
 				if k != 0 {
-					tSize += 1 + tygo.SizeVarint(uint64(k))
+					tmp += 1 + tygo.SizeVarint(uint64(k))
 				}
 				// dict value size
 				// type: Corpus
 				if v != 0 {
-					tSize += 1 + tygo.SizeVarint(uint64(v))
+					tmp += 1 + tygo.SizeVarint(uint64(v))
 				}
 				output.WriteBytes(146, 1) // tag: 146 MAKE_TAG(18, WireBytes=2)
-				output.WriteVarint(uint64(tSize))
+				output.WriteVarint(uint64(tmp))
 				// dict key serialize
 				// type: int32
 				if k != 0 {
@@ -1009,9 +993,9 @@ func (s *Fighter_Part2) Serialize(output *tygo.ProtoBuf) {
 				// list element
 				// type: []float32
 				if len(e) > 0 {
-					tSize := len(e) * 4
+					tmp := len(e) * 4
 					output.WriteBytes(154, 1) // tag: 154 MAKE_TAG(19, WireBytes=2)
-					output.WriteVarint(uint64(tSize))
+					output.WriteVarint(uint64(tmp))
 					for _, e := range e {
 						// list element serialize
 						// type: float32
@@ -1061,196 +1045,196 @@ func (s *Fighter) ByteSize() (size int) {
 		// property: s.V0
 		// type: variant<int32, float32, bytes, *Vector2>
 		if s.V0 != nil {
-			tSize := 0
+			tmp := 0
 			switch v := s.V0.(type) {
 			// variant type: int32
 			case int32:
 				// type: int32
-				tSize += 1 + tygo.SizeVarint(uint64(v))
+				tmp += 1 + tygo.SizeVarint(uint64(v))
 			// variant type: float32
 			case float32:
 				// type: float32
-				tSize += 1 + 4
+				tmp += 1 + 4
 			// variant type: bytes
 			case []byte:
 				// type: bytes
 				{
 					l := len([]byte(v))
-					tSize += 1 + tygo.SizeVarint(uint64(l)) + l
+					tmp += 1 + tygo.SizeVarint(uint64(l)) + l
 				}
 			// variant type: *Vector2
 			case *Vector2:
 				// type: *Vector2
 				{
-					tSizee := v.ByteSize()
-					tSize += 1 + tygo.SizeVarint(uint64(tSizee)) + tSizee
+					tmpp := v.ByteSize()
+					tmp += 1 + tygo.SizeVarint(uint64(tmpp)) + tmpp
 				}
 			// addition type: int
 			case int:
-				tSize += 1 + tygo.SizeVarint(uint64(v))
+				tmp += 1 + tygo.SizeVarint(uint64(v))
 			// addition type: float64 -> float32
 			case float64:
-				tSize += 5
+				tmp += 5
 			default:
 				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, float32, bytes, *Vector2>: %v", v))
 			}
-			size += 2 + tygo.SizeVarint(uint64(tSize)) + tSize
+			size += 2 + tygo.SizeVarint(uint64(tmp)) + tmp
 		}
 
 		// property: s.V1
 		// type: variant<int32, float32, bytes, *Vector2>
 		if s.V1 != nil {
-			tSize := 0
+			tmp := 0
 			switch v := s.V1.(type) {
 			// variant type: int32
 			case int32:
 				// type: int32
-				tSize += 1 + tygo.SizeVarint(uint64(v))
+				tmp += 1 + tygo.SizeVarint(uint64(v))
 			// variant type: float32
 			case float32:
 				// type: float32
-				tSize += 1 + 4
+				tmp += 1 + 4
 			// variant type: bytes
 			case []byte:
 				// type: bytes
 				{
 					l := len([]byte(v))
-					tSize += 1 + tygo.SizeVarint(uint64(l)) + l
+					tmp += 1 + tygo.SizeVarint(uint64(l)) + l
 				}
 			// variant type: *Vector2
 			case *Vector2:
 				// type: *Vector2
 				{
-					tSizee := v.ByteSize()
-					tSize += 1 + tygo.SizeVarint(uint64(tSizee)) + tSizee
+					tmpp := v.ByteSize()
+					tmp += 1 + tygo.SizeVarint(uint64(tmpp)) + tmpp
 				}
 			// addition type: int
 			case int:
-				tSize += 1 + tygo.SizeVarint(uint64(v))
+				tmp += 1 + tygo.SizeVarint(uint64(v))
 			// addition type: float64 -> float32
 			case float64:
-				tSize += 5
+				tmp += 5
 			default:
 				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, float32, bytes, *Vector2>: %v", v))
 			}
-			size += 2 + tygo.SizeVarint(uint64(tSize)) + tSize
+			size += 2 + tygo.SizeVarint(uint64(tmp)) + tmp
 		}
 
 		// property: s.V2
 		// type: variant<int32, float32, bytes, *Vector2>
 		if s.V2 != nil {
-			tSize := 0
+			tmp := 0
 			switch v := s.V2.(type) {
 			// variant type: int32
 			case int32:
 				// type: int32
-				tSize += 1 + tygo.SizeVarint(uint64(v))
+				tmp += 1 + tygo.SizeVarint(uint64(v))
 			// variant type: float32
 			case float32:
 				// type: float32
-				tSize += 1 + 4
+				tmp += 1 + 4
 			// variant type: bytes
 			case []byte:
 				// type: bytes
 				{
 					l := len([]byte(v))
-					tSize += 1 + tygo.SizeVarint(uint64(l)) + l
+					tmp += 1 + tygo.SizeVarint(uint64(l)) + l
 				}
 			// variant type: *Vector2
 			case *Vector2:
 				// type: *Vector2
 				{
-					tSizee := v.ByteSize()
-					tSize += 1 + tygo.SizeVarint(uint64(tSizee)) + tSizee
+					tmpp := v.ByteSize()
+					tmp += 1 + tygo.SizeVarint(uint64(tmpp)) + tmpp
 				}
 			// addition type: int
 			case int:
-				tSize += 1 + tygo.SizeVarint(uint64(v))
+				tmp += 1 + tygo.SizeVarint(uint64(v))
 			// addition type: float64 -> float32
 			case float64:
-				tSize += 5
+				tmp += 5
 			default:
 				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, float32, bytes, *Vector2>: %v", v))
 			}
-			size += 2 + tygo.SizeVarint(uint64(tSize)) + tSize
+			size += 2 + tygo.SizeVarint(uint64(tmp)) + tmp
 		}
 
 		// property: s.V3
 		// type: variant<int32, float32, bytes, *Vector2>
 		if s.V3 != nil {
-			tSize := 0
+			tmp := 0
 			switch v := s.V3.(type) {
 			// variant type: int32
 			case int32:
 				// type: int32
-				tSize += 1 + tygo.SizeVarint(uint64(v))
+				tmp += 1 + tygo.SizeVarint(uint64(v))
 			// variant type: float32
 			case float32:
 				// type: float32
-				tSize += 1 + 4
+				tmp += 1 + 4
 			// variant type: bytes
 			case []byte:
 				// type: bytes
 				{
 					l := len([]byte(v))
-					tSize += 1 + tygo.SizeVarint(uint64(l)) + l
+					tmp += 1 + tygo.SizeVarint(uint64(l)) + l
 				}
 			// variant type: *Vector2
 			case *Vector2:
 				// type: *Vector2
 				{
-					tSizee := v.ByteSize()
-					tSize += 1 + tygo.SizeVarint(uint64(tSizee)) + tSizee
+					tmpp := v.ByteSize()
+					tmp += 1 + tygo.SizeVarint(uint64(tmpp)) + tmpp
 				}
 			// addition type: int
 			case int:
-				tSize += 1 + tygo.SizeVarint(uint64(v))
+				tmp += 1 + tygo.SizeVarint(uint64(v))
 			// addition type: float64 -> float32
 			case float64:
-				tSize += 5
+				tmp += 5
 			default:
 				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, float32, bytes, *Vector2>: %v", v))
 			}
-			size += 2 + tygo.SizeVarint(uint64(tSize)) + tSize
+			size += 2 + tygo.SizeVarint(uint64(tmp)) + tmp
 		}
 
 		// property: s.V4
 		// type: variant<int32, float32, bytes, *Vector2>
 		if s.V4 != nil {
-			tSize := 0
+			tmp := 0
 			switch v := s.V4.(type) {
 			// variant type: int32
 			case int32:
 				// type: int32
-				tSize += 1 + tygo.SizeVarint(uint64(v))
+				tmp += 1 + tygo.SizeVarint(uint64(v))
 			// variant type: float32
 			case float32:
 				// type: float32
-				tSize += 1 + 4
+				tmp += 1 + 4
 			// variant type: bytes
 			case []byte:
 				// type: bytes
 				{
 					l := len([]byte(v))
-					tSize += 1 + tygo.SizeVarint(uint64(l)) + l
+					tmp += 1 + tygo.SizeVarint(uint64(l)) + l
 				}
 			// variant type: *Vector2
 			case *Vector2:
 				// type: *Vector2
 				{
-					tSizee := v.ByteSize()
-					tSize += 1 + tygo.SizeVarint(uint64(tSizee)) + tSizee
+					tmpp := v.ByteSize()
+					tmp += 1 + tygo.SizeVarint(uint64(tmpp)) + tmpp
 				}
 			// addition type: int
 			case int:
-				tSize += 1 + tygo.SizeVarint(uint64(v))
+				tmp += 1 + tygo.SizeVarint(uint64(v))
 			// addition type: float64 -> float32
 			case float64:
-				tSize += 5
+				tmp += 5
 			default:
 				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, float32, bytes, *Vector2>: %v", v))
 			}
-			size += 2 + tygo.SizeVarint(uint64(tSize)) + tSize
+			size += 2 + tygo.SizeVarint(uint64(tmp)) + tmp
 		}
 
 		// property: s.Vl
@@ -1260,37 +1244,37 @@ func (s *Fighter) ByteSize() (size int) {
 				// list element
 				// type: variant<int32, fixedpoint<3, 0>, string, *Vector2>
 				if e != nil {
-					tSize := 0
+					tmp := 0
 					switch v := e.(type) {
 					// variant type: int32
 					case int32:
 						// type: int32
-						tSize += 1 + tygo.SizeVarint(uint64(v))
+						tmp += 1 + tygo.SizeVarint(uint64(v))
 					// variant type: fixedpoint<3, 0>
 					case float64:
 						// type: fixedpoint<3, 0>
-						tSize += 1 + tygo.SizeVarint(uint64((v - 0) * 1000))
+						tmp += 1 + tygo.SizeVarint(uint64((v - 0) * 1000))
 					// variant type: string
 					case string:
 						// type: string
 						{
 							l := len([]byte(v))
-							tSize += 1 + tygo.SizeVarint(uint64(l)) + l
+							tmp += 1 + tygo.SizeVarint(uint64(l)) + l
 						}
 					// variant type: *Vector2
 					case *Vector2:
 						// type: *Vector2
 						{
-							tSizee := v.ByteSize()
-							tSize += 1 + tygo.SizeVarint(uint64(tSizee)) + tSizee
+							tmpp := v.ByteSize()
+							tmp += 1 + tygo.SizeVarint(uint64(tmpp)) + tmpp
 						}
 					// addition type: int
 					case int:
-						tSize += 1 + tygo.SizeVarint(uint64(v))
+						tmp += 1 + tygo.SizeVarint(uint64(v))
 					default:
 						panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, fixedpoint<3, 0>, string, *Vector2>: %v", v))
 					}
-					size += 2 + tygo.SizeVarint(uint64(tSize)) + tSize
+					size += 2 + tygo.SizeVarint(uint64(tmp)) + tmp
 				} else {
 					size += 2 + 1
 				}
@@ -1301,48 +1285,48 @@ func (s *Fighter) ByteSize() (size int) {
 		// type: map[int32]variant<Corpus, float64, string, *Vector2>
 		if len(s.Vd) > 0 {
 			for k, v := range s.Vd {
-				tSize := 0
+				tmp := 0
 				// dict key
 				// type: int32
 				if k != 0 {
-					tSize += 1 + tygo.SizeVarint(uint64(k))
+					tmp += 1 + tygo.SizeVarint(uint64(k))
 				}
 				// dict value
 				// type: variant<Corpus, float64, string, *Vector2>
 				if v != nil {
-					tSizee := 0
+					tmpp := 0
 					switch v := v.(type) {
 					// variant type: Corpus
 					case Corpus:
 						// type: Corpus
-						tSizee += 1 + tygo.SizeVarint(uint64(v))
+						tmpp += 1 + tygo.SizeVarint(uint64(v))
 					// variant type: float64
 					case float64:
 						// type: float64
-						tSizee += 1 + 8
+						tmpp += 1 + 8
 					// variant type: string
 					case string:
 						// type: string
 						{
 							l := len([]byte(v))
-							tSizee += 1 + tygo.SizeVarint(uint64(l)) + l
+							tmpp += 1 + tygo.SizeVarint(uint64(l)) + l
 						}
 					// variant type: *Vector2
 					case *Vector2:
 						// type: *Vector2
 						{
-							tSizeee := v.ByteSize()
-							tSizee += 1 + tygo.SizeVarint(uint64(tSizeee)) + tSizeee
+							tmppp := v.ByteSize()
+							tmpp += 1 + tygo.SizeVarint(uint64(tmppp)) + tmppp
 						}
 					// addition type: int -> float64
 					case int:
-						tSizee += 9
+						tmpp += 9
 					default:
 						panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<Corpus, float64, string, *Vector2>: %v", v))
 					}
-					tSize += 1 + tygo.SizeVarint(uint64(tSizee)) + tSizee
+					tmp += 1 + tygo.SizeVarint(uint64(tmpp)) + tmpp
 				}
-				size += 2 + tygo.SizeVarint(uint64(tSize)) + tSize
+				size += 2 + tygo.SizeVarint(uint64(tmp)) + tmp
 			}
 		}
 
@@ -1350,11 +1334,11 @@ func (s *Fighter) ByteSize() (size int) {
 		// type: map[int32][]variant<Corpus, float64, string, *Vector2>
 		if len(s.Ld) > 0 {
 			for k, v := range s.Ld {
-				tSize := 0
+				tmp := 0
 				// dict key
 				// type: int32
 				if k != 0 {
-					tSize += 1 + tygo.SizeVarint(uint64(k))
+					tmp += 1 + tygo.SizeVarint(uint64(k))
 				}
 				// dict value
 				// type: []variant<Corpus, float64, string, *Vector2>
@@ -1363,43 +1347,43 @@ func (s *Fighter) ByteSize() (size int) {
 						// list element
 						// type: variant<Corpus, float64, string, *Vector2>
 						if e != nil {
-							tSizee := 0
+							tmpp := 0
 							switch v := e.(type) {
 							// variant type: Corpus
 							case Corpus:
 								// type: Corpus
-								tSizee += 1 + tygo.SizeVarint(uint64(v))
+								tmpp += 1 + tygo.SizeVarint(uint64(v))
 							// variant type: float64
 							case float64:
 								// type: float64
-								tSizee += 1 + 8
+								tmpp += 1 + 8
 							// variant type: string
 							case string:
 								// type: string
 								{
 									l := len([]byte(v))
-									tSizee += 1 + tygo.SizeVarint(uint64(l)) + l
+									tmpp += 1 + tygo.SizeVarint(uint64(l)) + l
 								}
 							// variant type: *Vector2
 							case *Vector2:
 								// type: *Vector2
 								{
-									tSizeee := v.ByteSize()
-									tSizee += 1 + tygo.SizeVarint(uint64(tSizeee)) + tSizeee
+									tmppp := v.ByteSize()
+									tmpp += 1 + tygo.SizeVarint(uint64(tmppp)) + tmppp
 								}
 							// addition type: int -> float64
 							case int:
-								tSizee += 9
+								tmpp += 9
 							default:
 								panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<Corpus, float64, string, *Vector2>: %v", v))
 							}
-							tSize += 1 + tygo.SizeVarint(uint64(tSizee)) + tSizee
+							tmp += 1 + tygo.SizeVarint(uint64(tmpp)) + tmpp
 						} else {
-							tSize += 1 + 1
+							tmp += 1 + 1
 						}
 					}
 				}
-				size += 2 + tygo.SizeVarint(uint64(tSize)) + tSize
+				size += 2 + tygo.SizeVarint(uint64(tmp)) + tmp
 			}
 		}
 
@@ -1407,19 +1391,19 @@ func (s *Fighter) ByteSize() (size int) {
 		// type: map[int32][]float32
 		if len(s.Fld) > 0 {
 			for k, v := range s.Fld {
-				tSize := 0
+				tmp := 0
 				// dict key
 				// type: int32
 				if k != 0 {
-					tSize += 1 + tygo.SizeVarint(uint64(k))
+					tmp += 1 + tygo.SizeVarint(uint64(k))
 				}
 				// dict value
 				// type: []float32
 				if len(v) > 0 {
-					tSizee := len(v) * 4
-					tSize += 1 + tygo.SizeVarint(uint64(tSizee)) + tSizee
+					tmpp := len(v) * 4
+					tmp += 1 + tygo.SizeVarint(uint64(tmpp)) + tmpp
 				}
-				size += 2 + tygo.SizeVarint(uint64(tSize)) + tSize
+				size += 2 + tygo.SizeVarint(uint64(tmp)) + tmp
 			}
 		}
 
@@ -1427,65 +1411,65 @@ func (s *Fighter) ByteSize() (size int) {
 		// type: map[int32]map[int32]variant<int32, Corpus, float64, string, *Vector2>
 		if len(s.Dd) > 0 {
 			for k, v := range s.Dd {
-				tSize := 0
+				tmp := 0
 				// dict key
 				// type: int32
 				if k != 0 {
-					tSize += 1 + tygo.SizeVarint(uint64(k))
+					tmp += 1 + tygo.SizeVarint(uint64(k))
 				}
 				// dict value
 				// type: map[int32]variant<int32, Corpus, float64, string, *Vector2>
 				if len(v) > 0 {
 					for k, v := range v {
-						tSizee := 0
+						tmpp := 0
 						// dict key
 						// type: int32
 						if k != 0 {
-							tSizee += 1 + tygo.SizeVarint(uint64(k))
+							tmpp += 1 + tygo.SizeVarint(uint64(k))
 						}
 						// dict value
 						// type: variant<int32, Corpus, float64, string, *Vector2>
 						if v != nil {
-							tSizeee := 0
+							tmppp := 0
 							switch v := v.(type) {
 							// variant type: int32
 							case int32:
 								// type: int32
-								tSizeee += 1 + tygo.SizeVarint(uint64(v))
+								tmppp += 1 + tygo.SizeVarint(uint64(v))
 							// variant type: Corpus
 							case Corpus:
 								// type: Corpus
-								tSizeee += 1 + tygo.SizeVarint(uint64(v))
+								tmppp += 1 + tygo.SizeVarint(uint64(v))
 							// variant type: float64
 							case float64:
 								// type: float64
-								tSizeee += 1 + 8
+								tmppp += 1 + 8
 							// variant type: string
 							case string:
 								// type: string
 								{
 									l := len([]byte(v))
-									tSizeee += 1 + tygo.SizeVarint(uint64(l)) + l
+									tmppp += 1 + tygo.SizeVarint(uint64(l)) + l
 								}
 							// variant type: *Vector2
 							case *Vector2:
 								// type: *Vector2
 								{
-									tSizeeee := v.ByteSize()
-									tSizeee += 1 + tygo.SizeVarint(uint64(tSizeeee)) + tSizeeee
+									tmpppp := v.ByteSize()
+									tmppp += 1 + tygo.SizeVarint(uint64(tmpppp)) + tmpppp
 								}
 							// addition type: int
 							case int:
-								tSizeee += 1 + tygo.SizeVarint(uint64(v))
+								tmppp += 1 + tygo.SizeVarint(uint64(v))
 							default:
 								panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, Corpus, float64, string, *Vector2>: %v", v))
 							}
-							tSizee += 1 + tygo.SizeVarint(uint64(tSizeee)) + tSizeee
+							tmpp += 1 + tygo.SizeVarint(uint64(tmppp)) + tmppp
 						}
-						tSize += 1 + tygo.SizeVarint(uint64(tSizee)) + tSizee
+						tmp += 1 + tygo.SizeVarint(uint64(tmpp)) + tmpp
 					}
 				}
-				size += 2 + tygo.SizeVarint(uint64(tSize)) + tSize
+				size += 2 + tygo.SizeVarint(uint64(tmp)) + tmp
 			}
 		}
 
@@ -1493,61 +1477,61 @@ func (s *Fighter) ByteSize() (size int) {
 		// type: map[int32]map[int32]float32
 		if len(s.Fdd) > 0 {
 			for k, v := range s.Fdd {
-				tSize := 0
+				tmp := 0
 				// dict key
 				// type: int32
 				if k != 0 {
-					tSize += 1 + tygo.SizeVarint(uint64(k))
+					tmp += 1 + tygo.SizeVarint(uint64(k))
 				}
 				// dict value
 				// type: map[int32]float32
 				if len(v) > 0 {
 					for k, v := range v {
-						tSizee := 0
+						tmpp := 0
 						// dict key
 						// type: int32
 						if k != 0 {
-							tSizee += 1 + tygo.SizeVarint(uint64(k))
+							tmpp += 1 + tygo.SizeVarint(uint64(k))
 						}
 						// dict value
 						// type: float32
 						if v != 0 {
-							tSizee += 1 + 4
+							tmpp += 1 + 4
 						}
-						tSize += 1 + tygo.SizeVarint(uint64(tSizee)) + tSizee
+						tmp += 1 + tygo.SizeVarint(uint64(tmpp)) + tmpp
 					}
 				}
-				size += 2 + tygo.SizeVarint(uint64(tSize)) + tSize
+				size += 2 + tygo.SizeVarint(uint64(tmp)) + tmp
 			}
 		}
 
 		// property: s.Nv
 		// type: variant<nil, int32>
 		if s.Nv != nil {
-			tSize := 0
+			tmp := 0
 			switch v := s.Nv.(type) {
 			// variant type: int32
 			case int32:
 				// type: int32
-				tSize += 1 + tygo.SizeVarint(uint64(v))
+				tmp += 1 + tygo.SizeVarint(uint64(v))
 			// addition type: int
 			case int:
-				tSize += 1 + tygo.SizeVarint(uint64(v))
+				tmp += 1 + tygo.SizeVarint(uint64(v))
 			default:
 				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<nil, int32>: %v", v))
 			}
-			size += 2 + tygo.SizeVarint(uint64(tSize)) + tSize
+			size += 2 + tygo.SizeVarint(uint64(tmp)) + tmp
 		}
 
 		// property: s.Lv
 		// type: variant<int32, []variant<float32, string>>
 		if s.Lv != nil {
-			tSize := 0
+			tmp := 0
 			switch v := s.Lv.(type) {
 			// variant type: int32
 			case int32:
 				// type: int32
-				tSize += 1 + tygo.SizeVarint(uint64(v))
+				tmp += 1 + tygo.SizeVarint(uint64(v))
 			// variant type: []variant<float32, string>
 			case []interface{}:
 				// type: []variant<float32, string>
@@ -1556,162 +1540,162 @@ func (s *Fighter) ByteSize() (size int) {
 						// list element
 						// type: variant<float32, string>
 						if e != nil {
-							tSizee := 0
+							tmpp := 0
 							switch v := e.(type) {
 							// variant type: float32
 							case float32:
 								// type: float32
-								tSizee += 1 + 4
+								tmpp += 1 + 4
 							// variant type: string
 							case string:
 								// type: string
 								{
 									l := len([]byte(v))
-									tSizee += 1 + tygo.SizeVarint(uint64(l)) + l
+									tmpp += 1 + tygo.SizeVarint(uint64(l)) + l
 								}
 							// addition type: int -> float32
 							case int:
-								tSizee += 5
+								tmpp += 5
 							// addition type: float64 -> float32
 							case float64:
-								tSizee += 5
+								tmpp += 5
 							default:
 								panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<float32, string>: %v", v))
 							}
-							tSize += 1 + tygo.SizeVarint(uint64(tSizee)) + tSizee
+							tmp += 1 + tygo.SizeVarint(uint64(tmpp)) + tmpp
 						} else {
-							tSize += 1 + 1
+							tmp += 1 + 1
 						}
 					}
 				}
 			// addition type: int
 			case int:
-				tSize += 1 + tygo.SizeVarint(uint64(v))
+				tmp += 1 + tygo.SizeVarint(uint64(v))
 			default:
 				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, []variant<float32, string>>: %v", v))
 			}
-			size += 2 + tygo.SizeVarint(uint64(tSize)) + tSize
+			size += 2 + tygo.SizeVarint(uint64(tmp)) + tmp
 		}
 
 		// property: s.Flv
 		// type: variant<int32, []float32>
 		if s.Flv != nil {
-			tSize := 0
+			tmp := 0
 			switch v := s.Flv.(type) {
 			// variant type: int32
 			case int32:
 				// type: int32
-				tSize += 1 + tygo.SizeVarint(uint64(v))
+				tmp += 1 + tygo.SizeVarint(uint64(v))
 			// variant type: []float32
 			case []float32:
 				// type: []float32
 				if len(v) > 0 {
-					tSizee := len(v) * 4
-					tSize += 1 + tygo.SizeVarint(uint64(tSizee)) + tSizee
+					tmpp := len(v) * 4
+					tmp += 1 + tygo.SizeVarint(uint64(tmpp)) + tmpp
 				}
 			// addition type: int
 			case int:
-				tSize += 1 + tygo.SizeVarint(uint64(v))
+				tmp += 1 + tygo.SizeVarint(uint64(v))
 			default:
 				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, []float32>: %v", v))
 			}
-			size += 2 + tygo.SizeVarint(uint64(tSize)) + tSize
+			size += 2 + tygo.SizeVarint(uint64(tmp)) + tmp
 		}
 
 		// property: s.Dv
 		// type: variant<int32, map[int32]variant<float32, string>>
 		if s.Dv != nil {
-			tSize := 0
+			tmp := 0
 			switch v := s.Dv.(type) {
 			// variant type: int32
 			case int32:
 				// type: int32
-				tSize += 1 + tygo.SizeVarint(uint64(v))
+				tmp += 1 + tygo.SizeVarint(uint64(v))
 			// variant type: map[int32]variant<float32, string>
 			case map[int32]interface{}:
 				// type: map[int32]variant<float32, string>
 				if len(v) > 0 {
 					for k, v := range v {
-						tSizee := 0
+						tmpp := 0
 						// dict key
 						// type: int32
 						if k != 0 {
-							tSizee += 1 + tygo.SizeVarint(uint64(k))
+							tmpp += 1 + tygo.SizeVarint(uint64(k))
 						}
 						// dict value
 						// type: variant<float32, string>
 						if v != nil {
-							tSizeee := 0
+							tmppp := 0
 							switch v := v.(type) {
 							// variant type: float32
 							case float32:
 								// type: float32
-								tSizeee += 1 + 4
+								tmppp += 1 + 4
 							// variant type: string
 							case string:
 								// type: string
 								{
 									l := len([]byte(v))
-									tSizeee += 1 + tygo.SizeVarint(uint64(l)) + l
+									tmppp += 1 + tygo.SizeVarint(uint64(l)) + l
 								}
 							// addition type: int -> float32
 							case int:
-								tSizeee += 5
+								tmppp += 5
 							// addition type: float64 -> float32
 							case float64:
-								tSizeee += 5
+								tmppp += 5
 							default:
 								panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<float32, string>: %v", v))
 							}
-							tSizee += 1 + tygo.SizeVarint(uint64(tSizeee)) + tSizeee
+							tmpp += 1 + tygo.SizeVarint(uint64(tmppp)) + tmppp
 						}
-						tSize += 1 + tygo.SizeVarint(uint64(tSizee)) + tSizee
+						tmp += 1 + tygo.SizeVarint(uint64(tmpp)) + tmpp
 					}
 				}
 			// addition type: int
 			case int:
-				tSize += 1 + tygo.SizeVarint(uint64(v))
+				tmp += 1 + tygo.SizeVarint(uint64(v))
 			default:
 				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, map[int32]variant<float32, string>>: %v", v))
 			}
-			size += 2 + tygo.SizeVarint(uint64(tSize)) + tSize
+			size += 2 + tygo.SizeVarint(uint64(tmp)) + tmp
 		}
 
 		// property: s.Fdv
 		// type: variant<int32, map[int32]float32>
 		if s.Fdv != nil {
-			tSize := 0
+			tmp := 0
 			switch v := s.Fdv.(type) {
 			// variant type: int32
 			case int32:
 				// type: int32
-				tSize += 1 + tygo.SizeVarint(uint64(v))
+				tmp += 1 + tygo.SizeVarint(uint64(v))
 			// variant type: map[int32]float32
 			case map[int32]float32:
 				// type: map[int32]float32
 				if len(v) > 0 {
 					for k, v := range v {
-						tSizee := 0
+						tmpp := 0
 						// dict key
 						// type: int32
 						if k != 0 {
-							tSizee += 1 + tygo.SizeVarint(uint64(k))
+							tmpp += 1 + tygo.SizeVarint(uint64(k))
 						}
 						// dict value
 						// type: float32
 						if v != 0 {
-							tSizee += 1 + 4
+							tmpp += 1 + 4
 						}
-						tSize += 1 + tygo.SizeVarint(uint64(tSizee)) + tSizee
+						tmp += 1 + tygo.SizeVarint(uint64(tmpp)) + tmpp
 					}
 				}
 			// addition type: int
 			case int:
-				tSize += 1 + tygo.SizeVarint(uint64(v))
+				tmp += 1 + tygo.SizeVarint(uint64(v))
 			default:
 				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, map[int32]float32>: %v", v))
 			}
-			size += 2 + tygo.SizeVarint(uint64(tSize)) + tSize
+			size += 2 + tygo.SizeVarint(uint64(tmp)) + tmp
 		}
 
 	}
@@ -1725,41 +1709,41 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 		// property: s.V0
 		// type: variant<int32, float32, bytes, *Vector2>
 		if s.V0 != nil {
-			tSize := 0
+			tmp := 0
 			switch v := s.V0.(type) {
 			// variant type size: int32
 			case int32:
 				// type: int32
-				tSize += 1 + tygo.SizeVarint(uint64(v))
+				tmp += 1 + tygo.SizeVarint(uint64(v))
 			// variant type size: float32
 			case float32:
 				// type: float32
-				tSize += 1 + 4
+				tmp += 1 + 4
 			// variant type size: bytes
 			case []byte:
 				// type: bytes
 				{
 					l := len([]byte(v))
-					tSize += 1 + tygo.SizeVarint(uint64(l)) + l
+					tmp += 1 + tygo.SizeVarint(uint64(l)) + l
 				}
 			// variant type size: *Vector2
 			case *Vector2:
 				// type: *Vector2
 				{
-					tSizee := v.CachedSize()
-					tSize += 1 + tygo.SizeVarint(uint64(tSizee)) + tSizee
+					tmpp := v.CachedSize()
+					tmp += 1 + tygo.SizeVarint(uint64(tmpp)) + tmpp
 				}
 			// addition type size: int
 			case int:
-				tSize += 1 + tygo.SizeVarint(uint64(v))
+				tmp += 1 + tygo.SizeVarint(uint64(v))
 			// addition type size: float64 -> float32
 			case float64:
-				tSize += 5
+				tmp += 5
 			default:
 				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, float32, bytes, *Vector2>: %v", v))
 			}
 			output.WriteBytes(162, 1) // tag: 162 MAKE_TAG(20, WireBytes=2)
-			output.WriteVarint(uint64(tSize))
+			output.WriteVarint(uint64(tmp))
 			switch v := s.V0.(type) {
 			// variant type serialize: int32
 			case int32:
@@ -1776,9 +1760,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 				// type: bytes
 				{
 					output.WriteBytes(26) // tag: 26 MAKE_TAG(3, WireBytes=2)
-					d := []byte(v)
-					output.WriteVarint(uint64(len(d)))
-					output.Write(d)
+					output.WriteBuf([]byte(v))
 				}
 			// variant type serialize: *Vector2
 			case *Vector2:
@@ -1804,41 +1786,41 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 		// property: s.V1
 		// type: variant<int32, float32, bytes, *Vector2>
 		if s.V1 != nil {
-			tSize := 0
+			tmp := 0
 			switch v := s.V1.(type) {
 			// variant type size: int32
 			case int32:
 				// type: int32
-				tSize += 1 + tygo.SizeVarint(uint64(v))
+				tmp += 1 + tygo.SizeVarint(uint64(v))
 			// variant type size: float32
 			case float32:
 				// type: float32
-				tSize += 1 + 4
+				tmp += 1 + 4
 			// variant type size: bytes
 			case []byte:
 				// type: bytes
 				{
 					l := len([]byte(v))
-					tSize += 1 + tygo.SizeVarint(uint64(l)) + l
+					tmp += 1 + tygo.SizeVarint(uint64(l)) + l
 				}
 			// variant type size: *Vector2
 			case *Vector2:
 				// type: *Vector2
 				{
-					tSizee := v.CachedSize()
-					tSize += 1 + tygo.SizeVarint(uint64(tSizee)) + tSizee
+					tmpp := v.CachedSize()
+					tmp += 1 + tygo.SizeVarint(uint64(tmpp)) + tmpp
 				}
 			// addition type size: int
 			case int:
-				tSize += 1 + tygo.SizeVarint(uint64(v))
+				tmp += 1 + tygo.SizeVarint(uint64(v))
 			// addition type size: float64 -> float32
 			case float64:
-				tSize += 5
+				tmp += 5
 			default:
 				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, float32, bytes, *Vector2>: %v", v))
 			}
 			output.WriteBytes(170, 1) // tag: 170 MAKE_TAG(21, WireBytes=2)
-			output.WriteVarint(uint64(tSize))
+			output.WriteVarint(uint64(tmp))
 			switch v := s.V1.(type) {
 			// variant type serialize: int32
 			case int32:
@@ -1855,9 +1837,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 				// type: bytes
 				{
 					output.WriteBytes(26) // tag: 26 MAKE_TAG(3, WireBytes=2)
-					d := []byte(v)
-					output.WriteVarint(uint64(len(d)))
-					output.Write(d)
+					output.WriteBuf([]byte(v))
 				}
 			// variant type serialize: *Vector2
 			case *Vector2:
@@ -1883,41 +1863,41 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 		// property: s.V2
 		// type: variant<int32, float32, bytes, *Vector2>
 		if s.V2 != nil {
-			tSize := 0
+			tmp := 0
 			switch v := s.V2.(type) {
 			// variant type size: int32
 			case int32:
 				// type: int32
-				tSize += 1 + tygo.SizeVarint(uint64(v))
+				tmp += 1 + tygo.SizeVarint(uint64(v))
 			// variant type size: float32
 			case float32:
 				// type: float32
-				tSize += 1 + 4
+				tmp += 1 + 4
 			// variant type size: bytes
 			case []byte:
 				// type: bytes
 				{
 					l := len([]byte(v))
-					tSize += 1 + tygo.SizeVarint(uint64(l)) + l
+					tmp += 1 + tygo.SizeVarint(uint64(l)) + l
 				}
 			// variant type size: *Vector2
 			case *Vector2:
 				// type: *Vector2
 				{
-					tSizee := v.CachedSize()
-					tSize += 1 + tygo.SizeVarint(uint64(tSizee)) + tSizee
+					tmpp := v.CachedSize()
+					tmp += 1 + tygo.SizeVarint(uint64(tmpp)) + tmpp
 				}
 			// addition type size: int
 			case int:
-				tSize += 1 + tygo.SizeVarint(uint64(v))
+				tmp += 1 + tygo.SizeVarint(uint64(v))
 			// addition type size: float64 -> float32
 			case float64:
-				tSize += 5
+				tmp += 5
 			default:
 				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, float32, bytes, *Vector2>: %v", v))
 			}
 			output.WriteBytes(178, 1) // tag: 178 MAKE_TAG(22, WireBytes=2)
-			output.WriteVarint(uint64(tSize))
+			output.WriteVarint(uint64(tmp))
 			switch v := s.V2.(type) {
 			// variant type serialize: int32
 			case int32:
@@ -1934,9 +1914,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 				// type: bytes
 				{
 					output.WriteBytes(26) // tag: 26 MAKE_TAG(3, WireBytes=2)
-					d := []byte(v)
-					output.WriteVarint(uint64(len(d)))
-					output.Write(d)
+					output.WriteBuf([]byte(v))
 				}
 			// variant type serialize: *Vector2
 			case *Vector2:
@@ -1962,41 +1940,41 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 		// property: s.V3
 		// type: variant<int32, float32, bytes, *Vector2>
 		if s.V3 != nil {
-			tSize := 0
+			tmp := 0
 			switch v := s.V3.(type) {
 			// variant type size: int32
 			case int32:
 				// type: int32
-				tSize += 1 + tygo.SizeVarint(uint64(v))
+				tmp += 1 + tygo.SizeVarint(uint64(v))
 			// variant type size: float32
 			case float32:
 				// type: float32
-				tSize += 1 + 4
+				tmp += 1 + 4
 			// variant type size: bytes
 			case []byte:
 				// type: bytes
 				{
 					l := len([]byte(v))
-					tSize += 1 + tygo.SizeVarint(uint64(l)) + l
+					tmp += 1 + tygo.SizeVarint(uint64(l)) + l
 				}
 			// variant type size: *Vector2
 			case *Vector2:
 				// type: *Vector2
 				{
-					tSizee := v.CachedSize()
-					tSize += 1 + tygo.SizeVarint(uint64(tSizee)) + tSizee
+					tmpp := v.CachedSize()
+					tmp += 1 + tygo.SizeVarint(uint64(tmpp)) + tmpp
 				}
 			// addition type size: int
 			case int:
-				tSize += 1 + tygo.SizeVarint(uint64(v))
+				tmp += 1 + tygo.SizeVarint(uint64(v))
 			// addition type size: float64 -> float32
 			case float64:
-				tSize += 5
+				tmp += 5
 			default:
 				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, float32, bytes, *Vector2>: %v", v))
 			}
 			output.WriteBytes(186, 1) // tag: 186 MAKE_TAG(23, WireBytes=2)
-			output.WriteVarint(uint64(tSize))
+			output.WriteVarint(uint64(tmp))
 			switch v := s.V3.(type) {
 			// variant type serialize: int32
 			case int32:
@@ -2013,9 +1991,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 				// type: bytes
 				{
 					output.WriteBytes(26) // tag: 26 MAKE_TAG(3, WireBytes=2)
-					d := []byte(v)
-					output.WriteVarint(uint64(len(d)))
-					output.Write(d)
+					output.WriteBuf([]byte(v))
 				}
 			// variant type serialize: *Vector2
 			case *Vector2:
@@ -2041,41 +2017,41 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 		// property: s.V4
 		// type: variant<int32, float32, bytes, *Vector2>
 		if s.V4 != nil {
-			tSize := 0
+			tmp := 0
 			switch v := s.V4.(type) {
 			// variant type size: int32
 			case int32:
 				// type: int32
-				tSize += 1 + tygo.SizeVarint(uint64(v))
+				tmp += 1 + tygo.SizeVarint(uint64(v))
 			// variant type size: float32
 			case float32:
 				// type: float32
-				tSize += 1 + 4
+				tmp += 1 + 4
 			// variant type size: bytes
 			case []byte:
 				// type: bytes
 				{
 					l := len([]byte(v))
-					tSize += 1 + tygo.SizeVarint(uint64(l)) + l
+					tmp += 1 + tygo.SizeVarint(uint64(l)) + l
 				}
 			// variant type size: *Vector2
 			case *Vector2:
 				// type: *Vector2
 				{
-					tSizee := v.CachedSize()
-					tSize += 1 + tygo.SizeVarint(uint64(tSizee)) + tSizee
+					tmpp := v.CachedSize()
+					tmp += 1 + tygo.SizeVarint(uint64(tmpp)) + tmpp
 				}
 			// addition type size: int
 			case int:
-				tSize += 1 + tygo.SizeVarint(uint64(v))
+				tmp += 1 + tygo.SizeVarint(uint64(v))
 			// addition type size: float64 -> float32
 			case float64:
-				tSize += 5
+				tmp += 5
 			default:
 				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, float32, bytes, *Vector2>: %v", v))
 			}
 			output.WriteBytes(194, 1) // tag: 194 MAKE_TAG(24, WireBytes=2)
-			output.WriteVarint(uint64(tSize))
+			output.WriteVarint(uint64(tmp))
 			switch v := s.V4.(type) {
 			// variant type serialize: int32
 			case int32:
@@ -2092,9 +2068,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 				// type: bytes
 				{
 					output.WriteBytes(26) // tag: 26 MAKE_TAG(3, WireBytes=2)
-					d := []byte(v)
-					output.WriteVarint(uint64(len(d)))
-					output.Write(d)
+					output.WriteBuf([]byte(v))
 				}
 			// variant type serialize: *Vector2
 			case *Vector2:
@@ -2125,37 +2099,37 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 				output.WriteBytes(202, 1) // tag: 202 MAKE_TAG(25, WireBytes=2)
 				// type: variant<int32, fixedpoint<3, 0>, string, *Vector2>
 				if e != nil {
-					tSize := 0
+					tmp := 0
 					switch v := e.(type) {
 					// variant type size: int32
 					case int32:
 						// type: int32
-						tSize += 1 + tygo.SizeVarint(uint64(v))
+						tmp += 1 + tygo.SizeVarint(uint64(v))
 					// variant type size: fixedpoint<3, 0>
 					case float64:
 						// type: fixedpoint<3, 0>
-						tSize += 1 + tygo.SizeVarint(uint64((v - 0) * 1000))
+						tmp += 1 + tygo.SizeVarint(uint64((v - 0) * 1000))
 					// variant type size: string
 					case string:
 						// type: string
 						{
 							l := len([]byte(v))
-							tSize += 1 + tygo.SizeVarint(uint64(l)) + l
+							tmp += 1 + tygo.SizeVarint(uint64(l)) + l
 						}
 					// variant type size: *Vector2
 					case *Vector2:
 						// type: *Vector2
 						{
-							tSizee := v.CachedSize()
-							tSize += 1 + tygo.SizeVarint(uint64(tSizee)) + tSizee
+							tmpp := v.CachedSize()
+							tmp += 1 + tygo.SizeVarint(uint64(tmpp)) + tmpp
 						}
 					// addition type size: int
 					case int:
-						tSize += 1 + tygo.SizeVarint(uint64(v))
+						tmp += 1 + tygo.SizeVarint(uint64(v))
 					default:
 						panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, fixedpoint<3, 0>, string, *Vector2>: %v", v))
 					}
-					output.WriteVarint(uint64(tSize))
+					output.WriteVarint(uint64(tmp))
 					switch v := e.(type) {
 					// variant type serialize: int32
 					case int32:
@@ -2172,9 +2146,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 						// type: string
 						{
 							output.WriteBytes(26) // tag: 26 MAKE_TAG(3, WireBytes=2)
-							d := []byte(v)
-							output.WriteVarint(uint64(len(d)))
-							output.Write(d)
+							output.WriteBuf([]byte(v))
 						}
 					// variant type serialize: *Vector2
 					case *Vector2:
@@ -2201,49 +2173,49 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 		// type: map[int32]variant<Corpus, float64, string, *Vector2>
 		if len(s.Vd) > 0 {
 			for k, v := range s.Vd {
-				tSize := 0
+				tmp := 0
 				// dict key size
 				// type: int32
 				if k != 0 {
-					tSize += 1 + tygo.SizeVarint(uint64(k))
+					tmp += 1 + tygo.SizeVarint(uint64(k))
 				}
 				// dict value size
 				// type: variant<Corpus, float64, string, *Vector2>
 				if v != nil {
-					tSizee := 0
+					tmpp := 0
 					switch v := v.(type) {
 					// variant type: Corpus
 					case Corpus:
 						// type: Corpus
-						tSizee += 1 + tygo.SizeVarint(uint64(v))
+						tmpp += 1 + tygo.SizeVarint(uint64(v))
 					// variant type: float64
 					case float64:
 						// type: float64
-						tSizee += 1 + 8
+						tmpp += 1 + 8
 					// variant type: string
 					case string:
 						// type: string
 						{
 							l := len([]byte(v))
-							tSizee += 1 + tygo.SizeVarint(uint64(l)) + l
+							tmpp += 1 + tygo.SizeVarint(uint64(l)) + l
 						}
 					// variant type: *Vector2
 					case *Vector2:
 						// type: *Vector2
 						{
-							tSizeee := v.CachedSize()
-							tSizee += 1 + tygo.SizeVarint(uint64(tSizeee)) + tSizeee
+							tmppp := v.CachedSize()
+							tmpp += 1 + tygo.SizeVarint(uint64(tmppp)) + tmppp
 						}
 					// addition type: int -> float64
 					case int:
-						tSizee += 9
+						tmpp += 9
 					default:
 						panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<Corpus, float64, string, *Vector2>: %v", v))
 					}
-					tSize += 1 + tygo.SizeVarint(uint64(tSizee)) + tSizee
+					tmp += 1 + tygo.SizeVarint(uint64(tmpp)) + tmpp
 				}
 				output.WriteBytes(210, 1) // tag: 210 MAKE_TAG(26, WireBytes=2)
-				output.WriteVarint(uint64(tSize))
+				output.WriteVarint(uint64(tmp))
 				// dict key serialize
 				// type: int32
 				if k != 0 {
@@ -2253,38 +2225,38 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 				// dict value serialize
 				// type: variant<Corpus, float64, string, *Vector2>
 				if v != nil {
-					tSizee := 0
+					tmpp := 0
 					switch v := v.(type) {
 					// variant type size: Corpus
 					case Corpus:
 						// type: Corpus
-						tSizee += 1 + tygo.SizeVarint(uint64(v))
+						tmpp += 1 + tygo.SizeVarint(uint64(v))
 					// variant type size: float64
 					case float64:
 						// type: float64
-						tSizee += 1 + 8
+						tmpp += 1 + 8
 					// variant type size: string
 					case string:
 						// type: string
 						{
 							l := len([]byte(v))
-							tSizee += 1 + tygo.SizeVarint(uint64(l)) + l
+							tmpp += 1 + tygo.SizeVarint(uint64(l)) + l
 						}
 					// variant type size: *Vector2
 					case *Vector2:
 						// type: *Vector2
 						{
-							tSizeee := v.CachedSize()
-							tSizee += 1 + tygo.SizeVarint(uint64(tSizeee)) + tSizeee
+							tmppp := v.CachedSize()
+							tmpp += 1 + tygo.SizeVarint(uint64(tmppp)) + tmppp
 						}
 					// addition type size: int -> float64
 					case int:
-						tSizee += 9
+						tmpp += 9
 					default:
 						panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<Corpus, float64, string, *Vector2>: %v", v))
 					}
 					output.WriteBytes(18) // tag: 18 MAKE_TAG(2, WireBytes=2)
-					output.WriteVarint(uint64(tSizee))
+					output.WriteVarint(uint64(tmpp))
 					switch v := v.(type) {
 					// variant type serialize: Corpus
 					case Corpus:
@@ -2301,9 +2273,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 						// type: string
 						{
 							output.WriteBytes(26) // tag: 26 MAKE_TAG(3, WireBytes=2)
-							d := []byte(v)
-							output.WriteVarint(uint64(len(d)))
-							output.Write(d)
+							output.WriteBuf([]byte(v))
 						}
 					// variant type serialize: *Vector2
 					case *Vector2:
@@ -2328,11 +2298,11 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 		// type: map[int32][]variant<Corpus, float64, string, *Vector2>
 		if len(s.Ld) > 0 {
 			for k, v := range s.Ld {
-				tSize := 0
+				tmp := 0
 				// dict key size
 				// type: int32
 				if k != 0 {
-					tSize += 1 + tygo.SizeVarint(uint64(k))
+					tmp += 1 + tygo.SizeVarint(uint64(k))
 				}
 				// dict value size
 				// type: []variant<Corpus, float64, string, *Vector2>
@@ -2341,44 +2311,44 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 						// list element
 						// type: variant<Corpus, float64, string, *Vector2>
 						if e != nil {
-							tSizee := 0
+							tmpp := 0
 							switch v := e.(type) {
 							// variant type: Corpus
 							case Corpus:
 								// type: Corpus
-								tSizee += 1 + tygo.SizeVarint(uint64(v))
+								tmpp += 1 + tygo.SizeVarint(uint64(v))
 							// variant type: float64
 							case float64:
 								// type: float64
-								tSizee += 1 + 8
+								tmpp += 1 + 8
 							// variant type: string
 							case string:
 								// type: string
 								{
 									l := len([]byte(v))
-									tSizee += 1 + tygo.SizeVarint(uint64(l)) + l
+									tmpp += 1 + tygo.SizeVarint(uint64(l)) + l
 								}
 							// variant type: *Vector2
 							case *Vector2:
 								// type: *Vector2
 								{
-									tSizeee := v.CachedSize()
-									tSizee += 1 + tygo.SizeVarint(uint64(tSizeee)) + tSizeee
+									tmppp := v.CachedSize()
+									tmpp += 1 + tygo.SizeVarint(uint64(tmppp)) + tmppp
 								}
 							// addition type: int -> float64
 							case int:
-								tSizee += 9
+								tmpp += 9
 							default:
 								panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<Corpus, float64, string, *Vector2>: %v", v))
 							}
-							tSize += 1 + tygo.SizeVarint(uint64(tSizee)) + tSizee
+							tmp += 1 + tygo.SizeVarint(uint64(tmpp)) + tmpp
 						} else {
-							tSize += 1 + 1
+							tmp += 1 + 1
 						}
 					}
 				}
 				output.WriteBytes(218, 1) // tag: 218 MAKE_TAG(27, WireBytes=2)
-				output.WriteVarint(uint64(tSize))
+				output.WriteVarint(uint64(tmp))
 				// dict key serialize
 				// type: int32
 				if k != 0 {
@@ -2393,37 +2363,37 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 						output.WriteBytes(18) // tag: 18 MAKE_TAG(2, WireBytes=2)
 						// type: variant<Corpus, float64, string, *Vector2>
 						if e != nil {
-							tSizee := 0
+							tmpp := 0
 							switch v := e.(type) {
 							// variant type size: Corpus
 							case Corpus:
 								// type: Corpus
-								tSizee += 1 + tygo.SizeVarint(uint64(v))
+								tmpp += 1 + tygo.SizeVarint(uint64(v))
 							// variant type size: float64
 							case float64:
 								// type: float64
-								tSizee += 1 + 8
+								tmpp += 1 + 8
 							// variant type size: string
 							case string:
 								// type: string
 								{
 									l := len([]byte(v))
-									tSizee += 1 + tygo.SizeVarint(uint64(l)) + l
+									tmpp += 1 + tygo.SizeVarint(uint64(l)) + l
 								}
 							// variant type size: *Vector2
 							case *Vector2:
 								// type: *Vector2
 								{
-									tSizeee := v.CachedSize()
-									tSizee += 1 + tygo.SizeVarint(uint64(tSizeee)) + tSizeee
+									tmppp := v.CachedSize()
+									tmpp += 1 + tygo.SizeVarint(uint64(tmppp)) + tmppp
 								}
 							// addition type size: int -> float64
 							case int:
-								tSizee += 9
+								tmpp += 9
 							default:
 								panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<Corpus, float64, string, *Vector2>: %v", v))
 							}
-							output.WriteVarint(uint64(tSizee))
+							output.WriteVarint(uint64(tmpp))
 							switch v := e.(type) {
 							// variant type serialize: Corpus
 							case Corpus:
@@ -2440,9 +2410,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 								// type: string
 								{
 									output.WriteBytes(26) // tag: 26 MAKE_TAG(3, WireBytes=2)
-									d := []byte(v)
-									output.WriteVarint(uint64(len(d)))
-									output.Write(d)
+									output.WriteBuf([]byte(v))
 								}
 							// variant type serialize: *Vector2
 							case *Vector2:
@@ -2471,20 +2439,20 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 		// type: map[int32][]float32
 		if len(s.Fld) > 0 {
 			for k, v := range s.Fld {
-				tSize := 0
+				tmp := 0
 				// dict key size
 				// type: int32
 				if k != 0 {
-					tSize += 1 + tygo.SizeVarint(uint64(k))
+					tmp += 1 + tygo.SizeVarint(uint64(k))
 				}
 				// dict value size
 				// type: []float32
 				if len(v) > 0 {
-					tSizee := len(v) * 4
-					tSize += 1 + tygo.SizeVarint(uint64(tSizee)) + tSizee
+					tmpp := len(v) * 4
+					tmp += 1 + tygo.SizeVarint(uint64(tmpp)) + tmpp
 				}
 				output.WriteBytes(226, 1) // tag: 226 MAKE_TAG(28, WireBytes=2)
-				output.WriteVarint(uint64(tSize))
+				output.WriteVarint(uint64(tmp))
 				// dict key serialize
 				// type: int32
 				if k != 0 {
@@ -2494,9 +2462,9 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 				// dict value serialize
 				// type: []float32
 				if len(v) > 0 {
-					tSizee := len(v) * 4
+					tmpp := len(v) * 4
 					output.WriteBytes(18) // tag: 18 MAKE_TAG(2, WireBytes=2)
-					output.WriteVarint(uint64(tSizee))
+					output.WriteVarint(uint64(tmpp))
 					for _, e := range v {
 						// list element serialize
 						// type: float32
@@ -2510,66 +2478,66 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 		// type: map[int32]map[int32]variant<int32, Corpus, float64, string, *Vector2>
 		if len(s.Dd) > 0 {
 			for k, v := range s.Dd {
-				tSize := 0
+				tmp := 0
 				// dict key size
 				// type: int32
 				if k != 0 {
-					tSize += 1 + tygo.SizeVarint(uint64(k))
+					tmp += 1 + tygo.SizeVarint(uint64(k))
 				}
 				// dict value size
 				// type: map[int32]variant<int32, Corpus, float64, string, *Vector2>
 				if len(v) > 0 {
 					for k, v := range v {
-						tSizee := 0
+						tmpp := 0
 						// dict key
 						// type: int32
 						if k != 0 {
-							tSizee += 1 + tygo.SizeVarint(uint64(k))
+							tmpp += 1 + tygo.SizeVarint(uint64(k))
 						}
 						// dict value
 						// type: variant<int32, Corpus, float64, string, *Vector2>
 						if v != nil {
-							tSizeee := 0
+							tmppp := 0
 							switch v := v.(type) {
 							// variant type: int32
 							case int32:
 								// type: int32
-								tSizeee += 1 + tygo.SizeVarint(uint64(v))
+								tmppp += 1 + tygo.SizeVarint(uint64(v))
 							// variant type: Corpus
 							case Corpus:
 								// type: Corpus
-								tSizeee += 1 + tygo.SizeVarint(uint64(v))
+								tmppp += 1 + tygo.SizeVarint(uint64(v))
 							// variant type: float64
 							case float64:
 								// type: float64
-								tSizeee += 1 + 8
+								tmppp += 1 + 8
 							// variant type: string
 							case string:
 								// type: string
 								{
 									l := len([]byte(v))
-									tSizeee += 1 + tygo.SizeVarint(uint64(l)) + l
+									tmppp += 1 + tygo.SizeVarint(uint64(l)) + l
 								}
 							// variant type: *Vector2
 							case *Vector2:
 								// type: *Vector2
 								{
-									tSizeeee := v.CachedSize()
-									tSizeee += 1 + tygo.SizeVarint(uint64(tSizeeee)) + tSizeeee
+									tmpppp := v.CachedSize()
+									tmppp += 1 + tygo.SizeVarint(uint64(tmpppp)) + tmpppp
 								}
 							// addition type: int
 							case int:
-								tSizeee += 1 + tygo.SizeVarint(uint64(v))
+								tmppp += 1 + tygo.SizeVarint(uint64(v))
 							default:
 								panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, Corpus, float64, string, *Vector2>: %v", v))
 							}
-							tSizee += 1 + tygo.SizeVarint(uint64(tSizeee)) + tSizeee
+							tmpp += 1 + tygo.SizeVarint(uint64(tmppp)) + tmppp
 						}
-						tSize += 1 + tygo.SizeVarint(uint64(tSizee)) + tSizee
+						tmp += 1 + tygo.SizeVarint(uint64(tmpp)) + tmpp
 					}
 				}
 				output.WriteBytes(234, 1) // tag: 234 MAKE_TAG(29, WireBytes=2)
-				output.WriteVarint(uint64(tSize))
+				output.WriteVarint(uint64(tmp))
 				// dict key serialize
 				// type: int32
 				if k != 0 {
@@ -2580,53 +2548,53 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 				// type: map[int32]variant<int32, Corpus, float64, string, *Vector2>
 				if len(v) > 0 {
 					for k, v := range v {
-						tSizee := 0
+						tmpp := 0
 						// dict key size
 						// type: int32
 						if k != 0 {
-							tSizee += 1 + tygo.SizeVarint(uint64(k))
+							tmpp += 1 + tygo.SizeVarint(uint64(k))
 						}
 						// dict value size
 						// type: variant<int32, Corpus, float64, string, *Vector2>
 						if v != nil {
-							tSizeee := 0
+							tmppp := 0
 							switch v := v.(type) {
 							// variant type: int32
 							case int32:
 								// type: int32
-								tSizeee += 1 + tygo.SizeVarint(uint64(v))
+								tmppp += 1 + tygo.SizeVarint(uint64(v))
 							// variant type: Corpus
 							case Corpus:
 								// type: Corpus
-								tSizeee += 1 + tygo.SizeVarint(uint64(v))
+								tmppp += 1 + tygo.SizeVarint(uint64(v))
 							// variant type: float64
 							case float64:
 								// type: float64
-								tSizeee += 1 + 8
+								tmppp += 1 + 8
 							// variant type: string
 							case string:
 								// type: string
 								{
 									l := len([]byte(v))
-									tSizeee += 1 + tygo.SizeVarint(uint64(l)) + l
+									tmppp += 1 + tygo.SizeVarint(uint64(l)) + l
 								}
 							// variant type: *Vector2
 							case *Vector2:
 								// type: *Vector2
 								{
-									tSizeeee := v.CachedSize()
-									tSizeee += 1 + tygo.SizeVarint(uint64(tSizeeee)) + tSizeeee
+									tmpppp := v.CachedSize()
+									tmppp += 1 + tygo.SizeVarint(uint64(tmpppp)) + tmpppp
 								}
 							// addition type: int
 							case int:
-								tSizeee += 1 + tygo.SizeVarint(uint64(v))
+								tmppp += 1 + tygo.SizeVarint(uint64(v))
 							default:
 								panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, Corpus, float64, string, *Vector2>: %v", v))
 							}
-							tSizee += 1 + tygo.SizeVarint(uint64(tSizeee)) + tSizeee
+							tmpp += 1 + tygo.SizeVarint(uint64(tmppp)) + tmppp
 						}
 						output.WriteBytes(18) // tag: 18 MAKE_TAG(2, WireBytes=2)
-						output.WriteVarint(uint64(tSizee))
+						output.WriteVarint(uint64(tmpp))
 						// dict key serialize
 						// type: int32
 						if k != 0 {
@@ -2636,42 +2604,42 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 						// dict value serialize
 						// type: variant<int32, Corpus, float64, string, *Vector2>
 						if v != nil {
-							tSizeee := 0
+							tmppp := 0
 							switch v := v.(type) {
 							// variant type size: int32
 							case int32:
 								// type: int32
-								tSizeee += 1 + tygo.SizeVarint(uint64(v))
+								tmppp += 1 + tygo.SizeVarint(uint64(v))
 							// variant type size: Corpus
 							case Corpus:
 								// type: Corpus
-								tSizeee += 1 + tygo.SizeVarint(uint64(v))
+								tmppp += 1 + tygo.SizeVarint(uint64(v))
 							// variant type size: float64
 							case float64:
 								// type: float64
-								tSizeee += 1 + 8
+								tmppp += 1 + 8
 							// variant type size: string
 							case string:
 								// type: string
 								{
 									l := len([]byte(v))
-									tSizeee += 1 + tygo.SizeVarint(uint64(l)) + l
+									tmppp += 1 + tygo.SizeVarint(uint64(l)) + l
 								}
 							// variant type size: *Vector2
 							case *Vector2:
 								// type: *Vector2
 								{
-									tSizeeee := v.CachedSize()
-									tSizeee += 1 + tygo.SizeVarint(uint64(tSizeeee)) + tSizeeee
+									tmpppp := v.CachedSize()
+									tmppp += 1 + tygo.SizeVarint(uint64(tmpppp)) + tmpppp
 								}
 							// addition type size: int
 							case int:
-								tSizeee += 1 + tygo.SizeVarint(uint64(v))
+								tmppp += 1 + tygo.SizeVarint(uint64(v))
 							default:
 								panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, Corpus, float64, string, *Vector2>: %v", v))
 							}
 							output.WriteBytes(18) // tag: 18 MAKE_TAG(2, WireBytes=2)
-							output.WriteVarint(uint64(tSizeee))
+							output.WriteVarint(uint64(tmppp))
 							switch v := v.(type) {
 							// variant type serialize: int32
 							case int32:
@@ -2693,9 +2661,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 								// type: string
 								{
 									output.WriteBytes(34) // tag: 34 MAKE_TAG(4, WireBytes=2)
-									d := []byte(v)
-									output.WriteVarint(uint64(len(d)))
-									output.Write(d)
+									output.WriteBuf([]byte(v))
 								}
 							// variant type serialize: *Vector2
 							case *Vector2:
@@ -2722,32 +2688,32 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 		// type: map[int32]map[int32]float32
 		if len(s.Fdd) > 0 {
 			for k, v := range s.Fdd {
-				tSize := 0
+				tmp := 0
 				// dict key size
 				// type: int32
 				if k != 0 {
-					tSize += 1 + tygo.SizeVarint(uint64(k))
+					tmp += 1 + tygo.SizeVarint(uint64(k))
 				}
 				// dict value size
 				// type: map[int32]float32
 				if len(v) > 0 {
 					for k, v := range v {
-						tSizee := 0
+						tmpp := 0
 						// dict key
 						// type: int32
 						if k != 0 {
-							tSizee += 1 + tygo.SizeVarint(uint64(k))
+							tmpp += 1 + tygo.SizeVarint(uint64(k))
 						}
 						// dict value
 						// type: float32
 						if v != 0 {
-							tSizee += 1 + 4
+							tmpp += 1 + 4
 						}
-						tSize += 1 + tygo.SizeVarint(uint64(tSizee)) + tSizee
+						tmp += 1 + tygo.SizeVarint(uint64(tmpp)) + tmpp
 					}
 				}
 				output.WriteBytes(242, 1) // tag: 242 MAKE_TAG(30, WireBytes=2)
-				output.WriteVarint(uint64(tSize))
+				output.WriteVarint(uint64(tmp))
 				// dict key serialize
 				// type: int32
 				if k != 0 {
@@ -2758,19 +2724,19 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 				// type: map[int32]float32
 				if len(v) > 0 {
 					for k, v := range v {
-						tSizee := 0
+						tmpp := 0
 						// dict key size
 						// type: int32
 						if k != 0 {
-							tSizee += 1 + tygo.SizeVarint(uint64(k))
+							tmpp += 1 + tygo.SizeVarint(uint64(k))
 						}
 						// dict value size
 						// type: float32
 						if v != 0 {
-							tSizee += 1 + 4
+							tmpp += 1 + 4
 						}
 						output.WriteBytes(18) // tag: 18 MAKE_TAG(2, WireBytes=2)
-						output.WriteVarint(uint64(tSizee))
+						output.WriteVarint(uint64(tmpp))
 						// dict key serialize
 						// type: int32
 						if k != 0 {
@@ -2791,20 +2757,20 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 		// property: s.Nv
 		// type: variant<nil, int32>
 		if s.Nv != nil {
-			tSize := 0
+			tmp := 0
 			switch v := s.Nv.(type) {
 			// variant type size: int32
 			case int32:
 				// type: int32
-				tSize += 1 + tygo.SizeVarint(uint64(v))
+				tmp += 1 + tygo.SizeVarint(uint64(v))
 			// addition type size: int
 			case int:
-				tSize += 1 + tygo.SizeVarint(uint64(v))
+				tmp += 1 + tygo.SizeVarint(uint64(v))
 			default:
 				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<nil, int32>: %v", v))
 			}
 			output.WriteBytes(250, 1) // tag: 250 MAKE_TAG(31, WireBytes=2)
-			output.WriteVarint(uint64(tSize))
+			output.WriteVarint(uint64(tmp))
 			switch v := s.Nv.(type) {
 			// variant type serialize: int32
 			case int32:
@@ -2823,12 +2789,12 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 		// property: s.Lv
 		// type: variant<int32, []variant<float32, string>>
 		if s.Lv != nil {
-			tSize := 0
+			tmp := 0
 			switch v := s.Lv.(type) {
 			// variant type size: int32
 			case int32:
 				// type: int32
-				tSize += 1 + tygo.SizeVarint(uint64(v))
+				tmp += 1 + tygo.SizeVarint(uint64(v))
 			// variant type size: []variant<float32, string>
 			case []interface{}:
 				// type: []variant<float32, string>
@@ -2837,42 +2803,42 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 						// list element
 						// type: variant<float32, string>
 						if e != nil {
-							tSizee := 0
+							tmpp := 0
 							switch v := e.(type) {
 							// variant type: float32
 							case float32:
 								// type: float32
-								tSizee += 1 + 4
+								tmpp += 1 + 4
 							// variant type: string
 							case string:
 								// type: string
 								{
 									l := len([]byte(v))
-									tSizee += 1 + tygo.SizeVarint(uint64(l)) + l
+									tmpp += 1 + tygo.SizeVarint(uint64(l)) + l
 								}
 							// addition type: int -> float32
 							case int:
-								tSizee += 5
+								tmpp += 5
 							// addition type: float64 -> float32
 							case float64:
-								tSizee += 5
+								tmpp += 5
 							default:
 								panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<float32, string>: %v", v))
 							}
-							tSize += 1 + tygo.SizeVarint(uint64(tSizee)) + tSizee
+							tmp += 1 + tygo.SizeVarint(uint64(tmpp)) + tmpp
 						} else {
-							tSize += 1 + 1
+							tmp += 1 + 1
 						}
 					}
 				}
 			// addition type size: int
 			case int:
-				tSize += 1 + tygo.SizeVarint(uint64(v))
+				tmp += 1 + tygo.SizeVarint(uint64(v))
 			default:
 				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, []variant<float32, string>>: %v", v))
 			}
 			output.WriteBytes(130, 2) // tag: 258 MAKE_TAG(32, WireBytes=2)
-			output.WriteVarint(uint64(tSize))
+			output.WriteVarint(uint64(tmp))
 			switch v := s.Lv.(type) {
 			// variant type serialize: int32
 			case int32:
@@ -2888,29 +2854,29 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 						output.WriteBytes(18) // tag: 18 MAKE_TAG(2, WireBytes=2)
 						// type: variant<float32, string>
 						if e != nil {
-							tSizee := 0
+							tmpp := 0
 							switch v := e.(type) {
 							// variant type size: float32
 							case float32:
 								// type: float32
-								tSizee += 1 + 4
+								tmpp += 1 + 4
 							// variant type size: string
 							case string:
 								// type: string
 								{
 									l := len([]byte(v))
-									tSizee += 1 + tygo.SizeVarint(uint64(l)) + l
+									tmpp += 1 + tygo.SizeVarint(uint64(l)) + l
 								}
 							// addition type size: int -> float32
 							case int:
-								tSizee += 5
+								tmpp += 5
 							// addition type size: float64 -> float32
 							case float64:
-								tSizee += 5
+								tmpp += 5
 							default:
 								panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<float32, string>: %v", v))
 							}
-							output.WriteVarint(uint64(tSizee))
+							output.WriteVarint(uint64(tmpp))
 							switch v := e.(type) {
 							// variant type serialize: float32
 							case float32:
@@ -2922,9 +2888,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 								// type: string
 								{
 									output.WriteBytes(18) // tag: 18 MAKE_TAG(2, WireBytes=2)
-									d := []byte(v)
-									output.WriteVarint(uint64(len(d)))
-									output.Write(d)
+									output.WriteBuf([]byte(v))
 								}
 							// addition type serialize: int -> float32
 							case int:
@@ -2954,27 +2918,27 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 		// property: s.Flv
 		// type: variant<int32, []float32>
 		if s.Flv != nil {
-			tSize := 0
+			tmp := 0
 			switch v := s.Flv.(type) {
 			// variant type size: int32
 			case int32:
 				// type: int32
-				tSize += 1 + tygo.SizeVarint(uint64(v))
+				tmp += 1 + tygo.SizeVarint(uint64(v))
 			// variant type size: []float32
 			case []float32:
 				// type: []float32
 				if len(v) > 0 {
-					tSizee := len(v) * 4
-					tSize += 1 + tygo.SizeVarint(uint64(tSizee)) + tSizee
+					tmpp := len(v) * 4
+					tmp += 1 + tygo.SizeVarint(uint64(tmpp)) + tmpp
 				}
 			// addition type size: int
 			case int:
-				tSize += 1 + tygo.SizeVarint(uint64(v))
+				tmp += 1 + tygo.SizeVarint(uint64(v))
 			default:
 				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, []float32>: %v", v))
 			}
 			output.WriteBytes(138, 2) // tag: 266 MAKE_TAG(33, WireBytes=2)
-			output.WriteVarint(uint64(tSize))
+			output.WriteVarint(uint64(tmp))
 			switch v := s.Flv.(type) {
 			// variant type serialize: int32
 			case int32:
@@ -2985,9 +2949,9 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 			case []float32:
 				// type: []float32
 				if len(v) > 0 {
-					tSizee := len(v) * 4
+					tmpp := len(v) * 4
 					output.WriteBytes(18) // tag: 18 MAKE_TAG(2, WireBytes=2)
-					output.WriteVarint(uint64(tSizee))
+					output.WriteVarint(uint64(tmpp))
 					for _, e := range v {
 						// list element serialize
 						// type: float32
@@ -3006,61 +2970,61 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 		// property: s.Dv
 		// type: variant<int32, map[int32]variant<float32, string>>
 		if s.Dv != nil {
-			tSize := 0
+			tmp := 0
 			switch v := s.Dv.(type) {
 			// variant type size: int32
 			case int32:
 				// type: int32
-				tSize += 1 + tygo.SizeVarint(uint64(v))
+				tmp += 1 + tygo.SizeVarint(uint64(v))
 			// variant type size: map[int32]variant<float32, string>
 			case map[int32]interface{}:
 				// type: map[int32]variant<float32, string>
 				if len(v) > 0 {
 					for k, v := range v {
-						tSizee := 0
+						tmpp := 0
 						// dict key
 						// type: int32
 						if k != 0 {
-							tSizee += 1 + tygo.SizeVarint(uint64(k))
+							tmpp += 1 + tygo.SizeVarint(uint64(k))
 						}
 						// dict value
 						// type: variant<float32, string>
 						if v != nil {
-							tSizeee := 0
+							tmppp := 0
 							switch v := v.(type) {
 							// variant type: float32
 							case float32:
 								// type: float32
-								tSizeee += 1 + 4
+								tmppp += 1 + 4
 							// variant type: string
 							case string:
 								// type: string
 								{
 									l := len([]byte(v))
-									tSizeee += 1 + tygo.SizeVarint(uint64(l)) + l
+									tmppp += 1 + tygo.SizeVarint(uint64(l)) + l
 								}
 							// addition type: int -> float32
 							case int:
-								tSizeee += 5
+								tmppp += 5
 							// addition type: float64 -> float32
 							case float64:
-								tSizeee += 5
+								tmppp += 5
 							default:
 								panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<float32, string>: %v", v))
 							}
-							tSizee += 1 + tygo.SizeVarint(uint64(tSizeee)) + tSizeee
+							tmpp += 1 + tygo.SizeVarint(uint64(tmppp)) + tmppp
 						}
-						tSize += 1 + tygo.SizeVarint(uint64(tSizee)) + tSizee
+						tmp += 1 + tygo.SizeVarint(uint64(tmpp)) + tmpp
 					}
 				}
 			// addition type size: int
 			case int:
-				tSize += 1 + tygo.SizeVarint(uint64(v))
+				tmp += 1 + tygo.SizeVarint(uint64(v))
 			default:
 				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, map[int32]variant<float32, string>>: %v", v))
 			}
 			output.WriteBytes(146, 2) // tag: 274 MAKE_TAG(34, WireBytes=2)
-			output.WriteVarint(uint64(tSize))
+			output.WriteVarint(uint64(tmp))
 			switch v := s.Dv.(type) {
 			// variant type serialize: int32
 			case int32:
@@ -3072,41 +3036,41 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 				// type: map[int32]variant<float32, string>
 				if len(v) > 0 {
 					for k, v := range v {
-						tSizee := 0
+						tmpp := 0
 						// dict key size
 						// type: int32
 						if k != 0 {
-							tSizee += 1 + tygo.SizeVarint(uint64(k))
+							tmpp += 1 + tygo.SizeVarint(uint64(k))
 						}
 						// dict value size
 						// type: variant<float32, string>
 						if v != nil {
-							tSizeee := 0
+							tmppp := 0
 							switch v := v.(type) {
 							// variant type: float32
 							case float32:
 								// type: float32
-								tSizeee += 1 + 4
+								tmppp += 1 + 4
 							// variant type: string
 							case string:
 								// type: string
 								{
 									l := len([]byte(v))
-									tSizeee += 1 + tygo.SizeVarint(uint64(l)) + l
+									tmppp += 1 + tygo.SizeVarint(uint64(l)) + l
 								}
 							// addition type: int -> float32
 							case int:
-								tSizeee += 5
+								tmppp += 5
 							// addition type: float64 -> float32
 							case float64:
-								tSizeee += 5
+								tmppp += 5
 							default:
 								panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<float32, string>: %v", v))
 							}
-							tSizee += 1 + tygo.SizeVarint(uint64(tSizeee)) + tSizeee
+							tmpp += 1 + tygo.SizeVarint(uint64(tmppp)) + tmppp
 						}
 						output.WriteBytes(18) // tag: 18 MAKE_TAG(2, WireBytes=2)
-						output.WriteVarint(uint64(tSizee))
+						output.WriteVarint(uint64(tmpp))
 						// dict key serialize
 						// type: int32
 						if k != 0 {
@@ -3116,30 +3080,30 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 						// dict value serialize
 						// type: variant<float32, string>
 						if v != nil {
-							tSizeee := 0
+							tmppp := 0
 							switch v := v.(type) {
 							// variant type size: float32
 							case float32:
 								// type: float32
-								tSizeee += 1 + 4
+								tmppp += 1 + 4
 							// variant type size: string
 							case string:
 								// type: string
 								{
 									l := len([]byte(v))
-									tSizeee += 1 + tygo.SizeVarint(uint64(l)) + l
+									tmppp += 1 + tygo.SizeVarint(uint64(l)) + l
 								}
 							// addition type size: int -> float32
 							case int:
-								tSizeee += 5
+								tmppp += 5
 							// addition type size: float64 -> float32
 							case float64:
-								tSizeee += 5
+								tmppp += 5
 							default:
 								panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<float32, string>: %v", v))
 							}
 							output.WriteBytes(18) // tag: 18 MAKE_TAG(2, WireBytes=2)
-							output.WriteVarint(uint64(tSizeee))
+							output.WriteVarint(uint64(tmppp))
 							switch v := v.(type) {
 							// variant type serialize: float32
 							case float32:
@@ -3151,9 +3115,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 								// type: string
 								{
 									output.WriteBytes(18) // tag: 18 MAKE_TAG(2, WireBytes=2)
-									d := []byte(v)
-									output.WriteVarint(uint64(len(d)))
-									output.Write(d)
+									output.WriteBuf([]byte(v))
 								}
 							// addition type serialize: int -> float32
 							case int:
@@ -3181,39 +3143,39 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 		// property: s.Fdv
 		// type: variant<int32, map[int32]float32>
 		if s.Fdv != nil {
-			tSize := 0
+			tmp := 0
 			switch v := s.Fdv.(type) {
 			// variant type size: int32
 			case int32:
 				// type: int32
-				tSize += 1 + tygo.SizeVarint(uint64(v))
+				tmp += 1 + tygo.SizeVarint(uint64(v))
 			// variant type size: map[int32]float32
 			case map[int32]float32:
 				// type: map[int32]float32
 				if len(v) > 0 {
 					for k, v := range v {
-						tSizee := 0
+						tmpp := 0
 						// dict key
 						// type: int32
 						if k != 0 {
-							tSizee += 1 + tygo.SizeVarint(uint64(k))
+							tmpp += 1 + tygo.SizeVarint(uint64(k))
 						}
 						// dict value
 						// type: float32
 						if v != 0 {
-							tSizee += 1 + 4
+							tmpp += 1 + 4
 						}
-						tSize += 1 + tygo.SizeVarint(uint64(tSizee)) + tSizee
+						tmp += 1 + tygo.SizeVarint(uint64(tmpp)) + tmpp
 					}
 				}
 			// addition type size: int
 			case int:
-				tSize += 1 + tygo.SizeVarint(uint64(v))
+				tmp += 1 + tygo.SizeVarint(uint64(v))
 			default:
 				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, map[int32]float32>: %v", v))
 			}
 			output.WriteBytes(154, 2) // tag: 282 MAKE_TAG(35, WireBytes=2)
-			output.WriteVarint(uint64(tSize))
+			output.WriteVarint(uint64(tmp))
 			switch v := s.Fdv.(type) {
 			// variant type serialize: int32
 			case int32:
@@ -3225,19 +3187,19 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 				// type: map[int32]float32
 				if len(v) > 0 {
 					for k, v := range v {
-						tSizee := 0
+						tmpp := 0
 						// dict key size
 						// type: int32
 						if k != 0 {
-							tSizee += 1 + tygo.SizeVarint(uint64(k))
+							tmpp += 1 + tygo.SizeVarint(uint64(k))
 						}
 						// dict value size
 						// type: float32
 						if v != 0 {
-							tSizee += 1 + 4
+							tmpp += 1 + 4
 						}
 						output.WriteBytes(18) // tag: 18 MAKE_TAG(2, WireBytes=2)
-						output.WriteVarint(uint64(tSizee))
+						output.WriteVarint(uint64(tmpp))
 						// dict key serialize
 						// type: int32
 						if k != 0 {
@@ -3274,26 +3236,26 @@ func (s *Fighter) SerializeRPGParam(a0 *Fighter, a1 interface{}, a2 float64) (da
 	// param size: a0
 	// type: *Fighter
 	if a0 != nil {
-		tSize := a0.ByteSize()
-		size += 1 + tygo.SizeVarint(uint64(tSize)) + tSize
+		tmp := a0.ByteSize()
+		size += 1 + tygo.SizeVarint(uint64(tmp)) + tmp
 	}
 
 	// param size: a1
 	// type: variant<nil, int32>
 	if a1 != nil {
-		tSize := 0
+		tmp := 0
 		switch v := a1.(type) {
 		// variant type: int32
 		case int32:
 			// type: int32
-			tSize += 1 + tygo.SizeVarint(uint64(v))
+			tmp += 1 + tygo.SizeVarint(uint64(v))
 		// addition type: int
 		case int:
-			tSize += 1 + tygo.SizeVarint(uint64(v))
+			tmp += 1 + tygo.SizeVarint(uint64(v))
 		default:
 			panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<nil, int32>: %v", v))
 		}
-		size += 1 + tygo.SizeVarint(uint64(tSize)) + tSize
+		size += 1 + tygo.SizeVarint(uint64(tmp)) + tmp
 	}
 
 	// param size: a2
@@ -3319,20 +3281,20 @@ func (s *Fighter) SerializeRPGParam(a0 *Fighter, a1 interface{}, a2 float64) (da
 	// param serialize: a1
 	// type: variant<nil, int32>
 	if a1 != nil {
-		tSize := 0
+		tmp := 0
 		switch v := a1.(type) {
 		// variant type size: int32
 		case int32:
 			// type: int32
-			tSize += 1 + tygo.SizeVarint(uint64(v))
+			tmp += 1 + tygo.SizeVarint(uint64(v))
 		// addition type size: int
 		case int:
-			tSize += 1 + tygo.SizeVarint(uint64(v))
+			tmp += 1 + tygo.SizeVarint(uint64(v))
 		default:
 			panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<nil, int32>: %v", v))
 		}
 		output.WriteBytes(18) // tag: 18 MAKE_TAG(2, WireBytes=2)
-		output.WriteVarint(uint64(tSize))
+		output.WriteVarint(uint64(tmp))
 		switch v := a1.(type) {
 		// variant type serialize: int32
 		case int32:
@@ -3369,26 +3331,26 @@ func (s *Fighter) SerializeRPGResult(a0 *Fighter, a1 interface{}, a2 float64) (d
 	// result size: a0
 	// type: *Fighter
 	if a0 != nil {
-		tSize := a0.ByteSize()
-		size += 1 + tygo.SizeVarint(uint64(tSize)) + tSize
+		tmp := a0.ByteSize()
+		size += 1 + tygo.SizeVarint(uint64(tmp)) + tmp
 	}
 
 	// result size: a1
 	// type: variant<nil, int32>
 	if a1 != nil {
-		tSize := 0
+		tmp := 0
 		switch v := a1.(type) {
 		// variant type: int32
 		case int32:
 			// type: int32
-			tSize += 1 + tygo.SizeVarint(uint64(v))
+			tmp += 1 + tygo.SizeVarint(uint64(v))
 		// addition type: int
 		case int:
-			tSize += 1 + tygo.SizeVarint(uint64(v))
+			tmp += 1 + tygo.SizeVarint(uint64(v))
 		default:
 			panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<nil, int32>: %v", v))
 		}
-		size += 1 + tygo.SizeVarint(uint64(tSize)) + tSize
+		size += 1 + tygo.SizeVarint(uint64(tmp)) + tmp
 	}
 
 	// result size: a2
@@ -3414,20 +3376,20 @@ func (s *Fighter) SerializeRPGResult(a0 *Fighter, a1 interface{}, a2 float64) (d
 	// result serialize: a1
 	// type: variant<nil, int32>
 	if a1 != nil {
-		tSize := 0
+		tmp := 0
 		switch v := a1.(type) {
 		// variant type size: int32
 		case int32:
 			// type: int32
-			tSize += 1 + tygo.SizeVarint(uint64(v))
+			tmp += 1 + tygo.SizeVarint(uint64(v))
 		// addition type size: int
 		case int:
-			tSize += 1 + tygo.SizeVarint(uint64(v))
+			tmp += 1 + tygo.SizeVarint(uint64(v))
 		default:
 			panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<nil, int32>: %v", v))
 		}
 		output.WriteBytes(18) // tag: 18 MAKE_TAG(2, WireBytes=2)
-		output.WriteVarint(uint64(tSize))
+		output.WriteVarint(uint64(tmp))
 		switch v := a1.(type) {
 		// variant type serialize: int32
 		case int32:
@@ -3465,48 +3427,48 @@ func (s *Fighter) SerializeGPRParam(a0 map[int32]interface{}) (data []byte) {
 	// type: map[int32]variant<Corpus, float64, string, *Vector2>
 	if len(a0) > 0 {
 		for k, v := range a0 {
-			tSize := 0
+			tmp := 0
 			// dict key
 			// type: int32
 			if k != 0 {
-				tSize += 1 + tygo.SizeVarint(uint64(k))
+				tmp += 1 + tygo.SizeVarint(uint64(k))
 			}
 			// dict value
 			// type: variant<Corpus, float64, string, *Vector2>
 			if v != nil {
-				tSizee := 0
+				tmpp := 0
 				switch v := v.(type) {
 				// variant type: Corpus
 				case Corpus:
 					// type: Corpus
-					tSizee += 1 + tygo.SizeVarint(uint64(v))
+					tmpp += 1 + tygo.SizeVarint(uint64(v))
 				// variant type: float64
 				case float64:
 					// type: float64
-					tSizee += 1 + 8
+					tmpp += 1 + 8
 				// variant type: string
 				case string:
 					// type: string
 					{
 						l := len([]byte(v))
-						tSizee += 1 + tygo.SizeVarint(uint64(l)) + l
+						tmpp += 1 + tygo.SizeVarint(uint64(l)) + l
 					}
 				// variant type: *Vector2
 				case *Vector2:
 					// type: *Vector2
 					{
-						tSizeee := v.ByteSize()
-						tSizee += 1 + tygo.SizeVarint(uint64(tSizeee)) + tSizeee
+						tmppp := v.ByteSize()
+						tmpp += 1 + tygo.SizeVarint(uint64(tmppp)) + tmppp
 					}
 				// addition type: int -> float64
 				case int:
-					tSizee += 9
+					tmpp += 9
 				default:
 					panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<Corpus, float64, string, *Vector2>: %v", v))
 				}
-				tSize += 1 + tygo.SizeVarint(uint64(tSizee)) + tSizee
+				tmp += 1 + tygo.SizeVarint(uint64(tmpp)) + tmpp
 			}
-			size += 1 + tygo.SizeVarint(uint64(tSize)) + tSize
+			size += 1 + tygo.SizeVarint(uint64(tmp)) + tmp
 		}
 	}
 
@@ -3520,49 +3482,49 @@ func (s *Fighter) SerializeGPRParam(a0 map[int32]interface{}) (data []byte) {
 	// type: map[int32]variant<Corpus, float64, string, *Vector2>
 	if len(a0) > 0 {
 		for k, v := range a0 {
-			tSize := 0
+			tmp := 0
 			// dict key size
 			// type: int32
 			if k != 0 {
-				tSize += 1 + tygo.SizeVarint(uint64(k))
+				tmp += 1 + tygo.SizeVarint(uint64(k))
 			}
 			// dict value size
 			// type: variant<Corpus, float64, string, *Vector2>
 			if v != nil {
-				tSizee := 0
+				tmpp := 0
 				switch v := v.(type) {
 				// variant type: Corpus
 				case Corpus:
 					// type: Corpus
-					tSizee += 1 + tygo.SizeVarint(uint64(v))
+					tmpp += 1 + tygo.SizeVarint(uint64(v))
 				// variant type: float64
 				case float64:
 					// type: float64
-					tSizee += 1 + 8
+					tmpp += 1 + 8
 				// variant type: string
 				case string:
 					// type: string
 					{
 						l := len([]byte(v))
-						tSizee += 1 + tygo.SizeVarint(uint64(l)) + l
+						tmpp += 1 + tygo.SizeVarint(uint64(l)) + l
 					}
 				// variant type: *Vector2
 				case *Vector2:
 					// type: *Vector2
 					{
-						tSizeee := v.CachedSize()
-						tSizee += 1 + tygo.SizeVarint(uint64(tSizeee)) + tSizeee
+						tmppp := v.CachedSize()
+						tmpp += 1 + tygo.SizeVarint(uint64(tmppp)) + tmppp
 					}
 				// addition type: int -> float64
 				case int:
-					tSizee += 9
+					tmpp += 9
 				default:
 					panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<Corpus, float64, string, *Vector2>: %v", v))
 				}
-				tSize += 1 + tygo.SizeVarint(uint64(tSizee)) + tSizee
+				tmp += 1 + tygo.SizeVarint(uint64(tmpp)) + tmpp
 			}
 			output.WriteBytes(10) // tag: 10 MAKE_TAG(1, WireBytes=2)
-			output.WriteVarint(uint64(tSize))
+			output.WriteVarint(uint64(tmp))
 			// dict key serialize
 			// type: int32
 			if k != 0 {
@@ -3572,38 +3534,38 @@ func (s *Fighter) SerializeGPRParam(a0 map[int32]interface{}) (data []byte) {
 			// dict value serialize
 			// type: variant<Corpus, float64, string, *Vector2>
 			if v != nil {
-				tSizee := 0
+				tmpp := 0
 				switch v := v.(type) {
 				// variant type size: Corpus
 				case Corpus:
 					// type: Corpus
-					tSizee += 1 + tygo.SizeVarint(uint64(v))
+					tmpp += 1 + tygo.SizeVarint(uint64(v))
 				// variant type size: float64
 				case float64:
 					// type: float64
-					tSizee += 1 + 8
+					tmpp += 1 + 8
 				// variant type size: string
 				case string:
 					// type: string
 					{
 						l := len([]byte(v))
-						tSizee += 1 + tygo.SizeVarint(uint64(l)) + l
+						tmpp += 1 + tygo.SizeVarint(uint64(l)) + l
 					}
 				// variant type size: *Vector2
 				case *Vector2:
 					// type: *Vector2
 					{
-						tSizeee := v.CachedSize()
-						tSizee += 1 + tygo.SizeVarint(uint64(tSizeee)) + tSizeee
+						tmppp := v.CachedSize()
+						tmpp += 1 + tygo.SizeVarint(uint64(tmppp)) + tmppp
 					}
 				// addition type size: int -> float64
 				case int:
-					tSizee += 9
+					tmpp += 9
 				default:
 					panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<Corpus, float64, string, *Vector2>: %v", v))
 				}
 				output.WriteBytes(18) // tag: 18 MAKE_TAG(2, WireBytes=2)
-				output.WriteVarint(uint64(tSizee))
+				output.WriteVarint(uint64(tmpp))
 				switch v := v.(type) {
 				// variant type serialize: Corpus
 				case Corpus:
@@ -3620,9 +3582,7 @@ func (s *Fighter) SerializeGPRParam(a0 map[int32]interface{}) (data []byte) {
 					// type: string
 					{
 						output.WriteBytes(26) // tag: 26 MAKE_TAG(3, WireBytes=2)
-						d := []byte(v)
-						output.WriteVarint(uint64(len(d)))
-						output.Write(d)
+						output.WriteBuf([]byte(v))
 					}
 				// variant type serialize: *Vector2
 				case *Vector2:
@@ -3658,48 +3618,48 @@ func (s *Fighter) SerializeGPRResult(a0 map[int32]interface{}) (data []byte) {
 	// type: map[int32]variant<Corpus, float64, string, *Vector2>
 	if len(a0) > 0 {
 		for k, v := range a0 {
-			tSize := 0
+			tmp := 0
 			// dict key
 			// type: int32
 			if k != 0 {
-				tSize += 1 + tygo.SizeVarint(uint64(k))
+				tmp += 1 + tygo.SizeVarint(uint64(k))
 			}
 			// dict value
 			// type: variant<Corpus, float64, string, *Vector2>
 			if v != nil {
-				tSizee := 0
+				tmpp := 0
 				switch v := v.(type) {
 				// variant type: Corpus
 				case Corpus:
 					// type: Corpus
-					tSizee += 1 + tygo.SizeVarint(uint64(v))
+					tmpp += 1 + tygo.SizeVarint(uint64(v))
 				// variant type: float64
 				case float64:
 					// type: float64
-					tSizee += 1 + 8
+					tmpp += 1 + 8
 				// variant type: string
 				case string:
 					// type: string
 					{
 						l := len([]byte(v))
-						tSizee += 1 + tygo.SizeVarint(uint64(l)) + l
+						tmpp += 1 + tygo.SizeVarint(uint64(l)) + l
 					}
 				// variant type: *Vector2
 				case *Vector2:
 					// type: *Vector2
 					{
-						tSizeee := v.ByteSize()
-						tSizee += 1 + tygo.SizeVarint(uint64(tSizeee)) + tSizeee
+						tmppp := v.ByteSize()
+						tmpp += 1 + tygo.SizeVarint(uint64(tmppp)) + tmppp
 					}
 				// addition type: int -> float64
 				case int:
-					tSizee += 9
+					tmpp += 9
 				default:
 					panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<Corpus, float64, string, *Vector2>: %v", v))
 				}
-				tSize += 1 + tygo.SizeVarint(uint64(tSizee)) + tSizee
+				tmp += 1 + tygo.SizeVarint(uint64(tmpp)) + tmpp
 			}
-			size += 1 + tygo.SizeVarint(uint64(tSize)) + tSize
+			size += 1 + tygo.SizeVarint(uint64(tmp)) + tmp
 		}
 	}
 
@@ -3713,49 +3673,49 @@ func (s *Fighter) SerializeGPRResult(a0 map[int32]interface{}) (data []byte) {
 	// type: map[int32]variant<Corpus, float64, string, *Vector2>
 	if len(a0) > 0 {
 		for k, v := range a0 {
-			tSize := 0
+			tmp := 0
 			// dict key size
 			// type: int32
 			if k != 0 {
-				tSize += 1 + tygo.SizeVarint(uint64(k))
+				tmp += 1 + tygo.SizeVarint(uint64(k))
 			}
 			// dict value size
 			// type: variant<Corpus, float64, string, *Vector2>
 			if v != nil {
-				tSizee := 0
+				tmpp := 0
 				switch v := v.(type) {
 				// variant type: Corpus
 				case Corpus:
 					// type: Corpus
-					tSizee += 1 + tygo.SizeVarint(uint64(v))
+					tmpp += 1 + tygo.SizeVarint(uint64(v))
 				// variant type: float64
 				case float64:
 					// type: float64
-					tSizee += 1 + 8
+					tmpp += 1 + 8
 				// variant type: string
 				case string:
 					// type: string
 					{
 						l := len([]byte(v))
-						tSizee += 1 + tygo.SizeVarint(uint64(l)) + l
+						tmpp += 1 + tygo.SizeVarint(uint64(l)) + l
 					}
 				// variant type: *Vector2
 				case *Vector2:
 					// type: *Vector2
 					{
-						tSizeee := v.CachedSize()
-						tSizee += 1 + tygo.SizeVarint(uint64(tSizeee)) + tSizeee
+						tmppp := v.CachedSize()
+						tmpp += 1 + tygo.SizeVarint(uint64(tmppp)) + tmppp
 					}
 				// addition type: int -> float64
 				case int:
-					tSizee += 9
+					tmpp += 9
 				default:
 					panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<Corpus, float64, string, *Vector2>: %v", v))
 				}
-				tSize += 1 + tygo.SizeVarint(uint64(tSizee)) + tSizee
+				tmp += 1 + tygo.SizeVarint(uint64(tmpp)) + tmpp
 			}
 			output.WriteBytes(10) // tag: 10 MAKE_TAG(1, WireBytes=2)
-			output.WriteVarint(uint64(tSize))
+			output.WriteVarint(uint64(tmp))
 			// dict key serialize
 			// type: int32
 			if k != 0 {
@@ -3765,38 +3725,38 @@ func (s *Fighter) SerializeGPRResult(a0 map[int32]interface{}) (data []byte) {
 			// dict value serialize
 			// type: variant<Corpus, float64, string, *Vector2>
 			if v != nil {
-				tSizee := 0
+				tmpp := 0
 				switch v := v.(type) {
 				// variant type size: Corpus
 				case Corpus:
 					// type: Corpus
-					tSizee += 1 + tygo.SizeVarint(uint64(v))
+					tmpp += 1 + tygo.SizeVarint(uint64(v))
 				// variant type size: float64
 				case float64:
 					// type: float64
-					tSizee += 1 + 8
+					tmpp += 1 + 8
 				// variant type size: string
 				case string:
 					// type: string
 					{
 						l := len([]byte(v))
-						tSizee += 1 + tygo.SizeVarint(uint64(l)) + l
+						tmpp += 1 + tygo.SizeVarint(uint64(l)) + l
 					}
 				// variant type size: *Vector2
 				case *Vector2:
 					// type: *Vector2
 					{
-						tSizeee := v.CachedSize()
-						tSizee += 1 + tygo.SizeVarint(uint64(tSizeee)) + tSizeee
+						tmppp := v.CachedSize()
+						tmpp += 1 + tygo.SizeVarint(uint64(tmppp)) + tmppp
 					}
 				// addition type size: int -> float64
 				case int:
-					tSizee += 9
+					tmpp += 9
 				default:
 					panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<Corpus, float64, string, *Vector2>: %v", v))
 				}
 				output.WriteBytes(18) // tag: 18 MAKE_TAG(2, WireBytes=2)
-				output.WriteVarint(uint64(tSizee))
+				output.WriteVarint(uint64(tmpp))
 				switch v := v.(type) {
 				// variant type serialize: Corpus
 				case Corpus:
@@ -3813,9 +3773,7 @@ func (s *Fighter) SerializeGPRResult(a0 map[int32]interface{}) (data []byte) {
 					// type: string
 					{
 						output.WriteBytes(26) // tag: 26 MAKE_TAG(3, WireBytes=2)
-						d := []byte(v)
-						output.WriteVarint(uint64(len(d)))
-						output.Write(d)
+						output.WriteBuf([]byte(v))
 					}
 				// variant type serialize: *Vector2
 				case *Vector2:
