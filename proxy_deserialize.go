@@ -49,7 +49,7 @@ func expectTag(preFieldNum string, fieldNum int, wireType WireType) string {
 	}
 }
 
-func (t *Enum) DeserializeGo(input string, name string, preFieldNum string, fieldNum int) (string, WireType, map[string]string) {
+func (t *Enum) DeserializeGo(tag string, input string, name string, preFieldNum string, fieldNum int) (string, WireType, map[string]string) {
 	if desVarCount != 0 {
 		log.Fatalf("[Tygo][Enum] desVarCount(%d)", desVarCount)
 	}
@@ -59,11 +59,11 @@ func (t *Enum) DeserializeGo(input string, name string, preFieldNum string, fiel
 	*%s = %s(x)`, input, name, t.Name), WireVarint, nil
 }
 
-func (t *Method) DeserializeGo(input string, name string, preFieldNum string, fieldNum int) (string, WireType, map[string]string) {
+func (t *Method) DeserializeGo(tag string, input string, name string, preFieldNum string, fieldNum int) (string, WireType, map[string]string) {
 	return "", WireVarint, nil
 }
 
-func (t *Object) DeserializeGo(input string, name string, preFieldNum string, fieldNum int) (string, WireType, map[string]string) {
+func (t *Object) DeserializeGo(tag string, input string, name string, preFieldNum string, fieldNum int) (string, WireType, map[string]string) {
 	if desVarCount != 0 {
 		log.Fatalf("[Tygo][Enum] desVarCount(%d)", desVarCount)
 	}
@@ -103,11 +103,11 @@ func (t *Object) DeserializeGo(input string, name string, preFieldNum string, fi
 	}`, name, strings.Join(fields, "")), WireBytes, pkgs
 }
 
-func (t UnknownType) DeserializeGo(input string, name string, preFieldNum string, fieldNum int) (string, WireType, map[string]string) {
+func (t UnknownType) DeserializeGo(tag string, input string, name string, preFieldNum string, fieldNum int) (string, WireType, map[string]string) {
 	return "", WireVarint, nil
 }
 
-func (t SimpleType) DeserializeGo(input string, name string, preFieldNum string, fieldNum int) (string, WireType, map[string]string) {
+func (t SimpleType) DeserializeGo(tag string, input string, name string, preFieldNum string, fieldNum int) (string, WireType, map[string]string) {
 	switch t {
 	case SimpleType_INT32:
 		fallthrough
@@ -167,7 +167,7 @@ func (t SimpleType) DeserializeGo(input string, name string, preFieldNum string,
 	}
 }
 
-func (t *FixedPointType) DeserializeGo(input string, name string, preFieldNum string, fieldNum int) (string, WireType, map[string]string) {
+func (t *FixedPointType) DeserializeGo(tag string, input string, name string, preFieldNum string, fieldNum int) (string, WireType, map[string]string) {
 	return fmt.Sprintf(`
 	// type: %s
 	if x, err := %s.ReadVarint(); err == nil {
@@ -177,7 +177,7 @@ func (t *FixedPointType) DeserializeGo(input string, name string, preFieldNum st
 	}`, t, input, name, pow10(t.Precision), t.Floor), WireVarint, nil
 }
 
-func (t *EnumType) DeserializeGo(input string, name string, preFieldNum string, fieldNum int) (string, WireType, map[string]string) {
+func (t *EnumType) DeserializeGo(tag string, input string, name string, preFieldNum string, fieldNum int) (string, WireType, map[string]string) {
 	return fmt.Sprintf(`
 	// type: %s
 	if x, err := %s.ReadVarint(); err == nil {
@@ -187,7 +187,7 @@ func (t *EnumType) DeserializeGo(input string, name string, preFieldNum string, 
 	}`, t, input, name, t.Name), WireVarint, nil
 }
 
-func (t *InstanceType) DeserializeGo(input string, name string, preFieldNum string, fieldNum int) (string, WireType, map[string]string) {
+func (t *InstanceType) DeserializeGo(tag string, input string, name string, preFieldNum string, fieldNum int) (string, WireType, map[string]string) {
 	return fmt.Sprintf(`
 	// type: %s
 	if x, err := %s.ReadBuf(); err != nil {
@@ -197,77 +197,70 @@ func (t *InstanceType) DeserializeGo(input string, name string, preFieldNum stri
 	}`, t, input, name), WireBytes, updateTygo(nil)
 }
 
-func (t *ListType) DeserializeGo(input string, name string, preFieldNum string, fieldNum int) (string, WireType, map[string]string) {
+func (t *ListType) DeserializeGo(tag string, input string, name string, preFieldNum string, fieldNum int) (string, WireType, map[string]string) {
 	tempInput := TEMP_PREFIX
 	if strings.HasPrefix(input, TEMP_PREFIX) {
-		tempInput = input + "p"
+		tempInput = input + "i"
 	}
+	v := desVar()
+	type_s, type_p := t.E.Go()
 	var pkgs map[string]string
+	pkgs = update(pkgs, type_p)
 
-	if l, ok := t.E.(*ListType); ok {
-		v := desVar()
-		type_s, type_p := t.E.Go()
-		pkgs = update(pkgs, type_p)
-
-		if l.E.IsPrimitive() {
-			element_s, element_p := t.E.DeserializeGo(input, v, "", 0)
-			pkgs = update(pkgs, element_p)
-			tag_s := expectTag(preFieldNum, fieldNum, WireBytes)
-			if tag_s == "" {
-				return fmt.Sprintf(`
+	if l, ok := t.E.(*ListType); ok && !l.E.IsPrimitive() {
+		element_s, element_w, element_p := t.E.DeserializeGo(tag, tempInput, v, "", 0)
+		pkgs = update(pkgs, element_p)
+		tag_s := expectTag(preFieldNum, fieldNum, element_w)
+		if tag_s == "" {
+			return fmt.Sprintf(`
+	// type: %s
+	if x, err := %s.ReadBuf(); err == nil {
+		%s := &tygo.ProtoBuf{Buffer: x}
+		var %s %s
+		for !%s.ExpectEnd() {%s
+		}
+		%s = append(%s, %s)
+	} else {
+		return err
+	}`, t, input, tempInput, v, type_s, tempInput, addIndent(element_s, 2), name, name, v), WireBytes, pkgs
+		} else {
+			return fmt.Sprintf(`
+	// type: %s
+	parse_%s_loop: for {
+		if x, err := %s.ReadBuf(); err == nil {
+			%s := &tygo.ProtoBuf{Buffer: x}
+			var %s %s
+			for !%s.ExpectEnd() {%s
+			}
+			%s = append(%s, %s)
+			if !%s.%s {
+				break parse_%s_loop
+			}
+		} else {
+			return err
+		}
+	}`, t, v, input, tempInput, v, type_s, tempInput, addIndent(element_s, 3), name, name, v, input, tag_s, v), WireBytes, pkgs
+		}
+	} else if !t.E.IsPrimitive() {
+		element_s, element_w, element_p := t.E.DeserializeGo(tag, input, v, "", 0)
+		pkgs = update(pkgs, element_p)
+		tag_s := expectTag(preFieldNum, fieldNum, element_w)
+		if tag_s == "" {
+			return fmt.Sprintf(`
 	// type: %s
 	var %s %s%s
 	%s = append(%s, %s)`, t, v, type_s, element_s, name, name, v), WireBytes, pkgs
-			} else {
-				return fmt.Sprintf(`
-	// type: %s
-	parse_%s_loop:
-	var %s %s%s
-	%s = append(%s, %s)
-	if %s.%s {
-		goto parse_%s_loop
-	}`, t, v, v, type_s, element_s, name, name, v, input, tag_s, v), WireBytes, pkgs
-			}
 		} else {
-			element_s, element_p := t.E.DeserializeGo(tempInput, v, "", 0)
-			pkgs = update(pkgs, element_p)
-			tag_s := expectTag(preFieldNum, fieldNum, WireBytes)
-			if tag_s == "" {
-				return fmt.Sprintf(`
+			return fmt.Sprintf(`
 	// type: %s
-	parse_%s_loop:
-	var %s %s%s
-	%s = append(%s, %s)
-	if %s.%s {
-		goto parse_%s_loop
-	}`, t, v, v, type_s, element_s, name, name, v, input,
-					expectTag(preFieldNum, fieldNum, WireBytes)), WireBytes, pkgs
-			} else {
-				return fmt.Sprintf(`
-	// type: %s
-	parse_%s_loop:
-	var %s %s%s
-	%s = append(%s, %s)
-	if %s.%s {
-		goto parse_%s_loop
-	}`, t, v, v, type_s, element_s, name, name, v, input,
-					expectTag(preFieldNum, fieldNum, WireBytes)), WireBytes, pkgs
-			}
+	parse_%s_loop: for {
+		var %s %s%s
+		%s = append(%s, %s)
+		if !%s.%s {
+			break parse_%s_loop
 		}
-	} else if !t.E.IsPrimitive() {
-		element_s, element_p := t.E.SerializeGo(size, "e", "", 0, true)
-		pkgs = update(pkgs, element_p)
-
-		return fmt.Sprintf(`
-	// type: %s
-	if len(%s) > 0 {
-		for _, e := range %s {
-			// list element%s%s else {
-				output.WriteBytes(0)
-			}
+	}`, t, v, v, type_s, addIndent(element_s, 1), name, name, v, input, tag_s, v), WireBytes, pkgs
 		}
-	}`, t, name, name, writeTag(preFieldNum, fieldNum, WireBytes, 2), addIndent(element_s, 2)), pkgs
-
 	} else {
 		serialize_s, serialize_p := t.E.SerializeGo(tempSize, "e", "", 0, false)
 		pkgs = update(pkgs, serialize_p)
@@ -283,10 +276,14 @@ func (t *ListType) DeserializeGo(input string, name string, preFieldNum string, 
 	}
 }
 
-func (t *DictType) DeserializeGo(input string, name string, preFieldNum string, fieldNum int) (string, WireType, map[string]string) {
+func (t *DictType) DeserializeGo(tag string, input string, name string, preFieldNum string, fieldNum int) (string, WireType, map[string]string) {
+	tempTag := TEMP_PREFIX
+	if strings.HasPrefix(input, TEMP_PREFIX) {
+		tempTag = input + "g"
+	}
 	return t._ByteSizeGo(size, name, preFieldNum, fieldNum, ignore, false)
 }
 
-func (t *VariantType) DeserializeGo(input string, name string, preFieldNum string, fieldNum int) (string, WireType, map[string]string) {
+func (t *VariantType) DeserializeGo(tag string, input string, name string, preFieldNum string, fieldNum int) (string, WireType, map[string]string) {
 	return t._ByteSizeGo(size, name, preFieldNum, fieldNum, ignore, false)
 }

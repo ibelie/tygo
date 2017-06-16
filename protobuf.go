@@ -230,6 +230,10 @@ func (p *ProtoBuf) ExpectBytes(x ...byte) bool {
 	return true
 }
 
+func (p *ProtoBuf) ExpectEnd() bool {
+	return p.offset >= len(p.Buffer)
+}
+
 func (p *ProtoBuf) SkipField(fieldNum int) error {
 	return nil
 }
