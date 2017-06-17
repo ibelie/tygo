@@ -84,8 +84,7 @@ func (t *Object) DeserializeGo(tag string, input string, name string, preFieldNu
 		p_name = "preFieldNum"
 	}
 
-	d1 := desVar()
-	var d string
+	l := desVar()
 	var field_s string
 	var field_w WireType
 	var field_p map[string]string
@@ -97,13 +96,7 @@ func (t *Object) DeserializeGo(tag string, input string, name string, preFieldNu
 			pkgs = update(pkgs, field_p)
 		}
 
-		var label string
-		if d != "" {
-			label = fmt.Sprintf(`%s
-			object_%s:`, label, d)
-			d = ""
-		}
-
+		var fall string
 		var next string
 		var next_s string
 		var next_w WireType
@@ -112,17 +105,23 @@ func (t *Object) DeserializeGo(tag string, input string, name string, preFieldNu
 			next_s, next_w, next_p = t.Fields[i+1].DeserializeGo("tag", input,
 				fmt.Sprintf("%s.%s", name, t.Fields[i+1].Name), p_name, p_num+i+2, false)
 			pkgs = update(pkgs, next_p)
-			d = desVar()
-			tag_s, tag_c := expectTag(p_name, p_num+i+2, next_w)
+			tag_i, tag_ic := tagInt(p_name, p_num+i+2, next_w)
+			tag_s, tag_sc := expectTag(p_name, p_num+i+2, next_w)
 			next = fmt.Sprintf(`
-				if %s.%s {%s
-					goto object_%s // goto case %d
-				}`, input, tag_s, tag_c, d, i+2)
+				if !%s.%s {%s
+					continue object_%s // next tag for %s
+				}
+				tag = %s%s // fallthrough case %d`, input, tag_s, tag_sc, l, t.Name, tag_i, tag_ic, i+2)
+			fall = fmt.Sprintf(` else {
+				break switch_%s // skip tag
+			}
+			fallthrough`, l)
 		} else {
 			next = fmt.Sprintf(`
 				if %s.ExpectEnd() {
 					break object_%s // end for %s
-				}`, input, d1, t.Name)
+				}
+				continue object_%s // next tag for %s`, input, l, t.Name, l, t.Name)
 		}
 
 		var listTag string
@@ -132,15 +131,14 @@ func (t *Object) DeserializeGo(tag string, input string, name string, preFieldNu
 			listTag = fmt.Sprintf(" || tag == %s", listTag)
 			listComment = strings.Replace(listComment, "//", "||", 1)
 		}
-		tag_i, tag_c := tagInt(p_name, p_num+i+1, field_w)
+		tag_i, tag_ic := tagInt(p_name, p_num+i+1, field_w)
 
 		fields = append(fields, fmt.Sprintf(`
 		// property: %s.%s
 		case %d:
 			if tag == %s%s {%s%s%s%s
-				continue object_%s // next tag for %s%s
-			}`, name, field.Name, i+1, tag_i, listTag, tag_c, listComment, label,
-			addIndent(field_s, 3), d1, t.Name, next))
+			}%s`, name, field.Name, i+1, tag_i, listTag, tag_ic, listComment,
+			addIndent(field_s, 3), next, fall))
 		if i < len(t.Fields)-1 {
 			field_s, field_w, field_p = next_s, next_w, next_p
 		}
@@ -151,6 +149,10 @@ func (t *Object) DeserializeGo(tag string, input string, name string, preFieldNu
 		cutoff = strconv.Itoa(_MAKE_CUTOFF(p_num + len(t.Fields)))
 	} else {
 		cutoff = _MAKE_CUTOFF_STR(fmt.Sprintf("(%s + %d)", p_name, p_num+len(t.Fields)))
+	}
+	var switchLabel string
+	if len(t.Fields) > 1 {
+		switchLabel = fmt.Sprintf("switch_%s: ", l)
 	}
 
 	var switchFlag string
@@ -174,12 +176,12 @@ func (t *Object) DeserializeGo(tag string, input string, name string, preFieldNu
 		if tag, err = %s.ReadTag(%s); err != nil {
 			return
 		}
-		switch %s {%s
+		%sswitch %s {%s
 		}
 		if err = %s.SkipField(tag); err != nil {
 			return
 		}
-	}`, strings.Join(parents, ""), d1, input, input, cutoff, switchFlag,
+	}`, strings.Join(parents, ""), l, input, input, cutoff, switchLabel, switchFlag,
 		strings.Join(fields, ""), input), WireBytes, pkgs
 }
 
@@ -331,7 +333,7 @@ func (t *ListType) DeserializeGo(tag string, input string, name string, preField
 	if l, ok := t.E.(*ListType); ok && !l.E.IsPrimitive() {
 		element_s, element_w, element_p := t.E.DeserializeGo(tag, tempInput, v, "", 0, false)
 		pkgs = update(pkgs, element_p)
-		tag_s, tag_c := expectTag(preFieldNum, fieldNum, element_w)
+		tag_s, tag_sc := expectTag(preFieldNum, fieldNum, element_w)
 		list_s := fmt.Sprintf(`
 	if x, e := %s.ReadBuf(); e == nil {
 		%s := &tygo.ProtoBuf{Buffer: x}
@@ -353,12 +355,12 @@ func (t *ListType) DeserializeGo(tag string, input string, name string, preField
 		if !%s.%s {%s
 			break loop_%s // end for %s
 		}
-	}`, t, v, addIndent(list_s, 1), input, tag_s, tag_c, v, t), WireBytes, pkgs
+	}`, t, v, addIndent(list_s, 1), input, tag_s, tag_sc, v, t), WireBytes, pkgs
 		}
 	} else if !t.E.IsPrimitive() {
 		element_s, element_w, element_p := t.E.DeserializeGo(tag, input, v, "", 0, false)
 		pkgs = update(pkgs, element_p)
-		tag_s, tag_c := expectTag(preFieldNum, fieldNum, element_w)
+		tag_s, tag_sc := expectTag(preFieldNum, fieldNum, element_w)
 		if tag_s == "" {
 			return fmt.Sprintf(`
 	// type: %s
@@ -373,7 +375,7 @@ func (t *ListType) DeserializeGo(tag string, input string, name string, preField
 		if !%s.%s {%s
 			break loop_%s // end for %s
 		}
-	}`, t, v, v, type_s, addIndent(element_s, 1), name, name, assert, v, input, tag_s, tag_c, v, t),
+	}`, t, v, v, type_s, addIndent(element_s, 1), name, name, assert, v, input, tag_s, tag_sc, v, t),
 				WireBytes, pkgs
 		}
 	} else {
@@ -396,7 +398,7 @@ func (t *ListType) DeserializeGo(tag string, input string, name string, preField
 				element_w, pkgs
 		} else {
 			loop_s, _, _ := t.E.DeserializeGo(tag, input, v, preFieldNum, fieldNum, false)
-			tag_i, tag_c := tagInt(preFieldNum, fieldNum, element_w)
+			tag_i, tag_ic := tagInt(preFieldNum, fieldNum, element_w)
 			return fmt.Sprintf(`
 	// type: %s
 	if %s == %s {%s
@@ -416,7 +418,7 @@ func (t *ListType) DeserializeGo(tag string, input string, name string, preField
 	} else {
 		err = e
 		return
-	}`, t, tag, tag_i, tag_c, v, v, type_s,
+	}`, t, tag, tag_i, tag_ic, v, v, type_s,
 				addIndent(loop_s, 2), name, name, assert, v, input, tag_s, tag_sc, v, t, input, tempInput,
 				v, type_s, tempInput, addIndent(element_s, 2), name, name, assert, v), element_w, pkgs
 		}
@@ -445,7 +447,7 @@ func (t *DictType) DeserializeGo(tag string, input string, name string, preField
 	pkgs = update(pkgs, value_t_p)
 	pkgs = update(pkgs, key_d_p)
 	pkgs = update(pkgs, value_d_p)
-	tag_s, tag_c := expectTag(preFieldNum, fieldNum, WireBytes)
+	tag_s, tag_sc := expectTag(preFieldNum, fieldNum, WireBytes)
 	var assert string
 	if isVariant {
 		assert = fmt.Sprintf(".(map[%s]%s)", key_t_s, value_t_s)
@@ -461,18 +463,20 @@ func (t *DictType) DeserializeGo(tag string, input string, name string, preField
 			if %s, err = %s.ReadTag(%d); err != nil {
 				return
 			}
-			switch %s {
+			switch_%s: switch %s {
 			// dict key
 			case 1:
 				if %s == %d { // MAKE_TAG(1, %s=%d)%s
-					if %s.%s {%s
-						goto dict_%s // goto case 2
+					if !%s.%s {%s
+						continue dict_%s // next tag for %s
 					}
-					continue dict_%s // next tag for %s
+					%s = %d // fallthrough case 2
+				} else {
+					break switch_%s // skip tag
 				}
+				fallthrough
 			case 2:
-				if %s == %d { // MAKE_TAG(2, %s=%d)
-				dict_%s:%s
+				if %s == %d { // MAKE_TAG(2, %s=%d)%s
 					if %s.ExpectEnd() {
 						break dict_%s // end for %s
 					}
@@ -488,10 +492,10 @@ func (t *DictType) DeserializeGo(tag string, input string, name string, preField
 		err = e
 		return
 	}`, input, tempInput, k, key_t_s, v, value_t_s, k, tempInput, tempTag, tempTag, tempInput,
-		_MAKE_CUTOFF(2), _TAG_FIELD_STR(tempTag), tempTag, _MAKE_TAG(1, key_d_w),
-		key_d_w, key_d_w, addIndent(key_d_s, 4), tempInput, value_e, value_c, v, k, t, tempTag,
-		_MAKE_TAG(2, value_d_w), value_d_w, value_d_w, v, addIndent(value_d_s, 4),
-		tempInput, k, t, k, t, tempInput, tempTag, name, assert, k, v)
+		_MAKE_CUTOFF(2), k, _TAG_FIELD_STR(tempTag), tempTag, _MAKE_TAG(1, key_d_w),
+		key_d_w, key_d_w, addIndent(key_d_s, 4), tempInput, value_e, value_c, k, t, tempTag,
+		_MAKE_TAG(2, value_d_w), k, tempTag, _MAKE_TAG(2, value_d_w), value_d_w, value_d_w,
+		addIndent(value_d_s, 4), tempInput, k, t, k, t, tempInput, tempTag, name, assert, k, v)
 
 	if tag_s == "" {
 		return fmt.Sprintf(`
@@ -503,7 +507,7 @@ func (t *DictType) DeserializeGo(tag string, input string, name string, preField
 		if !%s.%s {%s
 			break loop_%s // end for %s
 		}
-	}`, t, k, addIndent(dict_s, 1), input, tag_s, tag_c, k, t), WireBytes, pkgs
+	}`, t, k, addIndent(dict_s, 1), input, tag_s, tag_sc, k, t), WireBytes, pkgs
 	}
 }
 

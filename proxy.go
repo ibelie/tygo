@@ -185,8 +185,7 @@ func typeListGo(owner string, name string, typ string, ts []Type) (string, map[s
 	var itemsSerialize []string
 	var itemsDeserialize []string
 
-	d1 := desVar()
-	var d string
+	l := desVar()
 	var deserialize_s string
 	var deserialize_w WireType
 	var deserialize_p map[string]string
@@ -204,29 +203,30 @@ func typeListGo(owner string, name string, typ string, ts []Type) (string, map[s
 			deserialize_s, deserialize_w, deserialize_p = t.DeserializeGo("tag", "input", n, "", i+1, false)
 			pkgs = update(pkgs, deserialize_p)
 		}
-		label := fmt.Sprintf(" // MAKE_TAG(%d, %s=%d)", i+1, deserialize_w, deserialize_w)
-		if d != "" {
-			label = fmt.Sprintf(`%s
-			method_%s:`, label, d)
-			d = ""
-		}
 
 		var next string
+		var fall string
 		if i < len(ts)-1 {
 			next_s, next_w, next_p := ts[i+1].DeserializeGo("tag", "input", fmt.Sprintf("a%d", i+1), "", i+2, false)
 			pkgs = update(pkgs, next_p)
-			d = desVar()
-			tag_s, tag_c := expectTag("", i+2, next_w)
+			tag_i, tag_ic := tagInt("", i+2, next_w)
+			tag_s, tag_sc := expectTag("", i+2, next_w)
 			next = fmt.Sprintf(`
-				if input.%s {%s
-					goto method_%s // goto case %d
-				}`, tag_s, tag_c, d, i+2)
+				if !input.%s {%s
+					continue method_%s // next tag for %s
+				}
+				tag = %s%s // fallthrough case %d`, tag_s, tag_sc, l, typ, tag_i, tag_ic, i+2)
+			fall = fmt.Sprintf(` else {
+				break switch_%s // skip tag
+			}
+			fallthrough`, l)
 			deserialize_s, deserialize_w, deserialize_p = next_s, next_w, next_p
 		} else {
 			next = fmt.Sprintf(`
 				if input.ExpectEnd() {
 					break method_%s // end for %s
-				}`, d1, typ)
+				}
+				continue method_%s // next tag for %s`, l, typ, l, typ)
 		}
 
 		var listTag string
@@ -248,13 +248,16 @@ func typeListGo(owner string, name string, typ string, ts []Type) (string, map[s
 		// %s deserialize: a%d
 		case %d:
 			if tag == %d%s { // MAKE_TAG(%d, %s=%d)%s%s%s
-				continue method_%s // next tag for %s%s
-			}`, typ, i, i+1, _MAKE_TAG(i+1, deserialize_w), listTag, i+1, deserialize_w,
-			deserialize_w, listComment, label, addIndent(deserialize_s, 3), d1, typ, next))
+			}%s`, typ, i, i+1, _MAKE_TAG(i+1, deserialize_w), listTag, i+1, deserialize_w,
+			deserialize_w, listComment, addIndent(deserialize_s, 3), next, fall))
 	}
 
 	Typ := strings.Title(typ)
 	itemComment := strings.Join(itemsComment, ", ")
+	var switchLabel string
+	if len(ts) > 1 {
+		switchLabel = fmt.Sprintf("switch_%s: ", l)
+	}
 
 	return fmt.Sprintf(`
 // %s %s(%s)
@@ -277,7 +280,7 @@ func %sDeserialize%s%s(data []byte) (%s, err error) {
 		if tag, err = input.ReadTag(%s); err != nil {
 			return
 		}
-		switch %s {%s
+		%sswitch %s {%s
 		}
 		if err = input.SkipField(tag); err != nil {
 			return
@@ -288,7 +291,7 @@ func %sDeserialize%s%s(data []byte) (%s, err error) {
 `, name, Typ, itemComment, owner, name, Typ, strings.Join(items, ", "),
 		strings.Join(itemsByteSize, ""), strings.Join(itemsSerialize, ""),
 		name, Typ, itemComment, owner, name, Typ, strings.Join(items, ", "),
-		d1, _MAKE_CUTOFF_STR(strconv.Itoa(len(ts))), _TAG_FIELD_STR("tag"),
+		l, _MAKE_CUTOFF_STR(strconv.Itoa(len(ts))), switchLabel, _TAG_FIELD_STR("tag"),
 		strings.Join(itemsDeserialize, "")), updateTygo(pkgs)
 }
 
