@@ -170,12 +170,12 @@ func (t *FixedPointType) SerializeGo(size string, name string, preFieldNum strin
 		return fmt.Sprintf(`
 	// type: %s
 	if %s != %d {%s
-		output.WriteVarint(uint64((%s - %d) * %d))
-	}`, t, name, t.Floor, writeTag(preFieldNum, fieldNum, WireVarint, 1), name, t.Floor, pow10(t.Precision)), nil
+		output.WriteVarint(uint64(%s))
+	}`, t, name, t.Floor, writeTag(preFieldNum, fieldNum, WireVarint, 1), t.ToVarint(name)), nil
 	} else {
 		return fmt.Sprintf(`
 	// type: %s%s
-	output.WriteVarint(uint64((%s - %d) * %d))`, t, writeTag(preFieldNum, fieldNum, WireVarint, 0), name, t.Floor, pow10(t.Precision)), nil
+	output.WriteVarint(uint64(%s))`, t, writeTag(preFieldNum, fieldNum, WireVarint, 0), t.ToVarint(name)), nil
 	}
 }
 

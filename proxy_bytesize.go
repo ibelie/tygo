@@ -160,12 +160,12 @@ func (t *FixedPointType) ByteSizeGo(size string, name string, preFieldNum string
 		return fmt.Sprintf(`
 	// type: %s
 	if %s != %d {
-		%s += %stygo.SizeVarint(uint64((%s - %d) * %d))
-	}`, t, name, t.Floor, size, tagsize_s, name, t.Floor, pow10(t.Precision)), updateTygo(tagsize_p)
+		%s += %stygo.SizeVarint(uint64(%s))
+	}`, t, name, t.Floor, size, tagsize_s, t.ToVarint(name)), updateTygo(tagsize_p)
 	} else {
 		return fmt.Sprintf(`
 	// type: %s
-	%s += %stygo.SizeVarint(uint64((%s - %d) * %d))`, t, size, tagsize_s, name, t.Floor, pow10(t.Precision)), updateTygo(tagsize_p)
+	%s += %stygo.SizeVarint(uint64(%s))`, t, size, tagsize_s, t.ToVarint(name)), updateTygo(tagsize_p)
 	}
 }
 

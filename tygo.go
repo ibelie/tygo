@@ -333,6 +333,32 @@ func (t SimpleType) String() string {
 	}
 }
 
+func (t *FixedPointType) ToVarint(name string) string {
+	value := name
+	if t.Floor > 0 {
+		value = fmt.Sprintf("(%s-%d)", value, t.Floor)
+	} else if t.Floor < 0 {
+		value = fmt.Sprintf("(%s+%d)", value, -t.Floor)
+	}
+	if precision := pow10(t.Precision); precision > 0 {
+		value = fmt.Sprintf("%s*%d", value, precision)
+	}
+	return value
+}
+
+func (t *FixedPointType) FromVarint(name string) string {
+	value := fmt.Sprintf("float64(%s)", name)
+	if precision := pow10(t.Precision); precision > 0 {
+		value = fmt.Sprintf("%s/%d", value, precision)
+	}
+	if t.Floor > 0 {
+		value = fmt.Sprintf("%s+%d", value, t.Floor)
+	} else if t.Floor < 0 {
+		value = fmt.Sprintf("%s-%d", value, -t.Floor)
+	}
+	return value
+}
+
 func (t *FixedPointType) String() string {
 	return fmt.Sprintf("fixedpoint<%d, %d>", t.Precision, t.Floor)
 }

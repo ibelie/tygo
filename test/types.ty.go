@@ -88,7 +88,7 @@ func (s *Vector2) ByteSize() (size int) {
 		// property: s.Y
 		// type: fixedpoint<1, -10>
 		if s.Y != -10 {
-			size += 1 + tygo.SizeVarint(uint64((s.Y - -10) * 10))
+			size += 1 + tygo.SizeVarint(uint64((s.Y+10)*10))
 		}
 
 		// property: s.B
@@ -136,7 +136,7 @@ func (s *Vector2) Serialize(output *tygo.ProtoBuf) {
 		// type: fixedpoint<1, -10>
 		if s.Y != -10 {
 			output.WriteBytes(16) // tag: 16 MAKE_TAG(2, WireVarint=0)
-			output.WriteVarint(uint64((s.Y - -10) * 10))
+			output.WriteVarint(uint64((s.Y+10)*10))
 		}
 
 		// property: s.B
@@ -204,7 +204,7 @@ object_tmp_1:
 				if tag == 16 { // MAKE_TAG(2, WireVarint=0)
 					// type: fixedpoint<1, -10>
 					if x, e := input.ReadVarint(); e == nil {
-						s.Y = float64(x) / 10 + -10
+						s.Y = float64(x)/10-10
 					} else {
 						err = e
 						return
@@ -2357,7 +2357,7 @@ func (s *Fighter) ByteSize() (size int) {
 					// variant type: fixedpoint<3, 0>
 					case float64:
 						// type: fixedpoint<3, 0>
-						tmp += 1 + tygo.SizeVarint(uint64((v - 0) * 1000))
+						tmp += 1 + tygo.SizeVarint(uint64(v*1000))
 					// variant type: string
 					case string:
 						// type: string
@@ -3212,7 +3212,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 					// variant type size: fixedpoint<3, 0>
 					case float64:
 						// type: fixedpoint<3, 0>
-						tmp += 1 + tygo.SizeVarint(uint64((v - 0) * 1000))
+						tmp += 1 + tygo.SizeVarint(uint64(v*1000))
 					// variant type size: string
 					case string:
 						// type: string
@@ -3244,7 +3244,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 					case float64:
 						// type: fixedpoint<3, 0>
 						output.WriteBytes(16) // tag: 16 MAKE_TAG(2, WireVarint=0)
-						output.WriteVarint(uint64((v - 0) * 1000))
+						output.WriteVarint(uint64(v*1000))
 					// variant type serialize: string
 					case string:
 						// type: string
@@ -4793,7 +4793,7 @@ object_tmp_40:
 										if tmpg == 16 { // MAKE_TAG(2, WireVarint=0)
 											// type: fixedpoint<3, 0>
 											if x, e := tmpi.ReadVarint(); e == nil {
-												tmp_46 = float64(x) / 1000 + 0
+												tmp_46 = float64(x)/1000
 											} else {
 												err = e
 												return
@@ -6098,7 +6098,7 @@ func (s *Fighter) SerializeRPGParam(a0 *Fighter, a1 interface{}, a2 float64) (da
 	// param size: a2
 	// type: fixedpoint<3, 0>
 	if a2 != 0 {
-		size += 1 + tygo.SizeVarint(uint64((a2 - 0) * 1000))
+		size += 1 + tygo.SizeVarint(uint64(a2*1000))
 	}
 
 	if size <= 0 {
@@ -6151,7 +6151,7 @@ func (s *Fighter) SerializeRPGParam(a0 *Fighter, a1 interface{}, a2 float64) (da
 	// type: fixedpoint<3, 0>
 	if a2 != 0 {
 		output.WriteBytes(24) // tag: 24 MAKE_TAG(3, WireVarint=0)
-		output.WriteVarint(uint64((a2 - 0) * 1000))
+		output.WriteVarint(uint64(a2*1000))
 	}
 
 	return
@@ -6216,7 +6216,7 @@ method_tmp_28:
 				if tag == 16 { // MAKE_TAG(2, WireVarint=0)
 					// type: fixedpoint<3, 0>
 					if x, e := input.ReadVarint(); e == nil {
-						a2 = float64(x) / 1000 + 0
+						a2 = float64(x)/1000
 					} else {
 						err = e
 						return
@@ -6234,7 +6234,7 @@ method_tmp_28:
 				if tag == 24 { // MAKE_TAG(3, WireVarint=0)
 					// type: fixedpoint<3, 0>
 					if x, e := input.ReadVarint(); e == nil {
-						a2 = float64(x) / 1000 + 0
+						a2 = float64(x)/1000
 					} else {
 						err = e
 						return
@@ -6283,7 +6283,7 @@ func (s *Fighter) SerializeRPGResult(a0 *Fighter, a1 interface{}, a2 float64) (d
 	// result size: a2
 	// type: fixedpoint<3, 0>
 	if a2 != 0 {
-		size += 1 + tygo.SizeVarint(uint64((a2 - 0) * 1000))
+		size += 1 + tygo.SizeVarint(uint64(a2*1000))
 	}
 
 	if size <= 0 {
@@ -6336,7 +6336,7 @@ func (s *Fighter) SerializeRPGResult(a0 *Fighter, a1 interface{}, a2 float64) (d
 	// type: fixedpoint<3, 0>
 	if a2 != 0 {
 		output.WriteBytes(24) // tag: 24 MAKE_TAG(3, WireVarint=0)
-		output.WriteVarint(uint64((a2 - 0) * 1000))
+		output.WriteVarint(uint64(a2*1000))
 	}
 
 	return
@@ -6401,7 +6401,7 @@ method_tmp_30:
 				if tag == 16 { // MAKE_TAG(2, WireVarint=0)
 					// type: fixedpoint<3, 0>
 					if x, e := input.ReadVarint(); e == nil {
-						a2 = float64(x) / 1000 + 0
+						a2 = float64(x)/1000
 					} else {
 						err = e
 						return
@@ -6419,7 +6419,7 @@ method_tmp_30:
 				if tag == 24 { // MAKE_TAG(3, WireVarint=0)
 					// type: fixedpoint<3, 0>
 					if x, e := input.ReadVarint(); e == nil {
-						a2 = float64(x) / 1000 + 0
+						a2 = float64(x)/1000
 					} else {
 						err = e
 						return

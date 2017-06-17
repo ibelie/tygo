@@ -269,11 +269,11 @@ func (t *FixedPointType) DeserializeGo(tag string, input string, name string, pr
 	return fmt.Sprintf(`
 	// type: %s
 	if x, e := %s.ReadVarint(); e == nil {
-		%s = float64(x) / %d + %d
+		%s = %s
 	} else {
 		err = e
 		return
-	}`, t, input, name, pow10(t.Precision), t.Floor), WireVarint, nil
+	}`, t, input, name, t.FromVarint("x")), WireVarint, nil
 }
 
 func (t *EnumType) DeserializeGo(tag string, input string, name string, preFieldNum string, fieldNum int, isVariant bool) (string, WireType, map[string]string) {
