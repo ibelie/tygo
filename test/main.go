@@ -12,12 +12,12 @@ import (
 func main() {
 	vd := &tygo.ProtoBuf{Buffer: make([]byte, v.ByteSize())}
 	v.Serialize(vd)
-	vd.Reset()
-	v3 := &Vector2{}
-	v3.Deserialize(vd)
-	fmt.Println(v3)
 	fmt.Println(len(vd.Buffer), vd.Buffer)
 	fd := &tygo.ProtoBuf{Buffer: make([]byte, fighter.ByteSize())}
 	fighter.Serialize(fd)
+	fd.Reset()
+	fighter2 := &Fighter{}
+	fighter2.Deserialize(fd)
+	fmt.Println(fighter2)
 	fmt.Println(len(fd.Buffer))
 }

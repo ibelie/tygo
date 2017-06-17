@@ -249,7 +249,7 @@ func typeListGo(owner string, name string, typ string, ts []Type) (string, map[s
 			case %d:
 				if tag == %d%s { // MAKE_TAG(%d, %s=%d)%s%s%s
 				}%s`, typ, i, i+1, _MAKE_TAG(i+1, deserialize_w), listTag, i+1, deserialize_w,
-			deserialize_w, listComment, addIndent(deserialize_s, 3), next, fall))
+			deserialize_w, listComment, addIndent(deserialize_s, 4), next, fall))
 	}
 
 	Typ := strings.Title(typ)

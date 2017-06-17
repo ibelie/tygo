@@ -138,7 +138,7 @@ func (t *Object) DeserializeGo(tag string, input string, name string, preFieldNu
 			case %d:
 				if tag == %s%s {%s%s%s%s
 				}%s`, name, field.Name, i+1, tag_i, listTag, tag_ic, listComment,
-			addIndent(field_s, 3), next, fall))
+			addIndent(field_s, 4), next, fall))
 		if i < len(t.Fields)-1 {
 			field_s, field_w, field_p = next_s, next_w, next_p
 		}
@@ -502,9 +502,9 @@ func (t *DictType) DeserializeGo(tag string, input string, name string, preField
 		return
 	}`, input, tempInput, k, key_t_s, v, value_t_s, k, tempInput, tempTag, tempTag, tempInput,
 		_MAKE_CUTOFF(2), k, _TAG_FIELD_STR(tempTag), tempTag, _MAKE_TAG(1, key_d_w),
-		key_d_w, key_d_w, addIndent(key_d_s, 4), tempInput, value_e, value_c, k, t, tempTag,
+		key_d_w, key_d_w, addIndent(key_d_s, 5), tempInput, value_e, value_c, k, t, tempTag,
 		_MAKE_TAG(2, value_d_w), k, tempTag, _MAKE_TAG(2, value_d_w), value_d_w, value_d_w,
-		addIndent(value_d_s, 4), tempInput, k, t, k, t, tempInput, tempTag, name, assert, k, v)
+		addIndent(value_d_s, 5), tempInput, k, t, k, t, tempInput, tempTag, name, assert, k, v)
 
 	if tag_s == "" {
 		return fmt.Sprintf(`
@@ -545,7 +545,7 @@ func (t *VariantType) DeserializeGo(tag string, input string, name string, preFi
 					if %s == %d { // MAKE_TAG(%d, %s=%d)%s
 						continue variant_%s // next tag for %s
 					}`, i+1, tempTag, _MAKE_TAG(i+1, variant_w), i+1, variant_w, variant_w,
-			addIndent(variant_s, 4), v, t))
+			addIndent(variant_s, 5), v, t))
 	}
 
 	return fmt.Sprintf(`

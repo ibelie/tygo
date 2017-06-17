@@ -77,8 +77,8 @@ func _TAG_FIELD_STR(tag string) string {
 	return fmt.Sprintf("%s >> %d", tag, WireTypeBits)
 }
 
-func _TAG_WIRE(tag int) int {
-	return tag & WireTypeMask
+func _TAG_WIRE(tag int) WireType {
+	return WireType(tag & WireTypeMask)
 }
 
 func TAG_SIZE(fieldNum int) int {
@@ -294,6 +294,18 @@ func (p *ProtoBuf) ExpectEnd() bool {
 	return p.offset >= len(p.Buffer)
 }
 
-func (p *ProtoBuf) SkipField(tag int) error {
-	return nil
+func (p *ProtoBuf) SkipField(tag int) (err error) {
+	switch _TAG_WIRE(tag) {
+	case WireVarint:
+		_, err = p.ReadVarint()
+	case WireFixed64:
+		_, err = p.ReadFixed64()
+	case WireBytes:
+		_, err = p.ReadBuf()
+	case WireFixed32:
+		_, err = p.ReadFixed32()
+	default:
+		err = fmt.Errorf("[Tygo][WireType] Unexpect field type to skip: %d", tag)
+	}
+	return
 }
