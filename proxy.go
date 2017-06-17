@@ -212,21 +212,21 @@ func typeListGo(owner string, name string, typ string, ts []Type) (string, map[s
 			tag_i, tag_ic := tagInt("", i+2, next_w)
 			tag_s, tag_sc := expectTag("", i+2, next_w)
 			next = fmt.Sprintf(`
-				if !input.%s {%s
-					continue method_%s // next tag for %s
-				}
-				tag = %s%s // fallthrough case %d`, tag_s, tag_sc, l, typ, tag_i, tag_ic, i+2)
+					if !input.%s {%s
+						continue method_%s // next tag for %s
+					}
+					tag = %s%s // fallthrough case %d`, tag_s, tag_sc, l, typ, tag_i, tag_ic, i+2)
 			fall = fmt.Sprintf(` else {
-				break switch_%s // skip tag
-			}
-			fallthrough`, l)
+					break switch_%s // skip tag
+				}
+				fallthrough`, l)
 			deserialize_s, deserialize_w, deserialize_p = next_s, next_w, next_p
 		} else {
 			next = fmt.Sprintf(`
-				if input.ExpectEnd() {
-					break method_%s // end for %s
-				}
-				continue method_%s // next tag for %s`, l, typ, l, typ)
+					if input.ExpectEnd() {
+						break method_%s // end for %s
+					}
+					continue method_%s // next tag for %s`, l, typ, l, typ)
 		}
 
 		var listTag string
@@ -245,10 +245,10 @@ func typeListGo(owner string, name string, typ string, ts []Type) (string, map[s
 	// %s serialize: a%d%s
 `, typ, i, serialize_s))
 		itemsDeserialize = append(itemsDeserialize, fmt.Sprintf(`
-		// %s deserialize: a%d
-		case %d:
-			if tag == %d%s { // MAKE_TAG(%d, %s=%d)%s%s%s
-			}%s`, typ, i, i+1, _MAKE_TAG(i+1, deserialize_w), listTag, i+1, deserialize_w,
+			// %s deserialize: a%d
+			case %d:
+				if tag == %d%s { // MAKE_TAG(%d, %s=%d)%s%s%s
+				}%s`, typ, i, i+1, _MAKE_TAG(i+1, deserialize_w), listTag, i+1, deserialize_w,
 			deserialize_w, listComment, addIndent(deserialize_s, 3), next, fall))
 	}
 
@@ -257,7 +257,7 @@ func typeListGo(owner string, name string, typ string, ts []Type) (string, map[s
 	var switchLabel string
 	if len(ts) > 1 {
 		switchLabel = fmt.Sprintf(`
-	switch_%s:`, l)
+		switch_%s:`, l)
 	}
 
 	return fmt.Sprintf(`
@@ -279,12 +279,13 @@ func %sDeserialize%s%s(data []byte) (%s, err error) {
 method_%s:
 	for !input.ExpectEnd() {
 		var tag int
-		if tag, err = input.ReadTag(%s); err != nil {
+		var cutoff bool
+		if tag, cutoff, err = input.ReadTag(%s); err != nil {
 			return
-		}%s
-		switch %s {%s
-		}
-		if err = input.SkipField(tag); err != nil {
+		} else if cutoff {%s
+			switch %s {%s
+			}
+		} else if err = input.SkipField(tag); err != nil {
 			return
 		}
 	}

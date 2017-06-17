@@ -108,20 +108,20 @@ func (t *Object) DeserializeGo(tag string, input string, name string, preFieldNu
 			tag_i, tag_ic := tagInt(p_name, p_num+i+2, next_w)
 			tag_s, tag_sc := expectTag(p_name, p_num+i+2, next_w)
 			next = fmt.Sprintf(`
-				if !%s.%s {%s
-					continue object_%s // next tag for %s
-				}
-				tag = %s%s // fallthrough case %d`, input, tag_s, tag_sc, l, t.Name, tag_i, tag_ic, i+2)
+					if !%s.%s {%s
+						continue object_%s // next tag for %s
+					}
+					tag = %s%s // fallthrough case %d`, input, tag_s, tag_sc, l, t.Name, tag_i, tag_ic, i+2)
 			fall = fmt.Sprintf(` else {
-				break switch_%s // skip tag
-			}
-			fallthrough`, l)
+					break switch_%s // skip tag
+				}
+				fallthrough`, l)
 		} else {
 			next = fmt.Sprintf(`
-				if %s.ExpectEnd() {
-					break object_%s // end for %s
-				}
-				continue object_%s // next tag for %s`, input, l, t.Name, l, t.Name)
+					if %s.ExpectEnd() {
+						break object_%s // end for %s
+					}
+					continue object_%s // next tag for %s`, input, l, t.Name, l, t.Name)
 		}
 
 		var listTag string
@@ -134,10 +134,10 @@ func (t *Object) DeserializeGo(tag string, input string, name string, preFieldNu
 		tag_i, tag_ic := tagInt(p_name, p_num+i+1, field_w)
 
 		fields = append(fields, fmt.Sprintf(`
-		// property: %s.%s
-		case %d:
-			if tag == %s%s {%s%s%s%s
-			}%s`, name, field.Name, i+1, tag_i, listTag, tag_ic, listComment,
+			// property: %s.%s
+			case %d:
+				if tag == %s%s {%s%s%s%s
+				}%s`, name, field.Name, i+1, tag_i, listTag, tag_ic, listComment,
 			addIndent(field_s, 3), next, fall))
 		if i < len(t.Fields)-1 {
 			field_s, field_w, field_p = next_s, next_w, next_p
@@ -153,7 +153,7 @@ func (t *Object) DeserializeGo(tag string, input string, name string, preFieldNu
 	var switchLabel string
 	if len(t.Fields) > 1 {
 		switchLabel = fmt.Sprintf(`
-	switch_%s:`, l)
+		switch_%s:`, l)
 	}
 
 	var switchFlag string
@@ -175,12 +175,13 @@ func (t *Object) DeserializeGo(tag string, input string, name string, preFieldNu
 object_%s:
 	for !%s.ExpectEnd() {
 		var tag int
-		if tag, err = %s.ReadTag(%s); err != nil {
+		var cutoff bool
+		if tag, cutoff, err = %s.ReadTag(%s); err != nil {
 			return
-		}%s
-		switch %s {%s
-		}
-		if err = %s.SkipField(tag); err != nil {
+		} else if cutoff {%s
+			switch %s {%s
+			}
+		} else if err = %s.SkipField(tag); err != nil {
 			return
 		}
 	}`, strings.Join(parents, ""), l, input, input, cutoff, switchLabel, switchFlag,
@@ -466,31 +467,32 @@ func (t *DictType) DeserializeGo(tag string, input string, name string, preField
 	dict_%s:
 		for !%s.ExpectEnd() {
 			var %s int
-			if %s, err = %s.ReadTag(%d); err != nil {
+			var cutoff bool
+			if %s, cutoff, err = %s.ReadTag(%d); err != nil {
 				return
-			}
-		switch_%s:
-			switch %s {
-			// dict key
-			case 1:
-				if %s == %d { // MAKE_TAG(1, %s=%d)%s
-					if !%s.%s {%s
+			} else if cutoff {
+			switch_%s:
+				switch %s {
+				// dict key
+				case 1:
+					if %s == %d { // MAKE_TAG(1, %s=%d)%s
+						if !%s.%s {%s
+							continue dict_%s // next tag for %s
+						}
+						%s = %d // fallthrough case 2
+					} else {
+						break switch_%s // skip tag
+					}
+					fallthrough
+				case 2:
+					if %s == %d { // MAKE_TAG(2, %s=%d)%s
+						if %s.ExpectEnd() {
+							break dict_%s // end for %s
+						}
 						continue dict_%s // next tag for %s
 					}
-					%s = %d // fallthrough case 2
-				} else {
-					break switch_%s // skip tag
 				}
-				fallthrough
-			case 2:
-				if %s == %d { // MAKE_TAG(2, %s=%d)%s
-					if %s.ExpectEnd() {
-						break dict_%s // end for %s
-					}
-					continue dict_%s // next tag for %s
-				}
-			}
-			if err = %s.SkipField(%s); err != nil {
+			} else if err = %s.SkipField(%s); err != nil {
 				return
 			}
 		}
@@ -539,10 +541,10 @@ func (t *VariantType) DeserializeGo(tag string, input string, name string, preFi
 		variant_s, variant_w, variant_p := ts.DeserializeGo(tempTag, tempInput, name, "", i+1, true)
 		pkgs = update(pkgs, variant_p)
 		cases = append(cases, fmt.Sprintf(`
-			case %d:
-				if %s == %d { // MAKE_TAG(%d, %s=%d)%s
-					continue variant_%s // next tag for %s
-				}`, i+1, tempTag, _MAKE_TAG(i+1, variant_w), i+1, variant_w, variant_w,
+				case %d:
+					if %s == %d { // MAKE_TAG(%d, %s=%d)%s
+						continue variant_%s // next tag for %s
+					}`, i+1, tempTag, _MAKE_TAG(i+1, variant_w), i+1, variant_w, variant_w,
 			addIndent(variant_s, 4), v, t))
 	}
 
@@ -553,12 +555,13 @@ func (t *VariantType) DeserializeGo(tag string, input string, name string, preFi
 	variant_%s:
 		for !%s.ExpectEnd() {
 			var %s int
-			if %s, err = %s.ReadTag(%d); err != nil {
+			var cutoff bool
+			if %s, cutoff, err = %s.ReadTag(%d); err != nil {
 				return
-			}
-			switch %s {%s
-			}
-			if err = %s.SkipField(%s); err != nil {
+			} else if cutoff {
+				switch %s {%s
+				}
+			} else if err = %s.SkipField(%s); err != nil {
 				return
 			}
 		}

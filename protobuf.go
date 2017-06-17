@@ -156,7 +156,7 @@ func (p *ProtoBuf) ReadVarint() (uint64, error) {
 	for i, b := range p.Buffer[p.offset:] {
 		if b < 0x80 {
 			if i > 9 || i == 9 && b > 1 {
-				return 0, fmt.Errorf("[Tygo][ProtoBuf] ReadVarint overflow: %v", p.Buffer[:i+1])
+				return 0, fmt.Errorf("[Tygo][ProtoBuf] ReadVarint overflow: %v", p.Buffer[p.offset:p.offset+i+1])
 			}
 			p.offset += i + 1
 			return x | uint64(b)<<s, nil
@@ -235,12 +235,49 @@ func (p *ProtoBuf) WriteTag(fieldNum int, wireType WireType) {
 	p.WriteVarint(uint64(_MAKE_TAG(fieldNum, wireType)))
 }
 
-func (p *ProtoBuf) ReadTag(cutoff int) (int, error) {
-	return 0, nil
+func (p *ProtoBuf) ReadTag(cutoff int) (int, bool, error) {
+	if p.offset >= len(p.Buffer) {
+		return 0, false, io.EOF
+	}
+	b1 := int(p.Buffer[p.offset])
+	if b1 < 0x80 {
+		p.offset++
+		return b1, cutoff >= 0x7F || b1 <= cutoff, nil
+	}
+	if p.offset+1 >= len(p.Buffer) {
+		return 0, false, io.EOF
+	}
+	b2 := int(p.Buffer[p.offset+1])
+	if cutoff >= 0x80 && b2 < 0x80 {
+		p.offset += 2
+		b1 = (b2 << 7) + (b1 - 0x80)
+		return b1, cutoff >= 0x3FFF || b1 <= cutoff, nil
+	}
+	x, err := p.ReadVarint()
+	return int(x), int(x) <= cutoff, err
 }
 
 func (p *ProtoBuf) ExpectTag(fieldNum int, wireType WireType) bool {
-	return false
+	if p.offset >= len(p.Buffer) {
+		return false
+	}
+	offset := p.offset
+	tag := _MAKE_TAG(fieldNum, wireType)
+	for tag >= 0x80 {
+		if p.Buffer[offset] != byte(tag)|0x80 {
+			return false
+		}
+		tag >>= 7
+		offset++
+		if offset >= len(p.Buffer) {
+			return false
+		}
+	}
+	if p.Buffer[offset] != byte(tag) {
+		return false
+	}
+	p.offset = offset + 1
+	return true
 }
 
 func (p *ProtoBuf) ExpectBytes(x ...byte) bool {

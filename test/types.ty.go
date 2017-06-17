@@ -175,14 +175,15 @@ func (s *Vector2) Deserialize(input *tygo.ProtoBuf) (err error) {
 object_tmp_1:
 	for !input.ExpectEnd() {
 		var tag int
-		if tag, err = input.ReadTag(127); err != nil {
+		var cutoff bool
+		if tag, cutoff, err = input.ReadTag(127); err != nil {
 			return
-		}
-	switch_tmp_1:
-		switch tag >> 3 {
-		// property: s.X
-		case 1:
-			if tag == 13 { // MAKE_TAG(1, WireFixed32=5)
+		} else if cutoff {
+		switch_tmp_1:
+			switch tag >> 3 {
+			// property: s.X
+			case 1:
+				if tag == 13 { // MAKE_TAG(1, WireFixed32=5)
 				// type: float32
 				if x, e := input.ReadFixed32(); e == nil {
 					s.X = math.Float32frombits(x)
@@ -190,17 +191,17 @@ object_tmp_1:
 					err = e
 					return
 				}
-				if !input.ExpectBytes(16) { // tag: 16 MAKE_TAG(2, WireVarint=0)
-					continue object_tmp_1 // next tag for Vector2
+					if !input.ExpectBytes(16) { // tag: 16 MAKE_TAG(2, WireVarint=0)
+						continue object_tmp_1 // next tag for Vector2
+					}
+					tag = 16 // MAKE_TAG(2, WireVarint=0) // fallthrough case 2
+				} else {
+					break switch_tmp_1 // skip tag
 				}
-				tag = 16 // MAKE_TAG(2, WireVarint=0) // fallthrough case 2
-			} else {
-				break switch_tmp_1 // skip tag
-			}
-			fallthrough
-		// property: s.Y
-		case 2:
-			if tag == 16 { // MAKE_TAG(2, WireVarint=0)
+				fallthrough
+			// property: s.Y
+			case 2:
+				if tag == 16 { // MAKE_TAG(2, WireVarint=0)
 				// type: fixedpoint<1, -10>
 				if x, e := input.ReadVarint(); e == nil {
 					s.Y = float64(x) / 10 + -10
@@ -208,17 +209,17 @@ object_tmp_1:
 					err = e
 					return
 				}
-				if !input.ExpectBytes(26) { // tag: 26 MAKE_TAG(3, WireBytes=2)
-					continue object_tmp_1 // next tag for Vector2
+					if !input.ExpectBytes(26) { // tag: 26 MAKE_TAG(3, WireBytes=2)
+						continue object_tmp_1 // next tag for Vector2
+					}
+					tag = 26 // MAKE_TAG(3, WireBytes=2) // fallthrough case 3
+				} else {
+					break switch_tmp_1 // skip tag
 				}
-				tag = 26 // MAKE_TAG(3, WireBytes=2) // fallthrough case 3
-			} else {
-				break switch_tmp_1 // skip tag
-			}
-			fallthrough
-		// property: s.B
-		case 3:
-			if tag == 26 { // MAKE_TAG(3, WireBytes=2)
+				fallthrough
+			// property: s.B
+			case 3:
+				if tag == 26 { // MAKE_TAG(3, WireBytes=2)
 				// type: bytes
 				if x, e := input.ReadBuf(); e == nil {
 					s.B = make([]byte, len(x))
@@ -227,17 +228,17 @@ object_tmp_1:
 					err = e
 					return
 				}
-				if !input.ExpectBytes(34) { // tag: 34 MAKE_TAG(4, WireBytes=2)
-					continue object_tmp_1 // next tag for Vector2
+					if !input.ExpectBytes(34) { // tag: 34 MAKE_TAG(4, WireBytes=2)
+						continue object_tmp_1 // next tag for Vector2
+					}
+					tag = 34 // MAKE_TAG(4, WireBytes=2) // fallthrough case 4
+				} else {
+					break switch_tmp_1 // skip tag
 				}
-				tag = 34 // MAKE_TAG(4, WireBytes=2) // fallthrough case 4
-			} else {
-				break switch_tmp_1 // skip tag
-			}
-			fallthrough
-		// property: s.S
-		case 4:
-			if tag == 34 { // MAKE_TAG(4, WireBytes=2)
+				fallthrough
+			// property: s.S
+			case 4:
+				if tag == 34 { // MAKE_TAG(4, WireBytes=2)
 				// type: string
 				if x, e := input.ReadBuf(); e == nil {
 					s.S = string(x)
@@ -245,17 +246,17 @@ object_tmp_1:
 					err = e
 					return
 				}
-				if !input.ExpectBytes(40) { // tag: 40 MAKE_TAG(5, WireVarint=0)
-					continue object_tmp_1 // next tag for Vector2
+					if !input.ExpectBytes(40) { // tag: 40 MAKE_TAG(5, WireVarint=0)
+						continue object_tmp_1 // next tag for Vector2
+					}
+					tag = 40 // MAKE_TAG(5, WireVarint=0) // fallthrough case 5
+				} else {
+					break switch_tmp_1 // skip tag
 				}
-				tag = 40 // MAKE_TAG(5, WireVarint=0) // fallthrough case 5
-			} else {
-				break switch_tmp_1 // skip tag
-			}
-			fallthrough
-		// property: s.E
-		case 5:
-			if tag == 40 { // MAKE_TAG(5, WireVarint=0)
+				fallthrough
+			// property: s.E
+			case 5:
+				if tag == 40 { // MAKE_TAG(5, WireVarint=0)
 				// type: Corpus
 				if x, e := input.ReadVarint(); e == nil {
 					s.E = Corpus(x)
@@ -263,17 +264,17 @@ object_tmp_1:
 					err = e
 					return
 				}
-				if !input.ExpectBytes(50) { // tag: 50 MAKE_TAG(6, WireBytes=2)
-					continue object_tmp_1 // next tag for Vector2
+					if !input.ExpectBytes(50) { // tag: 50 MAKE_TAG(6, WireBytes=2)
+						continue object_tmp_1 // next tag for Vector2
+					}
+					tag = 50 // MAKE_TAG(6, WireBytes=2) // fallthrough case 6
+				} else {
+					break switch_tmp_1 // skip tag
 				}
-				tag = 50 // MAKE_TAG(6, WireBytes=2) // fallthrough case 6
-			} else {
-				break switch_tmp_1 // skip tag
-			}
-			fallthrough
-		// property: s.P
-		case 6:
-			if tag == 50 { // MAKE_TAG(6, WireBytes=2)
+				fallthrough
+			// property: s.P
+			case 6:
+				if tag == 50 { // MAKE_TAG(6, WireBytes=2)
 				// type: *GoType
 				if x, e := input.ReadBuf(); e == nil {
 					if s.P == nil {
@@ -288,13 +289,13 @@ object_tmp_1:
 					err = e
 					return
 				}
-				if input.ExpectEnd() {
-					break object_tmp_1 // end for Vector2
+					if input.ExpectEnd() {
+						break object_tmp_1 // end for Vector2
+					}
+					continue object_tmp_1 // next tag for Vector2
 				}
-				continue object_tmp_1 // next tag for Vector2
 			}
-		}
-		if err = input.SkipField(tag); err != nil {
+		} else if err = input.SkipField(tag); err != nil {
 			return
 		}
 	}
@@ -803,14 +804,15 @@ func (s *Fighter_Part1) Deserialize(input *tygo.ProtoBuf) (err error) {
 object_tmp_2:
 	for !input.ExpectEnd() {
 		var tag int
-		if tag, err = input.ReadTag(127); err != nil {
+		var cutoff bool
+		if tag, cutoff, err = input.ReadTag(127); err != nil {
 			return
-		}
-	switch_tmp_2:
-		switch tag >> 3 {
-		// property: s.Pos
-		case 1:
-			if tag == 10 { // MAKE_TAG(1, WireBytes=2)
+		} else if cutoff {
+		switch_tmp_2:
+			switch tag >> 3 {
+			// property: s.Pos
+			case 1:
+				if tag == 10 { // MAKE_TAG(1, WireBytes=2)
 				// type: *Vector2
 				if x, e := input.ReadBuf(); e == nil {
 					if s.Pos == nil {
@@ -825,17 +827,17 @@ object_tmp_2:
 					err = e
 					return
 				}
-				if !input.ExpectBytes(16) { // tag: 16 MAKE_TAG(2, WireVarint=0)
-					continue object_tmp_2 // next tag for Fighter_Part1
+					if !input.ExpectBytes(16) { // tag: 16 MAKE_TAG(2, WireVarint=0)
+						continue object_tmp_2 // next tag for Fighter_Part1
+					}
+					tag = 16 // MAKE_TAG(2, WireVarint=0) // fallthrough case 2
+				} else {
+					break switch_tmp_2 // skip tag
 				}
-				tag = 16 // MAKE_TAG(2, WireVarint=0) // fallthrough case 2
-			} else {
-				break switch_tmp_2 // skip tag
-			}
-			fallthrough
-		// property: s.IsAwake
-		case 2:
-			if tag == 16 { // MAKE_TAG(2, WireVarint=0)
+				fallthrough
+			// property: s.IsAwake
+			case 2:
+				if tag == 16 { // MAKE_TAG(2, WireVarint=0)
 				// type: bool
 				if x, e := input.ReadByte(); e == nil {
 					s.IsAwake = x != 0
@@ -843,17 +845,17 @@ object_tmp_2:
 					err = e
 					return
 				}
-				if !input.ExpectBytes(29) { // tag: 29 MAKE_TAG(3, WireFixed32=5)
-					continue object_tmp_2 // next tag for Fighter_Part1
+					if !input.ExpectBytes(29) { // tag: 29 MAKE_TAG(3, WireFixed32=5)
+						continue object_tmp_2 // next tag for Fighter_Part1
+					}
+					tag = 29 // MAKE_TAG(3, WireFixed32=5) // fallthrough case 3
+				} else {
+					break switch_tmp_2 // skip tag
 				}
-				tag = 29 // MAKE_TAG(3, WireFixed32=5) // fallthrough case 3
-			} else {
-				break switch_tmp_2 // skip tag
-			}
-			fallthrough
-		// property: s.Hp
-		case 3:
-			if tag == 29 { // MAKE_TAG(3, WireFixed32=5)
+				fallthrough
+			// property: s.Hp
+			case 3:
+				if tag == 29 { // MAKE_TAG(3, WireFixed32=5)
 				// type: float32
 				if x, e := input.ReadFixed32(); e == nil {
 					s.Hp = math.Float32frombits(x)
@@ -861,17 +863,17 @@ object_tmp_2:
 					err = e
 					return
 				}
-				if !input.ExpectBytes(34) { // tag: 34 MAKE_TAG(4, WireBytes=2)
-					continue object_tmp_2 // next tag for Fighter_Part1
+					if !input.ExpectBytes(34) { // tag: 34 MAKE_TAG(4, WireBytes=2)
+						continue object_tmp_2 // next tag for Fighter_Part1
+					}
+					tag = 34 // MAKE_TAG(4, WireBytes=2) // fallthrough case 4
+				} else {
+					break switch_tmp_2 // skip tag
 				}
-				tag = 34 // MAKE_TAG(4, WireBytes=2) // fallthrough case 4
-			} else {
-				break switch_tmp_2 // skip tag
-			}
-			fallthrough
-		// property: s.Poss
-		case 4:
-			if tag == 34 { // MAKE_TAG(4, WireBytes=2)
+				fallthrough
+			// property: s.Poss
+			case 4:
+				if tag == 34 { // MAKE_TAG(4, WireBytes=2)
 			loop_tmp_3:
 				// type: map[int32]*Vector2
 				for {
@@ -882,14 +884,15 @@ object_tmp_2:
 					dict_tmp_3:
 						for !tmpi.ExpectEnd() {
 							var tmpg int
-							if tmpg, err = tmpi.ReadTag(127); err != nil {
+							var cutoff bool
+							if tmpg, cutoff, err = tmpi.ReadTag(127); err != nil {
 								return
-							}
-						switch_tmp_3:
-							switch tmpg >> 3 {
-							// dict key
-							case 1:
-								if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
+							} else if cutoff {
+							switch_tmp_3:
+								switch tmpg >> 3 {
+								// dict key
+								case 1:
+									if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
 									// type: int32
 									if x, e := tmpi.ReadVarint(); e == nil {
 										tmp_3 = int32(x)
@@ -897,16 +900,16 @@ object_tmp_2:
 										err = e
 										return
 									}
-									if !tmpi.ExpectBytes(18) { // tag: 18 MAKE_TAG(2, WireBytes=2)
-										continue dict_tmp_3 // next tag for map[int32]*Vector2
+										if !tmpi.ExpectBytes(18) { // tag: 18 MAKE_TAG(2, WireBytes=2)
+											continue dict_tmp_3 // next tag for map[int32]*Vector2
+										}
+										tmpg = 18 // fallthrough case 2
+									} else {
+										break switch_tmp_3 // skip tag
 									}
-									tmpg = 18 // fallthrough case 2
-								} else {
-									break switch_tmp_3 // skip tag
-								}
-								fallthrough
-							case 2:
-								if tmpg == 18 { // MAKE_TAG(2, WireBytes=2)
+									fallthrough
+								case 2:
+									if tmpg == 18 { // MAKE_TAG(2, WireBytes=2)
 									// type: *Vector2
 									if x, e := tmpi.ReadBuf(); e == nil {
 										if tmp_4 == nil {
@@ -921,13 +924,13 @@ object_tmp_2:
 										err = e
 										return
 									}
-									if tmpi.ExpectEnd() {
-										break dict_tmp_3 // end for map[int32]*Vector2
+										if tmpi.ExpectEnd() {
+											break dict_tmp_3 // end for map[int32]*Vector2
+										}
+										continue dict_tmp_3 // next tag for map[int32]*Vector2
 									}
-									continue dict_tmp_3 // next tag for map[int32]*Vector2
 								}
-							}
-							if err = tmpi.SkipField(tmpg); err != nil {
+							} else if err = tmpi.SkipField(tmpg); err != nil {
 								return
 							}
 						}
@@ -940,17 +943,17 @@ object_tmp_2:
 						break loop_tmp_3 // end for map[int32]*Vector2
 					}
 				}
-				if !input.ExpectBytes(42) { // tag: 42 MAKE_TAG(5, WireBytes=2)
-					continue object_tmp_2 // next tag for Fighter_Part1
+					if !input.ExpectBytes(42) { // tag: 42 MAKE_TAG(5, WireBytes=2)
+						continue object_tmp_2 // next tag for Fighter_Part1
+					}
+					tag = 42 // MAKE_TAG(5, WireBytes=2) // fallthrough case 5
+				} else {
+					break switch_tmp_2 // skip tag
 				}
-				tag = 42 // MAKE_TAG(5, WireBytes=2) // fallthrough case 5
-			} else {
-				break switch_tmp_2 // skip tag
-			}
-			fallthrough
-		// property: s.Posi
-		case 5:
-			if tag == 42 { // MAKE_TAG(5, WireBytes=2)
+				fallthrough
+			// property: s.Posi
+			case 5:
+				if tag == 42 { // MAKE_TAG(5, WireBytes=2)
 			loop_tmp_5:
 				// type: map[int32]float32
 				for {
@@ -961,14 +964,15 @@ object_tmp_2:
 					dict_tmp_5:
 						for !tmpi.ExpectEnd() {
 							var tmpg int
-							if tmpg, err = tmpi.ReadTag(127); err != nil {
+							var cutoff bool
+							if tmpg, cutoff, err = tmpi.ReadTag(127); err != nil {
 								return
-							}
-						switch_tmp_5:
-							switch tmpg >> 3 {
-							// dict key
-							case 1:
-								if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
+							} else if cutoff {
+							switch_tmp_5:
+								switch tmpg >> 3 {
+								// dict key
+								case 1:
+									if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
 									// type: int32
 									if x, e := tmpi.ReadVarint(); e == nil {
 										tmp_5 = int32(x)
@@ -976,16 +980,16 @@ object_tmp_2:
 										err = e
 										return
 									}
-									if !tmpi.ExpectBytes(21) { // tag: 21 MAKE_TAG(2, WireFixed32=5)
-										continue dict_tmp_5 // next tag for map[int32]float32
+										if !tmpi.ExpectBytes(21) { // tag: 21 MAKE_TAG(2, WireFixed32=5)
+											continue dict_tmp_5 // next tag for map[int32]float32
+										}
+										tmpg = 21 // fallthrough case 2
+									} else {
+										break switch_tmp_5 // skip tag
 									}
-									tmpg = 21 // fallthrough case 2
-								} else {
-									break switch_tmp_5 // skip tag
-								}
-								fallthrough
-							case 2:
-								if tmpg == 21 { // MAKE_TAG(2, WireFixed32=5)
+									fallthrough
+								case 2:
+									if tmpg == 21 { // MAKE_TAG(2, WireFixed32=5)
 									// type: float32
 									if x, e := tmpi.ReadFixed32(); e == nil {
 										tmp_6 = math.Float32frombits(x)
@@ -993,13 +997,13 @@ object_tmp_2:
 										err = e
 										return
 									}
-									if tmpi.ExpectEnd() {
-										break dict_tmp_5 // end for map[int32]float32
+										if tmpi.ExpectEnd() {
+											break dict_tmp_5 // end for map[int32]float32
+										}
+										continue dict_tmp_5 // next tag for map[int32]float32
 									}
-									continue dict_tmp_5 // next tag for map[int32]float32
 								}
-							}
-							if err = tmpi.SkipField(tmpg); err != nil {
+							} else if err = tmpi.SkipField(tmpg); err != nil {
 								return
 							}
 						}
@@ -1012,17 +1016,17 @@ object_tmp_2:
 						break loop_tmp_5 // end for map[int32]float32
 					}
 				}
-				if !input.ExpectBytes(50) { // tag: 50 MAKE_TAG(6, WireBytes=2)
-					continue object_tmp_2 // next tag for Fighter_Part1
+					if !input.ExpectBytes(50) { // tag: 50 MAKE_TAG(6, WireBytes=2)
+						continue object_tmp_2 // next tag for Fighter_Part1
+					}
+					tag = 50 // MAKE_TAG(6, WireBytes=2) // fallthrough case 6
+				} else {
+					break switch_tmp_2 // skip tag
 				}
-				tag = 50 // MAKE_TAG(6, WireBytes=2) // fallthrough case 6
-			} else {
-				break switch_tmp_2 // skip tag
-			}
-			fallthrough
-		// property: s.Posl
-		case 6:
-			if tag == 50 { // MAKE_TAG(6, WireBytes=2)
+				fallthrough
+			// property: s.Posl
+			case 6:
+				if tag == 50 { // MAKE_TAG(6, WireBytes=2)
 			loop_tmp_7:
 				// type: []*Vector2
 				for {
@@ -1046,17 +1050,17 @@ object_tmp_2:
 						break loop_tmp_7 // end for []*Vector2
 					}
 				}
-				if !input.ExpectBytes(58) { // tag: 58 MAKE_TAG(7, WireBytes=2)
-					continue object_tmp_2 // next tag for Fighter_Part1
+					if !input.ExpectBytes(58) { // tag: 58 MAKE_TAG(7, WireBytes=2)
+						continue object_tmp_2 // next tag for Fighter_Part1
+					}
+					tag = 58 // MAKE_TAG(7, WireBytes=2) // fallthrough case 7
+				} else {
+					break switch_tmp_2 // skip tag
 				}
-				tag = 58 // MAKE_TAG(7, WireBytes=2) // fallthrough case 7
-			} else {
-				break switch_tmp_2 // skip tag
-			}
-			fallthrough
-		// property: s.Posll
-		case 7:
-			if tag == 58 { // MAKE_TAG(7, WireBytes=2)
+				fallthrough
+			// property: s.Posll
+			case 7:
+				if tag == 58 { // MAKE_TAG(7, WireBytes=2)
 			loop_tmp_8:
 				// type: [][]*Vector2
 				for {
@@ -1091,17 +1095,17 @@ object_tmp_2:
 						break loop_tmp_8 // end for [][]*Vector2
 					}
 				}
-				if !input.ExpectBytes(66) { // tag: 66 MAKE_TAG(8, WireBytes=2)
-					continue object_tmp_2 // next tag for Fighter_Part1
+					if !input.ExpectBytes(66) { // tag: 66 MAKE_TAG(8, WireBytes=2)
+						continue object_tmp_2 // next tag for Fighter_Part1
+					}
+					tag = 66 // MAKE_TAG(8, WireBytes=2) // fallthrough case 8
+				} else {
+					break switch_tmp_2 // skip tag
 				}
-				tag = 66 // MAKE_TAG(8, WireBytes=2) // fallthrough case 8
-			} else {
-				break switch_tmp_2 // skip tag
-			}
-			fallthrough
-		// property: s.Pyl
-		case 8:
-			if tag == 66 { // MAKE_TAG(8, WireBytes=2)
+				fallthrough
+			// property: s.Pyl
+			case 8:
+				if tag == 66 { // MAKE_TAG(8, WireBytes=2)
 			loop_tmp_10:
 				// type: []*GoType
 				for {
@@ -1125,17 +1129,17 @@ object_tmp_2:
 						break loop_tmp_10 // end for []*GoType
 					}
 				}
-				if !input.ExpectBytes(74) { // tag: 74 MAKE_TAG(9, WireBytes=2)
-					continue object_tmp_2 // next tag for Fighter_Part1
+					if !input.ExpectBytes(74) { // tag: 74 MAKE_TAG(9, WireBytes=2)
+						continue object_tmp_2 // next tag for Fighter_Part1
+					}
+					tag = 74 // MAKE_TAG(9, WireBytes=2) // fallthrough case 9
+				} else {
+					break switch_tmp_2 // skip tag
 				}
-				tag = 74 // MAKE_TAG(9, WireBytes=2) // fallthrough case 9
-			} else {
-				break switch_tmp_2 // skip tag
-			}
-			fallthrough
-		// property: s.Pyd
-		case 9:
-			if tag == 74 { // MAKE_TAG(9, WireBytes=2)
+				fallthrough
+			// property: s.Pyd
+			case 9:
+				if tag == 74 { // MAKE_TAG(9, WireBytes=2)
 			loop_tmp_11:
 				// type: map[int32]*GoType
 				for {
@@ -1146,14 +1150,15 @@ object_tmp_2:
 					dict_tmp_11:
 						for !tmpi.ExpectEnd() {
 							var tmpg int
-							if tmpg, err = tmpi.ReadTag(127); err != nil {
+							var cutoff bool
+							if tmpg, cutoff, err = tmpi.ReadTag(127); err != nil {
 								return
-							}
-						switch_tmp_11:
-							switch tmpg >> 3 {
-							// dict key
-							case 1:
-								if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
+							} else if cutoff {
+							switch_tmp_11:
+								switch tmpg >> 3 {
+								// dict key
+								case 1:
+									if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
 									// type: int32
 									if x, e := tmpi.ReadVarint(); e == nil {
 										tmp_11 = int32(x)
@@ -1161,16 +1166,16 @@ object_tmp_2:
 										err = e
 										return
 									}
-									if !tmpi.ExpectBytes(18) { // tag: 18 MAKE_TAG(2, WireBytes=2)
-										continue dict_tmp_11 // next tag for map[int32]*GoType
+										if !tmpi.ExpectBytes(18) { // tag: 18 MAKE_TAG(2, WireBytes=2)
+											continue dict_tmp_11 // next tag for map[int32]*GoType
+										}
+										tmpg = 18 // fallthrough case 2
+									} else {
+										break switch_tmp_11 // skip tag
 									}
-									tmpg = 18 // fallthrough case 2
-								} else {
-									break switch_tmp_11 // skip tag
-								}
-								fallthrough
-							case 2:
-								if tmpg == 18 { // MAKE_TAG(2, WireBytes=2)
+									fallthrough
+								case 2:
+									if tmpg == 18 { // MAKE_TAG(2, WireBytes=2)
 									// type: *GoType
 									if x, e := tmpi.ReadBuf(); e == nil {
 										if tmp_12 == nil {
@@ -1185,13 +1190,13 @@ object_tmp_2:
 										err = e
 										return
 									}
-									if tmpi.ExpectEnd() {
-										break dict_tmp_11 // end for map[int32]*GoType
+										if tmpi.ExpectEnd() {
+											break dict_tmp_11 // end for map[int32]*GoType
+										}
+										continue dict_tmp_11 // next tag for map[int32]*GoType
 									}
-									continue dict_tmp_11 // next tag for map[int32]*GoType
 								}
-							}
-							if err = tmpi.SkipField(tmpg); err != nil {
+							} else if err = tmpi.SkipField(tmpg); err != nil {
 								return
 							}
 						}
@@ -1204,29 +1209,30 @@ object_tmp_2:
 						break loop_tmp_11 // end for map[int32]*GoType
 					}
 				}
-				if !input.ExpectBytes(82) { // tag: 82 MAKE_TAG(10, WireBytes=2)
-					continue object_tmp_2 // next tag for Fighter_Part1
+					if !input.ExpectBytes(82) { // tag: 82 MAKE_TAG(10, WireBytes=2)
+						continue object_tmp_2 // next tag for Fighter_Part1
+					}
+					tag = 82 // MAKE_TAG(10, WireBytes=2) // fallthrough case 10
+				} else {
+					break switch_tmp_2 // skip tag
 				}
-				tag = 82 // MAKE_TAG(10, WireBytes=2) // fallthrough case 10
-			} else {
-				break switch_tmp_2 // skip tag
-			}
-			fallthrough
-		// property: s.Pyv1
-		case 10:
-			if tag == 82 { // MAKE_TAG(10, WireBytes=2)
+				fallthrough
+			// property: s.Pyv1
+			case 10:
+				if tag == 82 { // MAKE_TAG(10, WireBytes=2)
 				// type: variant<int32, *GoType>
 				if x, e := input.ReadBuf(); e == nil {
 					tmpi := &tygo.ProtoBuf{Buffer: x}
 				variant_tmp_13:
 					for !tmpi.ExpectEnd() {
 						var tmpg int
-						if tmpg, err = tmpi.ReadTag(127); err != nil {
+						var cutoff bool
+						if tmpg, cutoff, err = tmpi.ReadTag(127); err != nil {
 							return
-						}
-						switch tmpg >> 3 {
-						case 1:
-							if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
+						} else if cutoff {
+							switch tmpg >> 3 {
+							case 1:
+								if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
 								// type: int32
 								if x, e := tmpi.ReadVarint(); e == nil {
 									s.Pyv1 = int32(x)
@@ -1234,10 +1240,10 @@ object_tmp_2:
 									err = e
 									return
 								}
-								continue variant_tmp_13 // next tag for variant<int32, *GoType>
-							}
-						case 2:
-							if tmpg == 18 { // MAKE_TAG(2, WireBytes=2)
+									continue variant_tmp_13 // next tag for variant<int32, *GoType>
+								}
+							case 2:
+								if tmpg == 18 { // MAKE_TAG(2, WireBytes=2)
 								// type: *GoType
 								if x, e := tmpi.ReadBuf(); e == nil {
 									if s.Pyv1 == nil {
@@ -1252,10 +1258,10 @@ object_tmp_2:
 									err = e
 									return
 								}
-								continue variant_tmp_13 // next tag for variant<int32, *GoType>
+									continue variant_tmp_13 // next tag for variant<int32, *GoType>
+								}
 							}
-						}
-						if err = tmpi.SkipField(tmpg); err != nil {
+						} else if err = tmpi.SkipField(tmpg); err != nil {
 							return
 						}
 					}
@@ -1263,29 +1269,30 @@ object_tmp_2:
 					err = e
 					return
 				}
-				if !input.ExpectBytes(90) { // tag: 90 MAKE_TAG(11, WireBytes=2)
-					continue object_tmp_2 // next tag for Fighter_Part1
+					if !input.ExpectBytes(90) { // tag: 90 MAKE_TAG(11, WireBytes=2)
+						continue object_tmp_2 // next tag for Fighter_Part1
+					}
+					tag = 90 // MAKE_TAG(11, WireBytes=2) // fallthrough case 11
+				} else {
+					break switch_tmp_2 // skip tag
 				}
-				tag = 90 // MAKE_TAG(11, WireBytes=2) // fallthrough case 11
-			} else {
-				break switch_tmp_2 // skip tag
-			}
-			fallthrough
-		// property: s.Pyv2
-		case 11:
-			if tag == 90 { // MAKE_TAG(11, WireBytes=2)
+				fallthrough
+			// property: s.Pyv2
+			case 11:
+				if tag == 90 { // MAKE_TAG(11, WireBytes=2)
 				// type: variant<int32, *GoType>
 				if x, e := input.ReadBuf(); e == nil {
 					tmpi := &tygo.ProtoBuf{Buffer: x}
 				variant_tmp_14:
 					for !tmpi.ExpectEnd() {
 						var tmpg int
-						if tmpg, err = tmpi.ReadTag(127); err != nil {
+						var cutoff bool
+						if tmpg, cutoff, err = tmpi.ReadTag(127); err != nil {
 							return
-						}
-						switch tmpg >> 3 {
-						case 1:
-							if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
+						} else if cutoff {
+							switch tmpg >> 3 {
+							case 1:
+								if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
 								// type: int32
 								if x, e := tmpi.ReadVarint(); e == nil {
 									s.Pyv2 = int32(x)
@@ -1293,10 +1300,10 @@ object_tmp_2:
 									err = e
 									return
 								}
-								continue variant_tmp_14 // next tag for variant<int32, *GoType>
-							}
-						case 2:
-							if tmpg == 18 { // MAKE_TAG(2, WireBytes=2)
+									continue variant_tmp_14 // next tag for variant<int32, *GoType>
+								}
+							case 2:
+								if tmpg == 18 { // MAKE_TAG(2, WireBytes=2)
 								// type: *GoType
 								if x, e := tmpi.ReadBuf(); e == nil {
 									if s.Pyv2 == nil {
@@ -1311,10 +1318,10 @@ object_tmp_2:
 									err = e
 									return
 								}
-								continue variant_tmp_14 // next tag for variant<int32, *GoType>
+									continue variant_tmp_14 // next tag for variant<int32, *GoType>
+								}
 							}
-						}
-						if err = tmpi.SkipField(tmpg); err != nil {
+						} else if err = tmpi.SkipField(tmpg); err != nil {
 							return
 						}
 					}
@@ -1322,13 +1329,13 @@ object_tmp_2:
 					err = e
 					return
 				}
-				if input.ExpectEnd() {
-					break object_tmp_2 // end for Fighter_Part1
+					if input.ExpectEnd() {
+						break object_tmp_2 // end for Fighter_Part1
+					}
+					continue object_tmp_2 // next tag for Fighter_Part1
 				}
-				continue object_tmp_2 // next tag for Fighter_Part1
 			}
-		}
-		if err = input.SkipField(tag); err != nil {
+		} else if err = input.SkipField(tag); err != nil {
 			return
 		}
 	}
@@ -1680,14 +1687,15 @@ func (s *Fighter_Part2) Deserialize(input *tygo.ProtoBuf) (err error) {
 object_tmp_15:
 	for !input.ExpectEnd() {
 		var tag int
-		if tag, err = input.ReadTag(1023); err != nil {
+		var cutoff bool
+		if tag, cutoff, err = input.ReadTag(1023); err != nil {
 			return
-		}
-	switch_tmp_15:
-		switch (tag >> 3) - 11 {
-		// property: s.Fl
-		case 1:
-			if tag == 101 || tag == 98 { // MAKE_TAG(12, WireFixed32=5) || MAKE_TAG(12, WireBytes=2)
+		} else if cutoff {
+		switch_tmp_15:
+			switch (tag >> 3) - 11 {
+			// property: s.Fl
+			case 1:
+				if tag == 101 || tag == 98 { // MAKE_TAG(12, WireFixed32=5) || MAKE_TAG(12, WireBytes=2)
 				// type: []float32
 				if tag == 101 { // MAKE_TAG(12, WireFixed32=5)
 				loop_tmp_16:
@@ -1722,17 +1730,17 @@ object_tmp_15:
 					err = e
 					return
 				}
-				if !input.ExpectBytes(106) { // tag: 106 MAKE_TAG(13, WireBytes=2)
-					continue object_tmp_15 // next tag for Fighter_Part2
+					if !input.ExpectBytes(106) { // tag: 106 MAKE_TAG(13, WireBytes=2)
+						continue object_tmp_15 // next tag for Fighter_Part2
+					}
+					tag = 106 // MAKE_TAG(13, WireBytes=2) // fallthrough case 2
+				} else {
+					break switch_tmp_15 // skip tag
 				}
-				tag = 106 // MAKE_TAG(13, WireBytes=2) // fallthrough case 2
-			} else {
-				break switch_tmp_15 // skip tag
-			}
-			fallthrough
-		// property: s.Bl
-		case 2:
-			if tag == 106 { // MAKE_TAG(13, WireBytes=2)
+				fallthrough
+			// property: s.Bl
+			case 2:
+				if tag == 106 { // MAKE_TAG(13, WireBytes=2)
 			loop_tmp_17:
 				// type: []bytes
 				for {
@@ -1750,17 +1758,17 @@ object_tmp_15:
 						break loop_tmp_17 // end for []bytes
 					}
 				}
-				if !input.ExpectBytes(114) { // tag: 114 MAKE_TAG(14, WireBytes=2)
-					continue object_tmp_15 // next tag for Fighter_Part2
+					if !input.ExpectBytes(114) { // tag: 114 MAKE_TAG(14, WireBytes=2)
+						continue object_tmp_15 // next tag for Fighter_Part2
+					}
+					tag = 114 // MAKE_TAG(14, WireBytes=2) // fallthrough case 3
+				} else {
+					break switch_tmp_15 // skip tag
 				}
-				tag = 114 // MAKE_TAG(14, WireBytes=2) // fallthrough case 3
-			} else {
-				break switch_tmp_15 // skip tag
-			}
-			fallthrough
-		// property: s.Sl
-		case 3:
-			if tag == 114 { // MAKE_TAG(14, WireBytes=2)
+				fallthrough
+			// property: s.Sl
+			case 3:
+				if tag == 114 { // MAKE_TAG(14, WireBytes=2)
 			loop_tmp_18:
 				// type: []string
 				for {
@@ -1777,17 +1785,17 @@ object_tmp_15:
 						break loop_tmp_18 // end for []string
 					}
 				}
-				if !input.ExpectBytes(122) { // tag: 122 MAKE_TAG(15, WireBytes=2)
-					continue object_tmp_15 // next tag for Fighter_Part2
+					if !input.ExpectBytes(122) { // tag: 122 MAKE_TAG(15, WireBytes=2)
+						continue object_tmp_15 // next tag for Fighter_Part2
+					}
+					tag = 122 // MAKE_TAG(15, WireBytes=2) // fallthrough case 4
+				} else {
+					break switch_tmp_15 // skip tag
 				}
-				tag = 122 // MAKE_TAG(15, WireBytes=2) // fallthrough case 4
-			} else {
-				break switch_tmp_15 // skip tag
-			}
-			fallthrough
-		// property: s.Bd
-		case 4:
-			if tag == 122 { // MAKE_TAG(15, WireBytes=2)
+				fallthrough
+			// property: s.Bd
+			case 4:
+				if tag == 122 { // MAKE_TAG(15, WireBytes=2)
 			loop_tmp_19:
 				// type: map[string]bytes
 				for {
@@ -1798,14 +1806,15 @@ object_tmp_15:
 					dict_tmp_19:
 						for !tmpi.ExpectEnd() {
 							var tmpg int
-							if tmpg, err = tmpi.ReadTag(127); err != nil {
+							var cutoff bool
+							if tmpg, cutoff, err = tmpi.ReadTag(127); err != nil {
 								return
-							}
-						switch_tmp_19:
-							switch tmpg >> 3 {
-							// dict key
-							case 1:
-								if tmpg == 10 { // MAKE_TAG(1, WireBytes=2)
+							} else if cutoff {
+							switch_tmp_19:
+								switch tmpg >> 3 {
+								// dict key
+								case 1:
+									if tmpg == 10 { // MAKE_TAG(1, WireBytes=2)
 									// type: string
 									if x, e := tmpi.ReadBuf(); e == nil {
 										tmp_19 = string(x)
@@ -1813,16 +1822,16 @@ object_tmp_15:
 										err = e
 										return
 									}
-									if !tmpi.ExpectBytes(18) { // tag: 18 MAKE_TAG(2, WireBytes=2)
-										continue dict_tmp_19 // next tag for map[string]bytes
+										if !tmpi.ExpectBytes(18) { // tag: 18 MAKE_TAG(2, WireBytes=2)
+											continue dict_tmp_19 // next tag for map[string]bytes
+										}
+										tmpg = 18 // fallthrough case 2
+									} else {
+										break switch_tmp_19 // skip tag
 									}
-									tmpg = 18 // fallthrough case 2
-								} else {
-									break switch_tmp_19 // skip tag
-								}
-								fallthrough
-							case 2:
-								if tmpg == 18 { // MAKE_TAG(2, WireBytes=2)
+									fallthrough
+								case 2:
+									if tmpg == 18 { // MAKE_TAG(2, WireBytes=2)
 									// type: bytes
 									if x, e := tmpi.ReadBuf(); e == nil {
 										tmp_20 = make([]byte, len(x))
@@ -1831,13 +1840,13 @@ object_tmp_15:
 										err = e
 										return
 									}
-									if tmpi.ExpectEnd() {
-										break dict_tmp_19 // end for map[string]bytes
+										if tmpi.ExpectEnd() {
+											break dict_tmp_19 // end for map[string]bytes
+										}
+										continue dict_tmp_19 // next tag for map[string]bytes
 									}
-									continue dict_tmp_19 // next tag for map[string]bytes
 								}
-							}
-							if err = tmpi.SkipField(tmpg); err != nil {
+							} else if err = tmpi.SkipField(tmpg); err != nil {
 								return
 							}
 						}
@@ -1850,17 +1859,17 @@ object_tmp_15:
 						break loop_tmp_19 // end for map[string]bytes
 					}
 				}
-				if !input.ExpectBytes(130, 1) { // tag: 130 MAKE_TAG(16, WireBytes=2)
-					continue object_tmp_15 // next tag for Fighter_Part2
+					if !input.ExpectBytes(130, 1) { // tag: 130 MAKE_TAG(16, WireBytes=2)
+						continue object_tmp_15 // next tag for Fighter_Part2
+					}
+					tag = 130 // MAKE_TAG(16, WireBytes=2) // fallthrough case 5
+				} else {
+					break switch_tmp_15 // skip tag
 				}
-				tag = 130 // MAKE_TAG(16, WireBytes=2) // fallthrough case 5
-			} else {
-				break switch_tmp_15 // skip tag
-			}
-			fallthrough
-		// property: s.Sd
-		case 5:
-			if tag == 130 { // MAKE_TAG(16, WireBytes=2)
+				fallthrough
+			// property: s.Sd
+			case 5:
+				if tag == 130 { // MAKE_TAG(16, WireBytes=2)
 			loop_tmp_21:
 				// type: map[int32]string
 				for {
@@ -1871,14 +1880,15 @@ object_tmp_15:
 					dict_tmp_21:
 						for !tmpi.ExpectEnd() {
 							var tmpg int
-							if tmpg, err = tmpi.ReadTag(127); err != nil {
+							var cutoff bool
+							if tmpg, cutoff, err = tmpi.ReadTag(127); err != nil {
 								return
-							}
-						switch_tmp_21:
-							switch tmpg >> 3 {
-							// dict key
-							case 1:
-								if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
+							} else if cutoff {
+							switch_tmp_21:
+								switch tmpg >> 3 {
+								// dict key
+								case 1:
+									if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
 									// type: int32
 									if x, e := tmpi.ReadVarint(); e == nil {
 										tmp_21 = int32(x)
@@ -1886,16 +1896,16 @@ object_tmp_15:
 										err = e
 										return
 									}
-									if !tmpi.ExpectBytes(18) { // tag: 18 MAKE_TAG(2, WireBytes=2)
-										continue dict_tmp_21 // next tag for map[int32]string
+										if !tmpi.ExpectBytes(18) { // tag: 18 MAKE_TAG(2, WireBytes=2)
+											continue dict_tmp_21 // next tag for map[int32]string
+										}
+										tmpg = 18 // fallthrough case 2
+									} else {
+										break switch_tmp_21 // skip tag
 									}
-									tmpg = 18 // fallthrough case 2
-								} else {
-									break switch_tmp_21 // skip tag
-								}
-								fallthrough
-							case 2:
-								if tmpg == 18 { // MAKE_TAG(2, WireBytes=2)
+									fallthrough
+								case 2:
+									if tmpg == 18 { // MAKE_TAG(2, WireBytes=2)
 									// type: string
 									if x, e := tmpi.ReadBuf(); e == nil {
 										tmp_22 = string(x)
@@ -1903,13 +1913,13 @@ object_tmp_15:
 										err = e
 										return
 									}
-									if tmpi.ExpectEnd() {
-										break dict_tmp_21 // end for map[int32]string
+										if tmpi.ExpectEnd() {
+											break dict_tmp_21 // end for map[int32]string
+										}
+										continue dict_tmp_21 // next tag for map[int32]string
 									}
-									continue dict_tmp_21 // next tag for map[int32]string
 								}
-							}
-							if err = tmpi.SkipField(tmpg); err != nil {
+							} else if err = tmpi.SkipField(tmpg); err != nil {
 								return
 							}
 						}
@@ -1922,17 +1932,17 @@ object_tmp_15:
 						break loop_tmp_21 // end for map[int32]string
 					}
 				}
-				if !input.ExpectBytes(136, 1) { // tag: 136 MAKE_TAG(17, WireVarint=0)
-					continue object_tmp_15 // next tag for Fighter_Part2
+					if !input.ExpectBytes(136, 1) { // tag: 136 MAKE_TAG(17, WireVarint=0)
+						continue object_tmp_15 // next tag for Fighter_Part2
+					}
+					tag = 136 // MAKE_TAG(17, WireVarint=0) // fallthrough case 6
+				} else {
+					break switch_tmp_15 // skip tag
 				}
-				tag = 136 // MAKE_TAG(17, WireVarint=0) // fallthrough case 6
-			} else {
-				break switch_tmp_15 // skip tag
-			}
-			fallthrough
-		// property: s.El
-		case 6:
-			if tag == 136 || tag == 138 { // MAKE_TAG(17, WireVarint=0) || MAKE_TAG(17, WireBytes=2)
+				fallthrough
+			// property: s.El
+			case 6:
+				if tag == 136 || tag == 138 { // MAKE_TAG(17, WireVarint=0) || MAKE_TAG(17, WireBytes=2)
 				// type: []Corpus
 				if tag == 136 { // MAKE_TAG(17, WireVarint=0)
 				loop_tmp_23:
@@ -1967,17 +1977,17 @@ object_tmp_15:
 					err = e
 					return
 				}
-				if !input.ExpectBytes(146, 1) { // tag: 146 MAKE_TAG(18, WireBytes=2)
-					continue object_tmp_15 // next tag for Fighter_Part2
+					if !input.ExpectBytes(146, 1) { // tag: 146 MAKE_TAG(18, WireBytes=2)
+						continue object_tmp_15 // next tag for Fighter_Part2
+					}
+					tag = 146 // MAKE_TAG(18, WireBytes=2) // fallthrough case 7
+				} else {
+					break switch_tmp_15 // skip tag
 				}
-				tag = 146 // MAKE_TAG(18, WireBytes=2) // fallthrough case 7
-			} else {
-				break switch_tmp_15 // skip tag
-			}
-			fallthrough
-		// property: s.Ed
-		case 7:
-			if tag == 146 { // MAKE_TAG(18, WireBytes=2)
+				fallthrough
+			// property: s.Ed
+			case 7:
+				if tag == 146 { // MAKE_TAG(18, WireBytes=2)
 			loop_tmp_24:
 				// type: map[int32]Corpus
 				for {
@@ -1988,14 +1998,15 @@ object_tmp_15:
 					dict_tmp_24:
 						for !tmpi.ExpectEnd() {
 							var tmpg int
-							if tmpg, err = tmpi.ReadTag(127); err != nil {
+							var cutoff bool
+							if tmpg, cutoff, err = tmpi.ReadTag(127); err != nil {
 								return
-							}
-						switch_tmp_24:
-							switch tmpg >> 3 {
-							// dict key
-							case 1:
-								if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
+							} else if cutoff {
+							switch_tmp_24:
+								switch tmpg >> 3 {
+								// dict key
+								case 1:
+									if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
 									// type: int32
 									if x, e := tmpi.ReadVarint(); e == nil {
 										tmp_24 = int32(x)
@@ -2003,16 +2014,16 @@ object_tmp_15:
 										err = e
 										return
 									}
-									if !tmpi.ExpectBytes(16) { // tag: 16 MAKE_TAG(2, WireVarint=0)
-										continue dict_tmp_24 // next tag for map[int32]Corpus
+										if !tmpi.ExpectBytes(16) { // tag: 16 MAKE_TAG(2, WireVarint=0)
+											continue dict_tmp_24 // next tag for map[int32]Corpus
+										}
+										tmpg = 16 // fallthrough case 2
+									} else {
+										break switch_tmp_24 // skip tag
 									}
-									tmpg = 16 // fallthrough case 2
-								} else {
-									break switch_tmp_24 // skip tag
-								}
-								fallthrough
-							case 2:
-								if tmpg == 16 { // MAKE_TAG(2, WireVarint=0)
+									fallthrough
+								case 2:
+									if tmpg == 16 { // MAKE_TAG(2, WireVarint=0)
 									// type: Corpus
 									if x, e := tmpi.ReadVarint(); e == nil {
 										tmp_25 = Corpus(x)
@@ -2020,13 +2031,13 @@ object_tmp_15:
 										err = e
 										return
 									}
-									if tmpi.ExpectEnd() {
-										break dict_tmp_24 // end for map[int32]Corpus
+										if tmpi.ExpectEnd() {
+											break dict_tmp_24 // end for map[int32]Corpus
+										}
+										continue dict_tmp_24 // next tag for map[int32]Corpus
 									}
-									continue dict_tmp_24 // next tag for map[int32]Corpus
 								}
-							}
-							if err = tmpi.SkipField(tmpg); err != nil {
+							} else if err = tmpi.SkipField(tmpg); err != nil {
 								return
 							}
 						}
@@ -2039,17 +2050,17 @@ object_tmp_15:
 						break loop_tmp_24 // end for map[int32]Corpus
 					}
 				}
-				if !input.ExpectBytes(154, 1) { // tag: 154 MAKE_TAG(19, WireBytes=2)
-					continue object_tmp_15 // next tag for Fighter_Part2
+					if !input.ExpectBytes(154, 1) { // tag: 154 MAKE_TAG(19, WireBytes=2)
+						continue object_tmp_15 // next tag for Fighter_Part2
+					}
+					tag = 154 // MAKE_TAG(19, WireBytes=2) // fallthrough case 8
+				} else {
+					break switch_tmp_15 // skip tag
 				}
-				tag = 154 // MAKE_TAG(19, WireBytes=2) // fallthrough case 8
-			} else {
-				break switch_tmp_15 // skip tag
-			}
-			fallthrough
-		// property: s.Ll
-		case 8:
-			if tag == 154 { // MAKE_TAG(19, WireBytes=2)
+				fallthrough
+			// property: s.Ll
+			case 8:
+				if tag == 154 { // MAKE_TAG(19, WireBytes=2)
 			loop_tmp_26:
 				// type: [][]float32
 				for {
@@ -2077,13 +2088,13 @@ object_tmp_15:
 						break loop_tmp_26 // end for [][]float32
 					}
 				}
-				if input.ExpectEnd() {
-					break object_tmp_15 // end for Fighter_Part2
+					if input.ExpectEnd() {
+						break object_tmp_15 // end for Fighter_Part2
+					}
+					continue object_tmp_15 // next tag for Fighter_Part2
 				}
-				continue object_tmp_15 // next tag for Fighter_Part2
 			}
-		}
-		if err = input.SkipField(tag); err != nil {
+		} else if err = input.SkipField(tag); err != nil {
 			return
 		}
 	}
@@ -4310,26 +4321,28 @@ func (s *Fighter) Deserialize(input *tygo.ProtoBuf) (err error) {
 object_tmp_40:
 	for !input.ExpectEnd() {
 		var tag int
-		if tag, err = input.ReadTag(1023); err != nil {
+		var cutoff bool
+		if tag, cutoff, err = input.ReadTag(1023); err != nil {
 			return
-		}
-	switch_tmp_40:
-		switch (tag >> 3) - 19 {
-		// property: s.V0
-		case 1:
-			if tag == 162 { // MAKE_TAG(20, WireBytes=2)
+		} else if cutoff {
+		switch_tmp_40:
+			switch (tag >> 3) - 19 {
+			// property: s.V0
+			case 1:
+				if tag == 162 { // MAKE_TAG(20, WireBytes=2)
 				// type: variant<int32, float32, bytes, *Vector2>
 				if x, e := input.ReadBuf(); e == nil {
 					tmpi := &tygo.ProtoBuf{Buffer: x}
 				variant_tmp_41:
 					for !tmpi.ExpectEnd() {
 						var tmpg int
-						if tmpg, err = tmpi.ReadTag(127); err != nil {
+						var cutoff bool
+						if tmpg, cutoff, err = tmpi.ReadTag(127); err != nil {
 							return
-						}
-						switch tmpg >> 3 {
-						case 1:
-							if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
+						} else if cutoff {
+							switch tmpg >> 3 {
+							case 1:
+								if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
 								// type: int32
 								if x, e := tmpi.ReadVarint(); e == nil {
 									s.V0 = int32(x)
@@ -4337,10 +4350,10 @@ object_tmp_40:
 									err = e
 									return
 								}
-								continue variant_tmp_41 // next tag for variant<int32, float32, bytes, *Vector2>
-							}
-						case 2:
-							if tmpg == 21 { // MAKE_TAG(2, WireFixed32=5)
+									continue variant_tmp_41 // next tag for variant<int32, float32, bytes, *Vector2>
+								}
+							case 2:
+								if tmpg == 21 { // MAKE_TAG(2, WireFixed32=5)
 								// type: float32
 								if x, e := tmpi.ReadFixed32(); e == nil {
 									s.V0 = math.Float32frombits(x)
@@ -4348,10 +4361,10 @@ object_tmp_40:
 									err = e
 									return
 								}
-								continue variant_tmp_41 // next tag for variant<int32, float32, bytes, *Vector2>
-							}
-						case 3:
-							if tmpg == 26 { // MAKE_TAG(3, WireBytes=2)
+									continue variant_tmp_41 // next tag for variant<int32, float32, bytes, *Vector2>
+								}
+							case 3:
+								if tmpg == 26 { // MAKE_TAG(3, WireBytes=2)
 								// type: bytes
 								if x, e := tmpi.ReadBuf(); e == nil {
 									s.V0 = make([]byte, len(x))
@@ -4360,10 +4373,10 @@ object_tmp_40:
 									err = e
 									return
 								}
-								continue variant_tmp_41 // next tag for variant<int32, float32, bytes, *Vector2>
-							}
-						case 4:
-							if tmpg == 34 { // MAKE_TAG(4, WireBytes=2)
+									continue variant_tmp_41 // next tag for variant<int32, float32, bytes, *Vector2>
+								}
+							case 4:
+								if tmpg == 34 { // MAKE_TAG(4, WireBytes=2)
 								// type: *Vector2
 								if x, e := tmpi.ReadBuf(); e == nil {
 									if s.V0 == nil {
@@ -4378,10 +4391,10 @@ object_tmp_40:
 									err = e
 									return
 								}
-								continue variant_tmp_41 // next tag for variant<int32, float32, bytes, *Vector2>
+									continue variant_tmp_41 // next tag for variant<int32, float32, bytes, *Vector2>
+								}
 							}
-						}
-						if err = tmpi.SkipField(tmpg); err != nil {
+						} else if err = tmpi.SkipField(tmpg); err != nil {
 							return
 						}
 					}
@@ -4389,29 +4402,30 @@ object_tmp_40:
 					err = e
 					return
 				}
-				if !input.ExpectBytes(170, 1) { // tag: 170 MAKE_TAG(21, WireBytes=2)
-					continue object_tmp_40 // next tag for Fighter
+					if !input.ExpectBytes(170, 1) { // tag: 170 MAKE_TAG(21, WireBytes=2)
+						continue object_tmp_40 // next tag for Fighter
+					}
+					tag = 170 // MAKE_TAG(21, WireBytes=2) // fallthrough case 2
+				} else {
+					break switch_tmp_40 // skip tag
 				}
-				tag = 170 // MAKE_TAG(21, WireBytes=2) // fallthrough case 2
-			} else {
-				break switch_tmp_40 // skip tag
-			}
-			fallthrough
-		// property: s.V1
-		case 2:
-			if tag == 170 { // MAKE_TAG(21, WireBytes=2)
+				fallthrough
+			// property: s.V1
+			case 2:
+				if tag == 170 { // MAKE_TAG(21, WireBytes=2)
 				// type: variant<int32, float32, bytes, *Vector2>
 				if x, e := input.ReadBuf(); e == nil {
 					tmpi := &tygo.ProtoBuf{Buffer: x}
 				variant_tmp_42:
 					for !tmpi.ExpectEnd() {
 						var tmpg int
-						if tmpg, err = tmpi.ReadTag(127); err != nil {
+						var cutoff bool
+						if tmpg, cutoff, err = tmpi.ReadTag(127); err != nil {
 							return
-						}
-						switch tmpg >> 3 {
-						case 1:
-							if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
+						} else if cutoff {
+							switch tmpg >> 3 {
+							case 1:
+								if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
 								// type: int32
 								if x, e := tmpi.ReadVarint(); e == nil {
 									s.V1 = int32(x)
@@ -4419,10 +4433,10 @@ object_tmp_40:
 									err = e
 									return
 								}
-								continue variant_tmp_42 // next tag for variant<int32, float32, bytes, *Vector2>
-							}
-						case 2:
-							if tmpg == 21 { // MAKE_TAG(2, WireFixed32=5)
+									continue variant_tmp_42 // next tag for variant<int32, float32, bytes, *Vector2>
+								}
+							case 2:
+								if tmpg == 21 { // MAKE_TAG(2, WireFixed32=5)
 								// type: float32
 								if x, e := tmpi.ReadFixed32(); e == nil {
 									s.V1 = math.Float32frombits(x)
@@ -4430,10 +4444,10 @@ object_tmp_40:
 									err = e
 									return
 								}
-								continue variant_tmp_42 // next tag for variant<int32, float32, bytes, *Vector2>
-							}
-						case 3:
-							if tmpg == 26 { // MAKE_TAG(3, WireBytes=2)
+									continue variant_tmp_42 // next tag for variant<int32, float32, bytes, *Vector2>
+								}
+							case 3:
+								if tmpg == 26 { // MAKE_TAG(3, WireBytes=2)
 								// type: bytes
 								if x, e := tmpi.ReadBuf(); e == nil {
 									s.V1 = make([]byte, len(x))
@@ -4442,10 +4456,10 @@ object_tmp_40:
 									err = e
 									return
 								}
-								continue variant_tmp_42 // next tag for variant<int32, float32, bytes, *Vector2>
-							}
-						case 4:
-							if tmpg == 34 { // MAKE_TAG(4, WireBytes=2)
+									continue variant_tmp_42 // next tag for variant<int32, float32, bytes, *Vector2>
+								}
+							case 4:
+								if tmpg == 34 { // MAKE_TAG(4, WireBytes=2)
 								// type: *Vector2
 								if x, e := tmpi.ReadBuf(); e == nil {
 									if s.V1 == nil {
@@ -4460,10 +4474,10 @@ object_tmp_40:
 									err = e
 									return
 								}
-								continue variant_tmp_42 // next tag for variant<int32, float32, bytes, *Vector2>
+									continue variant_tmp_42 // next tag for variant<int32, float32, bytes, *Vector2>
+								}
 							}
-						}
-						if err = tmpi.SkipField(tmpg); err != nil {
+						} else if err = tmpi.SkipField(tmpg); err != nil {
 							return
 						}
 					}
@@ -4471,29 +4485,30 @@ object_tmp_40:
 					err = e
 					return
 				}
-				if !input.ExpectBytes(178, 1) { // tag: 178 MAKE_TAG(22, WireBytes=2)
-					continue object_tmp_40 // next tag for Fighter
+					if !input.ExpectBytes(178, 1) { // tag: 178 MAKE_TAG(22, WireBytes=2)
+						continue object_tmp_40 // next tag for Fighter
+					}
+					tag = 178 // MAKE_TAG(22, WireBytes=2) // fallthrough case 3
+				} else {
+					break switch_tmp_40 // skip tag
 				}
-				tag = 178 // MAKE_TAG(22, WireBytes=2) // fallthrough case 3
-			} else {
-				break switch_tmp_40 // skip tag
-			}
-			fallthrough
-		// property: s.V2
-		case 3:
-			if tag == 178 { // MAKE_TAG(22, WireBytes=2)
+				fallthrough
+			// property: s.V2
+			case 3:
+				if tag == 178 { // MAKE_TAG(22, WireBytes=2)
 				// type: variant<int32, float32, bytes, *Vector2>
 				if x, e := input.ReadBuf(); e == nil {
 					tmpi := &tygo.ProtoBuf{Buffer: x}
 				variant_tmp_43:
 					for !tmpi.ExpectEnd() {
 						var tmpg int
-						if tmpg, err = tmpi.ReadTag(127); err != nil {
+						var cutoff bool
+						if tmpg, cutoff, err = tmpi.ReadTag(127); err != nil {
 							return
-						}
-						switch tmpg >> 3 {
-						case 1:
-							if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
+						} else if cutoff {
+							switch tmpg >> 3 {
+							case 1:
+								if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
 								// type: int32
 								if x, e := tmpi.ReadVarint(); e == nil {
 									s.V2 = int32(x)
@@ -4501,10 +4516,10 @@ object_tmp_40:
 									err = e
 									return
 								}
-								continue variant_tmp_43 // next tag for variant<int32, float32, bytes, *Vector2>
-							}
-						case 2:
-							if tmpg == 21 { // MAKE_TAG(2, WireFixed32=5)
+									continue variant_tmp_43 // next tag for variant<int32, float32, bytes, *Vector2>
+								}
+							case 2:
+								if tmpg == 21 { // MAKE_TAG(2, WireFixed32=5)
 								// type: float32
 								if x, e := tmpi.ReadFixed32(); e == nil {
 									s.V2 = math.Float32frombits(x)
@@ -4512,10 +4527,10 @@ object_tmp_40:
 									err = e
 									return
 								}
-								continue variant_tmp_43 // next tag for variant<int32, float32, bytes, *Vector2>
-							}
-						case 3:
-							if tmpg == 26 { // MAKE_TAG(3, WireBytes=2)
+									continue variant_tmp_43 // next tag for variant<int32, float32, bytes, *Vector2>
+								}
+							case 3:
+								if tmpg == 26 { // MAKE_TAG(3, WireBytes=2)
 								// type: bytes
 								if x, e := tmpi.ReadBuf(); e == nil {
 									s.V2 = make([]byte, len(x))
@@ -4524,10 +4539,10 @@ object_tmp_40:
 									err = e
 									return
 								}
-								continue variant_tmp_43 // next tag for variant<int32, float32, bytes, *Vector2>
-							}
-						case 4:
-							if tmpg == 34 { // MAKE_TAG(4, WireBytes=2)
+									continue variant_tmp_43 // next tag for variant<int32, float32, bytes, *Vector2>
+								}
+							case 4:
+								if tmpg == 34 { // MAKE_TAG(4, WireBytes=2)
 								// type: *Vector2
 								if x, e := tmpi.ReadBuf(); e == nil {
 									if s.V2 == nil {
@@ -4542,10 +4557,10 @@ object_tmp_40:
 									err = e
 									return
 								}
-								continue variant_tmp_43 // next tag for variant<int32, float32, bytes, *Vector2>
+									continue variant_tmp_43 // next tag for variant<int32, float32, bytes, *Vector2>
+								}
 							}
-						}
-						if err = tmpi.SkipField(tmpg); err != nil {
+						} else if err = tmpi.SkipField(tmpg); err != nil {
 							return
 						}
 					}
@@ -4553,29 +4568,30 @@ object_tmp_40:
 					err = e
 					return
 				}
-				if !input.ExpectBytes(186, 1) { // tag: 186 MAKE_TAG(23, WireBytes=2)
-					continue object_tmp_40 // next tag for Fighter
+					if !input.ExpectBytes(186, 1) { // tag: 186 MAKE_TAG(23, WireBytes=2)
+						continue object_tmp_40 // next tag for Fighter
+					}
+					tag = 186 // MAKE_TAG(23, WireBytes=2) // fallthrough case 4
+				} else {
+					break switch_tmp_40 // skip tag
 				}
-				tag = 186 // MAKE_TAG(23, WireBytes=2) // fallthrough case 4
-			} else {
-				break switch_tmp_40 // skip tag
-			}
-			fallthrough
-		// property: s.V3
-		case 4:
-			if tag == 186 { // MAKE_TAG(23, WireBytes=2)
+				fallthrough
+			// property: s.V3
+			case 4:
+				if tag == 186 { // MAKE_TAG(23, WireBytes=2)
 				// type: variant<int32, float32, bytes, *Vector2>
 				if x, e := input.ReadBuf(); e == nil {
 					tmpi := &tygo.ProtoBuf{Buffer: x}
 				variant_tmp_44:
 					for !tmpi.ExpectEnd() {
 						var tmpg int
-						if tmpg, err = tmpi.ReadTag(127); err != nil {
+						var cutoff bool
+						if tmpg, cutoff, err = tmpi.ReadTag(127); err != nil {
 							return
-						}
-						switch tmpg >> 3 {
-						case 1:
-							if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
+						} else if cutoff {
+							switch tmpg >> 3 {
+							case 1:
+								if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
 								// type: int32
 								if x, e := tmpi.ReadVarint(); e == nil {
 									s.V3 = int32(x)
@@ -4583,10 +4599,10 @@ object_tmp_40:
 									err = e
 									return
 								}
-								continue variant_tmp_44 // next tag for variant<int32, float32, bytes, *Vector2>
-							}
-						case 2:
-							if tmpg == 21 { // MAKE_TAG(2, WireFixed32=5)
+									continue variant_tmp_44 // next tag for variant<int32, float32, bytes, *Vector2>
+								}
+							case 2:
+								if tmpg == 21 { // MAKE_TAG(2, WireFixed32=5)
 								// type: float32
 								if x, e := tmpi.ReadFixed32(); e == nil {
 									s.V3 = math.Float32frombits(x)
@@ -4594,10 +4610,10 @@ object_tmp_40:
 									err = e
 									return
 								}
-								continue variant_tmp_44 // next tag for variant<int32, float32, bytes, *Vector2>
-							}
-						case 3:
-							if tmpg == 26 { // MAKE_TAG(3, WireBytes=2)
+									continue variant_tmp_44 // next tag for variant<int32, float32, bytes, *Vector2>
+								}
+							case 3:
+								if tmpg == 26 { // MAKE_TAG(3, WireBytes=2)
 								// type: bytes
 								if x, e := tmpi.ReadBuf(); e == nil {
 									s.V3 = make([]byte, len(x))
@@ -4606,10 +4622,10 @@ object_tmp_40:
 									err = e
 									return
 								}
-								continue variant_tmp_44 // next tag for variant<int32, float32, bytes, *Vector2>
-							}
-						case 4:
-							if tmpg == 34 { // MAKE_TAG(4, WireBytes=2)
+									continue variant_tmp_44 // next tag for variant<int32, float32, bytes, *Vector2>
+								}
+							case 4:
+								if tmpg == 34 { // MAKE_TAG(4, WireBytes=2)
 								// type: *Vector2
 								if x, e := tmpi.ReadBuf(); e == nil {
 									if s.V3 == nil {
@@ -4624,10 +4640,10 @@ object_tmp_40:
 									err = e
 									return
 								}
-								continue variant_tmp_44 // next tag for variant<int32, float32, bytes, *Vector2>
+									continue variant_tmp_44 // next tag for variant<int32, float32, bytes, *Vector2>
+								}
 							}
-						}
-						if err = tmpi.SkipField(tmpg); err != nil {
+						} else if err = tmpi.SkipField(tmpg); err != nil {
 							return
 						}
 					}
@@ -4635,29 +4651,30 @@ object_tmp_40:
 					err = e
 					return
 				}
-				if !input.ExpectBytes(194, 1) { // tag: 194 MAKE_TAG(24, WireBytes=2)
-					continue object_tmp_40 // next tag for Fighter
+					if !input.ExpectBytes(194, 1) { // tag: 194 MAKE_TAG(24, WireBytes=2)
+						continue object_tmp_40 // next tag for Fighter
+					}
+					tag = 194 // MAKE_TAG(24, WireBytes=2) // fallthrough case 5
+				} else {
+					break switch_tmp_40 // skip tag
 				}
-				tag = 194 // MAKE_TAG(24, WireBytes=2) // fallthrough case 5
-			} else {
-				break switch_tmp_40 // skip tag
-			}
-			fallthrough
-		// property: s.V4
-		case 5:
-			if tag == 194 { // MAKE_TAG(24, WireBytes=2)
+				fallthrough
+			// property: s.V4
+			case 5:
+				if tag == 194 { // MAKE_TAG(24, WireBytes=2)
 				// type: variant<int32, float32, bytes, *Vector2>
 				if x, e := input.ReadBuf(); e == nil {
 					tmpi := &tygo.ProtoBuf{Buffer: x}
 				variant_tmp_45:
 					for !tmpi.ExpectEnd() {
 						var tmpg int
-						if tmpg, err = tmpi.ReadTag(127); err != nil {
+						var cutoff bool
+						if tmpg, cutoff, err = tmpi.ReadTag(127); err != nil {
 							return
-						}
-						switch tmpg >> 3 {
-						case 1:
-							if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
+						} else if cutoff {
+							switch tmpg >> 3 {
+							case 1:
+								if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
 								// type: int32
 								if x, e := tmpi.ReadVarint(); e == nil {
 									s.V4 = int32(x)
@@ -4665,10 +4682,10 @@ object_tmp_40:
 									err = e
 									return
 								}
-								continue variant_tmp_45 // next tag for variant<int32, float32, bytes, *Vector2>
-							}
-						case 2:
-							if tmpg == 21 { // MAKE_TAG(2, WireFixed32=5)
+									continue variant_tmp_45 // next tag for variant<int32, float32, bytes, *Vector2>
+								}
+							case 2:
+								if tmpg == 21 { // MAKE_TAG(2, WireFixed32=5)
 								// type: float32
 								if x, e := tmpi.ReadFixed32(); e == nil {
 									s.V4 = math.Float32frombits(x)
@@ -4676,10 +4693,10 @@ object_tmp_40:
 									err = e
 									return
 								}
-								continue variant_tmp_45 // next tag for variant<int32, float32, bytes, *Vector2>
-							}
-						case 3:
-							if tmpg == 26 { // MAKE_TAG(3, WireBytes=2)
+									continue variant_tmp_45 // next tag for variant<int32, float32, bytes, *Vector2>
+								}
+							case 3:
+								if tmpg == 26 { // MAKE_TAG(3, WireBytes=2)
 								// type: bytes
 								if x, e := tmpi.ReadBuf(); e == nil {
 									s.V4 = make([]byte, len(x))
@@ -4688,10 +4705,10 @@ object_tmp_40:
 									err = e
 									return
 								}
-								continue variant_tmp_45 // next tag for variant<int32, float32, bytes, *Vector2>
-							}
-						case 4:
-							if tmpg == 34 { // MAKE_TAG(4, WireBytes=2)
+									continue variant_tmp_45 // next tag for variant<int32, float32, bytes, *Vector2>
+								}
+							case 4:
+								if tmpg == 34 { // MAKE_TAG(4, WireBytes=2)
 								// type: *Vector2
 								if x, e := tmpi.ReadBuf(); e == nil {
 									if s.V4 == nil {
@@ -4706,10 +4723,10 @@ object_tmp_40:
 									err = e
 									return
 								}
-								continue variant_tmp_45 // next tag for variant<int32, float32, bytes, *Vector2>
+									continue variant_tmp_45 // next tag for variant<int32, float32, bytes, *Vector2>
+								}
 							}
-						}
-						if err = tmpi.SkipField(tmpg); err != nil {
+						} else if err = tmpi.SkipField(tmpg); err != nil {
 							return
 						}
 					}
@@ -4717,17 +4734,17 @@ object_tmp_40:
 					err = e
 					return
 				}
-				if !input.ExpectBytes(202, 1) { // tag: 202 MAKE_TAG(25, WireBytes=2)
-					continue object_tmp_40 // next tag for Fighter
+					if !input.ExpectBytes(202, 1) { // tag: 202 MAKE_TAG(25, WireBytes=2)
+						continue object_tmp_40 // next tag for Fighter
+					}
+					tag = 202 // MAKE_TAG(25, WireBytes=2) // fallthrough case 6
+				} else {
+					break switch_tmp_40 // skip tag
 				}
-				tag = 202 // MAKE_TAG(25, WireBytes=2) // fallthrough case 6
-			} else {
-				break switch_tmp_40 // skip tag
-			}
-			fallthrough
-		// property: s.Vl
-		case 6:
-			if tag == 202 { // MAKE_TAG(25, WireBytes=2)
+				fallthrough
+			// property: s.Vl
+			case 6:
+				if tag == 202 { // MAKE_TAG(25, WireBytes=2)
 			loop_tmp_46:
 				// type: []variant<int32, fixedpoint<3, 0>, string, *Vector2>
 				for {
@@ -4738,12 +4755,13 @@ object_tmp_40:
 					variant_tmp_47:
 						for !tmpi.ExpectEnd() {
 							var tmpg int
-							if tmpg, err = tmpi.ReadTag(127); err != nil {
+							var cutoff bool
+							if tmpg, cutoff, err = tmpi.ReadTag(127); err != nil {
 								return
-							}
-							switch tmpg >> 3 {
-							case 1:
-								if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
+							} else if cutoff {
+								switch tmpg >> 3 {
+								case 1:
+									if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
 									// type: int32
 									if x, e := tmpi.ReadVarint(); e == nil {
 										tmp_46 = int32(x)
@@ -4751,10 +4769,10 @@ object_tmp_40:
 										err = e
 										return
 									}
-									continue variant_tmp_47 // next tag for variant<int32, fixedpoint<3, 0>, string, *Vector2>
-								}
-							case 2:
-								if tmpg == 16 { // MAKE_TAG(2, WireVarint=0)
+										continue variant_tmp_47 // next tag for variant<int32, fixedpoint<3, 0>, string, *Vector2>
+									}
+								case 2:
+									if tmpg == 16 { // MAKE_TAG(2, WireVarint=0)
 									// type: fixedpoint<3, 0>
 									if x, e := tmpi.ReadVarint(); e == nil {
 										tmp_46 = float64(x) / 1000 + 0
@@ -4762,10 +4780,10 @@ object_tmp_40:
 										err = e
 										return
 									}
-									continue variant_tmp_47 // next tag for variant<int32, fixedpoint<3, 0>, string, *Vector2>
-								}
-							case 3:
-								if tmpg == 26 { // MAKE_TAG(3, WireBytes=2)
+										continue variant_tmp_47 // next tag for variant<int32, fixedpoint<3, 0>, string, *Vector2>
+									}
+								case 3:
+									if tmpg == 26 { // MAKE_TAG(3, WireBytes=2)
 									// type: string
 									if x, e := tmpi.ReadBuf(); e == nil {
 										tmp_46 = string(x)
@@ -4773,10 +4791,10 @@ object_tmp_40:
 										err = e
 										return
 									}
-									continue variant_tmp_47 // next tag for variant<int32, fixedpoint<3, 0>, string, *Vector2>
-								}
-							case 4:
-								if tmpg == 34 { // MAKE_TAG(4, WireBytes=2)
+										continue variant_tmp_47 // next tag for variant<int32, fixedpoint<3, 0>, string, *Vector2>
+									}
+								case 4:
+									if tmpg == 34 { // MAKE_TAG(4, WireBytes=2)
 									// type: *Vector2
 									if x, e := tmpi.ReadBuf(); e == nil {
 										if tmp_46 == nil {
@@ -4791,10 +4809,10 @@ object_tmp_40:
 										err = e
 										return
 									}
-									continue variant_tmp_47 // next tag for variant<int32, fixedpoint<3, 0>, string, *Vector2>
+										continue variant_tmp_47 // next tag for variant<int32, fixedpoint<3, 0>, string, *Vector2>
+									}
 								}
-							}
-							if err = tmpi.SkipField(tmpg); err != nil {
+							} else if err = tmpi.SkipField(tmpg); err != nil {
 								return
 							}
 						}
@@ -4807,17 +4825,17 @@ object_tmp_40:
 						break loop_tmp_46 // end for []variant<int32, fixedpoint<3, 0>, string, *Vector2>
 					}
 				}
-				if !input.ExpectBytes(210, 1) { // tag: 210 MAKE_TAG(26, WireBytes=2)
-					continue object_tmp_40 // next tag for Fighter
+					if !input.ExpectBytes(210, 1) { // tag: 210 MAKE_TAG(26, WireBytes=2)
+						continue object_tmp_40 // next tag for Fighter
+					}
+					tag = 210 // MAKE_TAG(26, WireBytes=2) // fallthrough case 7
+				} else {
+					break switch_tmp_40 // skip tag
 				}
-				tag = 210 // MAKE_TAG(26, WireBytes=2) // fallthrough case 7
-			} else {
-				break switch_tmp_40 // skip tag
-			}
-			fallthrough
-		// property: s.Vd
-		case 7:
-			if tag == 210 { // MAKE_TAG(26, WireBytes=2)
+				fallthrough
+			// property: s.Vd
+			case 7:
+				if tag == 210 { // MAKE_TAG(26, WireBytes=2)
 			loop_tmp_48:
 				// type: map[int32]variant<Corpus, float64, string, *Vector2>
 				for {
@@ -4828,14 +4846,15 @@ object_tmp_40:
 					dict_tmp_48:
 						for !tmpi.ExpectEnd() {
 							var tmpg int
-							if tmpg, err = tmpi.ReadTag(127); err != nil {
+							var cutoff bool
+							if tmpg, cutoff, err = tmpi.ReadTag(127); err != nil {
 								return
-							}
-						switch_tmp_48:
-							switch tmpg >> 3 {
-							// dict key
-							case 1:
-								if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
+							} else if cutoff {
+							switch_tmp_48:
+								switch tmpg >> 3 {
+								// dict key
+								case 1:
+									if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
 									// type: int32
 									if x, e := tmpi.ReadVarint(); e == nil {
 										tmp_48 = int32(x)
@@ -4843,28 +4862,29 @@ object_tmp_40:
 										err = e
 										return
 									}
-									if !tmpi.ExpectBytes(18) { // tag: 18 MAKE_TAG(2, WireBytes=2)
-										continue dict_tmp_48 // next tag for map[int32]variant<Corpus, float64, string, *Vector2>
+										if !tmpi.ExpectBytes(18) { // tag: 18 MAKE_TAG(2, WireBytes=2)
+											continue dict_tmp_48 // next tag for map[int32]variant<Corpus, float64, string, *Vector2>
+										}
+										tmpg = 18 // fallthrough case 2
+									} else {
+										break switch_tmp_48 // skip tag
 									}
-									tmpg = 18 // fallthrough case 2
-								} else {
-									break switch_tmp_48 // skip tag
-								}
-								fallthrough
-							case 2:
-								if tmpg == 18 { // MAKE_TAG(2, WireBytes=2)
+									fallthrough
+								case 2:
+									if tmpg == 18 { // MAKE_TAG(2, WireBytes=2)
 									// type: variant<Corpus, float64, string, *Vector2>
 									if x, e := tmpi.ReadBuf(); e == nil {
 										tmpii := &tygo.ProtoBuf{Buffer: x}
 									variant_tmp_50:
 										for !tmpii.ExpectEnd() {
 											var tmpig int
-											if tmpig, err = tmpii.ReadTag(127); err != nil {
+											var cutoff bool
+											if tmpig, cutoff, err = tmpii.ReadTag(127); err != nil {
 												return
-											}
-											switch tmpig >> 3 {
-											case 1:
-												if tmpig == 8 { // MAKE_TAG(1, WireVarint=0)
+											} else if cutoff {
+												switch tmpig >> 3 {
+												case 1:
+													if tmpig == 8 { // MAKE_TAG(1, WireVarint=0)
 													// type: Corpus
 													if x, e := tmpii.ReadVarint(); e == nil {
 														tmp_49 = Corpus(x)
@@ -4872,10 +4892,10 @@ object_tmp_40:
 														err = e
 														return
 													}
-													continue variant_tmp_50 // next tag for variant<Corpus, float64, string, *Vector2>
-												}
-											case 2:
-												if tmpig == 17 { // MAKE_TAG(2, WireFixed64=1)
+														continue variant_tmp_50 // next tag for variant<Corpus, float64, string, *Vector2>
+													}
+												case 2:
+													if tmpig == 17 { // MAKE_TAG(2, WireFixed64=1)
 													// type: float64
 													if x, e := tmpii.ReadFixed64(); e == nil {
 														tmp_49 = math.Float64frombits(x)
@@ -4883,10 +4903,10 @@ object_tmp_40:
 														err = e
 														return
 													}
-													continue variant_tmp_50 // next tag for variant<Corpus, float64, string, *Vector2>
-												}
-											case 3:
-												if tmpig == 26 { // MAKE_TAG(3, WireBytes=2)
+														continue variant_tmp_50 // next tag for variant<Corpus, float64, string, *Vector2>
+													}
+												case 3:
+													if tmpig == 26 { // MAKE_TAG(3, WireBytes=2)
 													// type: string
 													if x, e := tmpii.ReadBuf(); e == nil {
 														tmp_49 = string(x)
@@ -4894,10 +4914,10 @@ object_tmp_40:
 														err = e
 														return
 													}
-													continue variant_tmp_50 // next tag for variant<Corpus, float64, string, *Vector2>
-												}
-											case 4:
-												if tmpig == 34 { // MAKE_TAG(4, WireBytes=2)
+														continue variant_tmp_50 // next tag for variant<Corpus, float64, string, *Vector2>
+													}
+												case 4:
+													if tmpig == 34 { // MAKE_TAG(4, WireBytes=2)
 													// type: *Vector2
 													if x, e := tmpii.ReadBuf(); e == nil {
 														if tmp_49 == nil {
@@ -4912,10 +4932,10 @@ object_tmp_40:
 														err = e
 														return
 													}
-													continue variant_tmp_50 // next tag for variant<Corpus, float64, string, *Vector2>
+														continue variant_tmp_50 // next tag for variant<Corpus, float64, string, *Vector2>
+													}
 												}
-											}
-											if err = tmpii.SkipField(tmpig); err != nil {
+											} else if err = tmpii.SkipField(tmpig); err != nil {
 												return
 											}
 										}
@@ -4923,13 +4943,13 @@ object_tmp_40:
 										err = e
 										return
 									}
-									if tmpi.ExpectEnd() {
-										break dict_tmp_48 // end for map[int32]variant<Corpus, float64, string, *Vector2>
+										if tmpi.ExpectEnd() {
+											break dict_tmp_48 // end for map[int32]variant<Corpus, float64, string, *Vector2>
+										}
+										continue dict_tmp_48 // next tag for map[int32]variant<Corpus, float64, string, *Vector2>
 									}
-									continue dict_tmp_48 // next tag for map[int32]variant<Corpus, float64, string, *Vector2>
 								}
-							}
-							if err = tmpi.SkipField(tmpg); err != nil {
+							} else if err = tmpi.SkipField(tmpg); err != nil {
 								return
 							}
 						}
@@ -4942,17 +4962,17 @@ object_tmp_40:
 						break loop_tmp_48 // end for map[int32]variant<Corpus, float64, string, *Vector2>
 					}
 				}
-				if !input.ExpectBytes(218, 1) { // tag: 218 MAKE_TAG(27, WireBytes=2)
-					continue object_tmp_40 // next tag for Fighter
+					if !input.ExpectBytes(218, 1) { // tag: 218 MAKE_TAG(27, WireBytes=2)
+						continue object_tmp_40 // next tag for Fighter
+					}
+					tag = 218 // MAKE_TAG(27, WireBytes=2) // fallthrough case 8
+				} else {
+					break switch_tmp_40 // skip tag
 				}
-				tag = 218 // MAKE_TAG(27, WireBytes=2) // fallthrough case 8
-			} else {
-				break switch_tmp_40 // skip tag
-			}
-			fallthrough
-		// property: s.Ld
-		case 8:
-			if tag == 218 { // MAKE_TAG(27, WireBytes=2)
+				fallthrough
+			// property: s.Ld
+			case 8:
+				if tag == 218 { // MAKE_TAG(27, WireBytes=2)
 			loop_tmp_51:
 				// type: map[int32][]variant<Corpus, float64, string, *Vector2>
 				for {
@@ -4963,14 +4983,15 @@ object_tmp_40:
 					dict_tmp_51:
 						for !tmpi.ExpectEnd() {
 							var tmpg int
-							if tmpg, err = tmpi.ReadTag(127); err != nil {
+							var cutoff bool
+							if tmpg, cutoff, err = tmpi.ReadTag(127); err != nil {
 								return
-							}
-						switch_tmp_51:
-							switch tmpg >> 3 {
-							// dict key
-							case 1:
-								if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
+							} else if cutoff {
+							switch_tmp_51:
+								switch tmpg >> 3 {
+								// dict key
+								case 1:
+									if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
 									// type: int32
 									if x, e := tmpi.ReadVarint(); e == nil {
 										tmp_51 = int32(x)
@@ -4978,16 +4999,16 @@ object_tmp_40:
 										err = e
 										return
 									}
-									if !tmpi.ExpectBytes(18) { // tag: 18 MAKE_TAG(2, WireBytes=2)
-										continue dict_tmp_51 // next tag for map[int32][]variant<Corpus, float64, string, *Vector2>
+										if !tmpi.ExpectBytes(18) { // tag: 18 MAKE_TAG(2, WireBytes=2)
+											continue dict_tmp_51 // next tag for map[int32][]variant<Corpus, float64, string, *Vector2>
+										}
+										tmpg = 18 // fallthrough case 2
+									} else {
+										break switch_tmp_51 // skip tag
 									}
-									tmpg = 18 // fallthrough case 2
-								} else {
-									break switch_tmp_51 // skip tag
-								}
-								fallthrough
-							case 2:
-								if tmpg == 18 { // MAKE_TAG(2, WireBytes=2)
+									fallthrough
+								case 2:
+									if tmpg == 18 { // MAKE_TAG(2, WireBytes=2)
 								loop_tmp_53:
 									// type: []variant<Corpus, float64, string, *Vector2>
 									for {
@@ -4998,12 +5019,13 @@ object_tmp_40:
 										variant_tmp_54:
 											for !tmpii.ExpectEnd() {
 												var tmpig int
-												if tmpig, err = tmpii.ReadTag(127); err != nil {
+												var cutoff bool
+												if tmpig, cutoff, err = tmpii.ReadTag(127); err != nil {
 													return
-												}
-												switch tmpig >> 3 {
-												case 1:
-													if tmpig == 8 { // MAKE_TAG(1, WireVarint=0)
+												} else if cutoff {
+													switch tmpig >> 3 {
+													case 1:
+														if tmpig == 8 { // MAKE_TAG(1, WireVarint=0)
 														// type: Corpus
 														if x, e := tmpii.ReadVarint(); e == nil {
 															tmp_53 = Corpus(x)
@@ -5011,10 +5033,10 @@ object_tmp_40:
 															err = e
 															return
 														}
-														continue variant_tmp_54 // next tag for variant<Corpus, float64, string, *Vector2>
-													}
-												case 2:
-													if tmpig == 17 { // MAKE_TAG(2, WireFixed64=1)
+															continue variant_tmp_54 // next tag for variant<Corpus, float64, string, *Vector2>
+														}
+													case 2:
+														if tmpig == 17 { // MAKE_TAG(2, WireFixed64=1)
 														// type: float64
 														if x, e := tmpii.ReadFixed64(); e == nil {
 															tmp_53 = math.Float64frombits(x)
@@ -5022,10 +5044,10 @@ object_tmp_40:
 															err = e
 															return
 														}
-														continue variant_tmp_54 // next tag for variant<Corpus, float64, string, *Vector2>
-													}
-												case 3:
-													if tmpig == 26 { // MAKE_TAG(3, WireBytes=2)
+															continue variant_tmp_54 // next tag for variant<Corpus, float64, string, *Vector2>
+														}
+													case 3:
+														if tmpig == 26 { // MAKE_TAG(3, WireBytes=2)
 														// type: string
 														if x, e := tmpii.ReadBuf(); e == nil {
 															tmp_53 = string(x)
@@ -5033,10 +5055,10 @@ object_tmp_40:
 															err = e
 															return
 														}
-														continue variant_tmp_54 // next tag for variant<Corpus, float64, string, *Vector2>
-													}
-												case 4:
-													if tmpig == 34 { // MAKE_TAG(4, WireBytes=2)
+															continue variant_tmp_54 // next tag for variant<Corpus, float64, string, *Vector2>
+														}
+													case 4:
+														if tmpig == 34 { // MAKE_TAG(4, WireBytes=2)
 														// type: *Vector2
 														if x, e := tmpii.ReadBuf(); e == nil {
 															if tmp_53 == nil {
@@ -5051,10 +5073,10 @@ object_tmp_40:
 															err = e
 															return
 														}
-														continue variant_tmp_54 // next tag for variant<Corpus, float64, string, *Vector2>
+															continue variant_tmp_54 // next tag for variant<Corpus, float64, string, *Vector2>
+														}
 													}
-												}
-												if err = tmpii.SkipField(tmpig); err != nil {
+												} else if err = tmpii.SkipField(tmpig); err != nil {
 													return
 												}
 											}
@@ -5067,13 +5089,13 @@ object_tmp_40:
 											break loop_tmp_53 // end for []variant<Corpus, float64, string, *Vector2>
 										}
 									}
-									if tmpi.ExpectEnd() {
-										break dict_tmp_51 // end for map[int32][]variant<Corpus, float64, string, *Vector2>
+										if tmpi.ExpectEnd() {
+											break dict_tmp_51 // end for map[int32][]variant<Corpus, float64, string, *Vector2>
+										}
+										continue dict_tmp_51 // next tag for map[int32][]variant<Corpus, float64, string, *Vector2>
 									}
-									continue dict_tmp_51 // next tag for map[int32][]variant<Corpus, float64, string, *Vector2>
 								}
-							}
-							if err = tmpi.SkipField(tmpg); err != nil {
+							} else if err = tmpi.SkipField(tmpg); err != nil {
 								return
 							}
 						}
@@ -5086,17 +5108,17 @@ object_tmp_40:
 						break loop_tmp_51 // end for map[int32][]variant<Corpus, float64, string, *Vector2>
 					}
 				}
-				if !input.ExpectBytes(226, 1) { // tag: 226 MAKE_TAG(28, WireBytes=2)
-					continue object_tmp_40 // next tag for Fighter
+					if !input.ExpectBytes(226, 1) { // tag: 226 MAKE_TAG(28, WireBytes=2)
+						continue object_tmp_40 // next tag for Fighter
+					}
+					tag = 226 // MAKE_TAG(28, WireBytes=2) // fallthrough case 9
+				} else {
+					break switch_tmp_40 // skip tag
 				}
-				tag = 226 // MAKE_TAG(28, WireBytes=2) // fallthrough case 9
-			} else {
-				break switch_tmp_40 // skip tag
-			}
-			fallthrough
-		// property: s.Fld
-		case 9:
-			if tag == 226 { // MAKE_TAG(28, WireBytes=2)
+				fallthrough
+			// property: s.Fld
+			case 9:
+				if tag == 226 { // MAKE_TAG(28, WireBytes=2)
 			loop_tmp_55:
 				// type: map[int32][]float32
 				for {
@@ -5107,14 +5129,15 @@ object_tmp_40:
 					dict_tmp_55:
 						for !tmpi.ExpectEnd() {
 							var tmpg int
-							if tmpg, err = tmpi.ReadTag(127); err != nil {
+							var cutoff bool
+							if tmpg, cutoff, err = tmpi.ReadTag(127); err != nil {
 								return
-							}
-						switch_tmp_55:
-							switch tmpg >> 3 {
-							// dict key
-							case 1:
-								if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
+							} else if cutoff {
+							switch_tmp_55:
+								switch tmpg >> 3 {
+								// dict key
+								case 1:
+									if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
 									// type: int32
 									if x, e := tmpi.ReadVarint(); e == nil {
 										tmp_55 = int32(x)
@@ -5122,16 +5145,16 @@ object_tmp_40:
 										err = e
 										return
 									}
-									if !tmpi.ExpectBytes(21) { // tag: 21 MAKE_TAG(2, WireFixed32=5)
-										continue dict_tmp_55 // next tag for map[int32][]float32
+										if !tmpi.ExpectBytes(21) { // tag: 21 MAKE_TAG(2, WireFixed32=5)
+											continue dict_tmp_55 // next tag for map[int32][]float32
+										}
+										tmpg = 21 // fallthrough case 2
+									} else {
+										break switch_tmp_55 // skip tag
 									}
-									tmpg = 21 // fallthrough case 2
-								} else {
-									break switch_tmp_55 // skip tag
-								}
-								fallthrough
-							case 2:
-								if tmpg == 21 { // MAKE_TAG(2, WireFixed32=5)
+									fallthrough
+								case 2:
+									if tmpg == 21 { // MAKE_TAG(2, WireFixed32=5)
 									// type: []float32
 									if tmpg == 21 { // MAKE_TAG(2, WireFixed32=5)
 									loop_tmp_57:
@@ -5166,13 +5189,13 @@ object_tmp_40:
 										err = e
 										return
 									}
-									if tmpi.ExpectEnd() {
-										break dict_tmp_55 // end for map[int32][]float32
+										if tmpi.ExpectEnd() {
+											break dict_tmp_55 // end for map[int32][]float32
+										}
+										continue dict_tmp_55 // next tag for map[int32][]float32
 									}
-									continue dict_tmp_55 // next tag for map[int32][]float32
 								}
-							}
-							if err = tmpi.SkipField(tmpg); err != nil {
+							} else if err = tmpi.SkipField(tmpg); err != nil {
 								return
 							}
 						}
@@ -5185,17 +5208,17 @@ object_tmp_40:
 						break loop_tmp_55 // end for map[int32][]float32
 					}
 				}
-				if !input.ExpectBytes(234, 1) { // tag: 234 MAKE_TAG(29, WireBytes=2)
-					continue object_tmp_40 // next tag for Fighter
+					if !input.ExpectBytes(234, 1) { // tag: 234 MAKE_TAG(29, WireBytes=2)
+						continue object_tmp_40 // next tag for Fighter
+					}
+					tag = 234 // MAKE_TAG(29, WireBytes=2) // fallthrough case 10
+				} else {
+					break switch_tmp_40 // skip tag
 				}
-				tag = 234 // MAKE_TAG(29, WireBytes=2) // fallthrough case 10
-			} else {
-				break switch_tmp_40 // skip tag
-			}
-			fallthrough
-		// property: s.Dd
-		case 10:
-			if tag == 234 { // MAKE_TAG(29, WireBytes=2)
+				fallthrough
+			// property: s.Dd
+			case 10:
+				if tag == 234 { // MAKE_TAG(29, WireBytes=2)
 			loop_tmp_58:
 				// type: map[int32]map[int32]variant<int32, Corpus, float64, string, *Vector2>
 				for {
@@ -5206,14 +5229,15 @@ object_tmp_40:
 					dict_tmp_58:
 						for !tmpi.ExpectEnd() {
 							var tmpg int
-							if tmpg, err = tmpi.ReadTag(127); err != nil {
+							var cutoff bool
+							if tmpg, cutoff, err = tmpi.ReadTag(127); err != nil {
 								return
-							}
-						switch_tmp_58:
-							switch tmpg >> 3 {
-							// dict key
-							case 1:
-								if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
+							} else if cutoff {
+							switch_tmp_58:
+								switch tmpg >> 3 {
+								// dict key
+								case 1:
+									if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
 									// type: int32
 									if x, e := tmpi.ReadVarint(); e == nil {
 										tmp_58 = int32(x)
@@ -5221,16 +5245,16 @@ object_tmp_40:
 										err = e
 										return
 									}
-									if !tmpi.ExpectBytes(18) { // tag: 18 MAKE_TAG(2, WireBytes=2)
-										continue dict_tmp_58 // next tag for map[int32]map[int32]variant<int32, Corpus, float64, string, *Vector2>
+										if !tmpi.ExpectBytes(18) { // tag: 18 MAKE_TAG(2, WireBytes=2)
+											continue dict_tmp_58 // next tag for map[int32]map[int32]variant<int32, Corpus, float64, string, *Vector2>
+										}
+										tmpg = 18 // fallthrough case 2
+									} else {
+										break switch_tmp_58 // skip tag
 									}
-									tmpg = 18 // fallthrough case 2
-								} else {
-									break switch_tmp_58 // skip tag
-								}
-								fallthrough
-							case 2:
-								if tmpg == 18 { // MAKE_TAG(2, WireBytes=2)
+									fallthrough
+								case 2:
+									if tmpg == 18 { // MAKE_TAG(2, WireBytes=2)
 								loop_tmp_60:
 									// type: map[int32]variant<int32, Corpus, float64, string, *Vector2>
 									for {
@@ -5241,14 +5265,15 @@ object_tmp_40:
 										dict_tmp_60:
 											for !tmpii.ExpectEnd() {
 												var tmpig int
-												if tmpig, err = tmpii.ReadTag(127); err != nil {
+												var cutoff bool
+												if tmpig, cutoff, err = tmpii.ReadTag(127); err != nil {
 													return
-												}
-											switch_tmp_60:
-												switch tmpig >> 3 {
-												// dict key
-												case 1:
-													if tmpig == 8 { // MAKE_TAG(1, WireVarint=0)
+												} else if cutoff {
+												switch_tmp_60:
+													switch tmpig >> 3 {
+													// dict key
+													case 1:
+														if tmpig == 8 { // MAKE_TAG(1, WireVarint=0)
 														// type: int32
 														if x, e := tmpii.ReadVarint(); e == nil {
 															tmp_60 = int32(x)
@@ -5256,28 +5281,29 @@ object_tmp_40:
 															err = e
 															return
 														}
-														if !tmpii.ExpectBytes(18) { // tag: 18 MAKE_TAG(2, WireBytes=2)
-															continue dict_tmp_60 // next tag for map[int32]variant<int32, Corpus, float64, string, *Vector2>
+															if !tmpii.ExpectBytes(18) { // tag: 18 MAKE_TAG(2, WireBytes=2)
+																continue dict_tmp_60 // next tag for map[int32]variant<int32, Corpus, float64, string, *Vector2>
+															}
+															tmpig = 18 // fallthrough case 2
+														} else {
+															break switch_tmp_60 // skip tag
 														}
-														tmpig = 18 // fallthrough case 2
-													} else {
-														break switch_tmp_60 // skip tag
-													}
-													fallthrough
-												case 2:
-													if tmpig == 18 { // MAKE_TAG(2, WireBytes=2)
+														fallthrough
+													case 2:
+														if tmpig == 18 { // MAKE_TAG(2, WireBytes=2)
 														// type: variant<int32, Corpus, float64, string, *Vector2>
 														if x, e := tmpii.ReadBuf(); e == nil {
 															tmpiii := &tygo.ProtoBuf{Buffer: x}
 														variant_tmp_62:
 															for !tmpiii.ExpectEnd() {
 																var tmpiig int
-																if tmpiig, err = tmpiii.ReadTag(127); err != nil {
+																var cutoff bool
+																if tmpiig, cutoff, err = tmpiii.ReadTag(127); err != nil {
 																	return
-																}
-																switch tmpiig >> 3 {
-																case 1:
-																	if tmpiig == 8 { // MAKE_TAG(1, WireVarint=0)
+																} else if cutoff {
+																	switch tmpiig >> 3 {
+																	case 1:
+																		if tmpiig == 8 { // MAKE_TAG(1, WireVarint=0)
 																		// type: int32
 																		if x, e := tmpiii.ReadVarint(); e == nil {
 																			tmp_61 = int32(x)
@@ -5285,10 +5311,10 @@ object_tmp_40:
 																			err = e
 																			return
 																		}
-																		continue variant_tmp_62 // next tag for variant<int32, Corpus, float64, string, *Vector2>
-																	}
-																case 2:
-																	if tmpiig == 16 { // MAKE_TAG(2, WireVarint=0)
+																			continue variant_tmp_62 // next tag for variant<int32, Corpus, float64, string, *Vector2>
+																		}
+																	case 2:
+																		if tmpiig == 16 { // MAKE_TAG(2, WireVarint=0)
 																		// type: Corpus
 																		if x, e := tmpiii.ReadVarint(); e == nil {
 																			tmp_61 = Corpus(x)
@@ -5296,10 +5322,10 @@ object_tmp_40:
 																			err = e
 																			return
 																		}
-																		continue variant_tmp_62 // next tag for variant<int32, Corpus, float64, string, *Vector2>
-																	}
-																case 3:
-																	if tmpiig == 25 { // MAKE_TAG(3, WireFixed64=1)
+																			continue variant_tmp_62 // next tag for variant<int32, Corpus, float64, string, *Vector2>
+																		}
+																	case 3:
+																		if tmpiig == 25 { // MAKE_TAG(3, WireFixed64=1)
 																		// type: float64
 																		if x, e := tmpiii.ReadFixed64(); e == nil {
 																			tmp_61 = math.Float64frombits(x)
@@ -5307,10 +5333,10 @@ object_tmp_40:
 																			err = e
 																			return
 																		}
-																		continue variant_tmp_62 // next tag for variant<int32, Corpus, float64, string, *Vector2>
-																	}
-																case 4:
-																	if tmpiig == 34 { // MAKE_TAG(4, WireBytes=2)
+																			continue variant_tmp_62 // next tag for variant<int32, Corpus, float64, string, *Vector2>
+																		}
+																	case 4:
+																		if tmpiig == 34 { // MAKE_TAG(4, WireBytes=2)
 																		// type: string
 																		if x, e := tmpiii.ReadBuf(); e == nil {
 																			tmp_61 = string(x)
@@ -5318,10 +5344,10 @@ object_tmp_40:
 																			err = e
 																			return
 																		}
-																		continue variant_tmp_62 // next tag for variant<int32, Corpus, float64, string, *Vector2>
-																	}
-																case 5:
-																	if tmpiig == 42 { // MAKE_TAG(5, WireBytes=2)
+																			continue variant_tmp_62 // next tag for variant<int32, Corpus, float64, string, *Vector2>
+																		}
+																	case 5:
+																		if tmpiig == 42 { // MAKE_TAG(5, WireBytes=2)
 																		// type: *Vector2
 																		if x, e := tmpiii.ReadBuf(); e == nil {
 																			if tmp_61 == nil {
@@ -5336,10 +5362,10 @@ object_tmp_40:
 																			err = e
 																			return
 																		}
-																		continue variant_tmp_62 // next tag for variant<int32, Corpus, float64, string, *Vector2>
+																			continue variant_tmp_62 // next tag for variant<int32, Corpus, float64, string, *Vector2>
+																		}
 																	}
-																}
-																if err = tmpiii.SkipField(tmpiig); err != nil {
+																} else if err = tmpiii.SkipField(tmpiig); err != nil {
 																	return
 																}
 															}
@@ -5347,13 +5373,13 @@ object_tmp_40:
 															err = e
 															return
 														}
-														if tmpii.ExpectEnd() {
-															break dict_tmp_60 // end for map[int32]variant<int32, Corpus, float64, string, *Vector2>
+															if tmpii.ExpectEnd() {
+																break dict_tmp_60 // end for map[int32]variant<int32, Corpus, float64, string, *Vector2>
+															}
+															continue dict_tmp_60 // next tag for map[int32]variant<int32, Corpus, float64, string, *Vector2>
 														}
-														continue dict_tmp_60 // next tag for map[int32]variant<int32, Corpus, float64, string, *Vector2>
 													}
-												}
-												if err = tmpii.SkipField(tmpig); err != nil {
+												} else if err = tmpii.SkipField(tmpig); err != nil {
 													return
 												}
 											}
@@ -5366,13 +5392,13 @@ object_tmp_40:
 											break loop_tmp_60 // end for map[int32]variant<int32, Corpus, float64, string, *Vector2>
 										}
 									}
-									if tmpi.ExpectEnd() {
-										break dict_tmp_58 // end for map[int32]map[int32]variant<int32, Corpus, float64, string, *Vector2>
+										if tmpi.ExpectEnd() {
+											break dict_tmp_58 // end for map[int32]map[int32]variant<int32, Corpus, float64, string, *Vector2>
+										}
+										continue dict_tmp_58 // next tag for map[int32]map[int32]variant<int32, Corpus, float64, string, *Vector2>
 									}
-									continue dict_tmp_58 // next tag for map[int32]map[int32]variant<int32, Corpus, float64, string, *Vector2>
 								}
-							}
-							if err = tmpi.SkipField(tmpg); err != nil {
+							} else if err = tmpi.SkipField(tmpg); err != nil {
 								return
 							}
 						}
@@ -5385,17 +5411,17 @@ object_tmp_40:
 						break loop_tmp_58 // end for map[int32]map[int32]variant<int32, Corpus, float64, string, *Vector2>
 					}
 				}
-				if !input.ExpectBytes(242, 1) { // tag: 242 MAKE_TAG(30, WireBytes=2)
-					continue object_tmp_40 // next tag for Fighter
+					if !input.ExpectBytes(242, 1) { // tag: 242 MAKE_TAG(30, WireBytes=2)
+						continue object_tmp_40 // next tag for Fighter
+					}
+					tag = 242 // MAKE_TAG(30, WireBytes=2) // fallthrough case 11
+				} else {
+					break switch_tmp_40 // skip tag
 				}
-				tag = 242 // MAKE_TAG(30, WireBytes=2) // fallthrough case 11
-			} else {
-				break switch_tmp_40 // skip tag
-			}
-			fallthrough
-		// property: s.Fdd
-		case 11:
-			if tag == 242 { // MAKE_TAG(30, WireBytes=2)
+				fallthrough
+			// property: s.Fdd
+			case 11:
+				if tag == 242 { // MAKE_TAG(30, WireBytes=2)
 			loop_tmp_63:
 				// type: map[int32]map[int32]float32
 				for {
@@ -5406,14 +5432,15 @@ object_tmp_40:
 					dict_tmp_63:
 						for !tmpi.ExpectEnd() {
 							var tmpg int
-							if tmpg, err = tmpi.ReadTag(127); err != nil {
+							var cutoff bool
+							if tmpg, cutoff, err = tmpi.ReadTag(127); err != nil {
 								return
-							}
-						switch_tmp_63:
-							switch tmpg >> 3 {
-							// dict key
-							case 1:
-								if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
+							} else if cutoff {
+							switch_tmp_63:
+								switch tmpg >> 3 {
+								// dict key
+								case 1:
+									if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
 									// type: int32
 									if x, e := tmpi.ReadVarint(); e == nil {
 										tmp_63 = int32(x)
@@ -5421,16 +5448,16 @@ object_tmp_40:
 										err = e
 										return
 									}
-									if !tmpi.ExpectBytes(18) { // tag: 18 MAKE_TAG(2, WireBytes=2)
-										continue dict_tmp_63 // next tag for map[int32]map[int32]float32
+										if !tmpi.ExpectBytes(18) { // tag: 18 MAKE_TAG(2, WireBytes=2)
+											continue dict_tmp_63 // next tag for map[int32]map[int32]float32
+										}
+										tmpg = 18 // fallthrough case 2
+									} else {
+										break switch_tmp_63 // skip tag
 									}
-									tmpg = 18 // fallthrough case 2
-								} else {
-									break switch_tmp_63 // skip tag
-								}
-								fallthrough
-							case 2:
-								if tmpg == 18 { // MAKE_TAG(2, WireBytes=2)
+									fallthrough
+								case 2:
+									if tmpg == 18 { // MAKE_TAG(2, WireBytes=2)
 								loop_tmp_65:
 									// type: map[int32]float32
 									for {
@@ -5441,14 +5468,15 @@ object_tmp_40:
 										dict_tmp_65:
 											for !tmpii.ExpectEnd() {
 												var tmpig int
-												if tmpig, err = tmpii.ReadTag(127); err != nil {
+												var cutoff bool
+												if tmpig, cutoff, err = tmpii.ReadTag(127); err != nil {
 													return
-												}
-											switch_tmp_65:
-												switch tmpig >> 3 {
-												// dict key
-												case 1:
-													if tmpig == 8 { // MAKE_TAG(1, WireVarint=0)
+												} else if cutoff {
+												switch_tmp_65:
+													switch tmpig >> 3 {
+													// dict key
+													case 1:
+														if tmpig == 8 { // MAKE_TAG(1, WireVarint=0)
 														// type: int32
 														if x, e := tmpii.ReadVarint(); e == nil {
 															tmp_65 = int32(x)
@@ -5456,16 +5484,16 @@ object_tmp_40:
 															err = e
 															return
 														}
-														if !tmpii.ExpectBytes(21) { // tag: 21 MAKE_TAG(2, WireFixed32=5)
-															continue dict_tmp_65 // next tag for map[int32]float32
+															if !tmpii.ExpectBytes(21) { // tag: 21 MAKE_TAG(2, WireFixed32=5)
+																continue dict_tmp_65 // next tag for map[int32]float32
+															}
+															tmpig = 21 // fallthrough case 2
+														} else {
+															break switch_tmp_65 // skip tag
 														}
-														tmpig = 21 // fallthrough case 2
-													} else {
-														break switch_tmp_65 // skip tag
-													}
-													fallthrough
-												case 2:
-													if tmpig == 21 { // MAKE_TAG(2, WireFixed32=5)
+														fallthrough
+													case 2:
+														if tmpig == 21 { // MAKE_TAG(2, WireFixed32=5)
 														// type: float32
 														if x, e := tmpii.ReadFixed32(); e == nil {
 															tmp_66 = math.Float32frombits(x)
@@ -5473,13 +5501,13 @@ object_tmp_40:
 															err = e
 															return
 														}
-														if tmpii.ExpectEnd() {
-															break dict_tmp_65 // end for map[int32]float32
+															if tmpii.ExpectEnd() {
+																break dict_tmp_65 // end for map[int32]float32
+															}
+															continue dict_tmp_65 // next tag for map[int32]float32
 														}
-														continue dict_tmp_65 // next tag for map[int32]float32
 													}
-												}
-												if err = tmpii.SkipField(tmpig); err != nil {
+												} else if err = tmpii.SkipField(tmpig); err != nil {
 													return
 												}
 											}
@@ -5492,13 +5520,13 @@ object_tmp_40:
 											break loop_tmp_65 // end for map[int32]float32
 										}
 									}
-									if tmpi.ExpectEnd() {
-										break dict_tmp_63 // end for map[int32]map[int32]float32
+										if tmpi.ExpectEnd() {
+											break dict_tmp_63 // end for map[int32]map[int32]float32
+										}
+										continue dict_tmp_63 // next tag for map[int32]map[int32]float32
 									}
-									continue dict_tmp_63 // next tag for map[int32]map[int32]float32
 								}
-							}
-							if err = tmpi.SkipField(tmpg); err != nil {
+							} else if err = tmpi.SkipField(tmpg); err != nil {
 								return
 							}
 						}
@@ -5511,29 +5539,30 @@ object_tmp_40:
 						break loop_tmp_63 // end for map[int32]map[int32]float32
 					}
 				}
-				if !input.ExpectBytes(250, 1) { // tag: 250 MAKE_TAG(31, WireBytes=2)
-					continue object_tmp_40 // next tag for Fighter
+					if !input.ExpectBytes(250, 1) { // tag: 250 MAKE_TAG(31, WireBytes=2)
+						continue object_tmp_40 // next tag for Fighter
+					}
+					tag = 250 // MAKE_TAG(31, WireBytes=2) // fallthrough case 12
+				} else {
+					break switch_tmp_40 // skip tag
 				}
-				tag = 250 // MAKE_TAG(31, WireBytes=2) // fallthrough case 12
-			} else {
-				break switch_tmp_40 // skip tag
-			}
-			fallthrough
-		// property: s.Nv
-		case 12:
-			if tag == 250 { // MAKE_TAG(31, WireBytes=2)
+				fallthrough
+			// property: s.Nv
+			case 12:
+				if tag == 250 { // MAKE_TAG(31, WireBytes=2)
 				// type: variant<nil, int32>
 				if x, e := input.ReadBuf(); e == nil {
 					tmpi := &tygo.ProtoBuf{Buffer: x}
 				variant_tmp_67:
 					for !tmpi.ExpectEnd() {
 						var tmpg int
-						if tmpg, err = tmpi.ReadTag(127); err != nil {
+						var cutoff bool
+						if tmpg, cutoff, err = tmpi.ReadTag(127); err != nil {
 							return
-						}
-						switch tmpg >> 3 {
-						case 2:
-							if tmpg == 16 { // MAKE_TAG(2, WireVarint=0)
+						} else if cutoff {
+							switch tmpg >> 3 {
+							case 2:
+								if tmpg == 16 { // MAKE_TAG(2, WireVarint=0)
 								// type: int32
 								if x, e := tmpi.ReadVarint(); e == nil {
 									s.Nv = int32(x)
@@ -5541,10 +5570,10 @@ object_tmp_40:
 									err = e
 									return
 								}
-								continue variant_tmp_67 // next tag for variant<nil, int32>
+									continue variant_tmp_67 // next tag for variant<nil, int32>
+								}
 							}
-						}
-						if err = tmpi.SkipField(tmpg); err != nil {
+						} else if err = tmpi.SkipField(tmpg); err != nil {
 							return
 						}
 					}
@@ -5552,29 +5581,30 @@ object_tmp_40:
 					err = e
 					return
 				}
-				if !input.ExpectBytes(130, 2) { // tag: 258 MAKE_TAG(32, WireBytes=2)
-					continue object_tmp_40 // next tag for Fighter
+					if !input.ExpectBytes(130, 2) { // tag: 258 MAKE_TAG(32, WireBytes=2)
+						continue object_tmp_40 // next tag for Fighter
+					}
+					tag = 258 // MAKE_TAG(32, WireBytes=2) // fallthrough case 13
+				} else {
+					break switch_tmp_40 // skip tag
 				}
-				tag = 258 // MAKE_TAG(32, WireBytes=2) // fallthrough case 13
-			} else {
-				break switch_tmp_40 // skip tag
-			}
-			fallthrough
-		// property: s.Lv
-		case 13:
-			if tag == 258 { // MAKE_TAG(32, WireBytes=2)
+				fallthrough
+			// property: s.Lv
+			case 13:
+				if tag == 258 { // MAKE_TAG(32, WireBytes=2)
 				// type: variant<int32, []variant<float32, string>>
 				if x, e := input.ReadBuf(); e == nil {
 					tmpi := &tygo.ProtoBuf{Buffer: x}
 				variant_tmp_68:
 					for !tmpi.ExpectEnd() {
 						var tmpg int
-						if tmpg, err = tmpi.ReadTag(127); err != nil {
+						var cutoff bool
+						if tmpg, cutoff, err = tmpi.ReadTag(127); err != nil {
 							return
-						}
-						switch tmpg >> 3 {
-						case 1:
-							if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
+						} else if cutoff {
+							switch tmpg >> 3 {
+							case 1:
+								if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
 								// type: int32
 								if x, e := tmpi.ReadVarint(); e == nil {
 									s.Lv = int32(x)
@@ -5582,10 +5612,10 @@ object_tmp_40:
 									err = e
 									return
 								}
-								continue variant_tmp_68 // next tag for variant<int32, []variant<float32, string>>
-							}
-						case 2:
-							if tmpg == 18 { // MAKE_TAG(2, WireBytes=2)
+									continue variant_tmp_68 // next tag for variant<int32, []variant<float32, string>>
+								}
+							case 2:
+								if tmpg == 18 { // MAKE_TAG(2, WireBytes=2)
 							loop_tmp_69:
 								// type: []variant<float32, string>
 								for {
@@ -5596,12 +5626,13 @@ object_tmp_40:
 									variant_tmp_70:
 										for !tmpii.ExpectEnd() {
 											var tmpig int
-											if tmpig, err = tmpii.ReadTag(127); err != nil {
+											var cutoff bool
+											if tmpig, cutoff, err = tmpii.ReadTag(127); err != nil {
 												return
-											}
-											switch tmpig >> 3 {
-											case 1:
-												if tmpig == 13 { // MAKE_TAG(1, WireFixed32=5)
+											} else if cutoff {
+												switch tmpig >> 3 {
+												case 1:
+													if tmpig == 13 { // MAKE_TAG(1, WireFixed32=5)
 													// type: float32
 													if x, e := tmpii.ReadFixed32(); e == nil {
 														tmp_69 = math.Float32frombits(x)
@@ -5609,10 +5640,10 @@ object_tmp_40:
 														err = e
 														return
 													}
-													continue variant_tmp_70 // next tag for variant<float32, string>
-												}
-											case 2:
-												if tmpig == 18 { // MAKE_TAG(2, WireBytes=2)
+														continue variant_tmp_70 // next tag for variant<float32, string>
+													}
+												case 2:
+													if tmpig == 18 { // MAKE_TAG(2, WireBytes=2)
 													// type: string
 													if x, e := tmpii.ReadBuf(); e == nil {
 														tmp_69 = string(x)
@@ -5620,10 +5651,10 @@ object_tmp_40:
 														err = e
 														return
 													}
-													continue variant_tmp_70 // next tag for variant<float32, string>
+														continue variant_tmp_70 // next tag for variant<float32, string>
+													}
 												}
-											}
-											if err = tmpii.SkipField(tmpig); err != nil {
+											} else if err = tmpii.SkipField(tmpig); err != nil {
 												return
 											}
 										}
@@ -5636,10 +5667,10 @@ object_tmp_40:
 										break loop_tmp_69 // end for []variant<float32, string>
 									}
 								}
-								continue variant_tmp_68 // next tag for variant<int32, []variant<float32, string>>
+									continue variant_tmp_68 // next tag for variant<int32, []variant<float32, string>>
+								}
 							}
-						}
-						if err = tmpi.SkipField(tmpg); err != nil {
+						} else if err = tmpi.SkipField(tmpg); err != nil {
 							return
 						}
 					}
@@ -5647,29 +5678,30 @@ object_tmp_40:
 					err = e
 					return
 				}
-				if !input.ExpectBytes(138, 2) { // tag: 266 MAKE_TAG(33, WireBytes=2)
-					continue object_tmp_40 // next tag for Fighter
+					if !input.ExpectBytes(138, 2) { // tag: 266 MAKE_TAG(33, WireBytes=2)
+						continue object_tmp_40 // next tag for Fighter
+					}
+					tag = 266 // MAKE_TAG(33, WireBytes=2) // fallthrough case 14
+				} else {
+					break switch_tmp_40 // skip tag
 				}
-				tag = 266 // MAKE_TAG(33, WireBytes=2) // fallthrough case 14
-			} else {
-				break switch_tmp_40 // skip tag
-			}
-			fallthrough
-		// property: s.Flv
-		case 14:
-			if tag == 266 { // MAKE_TAG(33, WireBytes=2)
+				fallthrough
+			// property: s.Flv
+			case 14:
+				if tag == 266 { // MAKE_TAG(33, WireBytes=2)
 				// type: variant<int32, []float32>
 				if x, e := input.ReadBuf(); e == nil {
 					tmpi := &tygo.ProtoBuf{Buffer: x}
 				variant_tmp_71:
 					for !tmpi.ExpectEnd() {
 						var tmpg int
-						if tmpg, err = tmpi.ReadTag(127); err != nil {
+						var cutoff bool
+						if tmpg, cutoff, err = tmpi.ReadTag(127); err != nil {
 							return
-						}
-						switch tmpg >> 3 {
-						case 1:
-							if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
+						} else if cutoff {
+							switch tmpg >> 3 {
+							case 1:
+								if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
 								// type: int32
 								if x, e := tmpi.ReadVarint(); e == nil {
 									s.Flv = int32(x)
@@ -5677,10 +5709,10 @@ object_tmp_40:
 									err = e
 									return
 								}
-								continue variant_tmp_71 // next tag for variant<int32, []float32>
-							}
-						case 2:
-							if tmpg == 21 { // MAKE_TAG(2, WireFixed32=5)
+									continue variant_tmp_71 // next tag for variant<int32, []float32>
+								}
+							case 2:
+								if tmpg == 21 { // MAKE_TAG(2, WireFixed32=5)
 								// type: []float32
 								if tmpg == 21 { // MAKE_TAG(2, WireFixed32=5)
 								loop_tmp_72:
@@ -5715,10 +5747,10 @@ object_tmp_40:
 									err = e
 									return
 								}
-								continue variant_tmp_71 // next tag for variant<int32, []float32>
+									continue variant_tmp_71 // next tag for variant<int32, []float32>
+								}
 							}
-						}
-						if err = tmpi.SkipField(tmpg); err != nil {
+						} else if err = tmpi.SkipField(tmpg); err != nil {
 							return
 						}
 					}
@@ -5726,29 +5758,30 @@ object_tmp_40:
 					err = e
 					return
 				}
-				if !input.ExpectBytes(146, 2) { // tag: 274 MAKE_TAG(34, WireBytes=2)
-					continue object_tmp_40 // next tag for Fighter
+					if !input.ExpectBytes(146, 2) { // tag: 274 MAKE_TAG(34, WireBytes=2)
+						continue object_tmp_40 // next tag for Fighter
+					}
+					tag = 274 // MAKE_TAG(34, WireBytes=2) // fallthrough case 15
+				} else {
+					break switch_tmp_40 // skip tag
 				}
-				tag = 274 // MAKE_TAG(34, WireBytes=2) // fallthrough case 15
-			} else {
-				break switch_tmp_40 // skip tag
-			}
-			fallthrough
-		// property: s.Dv
-		case 15:
-			if tag == 274 { // MAKE_TAG(34, WireBytes=2)
+				fallthrough
+			// property: s.Dv
+			case 15:
+				if tag == 274 { // MAKE_TAG(34, WireBytes=2)
 				// type: variant<int32, map[int32]variant<float32, string>>
 				if x, e := input.ReadBuf(); e == nil {
 					tmpi := &tygo.ProtoBuf{Buffer: x}
 				variant_tmp_73:
 					for !tmpi.ExpectEnd() {
 						var tmpg int
-						if tmpg, err = tmpi.ReadTag(127); err != nil {
+						var cutoff bool
+						if tmpg, cutoff, err = tmpi.ReadTag(127); err != nil {
 							return
-						}
-						switch tmpg >> 3 {
-						case 1:
-							if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
+						} else if cutoff {
+							switch tmpg >> 3 {
+							case 1:
+								if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
 								// type: int32
 								if x, e := tmpi.ReadVarint(); e == nil {
 									s.Dv = int32(x)
@@ -5756,10 +5789,10 @@ object_tmp_40:
 									err = e
 									return
 								}
-								continue variant_tmp_73 // next tag for variant<int32, map[int32]variant<float32, string>>
-							}
-						case 2:
-							if tmpg == 18 { // MAKE_TAG(2, WireBytes=2)
+									continue variant_tmp_73 // next tag for variant<int32, map[int32]variant<float32, string>>
+								}
+							case 2:
+								if tmpg == 18 { // MAKE_TAG(2, WireBytes=2)
 							loop_tmp_74:
 								// type: map[int32]variant<float32, string>
 								for {
@@ -5770,14 +5803,15 @@ object_tmp_40:
 									dict_tmp_74:
 										for !tmpii.ExpectEnd() {
 											var tmpig int
-											if tmpig, err = tmpii.ReadTag(127); err != nil {
+											var cutoff bool
+											if tmpig, cutoff, err = tmpii.ReadTag(127); err != nil {
 												return
-											}
-										switch_tmp_74:
-											switch tmpig >> 3 {
-											// dict key
-											case 1:
-												if tmpig == 8 { // MAKE_TAG(1, WireVarint=0)
+											} else if cutoff {
+											switch_tmp_74:
+												switch tmpig >> 3 {
+												// dict key
+												case 1:
+													if tmpig == 8 { // MAKE_TAG(1, WireVarint=0)
 													// type: int32
 													if x, e := tmpii.ReadVarint(); e == nil {
 														tmp_74 = int32(x)
@@ -5785,28 +5819,29 @@ object_tmp_40:
 														err = e
 														return
 													}
-													if !tmpii.ExpectBytes(18) { // tag: 18 MAKE_TAG(2, WireBytes=2)
-														continue dict_tmp_74 // next tag for map[int32]variant<float32, string>
+														if !tmpii.ExpectBytes(18) { // tag: 18 MAKE_TAG(2, WireBytes=2)
+															continue dict_tmp_74 // next tag for map[int32]variant<float32, string>
+														}
+														tmpig = 18 // fallthrough case 2
+													} else {
+														break switch_tmp_74 // skip tag
 													}
-													tmpig = 18 // fallthrough case 2
-												} else {
-													break switch_tmp_74 // skip tag
-												}
-												fallthrough
-											case 2:
-												if tmpig == 18 { // MAKE_TAG(2, WireBytes=2)
+													fallthrough
+												case 2:
+													if tmpig == 18 { // MAKE_TAG(2, WireBytes=2)
 													// type: variant<float32, string>
 													if x, e := tmpii.ReadBuf(); e == nil {
 														tmpiii := &tygo.ProtoBuf{Buffer: x}
 													variant_tmp_76:
 														for !tmpiii.ExpectEnd() {
 															var tmpiig int
-															if tmpiig, err = tmpiii.ReadTag(127); err != nil {
+															var cutoff bool
+															if tmpiig, cutoff, err = tmpiii.ReadTag(127); err != nil {
 																return
-															}
-															switch tmpiig >> 3 {
-															case 1:
-																if tmpiig == 13 { // MAKE_TAG(1, WireFixed32=5)
+															} else if cutoff {
+																switch tmpiig >> 3 {
+																case 1:
+																	if tmpiig == 13 { // MAKE_TAG(1, WireFixed32=5)
 																	// type: float32
 																	if x, e := tmpiii.ReadFixed32(); e == nil {
 																		tmp_75 = math.Float32frombits(x)
@@ -5814,10 +5849,10 @@ object_tmp_40:
 																		err = e
 																		return
 																	}
-																	continue variant_tmp_76 // next tag for variant<float32, string>
-																}
-															case 2:
-																if tmpiig == 18 { // MAKE_TAG(2, WireBytes=2)
+																		continue variant_tmp_76 // next tag for variant<float32, string>
+																	}
+																case 2:
+																	if tmpiig == 18 { // MAKE_TAG(2, WireBytes=2)
 																	// type: string
 																	if x, e := tmpiii.ReadBuf(); e == nil {
 																		tmp_75 = string(x)
@@ -5825,10 +5860,10 @@ object_tmp_40:
 																		err = e
 																		return
 																	}
-																	continue variant_tmp_76 // next tag for variant<float32, string>
+																		continue variant_tmp_76 // next tag for variant<float32, string>
+																	}
 																}
-															}
-															if err = tmpiii.SkipField(tmpiig); err != nil {
+															} else if err = tmpiii.SkipField(tmpiig); err != nil {
 																return
 															}
 														}
@@ -5836,13 +5871,13 @@ object_tmp_40:
 														err = e
 														return
 													}
-													if tmpii.ExpectEnd() {
-														break dict_tmp_74 // end for map[int32]variant<float32, string>
+														if tmpii.ExpectEnd() {
+															break dict_tmp_74 // end for map[int32]variant<float32, string>
+														}
+														continue dict_tmp_74 // next tag for map[int32]variant<float32, string>
 													}
-													continue dict_tmp_74 // next tag for map[int32]variant<float32, string>
 												}
-											}
-											if err = tmpii.SkipField(tmpig); err != nil {
+											} else if err = tmpii.SkipField(tmpig); err != nil {
 												return
 											}
 										}
@@ -5855,10 +5890,10 @@ object_tmp_40:
 										break loop_tmp_74 // end for map[int32]variant<float32, string>
 									}
 								}
-								continue variant_tmp_73 // next tag for variant<int32, map[int32]variant<float32, string>>
+									continue variant_tmp_73 // next tag for variant<int32, map[int32]variant<float32, string>>
+								}
 							}
-						}
-						if err = tmpi.SkipField(tmpg); err != nil {
+						} else if err = tmpi.SkipField(tmpg); err != nil {
 							return
 						}
 					}
@@ -5866,29 +5901,30 @@ object_tmp_40:
 					err = e
 					return
 				}
-				if !input.ExpectBytes(154, 2) { // tag: 282 MAKE_TAG(35, WireBytes=2)
-					continue object_tmp_40 // next tag for Fighter
+					if !input.ExpectBytes(154, 2) { // tag: 282 MAKE_TAG(35, WireBytes=2)
+						continue object_tmp_40 // next tag for Fighter
+					}
+					tag = 282 // MAKE_TAG(35, WireBytes=2) // fallthrough case 16
+				} else {
+					break switch_tmp_40 // skip tag
 				}
-				tag = 282 // MAKE_TAG(35, WireBytes=2) // fallthrough case 16
-			} else {
-				break switch_tmp_40 // skip tag
-			}
-			fallthrough
-		// property: s.Fdv
-		case 16:
-			if tag == 282 { // MAKE_TAG(35, WireBytes=2)
+				fallthrough
+			// property: s.Fdv
+			case 16:
+				if tag == 282 { // MAKE_TAG(35, WireBytes=2)
 				// type: variant<int32, map[int32]float32>
 				if x, e := input.ReadBuf(); e == nil {
 					tmpi := &tygo.ProtoBuf{Buffer: x}
 				variant_tmp_77:
 					for !tmpi.ExpectEnd() {
 						var tmpg int
-						if tmpg, err = tmpi.ReadTag(127); err != nil {
+						var cutoff bool
+						if tmpg, cutoff, err = tmpi.ReadTag(127); err != nil {
 							return
-						}
-						switch tmpg >> 3 {
-						case 1:
-							if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
+						} else if cutoff {
+							switch tmpg >> 3 {
+							case 1:
+								if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
 								// type: int32
 								if x, e := tmpi.ReadVarint(); e == nil {
 									s.Fdv = int32(x)
@@ -5896,10 +5932,10 @@ object_tmp_40:
 									err = e
 									return
 								}
-								continue variant_tmp_77 // next tag for variant<int32, map[int32]float32>
-							}
-						case 2:
-							if tmpg == 18 { // MAKE_TAG(2, WireBytes=2)
+									continue variant_tmp_77 // next tag for variant<int32, map[int32]float32>
+								}
+							case 2:
+								if tmpg == 18 { // MAKE_TAG(2, WireBytes=2)
 							loop_tmp_78:
 								// type: map[int32]float32
 								for {
@@ -5910,14 +5946,15 @@ object_tmp_40:
 									dict_tmp_78:
 										for !tmpii.ExpectEnd() {
 											var tmpig int
-											if tmpig, err = tmpii.ReadTag(127); err != nil {
+											var cutoff bool
+											if tmpig, cutoff, err = tmpii.ReadTag(127); err != nil {
 												return
-											}
-										switch_tmp_78:
-											switch tmpig >> 3 {
-											// dict key
-											case 1:
-												if tmpig == 8 { // MAKE_TAG(1, WireVarint=0)
+											} else if cutoff {
+											switch_tmp_78:
+												switch tmpig >> 3 {
+												// dict key
+												case 1:
+													if tmpig == 8 { // MAKE_TAG(1, WireVarint=0)
 													// type: int32
 													if x, e := tmpii.ReadVarint(); e == nil {
 														tmp_78 = int32(x)
@@ -5925,16 +5962,16 @@ object_tmp_40:
 														err = e
 														return
 													}
-													if !tmpii.ExpectBytes(21) { // tag: 21 MAKE_TAG(2, WireFixed32=5)
-														continue dict_tmp_78 // next tag for map[int32]float32
+														if !tmpii.ExpectBytes(21) { // tag: 21 MAKE_TAG(2, WireFixed32=5)
+															continue dict_tmp_78 // next tag for map[int32]float32
+														}
+														tmpig = 21 // fallthrough case 2
+													} else {
+														break switch_tmp_78 // skip tag
 													}
-													tmpig = 21 // fallthrough case 2
-												} else {
-													break switch_tmp_78 // skip tag
-												}
-												fallthrough
-											case 2:
-												if tmpig == 21 { // MAKE_TAG(2, WireFixed32=5)
+													fallthrough
+												case 2:
+													if tmpig == 21 { // MAKE_TAG(2, WireFixed32=5)
 													// type: float32
 													if x, e := tmpii.ReadFixed32(); e == nil {
 														tmp_79 = math.Float32frombits(x)
@@ -5942,13 +5979,13 @@ object_tmp_40:
 														err = e
 														return
 													}
-													if tmpii.ExpectEnd() {
-														break dict_tmp_78 // end for map[int32]float32
+														if tmpii.ExpectEnd() {
+															break dict_tmp_78 // end for map[int32]float32
+														}
+														continue dict_tmp_78 // next tag for map[int32]float32
 													}
-													continue dict_tmp_78 // next tag for map[int32]float32
 												}
-											}
-											if err = tmpii.SkipField(tmpig); err != nil {
+											} else if err = tmpii.SkipField(tmpig); err != nil {
 												return
 											}
 										}
@@ -5961,10 +5998,10 @@ object_tmp_40:
 										break loop_tmp_78 // end for map[int32]float32
 									}
 								}
-								continue variant_tmp_77 // next tag for variant<int32, map[int32]float32>
+									continue variant_tmp_77 // next tag for variant<int32, map[int32]float32>
+								}
 							}
-						}
-						if err = tmpi.SkipField(tmpg); err != nil {
+						} else if err = tmpi.SkipField(tmpg); err != nil {
 							return
 						}
 					}
@@ -5972,13 +6009,13 @@ object_tmp_40:
 					err = e
 					return
 				}
-				if input.ExpectEnd() {
-					break object_tmp_40 // end for Fighter
+					if input.ExpectEnd() {
+						break object_tmp_40 // end for Fighter
+					}
+					continue object_tmp_40 // next tag for Fighter
 				}
-				continue object_tmp_40 // next tag for Fighter
 			}
-		}
-		if err = input.SkipField(tag); err != nil {
+		} else if err = input.SkipField(tag); err != nil {
 			return
 		}
 	}
@@ -6081,26 +6118,28 @@ func (s *Fighter) DeserializeRPGParam(data []byte) (a0 *Fighter, a1 interface{},
 method_tmp_28:
 	for !input.ExpectEnd() {
 		var tag int
-		if tag, err = input.ReadTag(((3 << 3) | 7)); err != nil {
+		var cutoff bool
+		if tag, cutoff, err = input.ReadTag(((3 << 3) | 7)); err != nil {
 			return
-		}
-	switch_tmp_28:
-		switch tag >> 3 {
-		// param deserialize: a0
-		case 1:
-			if tag == 10 { // MAKE_TAG(1, WireBytes=2)
+		} else if cutoff {
+		switch_tmp_28:
+			switch tag >> 3 {
+			// param deserialize: a0
+			case 1:
+				if tag == 10 { // MAKE_TAG(1, WireBytes=2)
 				// type: variant<nil, int32>
 				if x, e := input.ReadBuf(); e == nil {
 					tmpi := &tygo.ProtoBuf{Buffer: x}
 				variant_tmp_29:
 					for !tmpi.ExpectEnd() {
 						var tmpg int
-						if tmpg, err = tmpi.ReadTag(127); err != nil {
+						var cutoff bool
+						if tmpg, cutoff, err = tmpi.ReadTag(127); err != nil {
 							return
-						}
-						switch tmpg >> 3 {
-						case 2:
-							if tmpg == 16 { // MAKE_TAG(2, WireVarint=0)
+						} else if cutoff {
+							switch tmpg >> 3 {
+							case 2:
+								if tmpg == 16 { // MAKE_TAG(2, WireVarint=0)
 								// type: int32
 								if x, e := tmpi.ReadVarint(); e == nil {
 									a1 = int32(x)
@@ -6108,10 +6147,10 @@ method_tmp_28:
 									err = e
 									return
 								}
-								continue variant_tmp_29 // next tag for variant<nil, int32>
+									continue variant_tmp_29 // next tag for variant<nil, int32>
+								}
 							}
-						}
-						if err = tmpi.SkipField(tmpg); err != nil {
+						} else if err = tmpi.SkipField(tmpg); err != nil {
 							return
 						}
 					}
@@ -6119,17 +6158,17 @@ method_tmp_28:
 					err = e
 					return
 				}
-				if !input.ExpectBytes(18) { // tag: 18 MAKE_TAG(2, WireBytes=2)
-					continue method_tmp_28 // next tag for param
+					if !input.ExpectBytes(18) { // tag: 18 MAKE_TAG(2, WireBytes=2)
+						continue method_tmp_28 // next tag for param
+					}
+					tag = 18 // MAKE_TAG(2, WireBytes=2) // fallthrough case 2
+				} else {
+					break switch_tmp_28 // skip tag
 				}
-				tag = 18 // MAKE_TAG(2, WireBytes=2) // fallthrough case 2
-			} else {
-				break switch_tmp_28 // skip tag
-			}
-			fallthrough
-		// param deserialize: a1
-		case 2:
-			if tag == 16 { // MAKE_TAG(2, WireVarint=0)
+				fallthrough
+			// param deserialize: a1
+			case 2:
+				if tag == 16 { // MAKE_TAG(2, WireVarint=0)
 				// type: fixedpoint<3, 0>
 				if x, e := input.ReadVarint(); e == nil {
 					a2 = float64(x) / 1000 + 0
@@ -6137,17 +6176,17 @@ method_tmp_28:
 					err = e
 					return
 				}
-				if !input.ExpectBytes(24) { // tag: 24 MAKE_TAG(3, WireVarint=0)
-					continue method_tmp_28 // next tag for param
+					if !input.ExpectBytes(24) { // tag: 24 MAKE_TAG(3, WireVarint=0)
+						continue method_tmp_28 // next tag for param
+					}
+					tag = 24 // MAKE_TAG(3, WireVarint=0) // fallthrough case 3
+				} else {
+					break switch_tmp_28 // skip tag
 				}
-				tag = 24 // MAKE_TAG(3, WireVarint=0) // fallthrough case 3
-			} else {
-				break switch_tmp_28 // skip tag
-			}
-			fallthrough
-		// param deserialize: a2
-		case 3:
-			if tag == 24 { // MAKE_TAG(3, WireVarint=0)
+				fallthrough
+			// param deserialize: a2
+			case 3:
+				if tag == 24 { // MAKE_TAG(3, WireVarint=0)
 				// type: fixedpoint<3, 0>
 				if x, e := input.ReadVarint(); e == nil {
 					a2 = float64(x) / 1000 + 0
@@ -6155,13 +6194,13 @@ method_tmp_28:
 					err = e
 					return
 				}
-				if input.ExpectEnd() {
-					break method_tmp_28 // end for param
+					if input.ExpectEnd() {
+						break method_tmp_28 // end for param
+					}
+					continue method_tmp_28 // next tag for param
 				}
-				continue method_tmp_28 // next tag for param
 			}
-		}
-		if err = input.SkipField(tag); err != nil {
+		} else if err = input.SkipField(tag); err != nil {
 			return
 		}
 	}
@@ -6264,26 +6303,28 @@ func (s *Fighter) DeserializeRPGResult(data []byte) (a0 *Fighter, a1 interface{}
 method_tmp_30:
 	for !input.ExpectEnd() {
 		var tag int
-		if tag, err = input.ReadTag(((3 << 3) | 7)); err != nil {
+		var cutoff bool
+		if tag, cutoff, err = input.ReadTag(((3 << 3) | 7)); err != nil {
 			return
-		}
-	switch_tmp_30:
-		switch tag >> 3 {
-		// result deserialize: a0
-		case 1:
-			if tag == 10 { // MAKE_TAG(1, WireBytes=2)
+		} else if cutoff {
+		switch_tmp_30:
+			switch tag >> 3 {
+			// result deserialize: a0
+			case 1:
+				if tag == 10 { // MAKE_TAG(1, WireBytes=2)
 				// type: variant<nil, int32>
 				if x, e := input.ReadBuf(); e == nil {
 					tmpi := &tygo.ProtoBuf{Buffer: x}
 				variant_tmp_31:
 					for !tmpi.ExpectEnd() {
 						var tmpg int
-						if tmpg, err = tmpi.ReadTag(127); err != nil {
+						var cutoff bool
+						if tmpg, cutoff, err = tmpi.ReadTag(127); err != nil {
 							return
-						}
-						switch tmpg >> 3 {
-						case 2:
-							if tmpg == 16 { // MAKE_TAG(2, WireVarint=0)
+						} else if cutoff {
+							switch tmpg >> 3 {
+							case 2:
+								if tmpg == 16 { // MAKE_TAG(2, WireVarint=0)
 								// type: int32
 								if x, e := tmpi.ReadVarint(); e == nil {
 									a1 = int32(x)
@@ -6291,10 +6332,10 @@ method_tmp_30:
 									err = e
 									return
 								}
-								continue variant_tmp_31 // next tag for variant<nil, int32>
+									continue variant_tmp_31 // next tag for variant<nil, int32>
+								}
 							}
-						}
-						if err = tmpi.SkipField(tmpg); err != nil {
+						} else if err = tmpi.SkipField(tmpg); err != nil {
 							return
 						}
 					}
@@ -6302,17 +6343,17 @@ method_tmp_30:
 					err = e
 					return
 				}
-				if !input.ExpectBytes(18) { // tag: 18 MAKE_TAG(2, WireBytes=2)
-					continue method_tmp_30 // next tag for result
+					if !input.ExpectBytes(18) { // tag: 18 MAKE_TAG(2, WireBytes=2)
+						continue method_tmp_30 // next tag for result
+					}
+					tag = 18 // MAKE_TAG(2, WireBytes=2) // fallthrough case 2
+				} else {
+					break switch_tmp_30 // skip tag
 				}
-				tag = 18 // MAKE_TAG(2, WireBytes=2) // fallthrough case 2
-			} else {
-				break switch_tmp_30 // skip tag
-			}
-			fallthrough
-		// result deserialize: a1
-		case 2:
-			if tag == 16 { // MAKE_TAG(2, WireVarint=0)
+				fallthrough
+			// result deserialize: a1
+			case 2:
+				if tag == 16 { // MAKE_TAG(2, WireVarint=0)
 				// type: fixedpoint<3, 0>
 				if x, e := input.ReadVarint(); e == nil {
 					a2 = float64(x) / 1000 + 0
@@ -6320,17 +6361,17 @@ method_tmp_30:
 					err = e
 					return
 				}
-				if !input.ExpectBytes(24) { // tag: 24 MAKE_TAG(3, WireVarint=0)
-					continue method_tmp_30 // next tag for result
+					if !input.ExpectBytes(24) { // tag: 24 MAKE_TAG(3, WireVarint=0)
+						continue method_tmp_30 // next tag for result
+					}
+					tag = 24 // MAKE_TAG(3, WireVarint=0) // fallthrough case 3
+				} else {
+					break switch_tmp_30 // skip tag
 				}
-				tag = 24 // MAKE_TAG(3, WireVarint=0) // fallthrough case 3
-			} else {
-				break switch_tmp_30 // skip tag
-			}
-			fallthrough
-		// result deserialize: a2
-		case 3:
-			if tag == 24 { // MAKE_TAG(3, WireVarint=0)
+				fallthrough
+			// result deserialize: a2
+			case 3:
+				if tag == 24 { // MAKE_TAG(3, WireVarint=0)
 				// type: fixedpoint<3, 0>
 				if x, e := input.ReadVarint(); e == nil {
 					a2 = float64(x) / 1000 + 0
@@ -6338,13 +6379,13 @@ method_tmp_30:
 					err = e
 					return
 				}
-				if input.ExpectEnd() {
-					break method_tmp_30 // end for result
+					if input.ExpectEnd() {
+						break method_tmp_30 // end for result
+					}
+					continue method_tmp_30 // next tag for result
 				}
-				continue method_tmp_30 // next tag for result
 			}
-		}
-		if err = input.SkipField(tag); err != nil {
+		} else if err = input.SkipField(tag); err != nil {
 			return
 		}
 	}
@@ -6543,13 +6584,14 @@ func (s *Fighter) DeserializeGPRParam(data []byte) (a0 map[int32]interface{}, er
 method_tmp_32:
 	for !input.ExpectEnd() {
 		var tag int
-		if tag, err = input.ReadTag(((1 << 3) | 7)); err != nil {
+		var cutoff bool
+		if tag, cutoff, err = input.ReadTag(((1 << 3) | 7)); err != nil {
 			return
-		}
-		switch tag >> 3 {
-		// param deserialize: a0
-		case 1:
-			if tag == 10 { // MAKE_TAG(1, WireBytes=2)
+		} else if cutoff {
+			switch tag >> 3 {
+			// param deserialize: a0
+			case 1:
+				if tag == 10 { // MAKE_TAG(1, WireBytes=2)
 			loop_tmp_33:
 				// type: map[int32]variant<Corpus, float64, string, *Vector2>
 				for {
@@ -6560,14 +6602,15 @@ method_tmp_32:
 					dict_tmp_33:
 						for !tmpi.ExpectEnd() {
 							var tmpg int
-							if tmpg, err = tmpi.ReadTag(127); err != nil {
+							var cutoff bool
+							if tmpg, cutoff, err = tmpi.ReadTag(127); err != nil {
 								return
-							}
-						switch_tmp_33:
-							switch tmpg >> 3 {
-							// dict key
-							case 1:
-								if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
+							} else if cutoff {
+							switch_tmp_33:
+								switch tmpg >> 3 {
+								// dict key
+								case 1:
+									if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
 									// type: int32
 									if x, e := tmpi.ReadVarint(); e == nil {
 										tmp_33 = int32(x)
@@ -6575,28 +6618,29 @@ method_tmp_32:
 										err = e
 										return
 									}
-									if !tmpi.ExpectBytes(18) { // tag: 18 MAKE_TAG(2, WireBytes=2)
-										continue dict_tmp_33 // next tag for map[int32]variant<Corpus, float64, string, *Vector2>
+										if !tmpi.ExpectBytes(18) { // tag: 18 MAKE_TAG(2, WireBytes=2)
+											continue dict_tmp_33 // next tag for map[int32]variant<Corpus, float64, string, *Vector2>
+										}
+										tmpg = 18 // fallthrough case 2
+									} else {
+										break switch_tmp_33 // skip tag
 									}
-									tmpg = 18 // fallthrough case 2
-								} else {
-									break switch_tmp_33 // skip tag
-								}
-								fallthrough
-							case 2:
-								if tmpg == 18 { // MAKE_TAG(2, WireBytes=2)
+									fallthrough
+								case 2:
+									if tmpg == 18 { // MAKE_TAG(2, WireBytes=2)
 									// type: variant<Corpus, float64, string, *Vector2>
 									if x, e := tmpi.ReadBuf(); e == nil {
 										tmpii := &tygo.ProtoBuf{Buffer: x}
 									variant_tmp_35:
 										for !tmpii.ExpectEnd() {
 											var tmpig int
-											if tmpig, err = tmpii.ReadTag(127); err != nil {
+											var cutoff bool
+											if tmpig, cutoff, err = tmpii.ReadTag(127); err != nil {
 												return
-											}
-											switch tmpig >> 3 {
-											case 1:
-												if tmpig == 8 { // MAKE_TAG(1, WireVarint=0)
+											} else if cutoff {
+												switch tmpig >> 3 {
+												case 1:
+													if tmpig == 8 { // MAKE_TAG(1, WireVarint=0)
 													// type: Corpus
 													if x, e := tmpii.ReadVarint(); e == nil {
 														tmp_34 = Corpus(x)
@@ -6604,10 +6648,10 @@ method_tmp_32:
 														err = e
 														return
 													}
-													continue variant_tmp_35 // next tag for variant<Corpus, float64, string, *Vector2>
-												}
-											case 2:
-												if tmpig == 17 { // MAKE_TAG(2, WireFixed64=1)
+														continue variant_tmp_35 // next tag for variant<Corpus, float64, string, *Vector2>
+													}
+												case 2:
+													if tmpig == 17 { // MAKE_TAG(2, WireFixed64=1)
 													// type: float64
 													if x, e := tmpii.ReadFixed64(); e == nil {
 														tmp_34 = math.Float64frombits(x)
@@ -6615,10 +6659,10 @@ method_tmp_32:
 														err = e
 														return
 													}
-													continue variant_tmp_35 // next tag for variant<Corpus, float64, string, *Vector2>
-												}
-											case 3:
-												if tmpig == 26 { // MAKE_TAG(3, WireBytes=2)
+														continue variant_tmp_35 // next tag for variant<Corpus, float64, string, *Vector2>
+													}
+												case 3:
+													if tmpig == 26 { // MAKE_TAG(3, WireBytes=2)
 													// type: string
 													if x, e := tmpii.ReadBuf(); e == nil {
 														tmp_34 = string(x)
@@ -6626,10 +6670,10 @@ method_tmp_32:
 														err = e
 														return
 													}
-													continue variant_tmp_35 // next tag for variant<Corpus, float64, string, *Vector2>
-												}
-											case 4:
-												if tmpig == 34 { // MAKE_TAG(4, WireBytes=2)
+														continue variant_tmp_35 // next tag for variant<Corpus, float64, string, *Vector2>
+													}
+												case 4:
+													if tmpig == 34 { // MAKE_TAG(4, WireBytes=2)
 													// type: *Vector2
 													if x, e := tmpii.ReadBuf(); e == nil {
 														if tmp_34 == nil {
@@ -6644,10 +6688,10 @@ method_tmp_32:
 														err = e
 														return
 													}
-													continue variant_tmp_35 // next tag for variant<Corpus, float64, string, *Vector2>
+														continue variant_tmp_35 // next tag for variant<Corpus, float64, string, *Vector2>
+													}
 												}
-											}
-											if err = tmpii.SkipField(tmpig); err != nil {
+											} else if err = tmpii.SkipField(tmpig); err != nil {
 												return
 											}
 										}
@@ -6655,13 +6699,13 @@ method_tmp_32:
 										err = e
 										return
 									}
-									if tmpi.ExpectEnd() {
-										break dict_tmp_33 // end for map[int32]variant<Corpus, float64, string, *Vector2>
+										if tmpi.ExpectEnd() {
+											break dict_tmp_33 // end for map[int32]variant<Corpus, float64, string, *Vector2>
+										}
+										continue dict_tmp_33 // next tag for map[int32]variant<Corpus, float64, string, *Vector2>
 									}
-									continue dict_tmp_33 // next tag for map[int32]variant<Corpus, float64, string, *Vector2>
 								}
-							}
-							if err = tmpi.SkipField(tmpg); err != nil {
+							} else if err = tmpi.SkipField(tmpg); err != nil {
 								return
 							}
 						}
@@ -6674,13 +6718,13 @@ method_tmp_32:
 						break loop_tmp_33 // end for map[int32]variant<Corpus, float64, string, *Vector2>
 					}
 				}
-				if input.ExpectEnd() {
-					break method_tmp_32 // end for param
+					if input.ExpectEnd() {
+						break method_tmp_32 // end for param
+					}
+					continue method_tmp_32 // next tag for param
 				}
-				continue method_tmp_32 // next tag for param
 			}
-		}
-		if err = input.SkipField(tag); err != nil {
+		} else if err = input.SkipField(tag); err != nil {
 			return
 		}
 	}
@@ -6879,13 +6923,14 @@ func (s *Fighter) DeserializeGPRResult(data []byte) (a0 map[int32]interface{}, e
 method_tmp_36:
 	for !input.ExpectEnd() {
 		var tag int
-		if tag, err = input.ReadTag(((1 << 3) | 7)); err != nil {
+		var cutoff bool
+		if tag, cutoff, err = input.ReadTag(((1 << 3) | 7)); err != nil {
 			return
-		}
-		switch tag >> 3 {
-		// result deserialize: a0
-		case 1:
-			if tag == 10 { // MAKE_TAG(1, WireBytes=2)
+		} else if cutoff {
+			switch tag >> 3 {
+			// result deserialize: a0
+			case 1:
+				if tag == 10 { // MAKE_TAG(1, WireBytes=2)
 			loop_tmp_37:
 				// type: map[int32]variant<Corpus, float64, string, *Vector2>
 				for {
@@ -6896,14 +6941,15 @@ method_tmp_36:
 					dict_tmp_37:
 						for !tmpi.ExpectEnd() {
 							var tmpg int
-							if tmpg, err = tmpi.ReadTag(127); err != nil {
+							var cutoff bool
+							if tmpg, cutoff, err = tmpi.ReadTag(127); err != nil {
 								return
-							}
-						switch_tmp_37:
-							switch tmpg >> 3 {
-							// dict key
-							case 1:
-								if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
+							} else if cutoff {
+							switch_tmp_37:
+								switch tmpg >> 3 {
+								// dict key
+								case 1:
+									if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
 									// type: int32
 									if x, e := tmpi.ReadVarint(); e == nil {
 										tmp_37 = int32(x)
@@ -6911,28 +6957,29 @@ method_tmp_36:
 										err = e
 										return
 									}
-									if !tmpi.ExpectBytes(18) { // tag: 18 MAKE_TAG(2, WireBytes=2)
-										continue dict_tmp_37 // next tag for map[int32]variant<Corpus, float64, string, *Vector2>
+										if !tmpi.ExpectBytes(18) { // tag: 18 MAKE_TAG(2, WireBytes=2)
+											continue dict_tmp_37 // next tag for map[int32]variant<Corpus, float64, string, *Vector2>
+										}
+										tmpg = 18 // fallthrough case 2
+									} else {
+										break switch_tmp_37 // skip tag
 									}
-									tmpg = 18 // fallthrough case 2
-								} else {
-									break switch_tmp_37 // skip tag
-								}
-								fallthrough
-							case 2:
-								if tmpg == 18 { // MAKE_TAG(2, WireBytes=2)
+									fallthrough
+								case 2:
+									if tmpg == 18 { // MAKE_TAG(2, WireBytes=2)
 									// type: variant<Corpus, float64, string, *Vector2>
 									if x, e := tmpi.ReadBuf(); e == nil {
 										tmpii := &tygo.ProtoBuf{Buffer: x}
 									variant_tmp_39:
 										for !tmpii.ExpectEnd() {
 											var tmpig int
-											if tmpig, err = tmpii.ReadTag(127); err != nil {
+											var cutoff bool
+											if tmpig, cutoff, err = tmpii.ReadTag(127); err != nil {
 												return
-											}
-											switch tmpig >> 3 {
-											case 1:
-												if tmpig == 8 { // MAKE_TAG(1, WireVarint=0)
+											} else if cutoff {
+												switch tmpig >> 3 {
+												case 1:
+													if tmpig == 8 { // MAKE_TAG(1, WireVarint=0)
 													// type: Corpus
 													if x, e := tmpii.ReadVarint(); e == nil {
 														tmp_38 = Corpus(x)
@@ -6940,10 +6987,10 @@ method_tmp_36:
 														err = e
 														return
 													}
-													continue variant_tmp_39 // next tag for variant<Corpus, float64, string, *Vector2>
-												}
-											case 2:
-												if tmpig == 17 { // MAKE_TAG(2, WireFixed64=1)
+														continue variant_tmp_39 // next tag for variant<Corpus, float64, string, *Vector2>
+													}
+												case 2:
+													if tmpig == 17 { // MAKE_TAG(2, WireFixed64=1)
 													// type: float64
 													if x, e := tmpii.ReadFixed64(); e == nil {
 														tmp_38 = math.Float64frombits(x)
@@ -6951,10 +6998,10 @@ method_tmp_36:
 														err = e
 														return
 													}
-													continue variant_tmp_39 // next tag for variant<Corpus, float64, string, *Vector2>
-												}
-											case 3:
-												if tmpig == 26 { // MAKE_TAG(3, WireBytes=2)
+														continue variant_tmp_39 // next tag for variant<Corpus, float64, string, *Vector2>
+													}
+												case 3:
+													if tmpig == 26 { // MAKE_TAG(3, WireBytes=2)
 													// type: string
 													if x, e := tmpii.ReadBuf(); e == nil {
 														tmp_38 = string(x)
@@ -6962,10 +7009,10 @@ method_tmp_36:
 														err = e
 														return
 													}
-													continue variant_tmp_39 // next tag for variant<Corpus, float64, string, *Vector2>
-												}
-											case 4:
-												if tmpig == 34 { // MAKE_TAG(4, WireBytes=2)
+														continue variant_tmp_39 // next tag for variant<Corpus, float64, string, *Vector2>
+													}
+												case 4:
+													if tmpig == 34 { // MAKE_TAG(4, WireBytes=2)
 													// type: *Vector2
 													if x, e := tmpii.ReadBuf(); e == nil {
 														if tmp_38 == nil {
@@ -6980,10 +7027,10 @@ method_tmp_36:
 														err = e
 														return
 													}
-													continue variant_tmp_39 // next tag for variant<Corpus, float64, string, *Vector2>
+														continue variant_tmp_39 // next tag for variant<Corpus, float64, string, *Vector2>
+													}
 												}
-											}
-											if err = tmpii.SkipField(tmpig); err != nil {
+											} else if err = tmpii.SkipField(tmpig); err != nil {
 												return
 											}
 										}
@@ -6991,13 +7038,13 @@ method_tmp_36:
 										err = e
 										return
 									}
-									if tmpi.ExpectEnd() {
-										break dict_tmp_37 // end for map[int32]variant<Corpus, float64, string, *Vector2>
+										if tmpi.ExpectEnd() {
+											break dict_tmp_37 // end for map[int32]variant<Corpus, float64, string, *Vector2>
+										}
+										continue dict_tmp_37 // next tag for map[int32]variant<Corpus, float64, string, *Vector2>
 									}
-									continue dict_tmp_37 // next tag for map[int32]variant<Corpus, float64, string, *Vector2>
 								}
-							}
-							if err = tmpi.SkipField(tmpg); err != nil {
+							} else if err = tmpi.SkipField(tmpg); err != nil {
 								return
 							}
 						}
@@ -7010,13 +7057,13 @@ method_tmp_36:
 						break loop_tmp_37 // end for map[int32]variant<Corpus, float64, string, *Vector2>
 					}
 				}
-				if input.ExpectEnd() {
-					break method_tmp_36 // end for result
+					if input.ExpectEnd() {
+						break method_tmp_36 // end for result
+					}
+					continue method_tmp_36 // next tag for result
 				}
-				continue method_tmp_36 // next tag for result
 			}
-		}
-		if err = input.SkipField(tag); err != nil {
+		} else if err = input.SkipField(tag); err != nil {
 			return
 		}
 	}
