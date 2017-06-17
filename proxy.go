@@ -216,10 +216,11 @@ func typeListGo(owner string, name string, typ string, ts []Type) (string, map[s
 			next_s, next_w, next_p := ts[i+1].DeserializeGo("tag", "input", fmt.Sprintf("a%d", i+1), "", i+2, false)
 			pkgs = update(pkgs, next_p)
 			d = desVar()
+			tag_s, tag_c := expectTag("", i+2, next_w)
 			next = fmt.Sprintf(`
-				if input.%s
+				if input.%s {%s
 					goto method_%s // goto case %d
-				}`, expectTag("", i+2, next_w), d, i+2)
+				}`, tag_s, tag_c, d, i+2)
 			deserialize_s, deserialize_w, deserialize_p = next_s, next_w, next_p
 		} else {
 			next = fmt.Sprintf(`

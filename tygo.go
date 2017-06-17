@@ -207,7 +207,7 @@ func (t *Enum) Less(i, j int) bool {
 func (t *Enum) String() string {
 	var values []string
 	for _, name := range t.Sorted() {
-		values = append(values, fmt.Sprintf(`%s: %d`, name, t.Values[name]))
+		values = append(values, fmt.Sprintf("%s: %d", name, t.Values[name]))
 	}
 	return fmt.Sprintf("%s[%s]", t.Name, strings.Join(values, ", "))
 }

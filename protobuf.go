@@ -51,7 +51,7 @@ func _MAKE_TAG(fieldNum int, wireType WireType) int {
 }
 
 func _MAKE_TAG_STR(fieldNum string, wireType WireType) string {
-	return fmt.Sprintf(`((%s << %d) | %d)`, fieldNum, WireTypeBits, wireType)
+	return fmt.Sprintf("((%s << %d) | %d)", fieldNum, WireTypeBits, wireType)
 }
 
 func _MAKE_CUTOFF(fieldNum int) int {
