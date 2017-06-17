@@ -108,8 +108,11 @@ func (t *Object) DeserializeGo(tag string, input string, name string, preFieldNu
 		}
 
 		var next string
+		var next_s string
+		var next_w WireType
+		var next_p map[string]string
 		if i < len(t.Fields)-1 {
-			next_s, next_w, next_p := t.Fields[i+1].DeserializeGo("tag", input,
+			next_s, next_w, next_p = t.Fields[i+1].DeserializeGo("tag", input,
 				fmt.Sprintf("%s.%s", name, t.Fields[i+1].Name), p_name, p_num+i+2, false)
 			pkgs = update(pkgs, next_p)
 			d = desVar()
@@ -117,7 +120,6 @@ func (t *Object) DeserializeGo(tag string, input string, name string, preFieldNu
 				if %s.%s
 					goto object_%s // goto case %d
 				}`, input, expectTag(p_name, p_num+i+2, next_w), d, i+2)
-			field_s, field_w, field_p = next_s, next_w, next_p
 		} else {
 			next = fmt.Sprintf(`
 				if %s.ExpectEnd() {
@@ -137,6 +139,9 @@ func (t *Object) DeserializeGo(tag string, input string, name string, preFieldNu
 				continue object_%s // next tag for %s%s
 			}`, name, field.Name, i+1, tagInt(p_name, p_num+i+1, field_w), listTag, label,
 			addIndent(field_s, 3), d1, t.Name, next))
+		if i < len(t.Fields)-1 {
+			field_s, field_w, field_p = next_s, next_w, next_p
+		}
 	}
 
 	var cutoff string
