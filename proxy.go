@@ -10,6 +10,7 @@ import (
 	"log"
 	"os"
 	"sort"
+	"strconv"
 	"strings"
 
 	"go/ast"
@@ -73,6 +74,7 @@ func Inject(path string) {
 }
 
 func inject(filename string, doc string, file *ast.File) {
+	desVarCount = 0
 	imports := make(map[string]string)
 	typePkg := make(map[string][2]string)
 	for _, importSpec := range file.Imports {
@@ -131,10 +133,10 @@ func (t *Enum) Go() (string, map[string]string) {
 	}
 	bytesize_s, bytesize_p := t.ByteSizeGo("size", "i", "", 0, true)
 	serialize_s, serialize_p := t.SerializeGo("size", "i", "", 0, true)
-	// deserialize_s, deserialize_p := t.SerializeGo("i", "", 0)
+	deserialize_s, _, deserialize_p := t.DeserializeGo("", "input", "i", "", 0)
 	pkgs = update(pkgs, bytesize_p)
 	pkgs = update(pkgs, serialize_p)
-	// pkgs = update(pkgs, deserialize_p)
+	pkgs = update(pkgs, deserialize_p)
 	return fmt.Sprintf(`
 type %s uint
 
@@ -164,7 +166,7 @@ func (i *%s) Deserialize(input *tygo.ProtoBuf) (err error) {%s
 	return
 }
 `, t.Name, strings.Join(values, ""), t.Name, strings.Join(names, ""),
-		t.Name, t.Name, bytesize_s, t.Name, t.Name, serialize_s, t.Name, ""), pkgs
+		t.Name, t.Name, bytesize_s, t.Name, t.Name, serialize_s, t.Name, deserialize_s), pkgs
 }
 
 func (t *Method) Go() (string, map[string]string) {
@@ -181,13 +183,56 @@ func typeListGo(owner string, name string, typ string, ts []Type) (string, map[s
 	var itemsComment []string
 	var itemsByteSize []string
 	var itemsSerialize []string
+	var itemsDeserialize []string
+
+	d1 := desVar()
+	var d string
+	var deserialize_s string
+	var deserialize_w WireType
+	var deserialize_p map[string]string
+
 	for i, t := range ts {
+		n := fmt.Sprintf("a%d", i)
 		item_s, item_p := t.Go()
-		bytesize_s, bytesize_p := t.ByteSizeGo("size", fmt.Sprintf("a%d", i), "", i+1, true)
-		serialize_s, serialize_p := t.SerializeGo("size", fmt.Sprintf("a%d", i), "", i+1, true)
+		bytesize_s, bytesize_p := t.ByteSizeGo("size", n, "", i+1, true)
+		serialize_s, serialize_p := t.SerializeGo("size", n, "", i+1, true)
 		pkgs = update(pkgs, item_p)
 		pkgs = update(pkgs, bytesize_p)
 		pkgs = update(pkgs, serialize_p)
+
+		if i == 0 {
+			deserialize_s, deserialize_w, deserialize_p = t.DeserializeGo("tag", "input", n, "", i+1)
+			pkgs = update(pkgs, deserialize_p)
+		}
+		label := fmt.Sprintf(" // MAKE_TAG(%d, %s=%d)", i+1, deserialize_w, deserialize_w)
+		if d != "" {
+			label = fmt.Sprintf(`%s
+			method_%s:`, label, d)
+			d = ""
+		}
+
+		var next string
+		if i < len(ts)-1 {
+			next_s, next_w, next_p := ts[i+1].DeserializeGo("tag", "input", fmt.Sprintf("a%d", i+1), "", i+2)
+			pkgs = update(pkgs, next_p)
+			d = desVar()
+			next = fmt.Sprintf(`
+				if input.%s
+					goto method_%s // goto case %d
+				}`, expectTag("", i+2, next_w), d, i+2)
+			deserialize_s, deserialize_w, deserialize_p = next_s, next_w, next_p
+		} else {
+			next = fmt.Sprintf(`
+				if input.ExpectEnd() {
+					break method_%s // end for %s
+				}`, d1, typ)
+		}
+
+		var listTag string
+		if l, ok := t.(*ListType); ok && l.E.IsPrimitive() {
+			listTag = fmt.Sprintf(" || tag == %s", tagInt("", i+1, WireBytes))
+		}
+
 		items = append(items, fmt.Sprintf("a%d %s", i, item_s))
 		itemsComment = append(itemsComment, fmt.Sprintf("a%d: %s", i, t))
 		itemsByteSize = append(itemsByteSize, fmt.Sprintf(`
@@ -196,6 +241,13 @@ func typeListGo(owner string, name string, typ string, ts []Type) (string, map[s
 		itemsSerialize = append(itemsSerialize, fmt.Sprintf(`
 	// %s serialize: a%d%s
 `, typ, i, serialize_s))
+		itemsDeserialize = append(itemsDeserialize, fmt.Sprintf(`
+		// %s deserialize: a%d
+		case %d:
+			if tag == %s%s {%s%s
+				continue method_%s // next tag for %s%s
+			}`, typ, i, i+1, tagInt("", i+1, deserialize_w), listTag, label,
+			addIndent(deserialize_s, 3), d1, typ, next))
 	}
 
 	Typ := strings.Title(typ)
@@ -216,11 +268,25 @@ func %sSerialize%s%s(%s) (data []byte) {
 
 // %s %s(%s)
 func %sDeserialize%s%s(data []byte) (%s, err error) {
+	input := &togy.ProtoBuf{Buffer: data}
+	method_%s: for !input.ExpectEnd() {
+		var tag int
+		if tag, err = input.ReadTag(%s); err != nil {
+			return
+		}
+		switch %s {%s
+		}
+		if err = input.SkipField(tag); err != nil {
+			return
+		}
+	}
 	return
 }
 `, name, Typ, itemComment, owner, name, Typ, strings.Join(items, ", "),
 		strings.Join(itemsByteSize, ""), strings.Join(itemsSerialize, ""),
-		name, Typ, itemComment, owner, name, Typ, strings.Join(items, ", ")), pkgs
+		name, Typ, itemComment, owner, name, Typ, strings.Join(items, ", "),
+		d1, _MAKE_CUTOFF_STR(strconv.Itoa(len(ts))), _TAG_FIELD_STR("tag"),
+		strings.Join(itemsDeserialize, "")), updateTygo(pkgs)
 }
 
 func (t *Object) Go() (string, map[string]string) {
@@ -268,8 +334,10 @@ func (t *Object) Go() (string, map[string]string) {
 
 	bytesize_s, bytesize_p := t.ByteSizeGo("size", "s", "", 0, true)
 	serialize_s, serialize_p := t.SerializeGo("size", "s", "", 0, true)
+	deserialize_s, _, deserialize_p := t.DeserializeGo("", "input", "s", "", 0)
 	pkgs = update(pkgs, bytesize_p)
 	pkgs = update(pkgs, serialize_p)
+	pkgs = update(pkgs, deserialize_p)
 
 	return fmt.Sprintf(`
 type %s struct {%s
@@ -287,11 +355,11 @@ func (s *%s) ByteSize() (size int) {%s
 func (s *%s) Serialize(output *tygo.ProtoBuf) {%s
 }
 
-func (s *%s) Deserialize(input *tygo.ProtoBuf) (err error) {
+func (s *%s) Deserialize(input *tygo.ProtoBuf) (err error) {%s
 	return
 }
 %s`, t.Name, strings.Join(fields, ""), t.Name, mfn_n, mfn_i, t.Name, bytesize_s,
-		t.Name, serialize_s, t.Name, strings.Join(methods, "")), pkgs
+		t.Name, serialize_s, t.Name, deserialize_s, strings.Join(methods, "")), pkgs
 }
 
 func (t UnknownType) Go() (string, map[string]string) {

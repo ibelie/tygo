@@ -32,6 +32,7 @@ type Type interface {
 	ByteSizeGo(string, string, string, int, bool) (string, map[string]string)
 	CachedSizeGo(string, string, string, int, bool) (string, map[string]string)
 	SerializeGo(string, string, string, int, bool) (string, map[string]string)
+	DeserializeGo(string, string, string, string, int) (string, WireType, map[string]string)
 }
 
 type Enum struct {

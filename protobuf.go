@@ -50,12 +50,31 @@ func _MAKE_TAG(fieldNum int, wireType WireType) int {
 	return (fieldNum << WireTypeBits) | int(wireType)
 }
 
-func _MAX_TAG(fieldNum int) int {
-	return _MAKE_TAG(fieldNum, WireTypeMask)
+func _MAKE_TAG_STR(fieldNum string, wireType WireType) string {
+	return fmt.Sprintf(`((%s << %d) | %d)`, fieldNum, WireTypeBits, wireType)
+}
+
+func _MAKE_CUTOFF(fieldNum int) int {
+	max_tag := _MAKE_TAG(fieldNum, WireTypeMask)
+	if max_tag <= 0x7F {
+		return 0x7F
+	} else if max_tag <= 0x3FFF {
+		return 0x3FF
+	} else {
+		return max_tag
+	}
+}
+
+func _MAKE_CUTOFF_STR(fieldNum string) string {
+	return _MAKE_TAG_STR(fieldNum, WireTypeMask)
 }
 
 func _TAG_FIELD(tag int) int {
 	return tag >> WireTypeBits
+}
+
+func _TAG_FIELD_STR(tag string) string {
+	return fmt.Sprintf("%s >> %d", tag, WireTypeBits)
 }
 
 func _TAG_WIRE(tag int) int {
@@ -81,6 +100,10 @@ func SizeVarint(x uint64) int {
 type ProtoBuf struct {
 	offset int
 	Buffer []byte
+}
+
+func (p *ProtoBuf) Reset() {
+	p.offset = 0
 }
 
 func (p *ProtoBuf) Write(b []byte) (n int, err error) {
@@ -234,6 +257,6 @@ func (p *ProtoBuf) ExpectEnd() bool {
 	return p.offset >= len(p.Buffer)
 }
 
-func (p *ProtoBuf) SkipField(fieldNum int) error {
+func (p *ProtoBuf) SkipField(tag int) error {
 	return nil
 }
