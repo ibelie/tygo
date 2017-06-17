@@ -1208,35 +1208,35 @@ func (s *Fighter_Part1) Deserialize(input *tygo.ProtoBuf) (err error) {
 							return
 						}
 						switch tmpg >> 3 {
-					case 1:
-						if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
-							// type: int32
-							if x, e := tmpi.ReadVarint(); e == nil {
-								s.Pyv1 = int32(x)
-							} else {
-								err = e
-								return
-							}
-							continue variant_tmp_13 // next tag for variant<int32, *GoType>
-						}
-					case 2:
-						if tmpg == 18 { // MAKE_TAG(2, WireBytes=2)
-							// type: *GoType
-							if x, e := tmpi.ReadBuf(); e == nil {
-								if s.Pyv1 == nil {
-									s.Pyv1 = &GoType{}
+						case 1:
+							if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
+								// type: int32
+								if x, e := tmpi.ReadVarint(); e == nil {
+									s.Pyv1 = int32(x)
+								} else {
+									err = e
+									return
 								}
-								if len(x) > 0 {
-									if err = s.Pyv1.(*GoType).Deserialize(&tygo.ProtoBuf{Buffer: x}); err != nil {
-										return
+								continue variant_tmp_13 // next tag for variant<int32, *GoType>
+							}
+						case 2:
+							if tmpg == 18 { // MAKE_TAG(2, WireBytes=2)
+								// type: *GoType
+								if x, e := tmpi.ReadBuf(); e == nil {
+									if s.Pyv1 == nil {
+										s.Pyv1 = &GoType{}
 									}
+									if len(x) > 0 {
+										if err = s.Pyv1.(*GoType).Deserialize(&tygo.ProtoBuf{Buffer: x}); err != nil {
+											return
+										}
+									}
+								} else {
+									err = e
+									return
 								}
-							} else {
-								err = e
-								return
+								continue variant_tmp_13 // next tag for variant<int32, *GoType>
 							}
-							continue variant_tmp_13 // next tag for variant<int32, *GoType>
-						}
 						}
 						if err = tmpi.SkipField(tmpg); err != nil {
 							return
@@ -1266,35 +1266,35 @@ func (s *Fighter_Part1) Deserialize(input *tygo.ProtoBuf) (err error) {
 							return
 						}
 						switch tmpg >> 3 {
-					case 1:
-						if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
-							// type: int32
-							if x, e := tmpi.ReadVarint(); e == nil {
-								s.Pyv2 = int32(x)
-							} else {
-								err = e
-								return
-							}
-							continue variant_tmp_14 // next tag for variant<int32, *GoType>
-						}
-					case 2:
-						if tmpg == 18 { // MAKE_TAG(2, WireBytes=2)
-							// type: *GoType
-							if x, e := tmpi.ReadBuf(); e == nil {
-								if s.Pyv2 == nil {
-									s.Pyv2 = &GoType{}
+						case 1:
+							if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
+								// type: int32
+								if x, e := tmpi.ReadVarint(); e == nil {
+									s.Pyv2 = int32(x)
+								} else {
+									err = e
+									return
 								}
-								if len(x) > 0 {
-									if err = s.Pyv2.(*GoType).Deserialize(&tygo.ProtoBuf{Buffer: x}); err != nil {
-										return
+								continue variant_tmp_14 // next tag for variant<int32, *GoType>
+							}
+						case 2:
+							if tmpg == 18 { // MAKE_TAG(2, WireBytes=2)
+								// type: *GoType
+								if x, e := tmpi.ReadBuf(); e == nil {
+									if s.Pyv2 == nil {
+										s.Pyv2 = &GoType{}
 									}
+									if len(x) > 0 {
+										if err = s.Pyv2.(*GoType).Deserialize(&tygo.ProtoBuf{Buffer: x}); err != nil {
+											return
+										}
+									}
+								} else {
+									err = e
+									return
 								}
-							} else {
-								err = e
-								return
+								continue variant_tmp_14 // next tag for variant<int32, *GoType>
 							}
-							continue variant_tmp_14 // next tag for variant<int32, *GoType>
-						}
 						}
 						if err = tmpi.SkipField(tmpg); err != nil {
 							return
@@ -4291,58 +4291,58 @@ func (s *Fighter) Deserialize(input *tygo.ProtoBuf) (err error) {
 							return
 						}
 						switch tmpg >> 3 {
-					case 1:
-						if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
-							// type: int32
-							if x, e := tmpi.ReadVarint(); e == nil {
-								s.V0 = int32(x)
-							} else {
-								err = e
-								return
-							}
-							continue variant_tmp_41 // next tag for variant<int32, float32, bytes, *Vector2>
-						}
-					case 2:
-						if tmpg == 21 { // MAKE_TAG(2, WireFixed32=5)
-							// type: float32
-							if x, e := tmpi.ReadFixed32(); e == nil {
-								s.V0 = math.Float32frombits(x)
-							} else {
-								err = e
-								return
-							}
-							continue variant_tmp_41 // next tag for variant<int32, float32, bytes, *Vector2>
-						}
-					case 3:
-						if tmpg == 26 { // MAKE_TAG(3, WireBytes=2)
-							// type: bytes
-							if x, e := tmpi.ReadBuf(); e == nil {
-								s.V0 = make([]byte, len(x))
-								copy(s.V0.([]byte), x)
-							} else {
-								err = e
-								return
-							}
-							continue variant_tmp_41 // next tag for variant<int32, float32, bytes, *Vector2>
-						}
-					case 4:
-						if tmpg == 34 { // MAKE_TAG(4, WireBytes=2)
-							// type: *Vector2
-							if x, e := tmpi.ReadBuf(); e == nil {
-								if s.V0 == nil {
-									s.V0 = &Vector2{}
+						case 1:
+							if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
+								// type: int32
+								if x, e := tmpi.ReadVarint(); e == nil {
+									s.V0 = int32(x)
+								} else {
+									err = e
+									return
 								}
-								if len(x) > 0 {
-									if err = s.V0.(*Vector2).Deserialize(&tygo.ProtoBuf{Buffer: x}); err != nil {
-										return
+								continue variant_tmp_41 // next tag for variant<int32, float32, bytes, *Vector2>
+							}
+						case 2:
+							if tmpg == 21 { // MAKE_TAG(2, WireFixed32=5)
+								// type: float32
+								if x, e := tmpi.ReadFixed32(); e == nil {
+									s.V0 = math.Float32frombits(x)
+								} else {
+									err = e
+									return
+								}
+								continue variant_tmp_41 // next tag for variant<int32, float32, bytes, *Vector2>
+							}
+						case 3:
+							if tmpg == 26 { // MAKE_TAG(3, WireBytes=2)
+								// type: bytes
+								if x, e := tmpi.ReadBuf(); e == nil {
+									s.V0 = make([]byte, len(x))
+									copy(s.V0.([]byte), x)
+								} else {
+									err = e
+									return
+								}
+								continue variant_tmp_41 // next tag for variant<int32, float32, bytes, *Vector2>
+							}
+						case 4:
+							if tmpg == 34 { // MAKE_TAG(4, WireBytes=2)
+								// type: *Vector2
+								if x, e := tmpi.ReadBuf(); e == nil {
+									if s.V0 == nil {
+										s.V0 = &Vector2{}
 									}
+									if len(x) > 0 {
+										if err = s.V0.(*Vector2).Deserialize(&tygo.ProtoBuf{Buffer: x}); err != nil {
+											return
+										}
+									}
+								} else {
+									err = e
+									return
 								}
-							} else {
-								err = e
-								return
+								continue variant_tmp_41 // next tag for variant<int32, float32, bytes, *Vector2>
 							}
-							continue variant_tmp_41 // next tag for variant<int32, float32, bytes, *Vector2>
-						}
 						}
 						if err = tmpi.SkipField(tmpg); err != nil {
 							return
@@ -4372,58 +4372,58 @@ func (s *Fighter) Deserialize(input *tygo.ProtoBuf) (err error) {
 							return
 						}
 						switch tmpg >> 3 {
-					case 1:
-						if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
-							// type: int32
-							if x, e := tmpi.ReadVarint(); e == nil {
-								s.V1 = int32(x)
-							} else {
-								err = e
-								return
-							}
-							continue variant_tmp_42 // next tag for variant<int32, float32, bytes, *Vector2>
-						}
-					case 2:
-						if tmpg == 21 { // MAKE_TAG(2, WireFixed32=5)
-							// type: float32
-							if x, e := tmpi.ReadFixed32(); e == nil {
-								s.V1 = math.Float32frombits(x)
-							} else {
-								err = e
-								return
-							}
-							continue variant_tmp_42 // next tag for variant<int32, float32, bytes, *Vector2>
-						}
-					case 3:
-						if tmpg == 26 { // MAKE_TAG(3, WireBytes=2)
-							// type: bytes
-							if x, e := tmpi.ReadBuf(); e == nil {
-								s.V1 = make([]byte, len(x))
-								copy(s.V1.([]byte), x)
-							} else {
-								err = e
-								return
-							}
-							continue variant_tmp_42 // next tag for variant<int32, float32, bytes, *Vector2>
-						}
-					case 4:
-						if tmpg == 34 { // MAKE_TAG(4, WireBytes=2)
-							// type: *Vector2
-							if x, e := tmpi.ReadBuf(); e == nil {
-								if s.V1 == nil {
-									s.V1 = &Vector2{}
+						case 1:
+							if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
+								// type: int32
+								if x, e := tmpi.ReadVarint(); e == nil {
+									s.V1 = int32(x)
+								} else {
+									err = e
+									return
 								}
-								if len(x) > 0 {
-									if err = s.V1.(*Vector2).Deserialize(&tygo.ProtoBuf{Buffer: x}); err != nil {
-										return
+								continue variant_tmp_42 // next tag for variant<int32, float32, bytes, *Vector2>
+							}
+						case 2:
+							if tmpg == 21 { // MAKE_TAG(2, WireFixed32=5)
+								// type: float32
+								if x, e := tmpi.ReadFixed32(); e == nil {
+									s.V1 = math.Float32frombits(x)
+								} else {
+									err = e
+									return
+								}
+								continue variant_tmp_42 // next tag for variant<int32, float32, bytes, *Vector2>
+							}
+						case 3:
+							if tmpg == 26 { // MAKE_TAG(3, WireBytes=2)
+								// type: bytes
+								if x, e := tmpi.ReadBuf(); e == nil {
+									s.V1 = make([]byte, len(x))
+									copy(s.V1.([]byte), x)
+								} else {
+									err = e
+									return
+								}
+								continue variant_tmp_42 // next tag for variant<int32, float32, bytes, *Vector2>
+							}
+						case 4:
+							if tmpg == 34 { // MAKE_TAG(4, WireBytes=2)
+								// type: *Vector2
+								if x, e := tmpi.ReadBuf(); e == nil {
+									if s.V1 == nil {
+										s.V1 = &Vector2{}
 									}
+									if len(x) > 0 {
+										if err = s.V1.(*Vector2).Deserialize(&tygo.ProtoBuf{Buffer: x}); err != nil {
+											return
+										}
+									}
+								} else {
+									err = e
+									return
 								}
-							} else {
-								err = e
-								return
+								continue variant_tmp_42 // next tag for variant<int32, float32, bytes, *Vector2>
 							}
-							continue variant_tmp_42 // next tag for variant<int32, float32, bytes, *Vector2>
-						}
 						}
 						if err = tmpi.SkipField(tmpg); err != nil {
 							return
@@ -4453,58 +4453,58 @@ func (s *Fighter) Deserialize(input *tygo.ProtoBuf) (err error) {
 							return
 						}
 						switch tmpg >> 3 {
-					case 1:
-						if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
-							// type: int32
-							if x, e := tmpi.ReadVarint(); e == nil {
-								s.V2 = int32(x)
-							} else {
-								err = e
-								return
-							}
-							continue variant_tmp_43 // next tag for variant<int32, float32, bytes, *Vector2>
-						}
-					case 2:
-						if tmpg == 21 { // MAKE_TAG(2, WireFixed32=5)
-							// type: float32
-							if x, e := tmpi.ReadFixed32(); e == nil {
-								s.V2 = math.Float32frombits(x)
-							} else {
-								err = e
-								return
-							}
-							continue variant_tmp_43 // next tag for variant<int32, float32, bytes, *Vector2>
-						}
-					case 3:
-						if tmpg == 26 { // MAKE_TAG(3, WireBytes=2)
-							// type: bytes
-							if x, e := tmpi.ReadBuf(); e == nil {
-								s.V2 = make([]byte, len(x))
-								copy(s.V2.([]byte), x)
-							} else {
-								err = e
-								return
-							}
-							continue variant_tmp_43 // next tag for variant<int32, float32, bytes, *Vector2>
-						}
-					case 4:
-						if tmpg == 34 { // MAKE_TAG(4, WireBytes=2)
-							// type: *Vector2
-							if x, e := tmpi.ReadBuf(); e == nil {
-								if s.V2 == nil {
-									s.V2 = &Vector2{}
+						case 1:
+							if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
+								// type: int32
+								if x, e := tmpi.ReadVarint(); e == nil {
+									s.V2 = int32(x)
+								} else {
+									err = e
+									return
 								}
-								if len(x) > 0 {
-									if err = s.V2.(*Vector2).Deserialize(&tygo.ProtoBuf{Buffer: x}); err != nil {
-										return
+								continue variant_tmp_43 // next tag for variant<int32, float32, bytes, *Vector2>
+							}
+						case 2:
+							if tmpg == 21 { // MAKE_TAG(2, WireFixed32=5)
+								// type: float32
+								if x, e := tmpi.ReadFixed32(); e == nil {
+									s.V2 = math.Float32frombits(x)
+								} else {
+									err = e
+									return
+								}
+								continue variant_tmp_43 // next tag for variant<int32, float32, bytes, *Vector2>
+							}
+						case 3:
+							if tmpg == 26 { // MAKE_TAG(3, WireBytes=2)
+								// type: bytes
+								if x, e := tmpi.ReadBuf(); e == nil {
+									s.V2 = make([]byte, len(x))
+									copy(s.V2.([]byte), x)
+								} else {
+									err = e
+									return
+								}
+								continue variant_tmp_43 // next tag for variant<int32, float32, bytes, *Vector2>
+							}
+						case 4:
+							if tmpg == 34 { // MAKE_TAG(4, WireBytes=2)
+								// type: *Vector2
+								if x, e := tmpi.ReadBuf(); e == nil {
+									if s.V2 == nil {
+										s.V2 = &Vector2{}
 									}
+									if len(x) > 0 {
+										if err = s.V2.(*Vector2).Deserialize(&tygo.ProtoBuf{Buffer: x}); err != nil {
+											return
+										}
+									}
+								} else {
+									err = e
+									return
 								}
-							} else {
-								err = e
-								return
+								continue variant_tmp_43 // next tag for variant<int32, float32, bytes, *Vector2>
 							}
-							continue variant_tmp_43 // next tag for variant<int32, float32, bytes, *Vector2>
-						}
 						}
 						if err = tmpi.SkipField(tmpg); err != nil {
 							return
@@ -4534,58 +4534,58 @@ func (s *Fighter) Deserialize(input *tygo.ProtoBuf) (err error) {
 							return
 						}
 						switch tmpg >> 3 {
-					case 1:
-						if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
-							// type: int32
-							if x, e := tmpi.ReadVarint(); e == nil {
-								s.V3 = int32(x)
-							} else {
-								err = e
-								return
-							}
-							continue variant_tmp_44 // next tag for variant<int32, float32, bytes, *Vector2>
-						}
-					case 2:
-						if tmpg == 21 { // MAKE_TAG(2, WireFixed32=5)
-							// type: float32
-							if x, e := tmpi.ReadFixed32(); e == nil {
-								s.V3 = math.Float32frombits(x)
-							} else {
-								err = e
-								return
-							}
-							continue variant_tmp_44 // next tag for variant<int32, float32, bytes, *Vector2>
-						}
-					case 3:
-						if tmpg == 26 { // MAKE_TAG(3, WireBytes=2)
-							// type: bytes
-							if x, e := tmpi.ReadBuf(); e == nil {
-								s.V3 = make([]byte, len(x))
-								copy(s.V3.([]byte), x)
-							} else {
-								err = e
-								return
-							}
-							continue variant_tmp_44 // next tag for variant<int32, float32, bytes, *Vector2>
-						}
-					case 4:
-						if tmpg == 34 { // MAKE_TAG(4, WireBytes=2)
-							// type: *Vector2
-							if x, e := tmpi.ReadBuf(); e == nil {
-								if s.V3 == nil {
-									s.V3 = &Vector2{}
+						case 1:
+							if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
+								// type: int32
+								if x, e := tmpi.ReadVarint(); e == nil {
+									s.V3 = int32(x)
+								} else {
+									err = e
+									return
 								}
-								if len(x) > 0 {
-									if err = s.V3.(*Vector2).Deserialize(&tygo.ProtoBuf{Buffer: x}); err != nil {
-										return
+								continue variant_tmp_44 // next tag for variant<int32, float32, bytes, *Vector2>
+							}
+						case 2:
+							if tmpg == 21 { // MAKE_TAG(2, WireFixed32=5)
+								// type: float32
+								if x, e := tmpi.ReadFixed32(); e == nil {
+									s.V3 = math.Float32frombits(x)
+								} else {
+									err = e
+									return
+								}
+								continue variant_tmp_44 // next tag for variant<int32, float32, bytes, *Vector2>
+							}
+						case 3:
+							if tmpg == 26 { // MAKE_TAG(3, WireBytes=2)
+								// type: bytes
+								if x, e := tmpi.ReadBuf(); e == nil {
+									s.V3 = make([]byte, len(x))
+									copy(s.V3.([]byte), x)
+								} else {
+									err = e
+									return
+								}
+								continue variant_tmp_44 // next tag for variant<int32, float32, bytes, *Vector2>
+							}
+						case 4:
+							if tmpg == 34 { // MAKE_TAG(4, WireBytes=2)
+								// type: *Vector2
+								if x, e := tmpi.ReadBuf(); e == nil {
+									if s.V3 == nil {
+										s.V3 = &Vector2{}
 									}
+									if len(x) > 0 {
+										if err = s.V3.(*Vector2).Deserialize(&tygo.ProtoBuf{Buffer: x}); err != nil {
+											return
+										}
+									}
+								} else {
+									err = e
+									return
 								}
-							} else {
-								err = e
-								return
+								continue variant_tmp_44 // next tag for variant<int32, float32, bytes, *Vector2>
 							}
-							continue variant_tmp_44 // next tag for variant<int32, float32, bytes, *Vector2>
-						}
 						}
 						if err = tmpi.SkipField(tmpg); err != nil {
 							return
@@ -4615,58 +4615,58 @@ func (s *Fighter) Deserialize(input *tygo.ProtoBuf) (err error) {
 							return
 						}
 						switch tmpg >> 3 {
-					case 1:
-						if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
-							// type: int32
-							if x, e := tmpi.ReadVarint(); e == nil {
-								s.V4 = int32(x)
-							} else {
-								err = e
-								return
-							}
-							continue variant_tmp_45 // next tag for variant<int32, float32, bytes, *Vector2>
-						}
-					case 2:
-						if tmpg == 21 { // MAKE_TAG(2, WireFixed32=5)
-							// type: float32
-							if x, e := tmpi.ReadFixed32(); e == nil {
-								s.V4 = math.Float32frombits(x)
-							} else {
-								err = e
-								return
-							}
-							continue variant_tmp_45 // next tag for variant<int32, float32, bytes, *Vector2>
-						}
-					case 3:
-						if tmpg == 26 { // MAKE_TAG(3, WireBytes=2)
-							// type: bytes
-							if x, e := tmpi.ReadBuf(); e == nil {
-								s.V4 = make([]byte, len(x))
-								copy(s.V4.([]byte), x)
-							} else {
-								err = e
-								return
-							}
-							continue variant_tmp_45 // next tag for variant<int32, float32, bytes, *Vector2>
-						}
-					case 4:
-						if tmpg == 34 { // MAKE_TAG(4, WireBytes=2)
-							// type: *Vector2
-							if x, e := tmpi.ReadBuf(); e == nil {
-								if s.V4 == nil {
-									s.V4 = &Vector2{}
+						case 1:
+							if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
+								// type: int32
+								if x, e := tmpi.ReadVarint(); e == nil {
+									s.V4 = int32(x)
+								} else {
+									err = e
+									return
 								}
-								if len(x) > 0 {
-									if err = s.V4.(*Vector2).Deserialize(&tygo.ProtoBuf{Buffer: x}); err != nil {
-										return
+								continue variant_tmp_45 // next tag for variant<int32, float32, bytes, *Vector2>
+							}
+						case 2:
+							if tmpg == 21 { // MAKE_TAG(2, WireFixed32=5)
+								// type: float32
+								if x, e := tmpi.ReadFixed32(); e == nil {
+									s.V4 = math.Float32frombits(x)
+								} else {
+									err = e
+									return
+								}
+								continue variant_tmp_45 // next tag for variant<int32, float32, bytes, *Vector2>
+							}
+						case 3:
+							if tmpg == 26 { // MAKE_TAG(3, WireBytes=2)
+								// type: bytes
+								if x, e := tmpi.ReadBuf(); e == nil {
+									s.V4 = make([]byte, len(x))
+									copy(s.V4.([]byte), x)
+								} else {
+									err = e
+									return
+								}
+								continue variant_tmp_45 // next tag for variant<int32, float32, bytes, *Vector2>
+							}
+						case 4:
+							if tmpg == 34 { // MAKE_TAG(4, WireBytes=2)
+								// type: *Vector2
+								if x, e := tmpi.ReadBuf(); e == nil {
+									if s.V4 == nil {
+										s.V4 = &Vector2{}
 									}
+									if len(x) > 0 {
+										if err = s.V4.(*Vector2).Deserialize(&tygo.ProtoBuf{Buffer: x}); err != nil {
+											return
+										}
+									}
+								} else {
+									err = e
+									return
 								}
-							} else {
-								err = e
-								return
+								continue variant_tmp_45 // next tag for variant<int32, float32, bytes, *Vector2>
 							}
-							continue variant_tmp_45 // next tag for variant<int32, float32, bytes, *Vector2>
-						}
 						}
 						if err = tmpi.SkipField(tmpg); err != nil {
 							return
@@ -4699,57 +4699,57 @@ func (s *Fighter) Deserialize(input *tygo.ProtoBuf) (err error) {
 								return
 							}
 							switch tmpg >> 3 {
-						case 1:
-							if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
-								// type: int32
-								if x, e := tmpi.ReadVarint(); e == nil {
-									tmp_46 = int32(x)
-								} else {
-									err = e
-									return
-								}
-								continue variant_tmp_47 // next tag for variant<int32, fixedpoint<3, 0>, string, *Vector2>
-							}
-						case 2:
-							if tmpg == 16 { // MAKE_TAG(2, WireVarint=0)
-								// type: fixedpoint<3, 0>
-								if x, e := tmpi.ReadVarint(); e == nil {
-									tmp_46 = float64(x) / 1000 + 0
-								} else {
-									err = e
-									return
-								}
-								continue variant_tmp_47 // next tag for variant<int32, fixedpoint<3, 0>, string, *Vector2>
-							}
-						case 3:
-							if tmpg == 26 { // MAKE_TAG(3, WireBytes=2)
-								// type: string
-								if x, e := tmpi.ReadBuf(); e == nil {
-									tmp_46 = string(x)
-								} else {
-									err = e
-									return
-								}
-								continue variant_tmp_47 // next tag for variant<int32, fixedpoint<3, 0>, string, *Vector2>
-							}
-						case 4:
-							if tmpg == 34 { // MAKE_TAG(4, WireBytes=2)
-								// type: *Vector2
-								if x, e := tmpi.ReadBuf(); e == nil {
-									if tmp_46 == nil {
-										tmp_46 = &Vector2{}
+							case 1:
+								if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
+									// type: int32
+									if x, e := tmpi.ReadVarint(); e == nil {
+										tmp_46 = int32(x)
+									} else {
+										err = e
+										return
 									}
-									if len(x) > 0 {
-										if err = tmp_46.(*Vector2).Deserialize(&tygo.ProtoBuf{Buffer: x}); err != nil {
-											return
+									continue variant_tmp_47 // next tag for variant<int32, fixedpoint<3, 0>, string, *Vector2>
+								}
+							case 2:
+								if tmpg == 16 { // MAKE_TAG(2, WireVarint=0)
+									// type: fixedpoint<3, 0>
+									if x, e := tmpi.ReadVarint(); e == nil {
+										tmp_46 = float64(x) / 1000 + 0
+									} else {
+										err = e
+										return
+									}
+									continue variant_tmp_47 // next tag for variant<int32, fixedpoint<3, 0>, string, *Vector2>
+								}
+							case 3:
+								if tmpg == 26 { // MAKE_TAG(3, WireBytes=2)
+									// type: string
+									if x, e := tmpi.ReadBuf(); e == nil {
+										tmp_46 = string(x)
+									} else {
+										err = e
+										return
+									}
+									continue variant_tmp_47 // next tag for variant<int32, fixedpoint<3, 0>, string, *Vector2>
+								}
+							case 4:
+								if tmpg == 34 { // MAKE_TAG(4, WireBytes=2)
+									// type: *Vector2
+									if x, e := tmpi.ReadBuf(); e == nil {
+										if tmp_46 == nil {
+											tmp_46 = &Vector2{}
 										}
+										if len(x) > 0 {
+											if err = tmp_46.(*Vector2).Deserialize(&tygo.ProtoBuf{Buffer: x}); err != nil {
+												return
+											}
+										}
+									} else {
+										err = e
+										return
 									}
-								} else {
-									err = e
-									return
+									continue variant_tmp_47 // next tag for variant<int32, fixedpoint<3, 0>, string, *Vector2>
 								}
-								continue variant_tmp_47 // next tag for variant<int32, fixedpoint<3, 0>, string, *Vector2>
-							}
 							}
 							if err = tmpi.SkipField(tmpg); err != nil {
 								return
@@ -4816,57 +4816,57 @@ func (s *Fighter) Deserialize(input *tygo.ProtoBuf) (err error) {
 												return
 											}
 											switch tmpig >> 3 {
-										case 1:
-											if tmpig == 8 { // MAKE_TAG(1, WireVarint=0)
-												// type: Corpus
-												if x, e := tmpii.ReadVarint(); e == nil {
-													tmp_49 = Corpus(x)
-												} else {
-													err = e
-													return
-												}
-												continue variant_tmp_50 // next tag for variant<Corpus, float64, string, *Vector2>
-											}
-										case 2:
-											if tmpig == 17 { // MAKE_TAG(2, WireFixed64=1)
-												// type: float64
-												if x, e := tmpii.ReadFixed64(); e == nil {
-													tmp_49 = math.Float64frombits(x)
-												} else {
-													err = e
-													return
-												}
-												continue variant_tmp_50 // next tag for variant<Corpus, float64, string, *Vector2>
-											}
-										case 3:
-											if tmpig == 26 { // MAKE_TAG(3, WireBytes=2)
-												// type: string
-												if x, e := tmpii.ReadBuf(); e == nil {
-													tmp_49 = string(x)
-												} else {
-													err = e
-													return
-												}
-												continue variant_tmp_50 // next tag for variant<Corpus, float64, string, *Vector2>
-											}
-										case 4:
-											if tmpig == 34 { // MAKE_TAG(4, WireBytes=2)
-												// type: *Vector2
-												if x, e := tmpii.ReadBuf(); e == nil {
-													if tmp_49 == nil {
-														tmp_49 = &Vector2{}
+											case 1:
+												if tmpig == 8 { // MAKE_TAG(1, WireVarint=0)
+													// type: Corpus
+													if x, e := tmpii.ReadVarint(); e == nil {
+														tmp_49 = Corpus(x)
+													} else {
+														err = e
+														return
 													}
-													if len(x) > 0 {
-														if err = tmp_49.(*Vector2).Deserialize(&tygo.ProtoBuf{Buffer: x}); err != nil {
-															return
+													continue variant_tmp_50 // next tag for variant<Corpus, float64, string, *Vector2>
+												}
+											case 2:
+												if tmpig == 17 { // MAKE_TAG(2, WireFixed64=1)
+													// type: float64
+													if x, e := tmpii.ReadFixed64(); e == nil {
+														tmp_49 = math.Float64frombits(x)
+													} else {
+														err = e
+														return
+													}
+													continue variant_tmp_50 // next tag for variant<Corpus, float64, string, *Vector2>
+												}
+											case 3:
+												if tmpig == 26 { // MAKE_TAG(3, WireBytes=2)
+													// type: string
+													if x, e := tmpii.ReadBuf(); e == nil {
+														tmp_49 = string(x)
+													} else {
+														err = e
+														return
+													}
+													continue variant_tmp_50 // next tag for variant<Corpus, float64, string, *Vector2>
+												}
+											case 4:
+												if tmpig == 34 { // MAKE_TAG(4, WireBytes=2)
+													// type: *Vector2
+													if x, e := tmpii.ReadBuf(); e == nil {
+														if tmp_49 == nil {
+															tmp_49 = &Vector2{}
 														}
+														if len(x) > 0 {
+															if err = tmp_49.(*Vector2).Deserialize(&tygo.ProtoBuf{Buffer: x}); err != nil {
+																return
+															}
+														}
+													} else {
+														err = e
+														return
 													}
-												} else {
-													err = e
-													return
+													continue variant_tmp_50 // next tag for variant<Corpus, float64, string, *Vector2>
 												}
-												continue variant_tmp_50 // next tag for variant<Corpus, float64, string, *Vector2>
-											}
 											}
 											if err = tmpii.SkipField(tmpig); err != nil {
 												return
@@ -4950,57 +4950,57 @@ func (s *Fighter) Deserialize(input *tygo.ProtoBuf) (err error) {
 													return
 												}
 												switch tmpig >> 3 {
-											case 1:
-												if tmpig == 8 { // MAKE_TAG(1, WireVarint=0)
-													// type: Corpus
-													if x, e := tmpii.ReadVarint(); e == nil {
-														tmp_53 = Corpus(x)
-													} else {
-														err = e
-														return
-													}
-													continue variant_tmp_54 // next tag for variant<Corpus, float64, string, *Vector2>
-												}
-											case 2:
-												if tmpig == 17 { // MAKE_TAG(2, WireFixed64=1)
-													// type: float64
-													if x, e := tmpii.ReadFixed64(); e == nil {
-														tmp_53 = math.Float64frombits(x)
-													} else {
-														err = e
-														return
-													}
-													continue variant_tmp_54 // next tag for variant<Corpus, float64, string, *Vector2>
-												}
-											case 3:
-												if tmpig == 26 { // MAKE_TAG(3, WireBytes=2)
-													// type: string
-													if x, e := tmpii.ReadBuf(); e == nil {
-														tmp_53 = string(x)
-													} else {
-														err = e
-														return
-													}
-													continue variant_tmp_54 // next tag for variant<Corpus, float64, string, *Vector2>
-												}
-											case 4:
-												if tmpig == 34 { // MAKE_TAG(4, WireBytes=2)
-													// type: *Vector2
-													if x, e := tmpii.ReadBuf(); e == nil {
-														if tmp_53 == nil {
-															tmp_53 = &Vector2{}
+												case 1:
+													if tmpig == 8 { // MAKE_TAG(1, WireVarint=0)
+														// type: Corpus
+														if x, e := tmpii.ReadVarint(); e == nil {
+															tmp_53 = Corpus(x)
+														} else {
+															err = e
+															return
 														}
-														if len(x) > 0 {
-															if err = tmp_53.(*Vector2).Deserialize(&tygo.ProtoBuf{Buffer: x}); err != nil {
-																return
+														continue variant_tmp_54 // next tag for variant<Corpus, float64, string, *Vector2>
+													}
+												case 2:
+													if tmpig == 17 { // MAKE_TAG(2, WireFixed64=1)
+														// type: float64
+														if x, e := tmpii.ReadFixed64(); e == nil {
+															tmp_53 = math.Float64frombits(x)
+														} else {
+															err = e
+															return
+														}
+														continue variant_tmp_54 // next tag for variant<Corpus, float64, string, *Vector2>
+													}
+												case 3:
+													if tmpig == 26 { // MAKE_TAG(3, WireBytes=2)
+														// type: string
+														if x, e := tmpii.ReadBuf(); e == nil {
+															tmp_53 = string(x)
+														} else {
+															err = e
+															return
+														}
+														continue variant_tmp_54 // next tag for variant<Corpus, float64, string, *Vector2>
+													}
+												case 4:
+													if tmpig == 34 { // MAKE_TAG(4, WireBytes=2)
+														// type: *Vector2
+														if x, e := tmpii.ReadBuf(); e == nil {
+															if tmp_53 == nil {
+																tmp_53 = &Vector2{}
 															}
+															if len(x) > 0 {
+																if err = tmp_53.(*Vector2).Deserialize(&tygo.ProtoBuf{Buffer: x}); err != nil {
+																	return
+																}
+															}
+														} else {
+															err = e
+															return
 														}
-													} else {
-														err = e
-														return
+														continue variant_tmp_54 // next tag for variant<Corpus, float64, string, *Vector2>
 													}
-													continue variant_tmp_54 // next tag for variant<Corpus, float64, string, *Vector2>
-												}
 												}
 												if err = tmpii.SkipField(tmpig); err != nil {
 													return
@@ -5213,68 +5213,68 @@ func (s *Fighter) Deserialize(input *tygo.ProtoBuf) (err error) {
 																	return
 																}
 																switch tmpiig >> 3 {
-															case 1:
-																if tmpiig == 8 { // MAKE_TAG(1, WireVarint=0)
-																	// type: int32
-																	if x, e := tmpiii.ReadVarint(); e == nil {
-																		tmp_61 = int32(x)
-																	} else {
-																		err = e
-																		return
-																	}
-																	continue variant_tmp_62 // next tag for variant<int32, Corpus, float64, string, *Vector2>
-																}
-															case 2:
-																if tmpiig == 16 { // MAKE_TAG(2, WireVarint=0)
-																	// type: Corpus
-																	if x, e := tmpiii.ReadVarint(); e == nil {
-																		tmp_61 = Corpus(x)
-																	} else {
-																		err = e
-																		return
-																	}
-																	continue variant_tmp_62 // next tag for variant<int32, Corpus, float64, string, *Vector2>
-																}
-															case 3:
-																if tmpiig == 25 { // MAKE_TAG(3, WireFixed64=1)
-																	// type: float64
-																	if x, e := tmpiii.ReadFixed64(); e == nil {
-																		tmp_61 = math.Float64frombits(x)
-																	} else {
-																		err = e
-																		return
-																	}
-																	continue variant_tmp_62 // next tag for variant<int32, Corpus, float64, string, *Vector2>
-																}
-															case 4:
-																if tmpiig == 34 { // MAKE_TAG(4, WireBytes=2)
-																	// type: string
-																	if x, e := tmpiii.ReadBuf(); e == nil {
-																		tmp_61 = string(x)
-																	} else {
-																		err = e
-																		return
-																	}
-																	continue variant_tmp_62 // next tag for variant<int32, Corpus, float64, string, *Vector2>
-																}
-															case 5:
-																if tmpiig == 42 { // MAKE_TAG(5, WireBytes=2)
-																	// type: *Vector2
-																	if x, e := tmpiii.ReadBuf(); e == nil {
-																		if tmp_61 == nil {
-																			tmp_61 = &Vector2{}
+																case 1:
+																	if tmpiig == 8 { // MAKE_TAG(1, WireVarint=0)
+																		// type: int32
+																		if x, e := tmpiii.ReadVarint(); e == nil {
+																			tmp_61 = int32(x)
+																		} else {
+																			err = e
+																			return
 																		}
-																		if len(x) > 0 {
-																			if err = tmp_61.(*Vector2).Deserialize(&tygo.ProtoBuf{Buffer: x}); err != nil {
-																				return
+																		continue variant_tmp_62 // next tag for variant<int32, Corpus, float64, string, *Vector2>
+																	}
+																case 2:
+																	if tmpiig == 16 { // MAKE_TAG(2, WireVarint=0)
+																		// type: Corpus
+																		if x, e := tmpiii.ReadVarint(); e == nil {
+																			tmp_61 = Corpus(x)
+																		} else {
+																			err = e
+																			return
+																		}
+																		continue variant_tmp_62 // next tag for variant<int32, Corpus, float64, string, *Vector2>
+																	}
+																case 3:
+																	if tmpiig == 25 { // MAKE_TAG(3, WireFixed64=1)
+																		// type: float64
+																		if x, e := tmpiii.ReadFixed64(); e == nil {
+																			tmp_61 = math.Float64frombits(x)
+																		} else {
+																			err = e
+																			return
+																		}
+																		continue variant_tmp_62 // next tag for variant<int32, Corpus, float64, string, *Vector2>
+																	}
+																case 4:
+																	if tmpiig == 34 { // MAKE_TAG(4, WireBytes=2)
+																		// type: string
+																		if x, e := tmpiii.ReadBuf(); e == nil {
+																			tmp_61 = string(x)
+																		} else {
+																			err = e
+																			return
+																		}
+																		continue variant_tmp_62 // next tag for variant<int32, Corpus, float64, string, *Vector2>
+																	}
+																case 5:
+																	if tmpiig == 42 { // MAKE_TAG(5, WireBytes=2)
+																		// type: *Vector2
+																		if x, e := tmpiii.ReadBuf(); e == nil {
+																			if tmp_61 == nil {
+																				tmp_61 = &Vector2{}
 																			}
+																			if len(x) > 0 {
+																				if err = tmp_61.(*Vector2).Deserialize(&tygo.ProtoBuf{Buffer: x}); err != nil {
+																					return
+																				}
+																			}
+																		} else {
+																			err = e
+																			return
 																		}
-																	} else {
-																		err = e
-																		return
+																		continue variant_tmp_62 // next tag for variant<int32, Corpus, float64, string, *Vector2>
 																	}
-																	continue variant_tmp_62 // next tag for variant<int32, Corpus, float64, string, *Vector2>
-																}
 																}
 																if err = tmpiii.SkipField(tmpiig); err != nil {
 																	return
@@ -5462,17 +5462,17 @@ func (s *Fighter) Deserialize(input *tygo.ProtoBuf) (err error) {
 							return
 						}
 						switch tmpg >> 3 {
-					case 2:
-						if tmpg == 16 { // MAKE_TAG(2, WireVarint=0)
-							// type: int32
-							if x, e := tmpi.ReadVarint(); e == nil {
-								s.Nv = int32(x)
-							} else {
-								err = e
-								return
+						case 2:
+							if tmpg == 16 { // MAKE_TAG(2, WireVarint=0)
+								// type: int32
+								if x, e := tmpi.ReadVarint(); e == nil {
+									s.Nv = int32(x)
+								} else {
+									err = e
+									return
+								}
+								continue variant_tmp_67 // next tag for variant<nil, int32>
 							}
-							continue variant_tmp_67 // next tag for variant<nil, int32>
-						}
 						}
 						if err = tmpi.SkipField(tmpg); err != nil {
 							return
@@ -5502,69 +5502,69 @@ func (s *Fighter) Deserialize(input *tygo.ProtoBuf) (err error) {
 							return
 						}
 						switch tmpg >> 3 {
-					case 1:
-						if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
-							// type: int32
-							if x, e := tmpi.ReadVarint(); e == nil {
-								s.Lv = int32(x)
-							} else {
-								err = e
-								return
-							}
-							continue variant_tmp_68 // next tag for variant<int32, []variant<float32, string>>
-						}
-					case 2:
-						if tmpg == 18 { // MAKE_TAG(2, WireBytes=2)
-							// type: []variant<float32, string>
-							loop_tmp_69: for {
-								var tmp_69 interface{}
-								// type: variant<float32, string>
-								if x, e := tmpi.ReadBuf(); e == nil {
-									tmpii := &tygo.ProtoBuf{Buffer: x}
-									variant_tmp_70: for !tmpii.ExpectEnd() {
-										var tmpig int
-										if tmpig, err = tmpii.ReadTag(127); err != nil {
-											return
-										}
-										switch tmpig >> 3 {
-									case 1:
-										if tmpig == 13 { // MAKE_TAG(1, WireFixed32=5)
-											// type: float32
-											if x, e := tmpii.ReadFixed32(); e == nil {
-												tmp_69 = math.Float32frombits(x)
-											} else {
-												err = e
-												return
-											}
-											continue variant_tmp_70 // next tag for variant<float32, string>
-										}
-									case 2:
-										if tmpig == 18 { // MAKE_TAG(2, WireBytes=2)
-											// type: string
-											if x, e := tmpii.ReadBuf(); e == nil {
-												tmp_69 = string(x)
-											} else {
-												err = e
-												return
-											}
-											continue variant_tmp_70 // next tag for variant<float32, string>
-										}
-										}
-										if err = tmpii.SkipField(tmpig); err != nil {
-											return
-										}
-									}
+						case 1:
+							if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
+								// type: int32
+								if x, e := tmpi.ReadVarint(); e == nil {
+									s.Lv = int32(x)
 								} else {
 									err = e
 									return
 								}
-								s.Lv = append(s.Lv.([]interface{}), tmp_69)
-								if !tmpi.ExpectBytes(18) { // tag: 18 MAKE_TAG(2, WireBytes=2)
-									break loop_tmp_69 // end for []variant<float32, string>
-								}
+								continue variant_tmp_68 // next tag for variant<int32, []variant<float32, string>>
 							}
-							continue variant_tmp_68 // next tag for variant<int32, []variant<float32, string>>
-						}
+						case 2:
+							if tmpg == 18 { // MAKE_TAG(2, WireBytes=2)
+								// type: []variant<float32, string>
+								loop_tmp_69: for {
+									var tmp_69 interface{}
+									// type: variant<float32, string>
+									if x, e := tmpi.ReadBuf(); e == nil {
+										tmpii := &tygo.ProtoBuf{Buffer: x}
+										variant_tmp_70: for !tmpii.ExpectEnd() {
+											var tmpig int
+											if tmpig, err = tmpii.ReadTag(127); err != nil {
+												return
+											}
+											switch tmpig >> 3 {
+											case 1:
+												if tmpig == 13 { // MAKE_TAG(1, WireFixed32=5)
+													// type: float32
+													if x, e := tmpii.ReadFixed32(); e == nil {
+														tmp_69 = math.Float32frombits(x)
+													} else {
+														err = e
+														return
+													}
+													continue variant_tmp_70 // next tag for variant<float32, string>
+												}
+											case 2:
+												if tmpig == 18 { // MAKE_TAG(2, WireBytes=2)
+													// type: string
+													if x, e := tmpii.ReadBuf(); e == nil {
+														tmp_69 = string(x)
+													} else {
+														err = e
+														return
+													}
+													continue variant_tmp_70 // next tag for variant<float32, string>
+												}
+											}
+											if err = tmpii.SkipField(tmpig); err != nil {
+												return
+											}
+										}
+									} else {
+										err = e
+										return
+									}
+									s.Lv = append(s.Lv.([]interface{}), tmp_69)
+									if !tmpi.ExpectBytes(18) { // tag: 18 MAKE_TAG(2, WireBytes=2)
+										break loop_tmp_69 // end for []variant<float32, string>
+									}
+								}
+								continue variant_tmp_68 // next tag for variant<int32, []variant<float32, string>>
+							}
 						}
 						if err = tmpi.SkipField(tmpg); err != nil {
 							return
@@ -5594,54 +5594,54 @@ func (s *Fighter) Deserialize(input *tygo.ProtoBuf) (err error) {
 							return
 						}
 						switch tmpg >> 3 {
-					case 1:
-						if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
-							// type: int32
-							if x, e := tmpi.ReadVarint(); e == nil {
-								s.Flv = int32(x)
-							} else {
-								err = e
-								return
+						case 1:
+							if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
+								// type: int32
+								if x, e := tmpi.ReadVarint(); e == nil {
+									s.Flv = int32(x)
+								} else {
+									err = e
+									return
+								}
+								continue variant_tmp_71 // next tag for variant<int32, []float32>
 							}
-							continue variant_tmp_71 // next tag for variant<int32, []float32>
-						}
-					case 2:
-						if tmpg == 21 { // MAKE_TAG(2, WireFixed32=5)
-							// type: []float32
+						case 2:
 							if tmpg == 21 { // MAKE_TAG(2, WireFixed32=5)
-								loop_tmp_72: for {
+								// type: []float32
+								if tmpg == 21 { // MAKE_TAG(2, WireFixed32=5)
+									loop_tmp_72: for {
+										var tmp_72 float32
+										// type: float32
+										if x, e := tmpi.ReadFixed32(); e == nil {
+											tmp_72 = math.Float32frombits(x)
+										} else {
+											err = e
+											return
+										}
+										s.Flv = append(s.Flv.([]float32), tmp_72)
+										if !tmpi.ExpectBytes(21) { // tag: 21 MAKE_TAG(2, WireFixed32=5)
+											break loop_tmp_72 // end for []float32
+										}
+									}
+								} else if x, e := tmpi.ReadBuf(); e == nil {
+									tmpii := &tygo.ProtoBuf{Buffer: x}
 									var tmp_72 float32
-									// type: float32
-									if x, e := tmpi.ReadFixed32(); e == nil {
-										tmp_72 = math.Float32frombits(x)
-									} else {
-										err = e
-										return
+									for !tmpii.ExpectEnd() {
+										// type: float32
+										if x, e := tmpii.ReadFixed32(); e == nil {
+											tmp_72 = math.Float32frombits(x)
+										} else {
+											err = e
+											return
+										}
 									}
 									s.Flv = append(s.Flv.([]float32), tmp_72)
-									if !tmpi.ExpectBytes(21) { // tag: 21 MAKE_TAG(2, WireFixed32=5)
-										break loop_tmp_72 // end for []float32
-									}
+								} else {
+									err = e
+									return
 								}
-							} else if x, e := tmpi.ReadBuf(); e == nil {
-								tmpii := &tygo.ProtoBuf{Buffer: x}
-								var tmp_72 float32
-								for !tmpii.ExpectEnd() {
-									// type: float32
-									if x, e := tmpii.ReadFixed32(); e == nil {
-										tmp_72 = math.Float32frombits(x)
-									} else {
-										err = e
-										return
-									}
-								}
-								s.Flv = append(s.Flv.([]float32), tmp_72)
-							} else {
-								err = e
-								return
+								continue variant_tmp_71 // next tag for variant<int32, []float32>
 							}
-							continue variant_tmp_71 // next tag for variant<int32, []float32>
-						}
 						}
 						if err = tmpi.SkipField(tmpg); err != nil {
 							return
@@ -5671,112 +5671,112 @@ func (s *Fighter) Deserialize(input *tygo.ProtoBuf) (err error) {
 							return
 						}
 						switch tmpg >> 3 {
-					case 1:
-						if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
-							// type: int32
-							if x, e := tmpi.ReadVarint(); e == nil {
-								s.Dv = int32(x)
-							} else {
-								err = e
-								return
-							}
-							continue variant_tmp_73 // next tag for variant<int32, map[int32]variant<float32, string>>
-						}
-					case 2:
-						if tmpg == 18 { // MAKE_TAG(2, WireBytes=2)
-							// type: map[int32]variant<float32, string>
-							loop_tmp_74: for {
-								if x, e := tmpi.ReadBuf(); e == nil {
-									tmpii := &tygo.ProtoBuf{Buffer: x}
-									var tmp_74 int32
-									var tmp_75 interface{}
-									dict_tmp_74: for !tmpii.ExpectEnd() {
-										var tmpig int
-										if tmpig, err = tmpii.ReadTag(127); err != nil {
-											return
-										}
-										switch_tmp_74: switch tmpig >> 3 {
-										// dict key
-										case 1:
-											if tmpig == 8 { // MAKE_TAG(1, WireVarint=0)
-												// type: int32
-												if x, e := tmpii.ReadVarint(); e == nil {
-													tmp_74 = int32(x)
-												} else {
-													err = e
-													return
-												}
-												if !tmpii.ExpectBytes(18) { // tag: 18 MAKE_TAG(2, WireBytes=2)
-													continue dict_tmp_74 // next tag for map[int32]variant<float32, string>
-												}
-												tmpig = 18 // fallthrough case 2
-											} else {
-												break switch_tmp_74 // skip tag
-											}
-											fallthrough
-										case 2:
-											if tmpig == 18 { // MAKE_TAG(2, WireBytes=2)
-												// type: variant<float32, string>
-												if x, e := tmpii.ReadBuf(); e == nil {
-													tmpiii := &tygo.ProtoBuf{Buffer: x}
-													variant_tmp_76: for !tmpiii.ExpectEnd() {
-														var tmpiig int
-														if tmpiig, err = tmpiii.ReadTag(127); err != nil {
-															return
-														}
-														switch tmpiig >> 3 {
-													case 1:
-														if tmpiig == 13 { // MAKE_TAG(1, WireFixed32=5)
-															// type: float32
-															if x, e := tmpiii.ReadFixed32(); e == nil {
-																tmp_75 = math.Float32frombits(x)
-															} else {
-																err = e
-																return
-															}
-															continue variant_tmp_76 // next tag for variant<float32, string>
-														}
-													case 2:
-														if tmpiig == 18 { // MAKE_TAG(2, WireBytes=2)
-															// type: string
-															if x, e := tmpiii.ReadBuf(); e == nil {
-																tmp_75 = string(x)
-															} else {
-																err = e
-																return
-															}
-															continue variant_tmp_76 // next tag for variant<float32, string>
-														}
-														}
-														if err = tmpiii.SkipField(tmpiig); err != nil {
-															return
-														}
-													}
-												} else {
-													err = e
-													return
-												}
-												if tmpii.ExpectEnd() {
-													break dict_tmp_74 // end for map[int32]variant<float32, string>
-												}
-												continue dict_tmp_74 // next tag for map[int32]variant<float32, string>
-											}
-										}
-										if err = tmpii.SkipField(tmpig); err != nil {
-											return
-										}
-									}
-									s.Dv.(map[int32]interface{})[tmp_74] = tmp_75
+						case 1:
+							if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
+								// type: int32
+								if x, e := tmpi.ReadVarint(); e == nil {
+									s.Dv = int32(x)
 								} else {
 									err = e
 									return
 								}
-								if !tmpi.ExpectBytes(18) { // tag: 18 MAKE_TAG(2, WireBytes=2)
-									break loop_tmp_74 // end for map[int32]variant<float32, string>
-								}
+								continue variant_tmp_73 // next tag for variant<int32, map[int32]variant<float32, string>>
 							}
-							continue variant_tmp_73 // next tag for variant<int32, map[int32]variant<float32, string>>
-						}
+						case 2:
+							if tmpg == 18 { // MAKE_TAG(2, WireBytes=2)
+								// type: map[int32]variant<float32, string>
+								loop_tmp_74: for {
+									if x, e := tmpi.ReadBuf(); e == nil {
+										tmpii := &tygo.ProtoBuf{Buffer: x}
+										var tmp_74 int32
+										var tmp_75 interface{}
+										dict_tmp_74: for !tmpii.ExpectEnd() {
+											var tmpig int
+											if tmpig, err = tmpii.ReadTag(127); err != nil {
+												return
+											}
+											switch_tmp_74: switch tmpig >> 3 {
+											// dict key
+											case 1:
+												if tmpig == 8 { // MAKE_TAG(1, WireVarint=0)
+													// type: int32
+													if x, e := tmpii.ReadVarint(); e == nil {
+														tmp_74 = int32(x)
+													} else {
+														err = e
+														return
+													}
+													if !tmpii.ExpectBytes(18) { // tag: 18 MAKE_TAG(2, WireBytes=2)
+														continue dict_tmp_74 // next tag for map[int32]variant<float32, string>
+													}
+													tmpig = 18 // fallthrough case 2
+												} else {
+													break switch_tmp_74 // skip tag
+												}
+												fallthrough
+											case 2:
+												if tmpig == 18 { // MAKE_TAG(2, WireBytes=2)
+													// type: variant<float32, string>
+													if x, e := tmpii.ReadBuf(); e == nil {
+														tmpiii := &tygo.ProtoBuf{Buffer: x}
+														variant_tmp_76: for !tmpiii.ExpectEnd() {
+															var tmpiig int
+															if tmpiig, err = tmpiii.ReadTag(127); err != nil {
+																return
+															}
+															switch tmpiig >> 3 {
+															case 1:
+																if tmpiig == 13 { // MAKE_TAG(1, WireFixed32=5)
+																	// type: float32
+																	if x, e := tmpiii.ReadFixed32(); e == nil {
+																		tmp_75 = math.Float32frombits(x)
+																	} else {
+																		err = e
+																		return
+																	}
+																	continue variant_tmp_76 // next tag for variant<float32, string>
+																}
+															case 2:
+																if tmpiig == 18 { // MAKE_TAG(2, WireBytes=2)
+																	// type: string
+																	if x, e := tmpiii.ReadBuf(); e == nil {
+																		tmp_75 = string(x)
+																	} else {
+																		err = e
+																		return
+																	}
+																	continue variant_tmp_76 // next tag for variant<float32, string>
+																}
+															}
+															if err = tmpiii.SkipField(tmpiig); err != nil {
+																return
+															}
+														}
+													} else {
+														err = e
+														return
+													}
+													if tmpii.ExpectEnd() {
+														break dict_tmp_74 // end for map[int32]variant<float32, string>
+													}
+													continue dict_tmp_74 // next tag for map[int32]variant<float32, string>
+												}
+											}
+											if err = tmpii.SkipField(tmpig); err != nil {
+												return
+											}
+										}
+										s.Dv.(map[int32]interface{})[tmp_74] = tmp_75
+									} else {
+										err = e
+										return
+									}
+									if !tmpi.ExpectBytes(18) { // tag: 18 MAKE_TAG(2, WireBytes=2)
+										break loop_tmp_74 // end for map[int32]variant<float32, string>
+									}
+								}
+								continue variant_tmp_73 // next tag for variant<int32, map[int32]variant<float32, string>>
+							}
 						}
 						if err = tmpi.SkipField(tmpg); err != nil {
 							return
@@ -5806,79 +5806,79 @@ func (s *Fighter) Deserialize(input *tygo.ProtoBuf) (err error) {
 							return
 						}
 						switch tmpg >> 3 {
-					case 1:
-						if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
-							// type: int32
-							if x, e := tmpi.ReadVarint(); e == nil {
-								s.Fdv = int32(x)
-							} else {
-								err = e
-								return
-							}
-							continue variant_tmp_77 // next tag for variant<int32, map[int32]float32>
-						}
-					case 2:
-						if tmpg == 18 { // MAKE_TAG(2, WireBytes=2)
-							// type: map[int32]float32
-							loop_tmp_78: for {
-								if x, e := tmpi.ReadBuf(); e == nil {
-									tmpii := &tygo.ProtoBuf{Buffer: x}
-									var tmp_78 int32
-									var tmp_79 float32
-									dict_tmp_78: for !tmpii.ExpectEnd() {
-										var tmpig int
-										if tmpig, err = tmpii.ReadTag(127); err != nil {
-											return
-										}
-										switch_tmp_78: switch tmpig >> 3 {
-										// dict key
-										case 1:
-											if tmpig == 8 { // MAKE_TAG(1, WireVarint=0)
-												// type: int32
-												if x, e := tmpii.ReadVarint(); e == nil {
-													tmp_78 = int32(x)
-												} else {
-													err = e
-													return
-												}
-												if !tmpii.ExpectBytes(21) { // tag: 21 MAKE_TAG(2, WireFixed32=5)
-													continue dict_tmp_78 // next tag for map[int32]float32
-												}
-												tmpig = 21 // fallthrough case 2
-											} else {
-												break switch_tmp_78 // skip tag
-											}
-											fallthrough
-										case 2:
-											if tmpig == 21 { // MAKE_TAG(2, WireFixed32=5)
-												// type: float32
-												if x, e := tmpii.ReadFixed32(); e == nil {
-													tmp_79 = math.Float32frombits(x)
-												} else {
-													err = e
-													return
-												}
-												if tmpii.ExpectEnd() {
-													break dict_tmp_78 // end for map[int32]float32
-												}
-												continue dict_tmp_78 // next tag for map[int32]float32
-											}
-										}
-										if err = tmpii.SkipField(tmpig); err != nil {
-											return
-										}
-									}
-									s.Fdv.(map[int32]float32)[tmp_78] = tmp_79
+						case 1:
+							if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
+								// type: int32
+								if x, e := tmpi.ReadVarint(); e == nil {
+									s.Fdv = int32(x)
 								} else {
 									err = e
 									return
 								}
-								if !tmpi.ExpectBytes(18) { // tag: 18 MAKE_TAG(2, WireBytes=2)
-									break loop_tmp_78 // end for map[int32]float32
-								}
+								continue variant_tmp_77 // next tag for variant<int32, map[int32]float32>
 							}
-							continue variant_tmp_77 // next tag for variant<int32, map[int32]float32>
-						}
+						case 2:
+							if tmpg == 18 { // MAKE_TAG(2, WireBytes=2)
+								// type: map[int32]float32
+								loop_tmp_78: for {
+									if x, e := tmpi.ReadBuf(); e == nil {
+										tmpii := &tygo.ProtoBuf{Buffer: x}
+										var tmp_78 int32
+										var tmp_79 float32
+										dict_tmp_78: for !tmpii.ExpectEnd() {
+											var tmpig int
+											if tmpig, err = tmpii.ReadTag(127); err != nil {
+												return
+											}
+											switch_tmp_78: switch tmpig >> 3 {
+											// dict key
+											case 1:
+												if tmpig == 8 { // MAKE_TAG(1, WireVarint=0)
+													// type: int32
+													if x, e := tmpii.ReadVarint(); e == nil {
+														tmp_78 = int32(x)
+													} else {
+														err = e
+														return
+													}
+													if !tmpii.ExpectBytes(21) { // tag: 21 MAKE_TAG(2, WireFixed32=5)
+														continue dict_tmp_78 // next tag for map[int32]float32
+													}
+													tmpig = 21 // fallthrough case 2
+												} else {
+													break switch_tmp_78 // skip tag
+												}
+												fallthrough
+											case 2:
+												if tmpig == 21 { // MAKE_TAG(2, WireFixed32=5)
+													// type: float32
+													if x, e := tmpii.ReadFixed32(); e == nil {
+														tmp_79 = math.Float32frombits(x)
+													} else {
+														err = e
+														return
+													}
+													if tmpii.ExpectEnd() {
+														break dict_tmp_78 // end for map[int32]float32
+													}
+													continue dict_tmp_78 // next tag for map[int32]float32
+												}
+											}
+											if err = tmpii.SkipField(tmpig); err != nil {
+												return
+											}
+										}
+										s.Fdv.(map[int32]float32)[tmp_78] = tmp_79
+									} else {
+										err = e
+										return
+									}
+									if !tmpi.ExpectBytes(18) { // tag: 18 MAKE_TAG(2, WireBytes=2)
+										break loop_tmp_78 // end for map[int32]float32
+									}
+								}
+								continue variant_tmp_77 // next tag for variant<int32, map[int32]float32>
+							}
 						}
 						if err = tmpi.SkipField(tmpg); err != nil {
 							return
@@ -6012,17 +6012,17 @@ func (s *Fighter) DeserializeRPGParam(data []byte) (a0 *Fighter, a1 interface{},
 							return
 						}
 						switch tmpg >> 3 {
-					case 2:
-						if tmpg == 16 { // MAKE_TAG(2, WireVarint=0)
-							// type: int32
-							if x, e := tmpi.ReadVarint(); e == nil {
-								a1 = int32(x)
-							} else {
-								err = e
-								return
+						case 2:
+							if tmpg == 16 { // MAKE_TAG(2, WireVarint=0)
+								// type: int32
+								if x, e := tmpi.ReadVarint(); e == nil {
+									a1 = int32(x)
+								} else {
+									err = e
+									return
+								}
+								continue variant_tmp_29 // next tag for variant<nil, int32>
 							}
-							continue variant_tmp_29 // next tag for variant<nil, int32>
-						}
 						}
 						if err = tmpi.SkipField(tmpg); err != nil {
 							return
@@ -6192,17 +6192,17 @@ func (s *Fighter) DeserializeRPGResult(data []byte) (a0 *Fighter, a1 interface{}
 							return
 						}
 						switch tmpg >> 3 {
-					case 2:
-						if tmpg == 16 { // MAKE_TAG(2, WireVarint=0)
-							// type: int32
-							if x, e := tmpi.ReadVarint(); e == nil {
-								a1 = int32(x)
-							} else {
-								err = e
-								return
+						case 2:
+							if tmpg == 16 { // MAKE_TAG(2, WireVarint=0)
+								// type: int32
+								if x, e := tmpi.ReadVarint(); e == nil {
+									a1 = int32(x)
+								} else {
+									err = e
+									return
+								}
+								continue variant_tmp_31 // next tag for variant<nil, int32>
 							}
-							continue variant_tmp_31 // next tag for variant<nil, int32>
-						}
 						}
 						if err = tmpi.SkipField(tmpg); err != nil {
 							return
@@ -6500,57 +6500,57 @@ func (s *Fighter) DeserializeGPRParam(data []byte) (a0 map[int32]interface{}, er
 												return
 											}
 											switch tmpig >> 3 {
-										case 1:
-											if tmpig == 8 { // MAKE_TAG(1, WireVarint=0)
-												// type: Corpus
-												if x, e := tmpii.ReadVarint(); e == nil {
-													tmp_34 = Corpus(x)
-												} else {
-													err = e
-													return
-												}
-												continue variant_tmp_35 // next tag for variant<Corpus, float64, string, *Vector2>
-											}
-										case 2:
-											if tmpig == 17 { // MAKE_TAG(2, WireFixed64=1)
-												// type: float64
-												if x, e := tmpii.ReadFixed64(); e == nil {
-													tmp_34 = math.Float64frombits(x)
-												} else {
-													err = e
-													return
-												}
-												continue variant_tmp_35 // next tag for variant<Corpus, float64, string, *Vector2>
-											}
-										case 3:
-											if tmpig == 26 { // MAKE_TAG(3, WireBytes=2)
-												// type: string
-												if x, e := tmpii.ReadBuf(); e == nil {
-													tmp_34 = string(x)
-												} else {
-													err = e
-													return
-												}
-												continue variant_tmp_35 // next tag for variant<Corpus, float64, string, *Vector2>
-											}
-										case 4:
-											if tmpig == 34 { // MAKE_TAG(4, WireBytes=2)
-												// type: *Vector2
-												if x, e := tmpii.ReadBuf(); e == nil {
-													if tmp_34 == nil {
-														tmp_34 = &Vector2{}
+											case 1:
+												if tmpig == 8 { // MAKE_TAG(1, WireVarint=0)
+													// type: Corpus
+													if x, e := tmpii.ReadVarint(); e == nil {
+														tmp_34 = Corpus(x)
+													} else {
+														err = e
+														return
 													}
-													if len(x) > 0 {
-														if err = tmp_34.(*Vector2).Deserialize(&tygo.ProtoBuf{Buffer: x}); err != nil {
-															return
+													continue variant_tmp_35 // next tag for variant<Corpus, float64, string, *Vector2>
+												}
+											case 2:
+												if tmpig == 17 { // MAKE_TAG(2, WireFixed64=1)
+													// type: float64
+													if x, e := tmpii.ReadFixed64(); e == nil {
+														tmp_34 = math.Float64frombits(x)
+													} else {
+														err = e
+														return
+													}
+													continue variant_tmp_35 // next tag for variant<Corpus, float64, string, *Vector2>
+												}
+											case 3:
+												if tmpig == 26 { // MAKE_TAG(3, WireBytes=2)
+													// type: string
+													if x, e := tmpii.ReadBuf(); e == nil {
+														tmp_34 = string(x)
+													} else {
+														err = e
+														return
+													}
+													continue variant_tmp_35 // next tag for variant<Corpus, float64, string, *Vector2>
+												}
+											case 4:
+												if tmpig == 34 { // MAKE_TAG(4, WireBytes=2)
+													// type: *Vector2
+													if x, e := tmpii.ReadBuf(); e == nil {
+														if tmp_34 == nil {
+															tmp_34 = &Vector2{}
 														}
+														if len(x) > 0 {
+															if err = tmp_34.(*Vector2).Deserialize(&tygo.ProtoBuf{Buffer: x}); err != nil {
+																return
+															}
+														}
+													} else {
+														err = e
+														return
 													}
-												} else {
-													err = e
-													return
+													continue variant_tmp_35 // next tag for variant<Corpus, float64, string, *Vector2>
 												}
-												continue variant_tmp_35 // next tag for variant<Corpus, float64, string, *Vector2>
-											}
 											}
 											if err = tmpii.SkipField(tmpig); err != nil {
 												return
@@ -6831,57 +6831,57 @@ func (s *Fighter) DeserializeGPRResult(data []byte) (a0 map[int32]interface{}, e
 												return
 											}
 											switch tmpig >> 3 {
-										case 1:
-											if tmpig == 8 { // MAKE_TAG(1, WireVarint=0)
-												// type: Corpus
-												if x, e := tmpii.ReadVarint(); e == nil {
-													tmp_38 = Corpus(x)
-												} else {
-													err = e
-													return
-												}
-												continue variant_tmp_39 // next tag for variant<Corpus, float64, string, *Vector2>
-											}
-										case 2:
-											if tmpig == 17 { // MAKE_TAG(2, WireFixed64=1)
-												// type: float64
-												if x, e := tmpii.ReadFixed64(); e == nil {
-													tmp_38 = math.Float64frombits(x)
-												} else {
-													err = e
-													return
-												}
-												continue variant_tmp_39 // next tag for variant<Corpus, float64, string, *Vector2>
-											}
-										case 3:
-											if tmpig == 26 { // MAKE_TAG(3, WireBytes=2)
-												// type: string
-												if x, e := tmpii.ReadBuf(); e == nil {
-													tmp_38 = string(x)
-												} else {
-													err = e
-													return
-												}
-												continue variant_tmp_39 // next tag for variant<Corpus, float64, string, *Vector2>
-											}
-										case 4:
-											if tmpig == 34 { // MAKE_TAG(4, WireBytes=2)
-												// type: *Vector2
-												if x, e := tmpii.ReadBuf(); e == nil {
-													if tmp_38 == nil {
-														tmp_38 = &Vector2{}
+											case 1:
+												if tmpig == 8 { // MAKE_TAG(1, WireVarint=0)
+													// type: Corpus
+													if x, e := tmpii.ReadVarint(); e == nil {
+														tmp_38 = Corpus(x)
+													} else {
+														err = e
+														return
 													}
-													if len(x) > 0 {
-														if err = tmp_38.(*Vector2).Deserialize(&tygo.ProtoBuf{Buffer: x}); err != nil {
-															return
+													continue variant_tmp_39 // next tag for variant<Corpus, float64, string, *Vector2>
+												}
+											case 2:
+												if tmpig == 17 { // MAKE_TAG(2, WireFixed64=1)
+													// type: float64
+													if x, e := tmpii.ReadFixed64(); e == nil {
+														tmp_38 = math.Float64frombits(x)
+													} else {
+														err = e
+														return
+													}
+													continue variant_tmp_39 // next tag for variant<Corpus, float64, string, *Vector2>
+												}
+											case 3:
+												if tmpig == 26 { // MAKE_TAG(3, WireBytes=2)
+													// type: string
+													if x, e := tmpii.ReadBuf(); e == nil {
+														tmp_38 = string(x)
+													} else {
+														err = e
+														return
+													}
+													continue variant_tmp_39 // next tag for variant<Corpus, float64, string, *Vector2>
+												}
+											case 4:
+												if tmpig == 34 { // MAKE_TAG(4, WireBytes=2)
+													// type: *Vector2
+													if x, e := tmpii.ReadBuf(); e == nil {
+														if tmp_38 == nil {
+															tmp_38 = &Vector2{}
 														}
+														if len(x) > 0 {
+															if err = tmp_38.(*Vector2).Deserialize(&tygo.ProtoBuf{Buffer: x}); err != nil {
+																return
+															}
+														}
+													} else {
+														err = e
+														return
 													}
-												} else {
-													err = e
-													return
+													continue variant_tmp_39 // next tag for variant<Corpus, float64, string, *Vector2>
 												}
-												continue variant_tmp_39 // next tag for variant<Corpus, float64, string, *Vector2>
-											}
 											}
 											if err = tmpii.SkipField(tmpig); err != nil {
 												return

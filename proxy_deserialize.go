@@ -531,11 +531,11 @@ func (t *VariantType) DeserializeGo(tag string, input string, name string, preFi
 		variant_s, variant_w, variant_p := ts.DeserializeGo(tempTag, tempInput, name, "", i+1, true)
 		pkgs = update(pkgs, variant_p)
 		cases = append(cases, fmt.Sprintf(`
-		case %d:
-			if %s == %d { // MAKE_TAG(%d, %s=%d)%s
-				continue variant_%s // next tag for %s
-			}`, i+1, tempTag, _MAKE_TAG(i+1, variant_w), i+1, variant_w, variant_w,
-			addIndent(variant_s, 3), v, t))
+			case %d:
+				if %s == %d { // MAKE_TAG(%d, %s=%d)%s
+					continue variant_%s // next tag for %s
+				}`, i+1, tempTag, _MAKE_TAG(i+1, variant_w), i+1, variant_w, variant_w,
+			addIndent(variant_s, 4), v, t))
 	}
 
 	return fmt.Sprintf(`
