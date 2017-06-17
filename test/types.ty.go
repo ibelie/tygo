@@ -878,6 +878,9 @@ object_tmp_2:
 					// type: map[int32]*Vector2
 					for {
 						if x, e := input.ReadBuf(); e == nil {
+							if s.Poss == nil {
+								s.Poss = make(map[int32]*Vector2)
+							}
 							tmpi := &tygo.ProtoBuf{Buffer: x}
 							var tmp_3 int32
 							var tmp_4 *Vector2
@@ -958,6 +961,9 @@ object_tmp_2:
 					// type: map[int32]float32
 					for {
 						if x, e := input.ReadBuf(); e == nil {
+							if s.Posi == nil {
+								s.Posi = make(map[int32]float32)
+							}
 							tmpi := &tygo.ProtoBuf{Buffer: x}
 							var tmp_5 int32
 							var tmp_6 float32
@@ -1144,6 +1150,9 @@ object_tmp_2:
 					// type: map[int32]*GoType
 					for {
 						if x, e := input.ReadBuf(); e == nil {
+							if s.Pyd == nil {
+								s.Pyd = make(map[int32]*GoType)
+							}
 							tmpi := &tygo.ProtoBuf{Buffer: x}
 							var tmp_11 int32
 							var tmp_12 *GoType
@@ -1800,6 +1809,9 @@ object_tmp_15:
 					// type: map[string]bytes
 					for {
 						if x, e := input.ReadBuf(); e == nil {
+							if s.Bd == nil {
+								s.Bd = make(map[string][]byte)
+							}
 							tmpi := &tygo.ProtoBuf{Buffer: x}
 							var tmp_19 string
 							var tmp_20 []byte
@@ -1874,6 +1886,9 @@ object_tmp_15:
 					// type: map[int32]string
 					for {
 						if x, e := input.ReadBuf(); e == nil {
+							if s.Sd == nil {
+								s.Sd = make(map[int32]string)
+							}
 							tmpi := &tygo.ProtoBuf{Buffer: x}
 							var tmp_21 int32
 							var tmp_22 string
@@ -1992,6 +2007,9 @@ object_tmp_15:
 					// type: map[int32]Corpus
 					for {
 						if x, e := input.ReadBuf(); e == nil {
+							if s.Ed == nil {
+								s.Ed = make(map[int32]Corpus)
+							}
 							tmpi := &tygo.ProtoBuf{Buffer: x}
 							var tmp_24 int32
 							var tmp_25 Corpus
@@ -4840,6 +4858,9 @@ object_tmp_40:
 					// type: map[int32]variant<Corpus, float64, string, *Vector2>
 					for {
 						if x, e := input.ReadBuf(); e == nil {
+							if s.Vd == nil {
+								s.Vd = make(map[int32]interface{})
+							}
 							tmpi := &tygo.ProtoBuf{Buffer: x}
 							var tmp_48 int32
 							var tmp_49 interface{}
@@ -4977,6 +4998,9 @@ object_tmp_40:
 					// type: map[int32][]variant<Corpus, float64, string, *Vector2>
 					for {
 						if x, e := input.ReadBuf(); e == nil {
+							if s.Ld == nil {
+								s.Ld = make(map[int32][]interface{})
+							}
 							tmpi := &tygo.ProtoBuf{Buffer: x}
 							var tmp_51 int32
 							var tmp_52 []interface{}
@@ -5123,6 +5147,9 @@ object_tmp_40:
 					// type: map[int32][]float32
 					for {
 						if x, e := input.ReadBuf(); e == nil {
+							if s.Fld == nil {
+								s.Fld = make(map[int32][]float32)
+							}
 							tmpi := &tygo.ProtoBuf{Buffer: x}
 							var tmp_55 int32
 							var tmp_56 []float32
@@ -5223,6 +5250,9 @@ object_tmp_40:
 					// type: map[int32]map[int32]variant<int32, Corpus, float64, string, *Vector2>
 					for {
 						if x, e := input.ReadBuf(); e == nil {
+							if s.Dd == nil {
+								s.Dd = make(map[int32]map[int32]interface{})
+							}
 							tmpi := &tygo.ProtoBuf{Buffer: x}
 							var tmp_58 int32
 							var tmp_59 map[int32]interface{}
@@ -5259,6 +5289,9 @@ object_tmp_40:
 											// type: map[int32]variant<int32, Corpus, float64, string, *Vector2>
 											for {
 												if x, e := tmpi.ReadBuf(); e == nil {
+													if tmp_59 == nil {
+														tmp_59 = make(map[int32]interface{})
+													}
 													tmpii := &tygo.ProtoBuf{Buffer: x}
 													var tmp_60 int32
 													var tmp_61 interface{}
@@ -5426,6 +5459,9 @@ object_tmp_40:
 					// type: map[int32]map[int32]float32
 					for {
 						if x, e := input.ReadBuf(); e == nil {
+							if s.Fdd == nil {
+								s.Fdd = make(map[int32]map[int32]float32)
+							}
 							tmpi := &tygo.ProtoBuf{Buffer: x}
 							var tmp_63 int32
 							var tmp_64 map[int32]float32
@@ -5462,6 +5498,9 @@ object_tmp_40:
 											// type: map[int32]float32
 											for {
 												if x, e := tmpi.ReadBuf(); e == nil {
+													if tmp_64 == nil {
+														tmp_64 = make(map[int32]float32)
+													}
 													tmpii := &tygo.ProtoBuf{Buffer: x}
 													var tmp_65 int32
 													var tmp_66 float32
@@ -5797,6 +5836,9 @@ object_tmp_40:
 										// type: map[int32]variant<float32, string>
 										for {
 											if x, e := tmpi.ReadBuf(); e == nil {
+												if s.Dv == nil {
+													s.Dv = make(map[int32]interface{})
+												}
 												tmpii := &tygo.ProtoBuf{Buffer: x}
 												var tmp_74 int32
 												var tmp_75 interface{}
@@ -5940,6 +5982,9 @@ object_tmp_40:
 										// type: map[int32]float32
 										for {
 											if x, e := tmpi.ReadBuf(); e == nil {
+												if s.Fdv == nil {
+													s.Fdv = make(map[int32]float32)
+												}
 												tmpii := &tygo.ProtoBuf{Buffer: x}
 												var tmp_78 int32
 												var tmp_79 float32
@@ -6596,6 +6641,9 @@ method_tmp_32:
 					// type: map[int32]variant<Corpus, float64, string, *Vector2>
 					for {
 						if x, e := input.ReadBuf(); e == nil {
+							if a0 == nil {
+								a0 = make(map[int32]interface{})
+							}
 							tmpi := &tygo.ProtoBuf{Buffer: x}
 							var tmp_33 int32
 							var tmp_34 interface{}
@@ -6935,6 +6983,9 @@ method_tmp_36:
 					// type: map[int32]variant<Corpus, float64, string, *Vector2>
 					for {
 						if x, e := input.ReadBuf(); e == nil {
+							if a0 == nil {
+								a0 = make(map[int32]interface{})
+							}
 							tmpi := &tygo.ProtoBuf{Buffer: x}
 							var tmp_37 int32
 							var tmp_38 interface{}

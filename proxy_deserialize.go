@@ -461,6 +461,9 @@ func (t *DictType) DeserializeGo(tag string, input string, name string, preField
 
 	dict_s := fmt.Sprintf(`
 	if x, e := %s.ReadBuf(); e == nil {
+		if %s == nil {
+			%s = make(map[%s]%s)
+		}
 		%s := &tygo.ProtoBuf{Buffer: x}
 		var %s %s
 		var %s %s
@@ -500,11 +503,12 @@ func (t *DictType) DeserializeGo(tag string, input string, name string, preField
 	} else {
 		err = e
 		return
-	}`, input, tempInput, k, key_t_s, v, value_t_s, k, tempInput, tempTag, tempTag, tempInput,
-		_MAKE_CUTOFF(2), k, _TAG_FIELD_STR(tempTag), tempTag, _MAKE_TAG(1, key_d_w),
-		key_d_w, key_d_w, addIndent(key_d_s, 5), tempInput, value_e, value_c, k, t, tempTag,
-		_MAKE_TAG(2, value_d_w), k, tempTag, _MAKE_TAG(2, value_d_w), value_d_w, value_d_w,
-		addIndent(value_d_s, 5), tempInput, k, t, k, t, tempInput, tempTag, name, assert, k, v)
+	}`, input, name, name, key_t_s, value_t_s, tempInput, k, key_t_s, v, value_t_s, k, tempInput,
+		tempTag, tempTag, tempInput, _MAKE_CUTOFF(2), k, _TAG_FIELD_STR(tempTag), tempTag,
+		_MAKE_TAG(1, key_d_w), key_d_w, key_d_w, addIndent(key_d_s, 5), tempInput, value_e,
+		value_c, k, t, tempTag, _MAKE_TAG(2, value_d_w), k, tempTag, _MAKE_TAG(2, value_d_w),
+		value_d_w, value_d_w, addIndent(value_d_s, 5), tempInput, k, t, k, t, tempInput,
+		tempTag, name, assert, k, v)
 
 	if tag_s == "" {
 		return fmt.Sprintf(`
