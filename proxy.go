@@ -229,8 +229,10 @@ func typeListGo(owner string, name string, typ string, ts []Type) (string, map[s
 		}
 
 		var listTag string
+		var listComment string
 		if l, ok := t.(*ListType); ok && l.E.IsPrimitive() {
-			listTag = fmt.Sprintf(" || tag == %s", tagInt("", i+1, WireBytes))
+			listTag = fmt.Sprintf(" || tag == %d", _MAKE_TAG(i+1, WireBytes))
+			listComment = fmt.Sprintf(" || MAKE_TAG(%d, %s=%d)", i+1, WireBytes, WireBytes)
 		}
 
 		items = append(items, fmt.Sprintf("a%d %s", i, item_s))
@@ -244,10 +246,10 @@ func typeListGo(owner string, name string, typ string, ts []Type) (string, map[s
 		itemsDeserialize = append(itemsDeserialize, fmt.Sprintf(`
 		// %s deserialize: a%d
 		case %d:
-			if tag == %s%s {%s%s
+			if tag == %d%s { // MAKE_TAG(%d, %s=%d)%s%s%s
 				continue method_%s // next tag for %s%s
-			}`, typ, i, i+1, tagInt("", i+1, deserialize_w), listTag, label,
-			addIndent(deserialize_s, 3), d1, typ, next))
+			}`, typ, i, i+1, _MAKE_TAG(i+1, deserialize_w), listTag, i+1, deserialize_w,
+			deserialize_w, listComment, label, addIndent(deserialize_s, 3), d1, typ, next))
 	}
 
 	Typ := strings.Title(typ)

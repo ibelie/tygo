@@ -1631,9 +1631,9 @@ func (s *Fighter_Part2) Deserialize(input *tygo.ProtoBuf) (err error) {
 		switch (tag >> 3) - 11 {
 		// property: s.Fl
 		case 1:
-			if tag == 101 || tag == 98 { // MAKE_TAG(12, WireFixed32=5)
+			if tag == 101 || tag == 98 { // MAKE_TAG(12, WireFixed32=5) || MAKE_TAG(12, WireBytes=2)
 				// type: []float32
-				if tag == 101 {
+				if tag == 101 { // MAKE_TAG(12, WireFixed32=5)
 					loop_tmp_31: for {
 						var tmp_31 float32
 						// type: float32
@@ -1852,10 +1852,10 @@ func (s *Fighter_Part2) Deserialize(input *tygo.ProtoBuf) (err error) {
 			}
 		// property: s.El
 		case 6:
-			if tag == 136 || tag == 138 { // MAKE_TAG(17, WireVarint=0)
+			if tag == 136 || tag == 138 { // MAKE_TAG(17, WireVarint=0) || MAKE_TAG(17, WireBytes=2)
 			object_tmp_43:
 				// type: []Corpus
-				if tag == 136 {
+				if tag == 136 { // MAKE_TAG(17, WireVarint=0)
 					loop_tmp_42: for {
 						var tmp_42 Corpus
 						// type: Corpus
@@ -5000,7 +5000,7 @@ func (s *Fighter) Deserialize(input *tygo.ProtoBuf) (err error) {
 								if tmpg == 21 { // MAKE_TAG(2, WireFixed32=5)
 								dict_tmp_89:
 									// type: []float32
-									if tmpg == 21 {
+									if tmpg == 21 { // MAKE_TAG(2, WireFixed32=5)
 										loop_tmp_90: for {
 											var tmp_90 float32
 											// type: float32
@@ -5512,7 +5512,7 @@ func (s *Fighter) Deserialize(input *tygo.ProtoBuf) (err error) {
 					case 2:
 						if tmpg == 21 { // MAKE_TAG(2, WireFixed32=5)
 							// type: []float32
-							if tmpg == 21 {
+							if tmpg == 21 { // MAKE_TAG(2, WireFixed32=5)
 								loop_tmp_110: for {
 									var tmp_110 float32
 									// type: float32
@@ -5898,7 +5898,7 @@ func (s *Fighter) DeserializeRPGParam(data []byte) (a0 *Fighter, a1 interface{},
 		switch tag >> 3 {
 		// param deserialize: a0
 		case 1:
-			if tag == 10 { // MAKE_TAG(1, WireBytes=2)
+			if tag == 10 { // MAKE_TAG(1, WireBytes=2) // MAKE_TAG(1, WireBytes=2)
 				// type: variant<nil, int32>
 				if x, e := input.ReadBuf(); e == nil {
 					tmpi := &tygo.ProtoBuf{Buffer: x}
@@ -5935,7 +5935,7 @@ func (s *Fighter) DeserializeRPGParam(data []byte) (a0 *Fighter, a1 interface{},
 			}
 		// param deserialize: a1
 		case 2:
-			if tag == 16 { // MAKE_TAG(2, WireBytes=2)
+			if tag == 16 { // MAKE_TAG(2, WireVarint=0) // MAKE_TAG(2, WireBytes=2)
 			method_tmp_52:
 				// type: fixedpoint<3, 0>
 				if x, e := input.ReadVarint(); e == nil {
@@ -5951,7 +5951,7 @@ func (s *Fighter) DeserializeRPGParam(data []byte) (a0 *Fighter, a1 interface{},
 			}
 		// param deserialize: a2
 		case 3:
-			if tag == 24 { // MAKE_TAG(3, WireVarint=0)
+			if tag == 24 { // MAKE_TAG(3, WireVarint=0) // MAKE_TAG(3, WireVarint=0)
 			method_tmp_53:
 				// type: fixedpoint<3, 0>
 				if x, e := input.ReadVarint(); e == nil {
@@ -6074,7 +6074,7 @@ func (s *Fighter) DeserializeRPGResult(data []byte) (a0 *Fighter, a1 interface{}
 		switch tag >> 3 {
 		// result deserialize: a0
 		case 1:
-			if tag == 10 { // MAKE_TAG(1, WireBytes=2)
+			if tag == 10 { // MAKE_TAG(1, WireBytes=2) // MAKE_TAG(1, WireBytes=2)
 				// type: variant<nil, int32>
 				if x, e := input.ReadBuf(); e == nil {
 					tmpi := &tygo.ProtoBuf{Buffer: x}
@@ -6111,7 +6111,7 @@ func (s *Fighter) DeserializeRPGResult(data []byte) (a0 *Fighter, a1 interface{}
 			}
 		// result deserialize: a1
 		case 2:
-			if tag == 16 { // MAKE_TAG(2, WireBytes=2)
+			if tag == 16 { // MAKE_TAG(2, WireVarint=0) // MAKE_TAG(2, WireBytes=2)
 			method_tmp_56:
 				// type: fixedpoint<3, 0>
 				if x, e := input.ReadVarint(); e == nil {
@@ -6127,7 +6127,7 @@ func (s *Fighter) DeserializeRPGResult(data []byte) (a0 *Fighter, a1 interface{}
 			}
 		// result deserialize: a2
 		case 3:
-			if tag == 24 { // MAKE_TAG(3, WireVarint=0)
+			if tag == 24 { // MAKE_TAG(3, WireVarint=0) // MAKE_TAG(3, WireVarint=0)
 			method_tmp_57:
 				// type: fixedpoint<3, 0>
 				if x, e := input.ReadVarint(); e == nil {
@@ -6346,7 +6346,7 @@ func (s *Fighter) DeserializeGPRParam(data []byte) (a0 map[int32]interface{}, er
 		switch tag >> 3 {
 		// param deserialize: a0
 		case 1:
-			if tag == 10 { // MAKE_TAG(1, WireBytes=2)
+			if tag == 10 { // MAKE_TAG(1, WireBytes=2) // MAKE_TAG(1, WireBytes=2)
 				// type: map[int32]variant<Corpus, float64, string, *Vector2>
 				loop_tmp_59: for {
 					if x, e := input.ReadBuf(); e == nil {
@@ -6675,7 +6675,7 @@ func (s *Fighter) DeserializeGPRResult(data []byte) (a0 map[int32]interface{}, e
 		switch tag >> 3 {
 		// result deserialize: a0
 		case 1:
-			if tag == 10 { // MAKE_TAG(1, WireBytes=2)
+			if tag == 10 { // MAKE_TAG(1, WireBytes=2) // MAKE_TAG(1, WireBytes=2)
 				// type: map[int32]variant<Corpus, float64, string, *Vector2>
 				loop_tmp_63: for {
 					if x, e := input.ReadBuf(); e == nil {
