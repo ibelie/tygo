@@ -133,7 +133,7 @@ func (t *Enum) Go() (string, map[string]string) {
 	}
 	bytesize_s, bytesize_p := t.ByteSizeGo("size", "i", "", 0, true)
 	serialize_s, serialize_p := t.SerializeGo("size", "i", "", 0, true)
-	deserialize_s, _, deserialize_p := t.DeserializeGo("", "input", "i", "", 0)
+	deserialize_s, _, deserialize_p := t.DeserializeGo("", "input", "i", "", 0, false)
 	pkgs = update(pkgs, bytesize_p)
 	pkgs = update(pkgs, serialize_p)
 	pkgs = update(pkgs, deserialize_p)
@@ -201,7 +201,7 @@ func typeListGo(owner string, name string, typ string, ts []Type) (string, map[s
 		pkgs = update(pkgs, serialize_p)
 
 		if i == 0 {
-			deserialize_s, deserialize_w, deserialize_p = t.DeserializeGo("tag", "input", n, "", i+1)
+			deserialize_s, deserialize_w, deserialize_p = t.DeserializeGo("tag", "input", n, "", i+1, false)
 			pkgs = update(pkgs, deserialize_p)
 		}
 		label := fmt.Sprintf(" // MAKE_TAG(%d, %s=%d)", i+1, deserialize_w, deserialize_w)
@@ -213,7 +213,7 @@ func typeListGo(owner string, name string, typ string, ts []Type) (string, map[s
 
 		var next string
 		if i < len(ts)-1 {
-			next_s, next_w, next_p := ts[i+1].DeserializeGo("tag", "input", fmt.Sprintf("a%d", i+1), "", i+2)
+			next_s, next_w, next_p := ts[i+1].DeserializeGo("tag", "input", fmt.Sprintf("a%d", i+1), "", i+2, false)
 			pkgs = update(pkgs, next_p)
 			d = desVar()
 			next = fmt.Sprintf(`
@@ -268,7 +268,7 @@ func %sSerialize%s%s(%s) (data []byte) {
 
 // %s %s(%s)
 func %sDeserialize%s%s(data []byte) (%s, err error) {
-	input := &togy.ProtoBuf{Buffer: data}
+	input := &tygo.ProtoBuf{Buffer: data}
 	method_%s: for !input.ExpectEnd() {
 		var tag int
 		if tag, err = input.ReadTag(%s); err != nil {
@@ -334,7 +334,7 @@ func (t *Object) Go() (string, map[string]string) {
 
 	bytesize_s, bytesize_p := t.ByteSizeGo("size", "s", "", 0, true)
 	serialize_s, serialize_p := t.SerializeGo("size", "s", "", 0, true)
-	deserialize_s, _, deserialize_p := t.DeserializeGo("", "input", "s", "", 0)
+	deserialize_s, _, deserialize_p := t.DeserializeGo("", "input", "s", "", 0, false)
 	pkgs = update(pkgs, bytesize_p)
 	pkgs = update(pkgs, serialize_p)
 	pkgs = update(pkgs, deserialize_p)
