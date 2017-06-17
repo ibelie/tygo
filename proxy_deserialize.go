@@ -152,7 +152,8 @@ func (t *Object) DeserializeGo(tag string, input string, name string, preFieldNu
 	}
 	var switchLabel string
 	if len(t.Fields) > 1 {
-		switchLabel = fmt.Sprintf("switch_%s: ", l)
+		switchLabel = fmt.Sprintf(`
+	switch_%s:`, l)
 	}
 
 	var switchFlag string
@@ -171,12 +172,13 @@ func (t *Object) DeserializeGo(tag string, input string, name string, preFieldNu
 	}
 
 	return fmt.Sprintf(`%s
-	object_%s: for !%s.ExpectEnd() {
+object_%s:
+	for !%s.ExpectEnd() {
 		var tag int
 		if tag, err = %s.ReadTag(%s); err != nil {
 			return
-		}
-		%sswitch %s {%s
+		}%s
+		switch %s {%s
 		}
 		if err = %s.SkipField(tag); err != nil {
 			return
@@ -350,12 +352,13 @@ func (t *ListType) DeserializeGo(tag string, input string, name string, preField
 	// type: %s%s`, t, list_s), WireBytes, pkgs
 		} else {
 			return fmt.Sprintf(`
+loop_%s:
 	// type: %s
-	loop_%s: for {%s
+	for {%s
 		if !%s.%s {%s
 			break loop_%s // end for %s
 		}
-	}`, t, v, addIndent(list_s, 1), input, tag_s, tag_sc, v, t), WireBytes, pkgs
+	}`, v, t, addIndent(list_s, 1), input, tag_s, tag_sc, v, t), WireBytes, pkgs
 		}
 	} else if !t.E.IsPrimitive() {
 		element_s, element_w, element_p := t.E.DeserializeGo(tag, input, v, "", 0, false)
@@ -368,14 +371,15 @@ func (t *ListType) DeserializeGo(tag string, input string, name string, preField
 	%s = append(%s%s, %s)`, t, v, type_s, element_s, name, name, assert, v), WireBytes, pkgs
 		} else {
 			return fmt.Sprintf(`
+loop_%s:
 	// type: %s
-	loop_%s: for {
+	for {
 		var %s %s%s
 		%s = append(%s%s, %s)
 		if !%s.%s {%s
 			break loop_%s // end for %s
 		}
-	}`, t, v, v, type_s, addIndent(element_s, 1), name, name, assert, v, input, tag_s, tag_sc, v, t),
+	}`, v, t, v, type_s, addIndent(element_s, 1), name, name, assert, v, input, tag_s, tag_sc, v, t),
 				WireBytes, pkgs
 		}
 	} else {
@@ -402,7 +406,8 @@ func (t *ListType) DeserializeGo(tag string, input string, name string, preField
 			return fmt.Sprintf(`
 	// type: %s
 	if %s == %s {%s
-		loop_%s: for {
+	loop_%s:
+		for {
 			var %s %s%s
 			%s = append(%s%s, %s)
 			if !%s.%s {%s
@@ -458,12 +463,14 @@ func (t *DictType) DeserializeGo(tag string, input string, name string, preField
 		%s := &tygo.ProtoBuf{Buffer: x}
 		var %s %s
 		var %s %s
-		dict_%s: for !%s.ExpectEnd() {
+	dict_%s:
+		for !%s.ExpectEnd() {
 			var %s int
 			if %s, err = %s.ReadTag(%d); err != nil {
 				return
 			}
-			switch_%s: switch %s {
+		switch_%s:
+			switch %s {
 			// dict key
 			case 1:
 				if %s == %d { // MAKE_TAG(1, %s=%d)%s
@@ -502,12 +509,13 @@ func (t *DictType) DeserializeGo(tag string, input string, name string, preField
 	// type: %s%s`, t, dict_s), WireBytes, pkgs
 	} else {
 		return fmt.Sprintf(`
+loop_%s:
 	// type: %s
-	loop_%s: for {%s
+	for {%s
 		if !%s.%s {%s
 			break loop_%s // end for %s
 		}
-	}`, t, k, addIndent(dict_s, 1), input, tag_s, tag_sc, k, t), WireBytes, pkgs
+	}`, k, t, addIndent(dict_s, 1), input, tag_s, tag_sc, k, t), WireBytes, pkgs
 	}
 }
 
@@ -542,7 +550,8 @@ func (t *VariantType) DeserializeGo(tag string, input string, name string, preFi
 	// type: %s
 	if x, e := %s.ReadBuf(); e == nil {
 		%s := &tygo.ProtoBuf{Buffer: x}
-		variant_%s: for !%s.ExpectEnd() {
+	variant_%s:
+		for !%s.ExpectEnd() {
 			var %s int
 			if %s, err = %s.ReadTag(%d); err != nil {
 				return

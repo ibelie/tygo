@@ -172,12 +172,14 @@ func (s *Vector2) Serialize(output *tygo.ProtoBuf) {
 }
 
 func (s *Vector2) Deserialize(input *tygo.ProtoBuf) (err error) {
-	object_tmp_1: for !input.ExpectEnd() {
+object_tmp_1:
+	for !input.ExpectEnd() {
 		var tag int
 		if tag, err = input.ReadTag(127); err != nil {
 			return
 		}
-		switch_tmp_1: switch tag >> 3 {
+	switch_tmp_1:
+		switch tag >> 3 {
 		// property: s.X
 		case 1:
 			if tag == 13 { // MAKE_TAG(1, WireFixed32=5)
@@ -798,12 +800,14 @@ func (s *Fighter_Part1) Serialize(output *tygo.ProtoBuf) {
 }
 
 func (s *Fighter_Part1) Deserialize(input *tygo.ProtoBuf) (err error) {
-	object_tmp_2: for !input.ExpectEnd() {
+object_tmp_2:
+	for !input.ExpectEnd() {
 		var tag int
 		if tag, err = input.ReadTag(127); err != nil {
 			return
 		}
-		switch_tmp_2: switch tag >> 3 {
+	switch_tmp_2:
+		switch tag >> 3 {
 		// property: s.Pos
 		case 1:
 			if tag == 10 { // MAKE_TAG(1, WireBytes=2)
@@ -868,18 +872,21 @@ func (s *Fighter_Part1) Deserialize(input *tygo.ProtoBuf) (err error) {
 		// property: s.Poss
 		case 4:
 			if tag == 34 { // MAKE_TAG(4, WireBytes=2)
+			loop_tmp_3:
 				// type: map[int32]*Vector2
-				loop_tmp_3: for {
+				for {
 					if x, e := input.ReadBuf(); e == nil {
 						tmpi := &tygo.ProtoBuf{Buffer: x}
 						var tmp_3 int32
 						var tmp_4 *Vector2
-						dict_tmp_3: for !tmpi.ExpectEnd() {
+					dict_tmp_3:
+						for !tmpi.ExpectEnd() {
 							var tmpg int
 							if tmpg, err = tmpi.ReadTag(127); err != nil {
 								return
 							}
-							switch_tmp_3: switch tmpg >> 3 {
+						switch_tmp_3:
+							switch tmpg >> 3 {
 							// dict key
 							case 1:
 								if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
@@ -944,18 +951,21 @@ func (s *Fighter_Part1) Deserialize(input *tygo.ProtoBuf) (err error) {
 		// property: s.Posi
 		case 5:
 			if tag == 42 { // MAKE_TAG(5, WireBytes=2)
+			loop_tmp_5:
 				// type: map[int32]float32
-				loop_tmp_5: for {
+				for {
 					if x, e := input.ReadBuf(); e == nil {
 						tmpi := &tygo.ProtoBuf{Buffer: x}
 						var tmp_5 int32
 						var tmp_6 float32
-						dict_tmp_5: for !tmpi.ExpectEnd() {
+					dict_tmp_5:
+						for !tmpi.ExpectEnd() {
 							var tmpg int
 							if tmpg, err = tmpi.ReadTag(127); err != nil {
 								return
 							}
-							switch_tmp_5: switch tmpg >> 3 {
+						switch_tmp_5:
+							switch tmpg >> 3 {
 							// dict key
 							case 1:
 								if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
@@ -1013,8 +1023,9 @@ func (s *Fighter_Part1) Deserialize(input *tygo.ProtoBuf) (err error) {
 		// property: s.Posl
 		case 6:
 			if tag == 50 { // MAKE_TAG(6, WireBytes=2)
+			loop_tmp_7:
 				// type: []*Vector2
-				loop_tmp_7: for {
+				for {
 					var tmp_7 *Vector2
 					// type: *Vector2
 					if x, e := input.ReadBuf(); e == nil {
@@ -1046,8 +1057,9 @@ func (s *Fighter_Part1) Deserialize(input *tygo.ProtoBuf) (err error) {
 		// property: s.Posll
 		case 7:
 			if tag == 58 { // MAKE_TAG(7, WireBytes=2)
+			loop_tmp_8:
 				// type: [][]*Vector2
-				loop_tmp_8: for {
+				for {
 					if x, e := input.ReadBuf(); e == nil {
 						tmpi := &tygo.ProtoBuf{Buffer: x}
 						var tmp_8 []*Vector2
@@ -1090,8 +1102,9 @@ func (s *Fighter_Part1) Deserialize(input *tygo.ProtoBuf) (err error) {
 		// property: s.Pyl
 		case 8:
 			if tag == 66 { // MAKE_TAG(8, WireBytes=2)
+			loop_tmp_10:
 				// type: []*GoType
-				loop_tmp_10: for {
+				for {
 					var tmp_10 *GoType
 					// type: *GoType
 					if x, e := input.ReadBuf(); e == nil {
@@ -1123,18 +1136,21 @@ func (s *Fighter_Part1) Deserialize(input *tygo.ProtoBuf) (err error) {
 		// property: s.Pyd
 		case 9:
 			if tag == 74 { // MAKE_TAG(9, WireBytes=2)
+			loop_tmp_11:
 				// type: map[int32]*GoType
-				loop_tmp_11: for {
+				for {
 					if x, e := input.ReadBuf(); e == nil {
 						tmpi := &tygo.ProtoBuf{Buffer: x}
 						var tmp_11 int32
 						var tmp_12 *GoType
-						dict_tmp_11: for !tmpi.ExpectEnd() {
+					dict_tmp_11:
+						for !tmpi.ExpectEnd() {
 							var tmpg int
 							if tmpg, err = tmpi.ReadTag(127); err != nil {
 								return
 							}
-							switch_tmp_11: switch tmpg >> 3 {
+						switch_tmp_11:
+							switch tmpg >> 3 {
 							// dict key
 							case 1:
 								if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
@@ -1202,7 +1218,8 @@ func (s *Fighter_Part1) Deserialize(input *tygo.ProtoBuf) (err error) {
 				// type: variant<int32, *GoType>
 				if x, e := input.ReadBuf(); e == nil {
 					tmpi := &tygo.ProtoBuf{Buffer: x}
-					variant_tmp_13: for !tmpi.ExpectEnd() {
+				variant_tmp_13:
+					for !tmpi.ExpectEnd() {
 						var tmpg int
 						if tmpg, err = tmpi.ReadTag(127); err != nil {
 							return
@@ -1260,7 +1277,8 @@ func (s *Fighter_Part1) Deserialize(input *tygo.ProtoBuf) (err error) {
 				// type: variant<int32, *GoType>
 				if x, e := input.ReadBuf(); e == nil {
 					tmpi := &tygo.ProtoBuf{Buffer: x}
-					variant_tmp_14: for !tmpi.ExpectEnd() {
+				variant_tmp_14:
+					for !tmpi.ExpectEnd() {
 						var tmpg int
 						if tmpg, err = tmpi.ReadTag(127); err != nil {
 							return
@@ -1659,18 +1677,21 @@ func (s *Fighter_Part2) Deserialize(input *tygo.ProtoBuf) (err error) {
 	} else {
 		return
 	}
-	object_tmp_15: for !input.ExpectEnd() {
+object_tmp_15:
+	for !input.ExpectEnd() {
 		var tag int
 		if tag, err = input.ReadTag(1023); err != nil {
 			return
 		}
-		switch_tmp_15: switch (tag >> 3) - 11 {
+	switch_tmp_15:
+		switch (tag >> 3) - 11 {
 		// property: s.Fl
 		case 1:
 			if tag == 101 || tag == 98 { // MAKE_TAG(12, WireFixed32=5) || MAKE_TAG(12, WireBytes=2)
 				// type: []float32
 				if tag == 101 { // MAKE_TAG(12, WireFixed32=5)
-					loop_tmp_16: for {
+				loop_tmp_16:
+					for {
 						var tmp_16 float32
 						// type: float32
 						if x, e := input.ReadFixed32(); e == nil {
@@ -1712,8 +1733,9 @@ func (s *Fighter_Part2) Deserialize(input *tygo.ProtoBuf) (err error) {
 		// property: s.Bl
 		case 2:
 			if tag == 106 { // MAKE_TAG(13, WireBytes=2)
+			loop_tmp_17:
 				// type: []bytes
-				loop_tmp_17: for {
+				for {
 					var tmp_17 []byte
 					// type: bytes
 					if x, e := input.ReadBuf(); e == nil {
@@ -1739,8 +1761,9 @@ func (s *Fighter_Part2) Deserialize(input *tygo.ProtoBuf) (err error) {
 		// property: s.Sl
 		case 3:
 			if tag == 114 { // MAKE_TAG(14, WireBytes=2)
+			loop_tmp_18:
 				// type: []string
-				loop_tmp_18: for {
+				for {
 					var tmp_18 string
 					// type: string
 					if x, e := input.ReadBuf(); e == nil {
@@ -1765,18 +1788,21 @@ func (s *Fighter_Part2) Deserialize(input *tygo.ProtoBuf) (err error) {
 		// property: s.Bd
 		case 4:
 			if tag == 122 { // MAKE_TAG(15, WireBytes=2)
+			loop_tmp_19:
 				// type: map[string]bytes
-				loop_tmp_19: for {
+				for {
 					if x, e := input.ReadBuf(); e == nil {
 						tmpi := &tygo.ProtoBuf{Buffer: x}
 						var tmp_19 string
 						var tmp_20 []byte
-						dict_tmp_19: for !tmpi.ExpectEnd() {
+					dict_tmp_19:
+						for !tmpi.ExpectEnd() {
 							var tmpg int
 							if tmpg, err = tmpi.ReadTag(127); err != nil {
 								return
 							}
-							switch_tmp_19: switch tmpg >> 3 {
+						switch_tmp_19:
+							switch tmpg >> 3 {
 							// dict key
 							case 1:
 								if tmpg == 10 { // MAKE_TAG(1, WireBytes=2)
@@ -1835,18 +1861,21 @@ func (s *Fighter_Part2) Deserialize(input *tygo.ProtoBuf) (err error) {
 		// property: s.Sd
 		case 5:
 			if tag == 130 { // MAKE_TAG(16, WireBytes=2)
+			loop_tmp_21:
 				// type: map[int32]string
-				loop_tmp_21: for {
+				for {
 					if x, e := input.ReadBuf(); e == nil {
 						tmpi := &tygo.ProtoBuf{Buffer: x}
 						var tmp_21 int32
 						var tmp_22 string
-						dict_tmp_21: for !tmpi.ExpectEnd() {
+					dict_tmp_21:
+						for !tmpi.ExpectEnd() {
 							var tmpg int
 							if tmpg, err = tmpi.ReadTag(127); err != nil {
 								return
 							}
-							switch_tmp_21: switch tmpg >> 3 {
+						switch_tmp_21:
+							switch tmpg >> 3 {
 							// dict key
 							case 1:
 								if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
@@ -1906,7 +1935,8 @@ func (s *Fighter_Part2) Deserialize(input *tygo.ProtoBuf) (err error) {
 			if tag == 136 || tag == 138 { // MAKE_TAG(17, WireVarint=0) || MAKE_TAG(17, WireBytes=2)
 				// type: []Corpus
 				if tag == 136 { // MAKE_TAG(17, WireVarint=0)
-					loop_tmp_23: for {
+				loop_tmp_23:
+					for {
 						var tmp_23 Corpus
 						// type: Corpus
 						if x, e := input.ReadVarint(); e == nil {
@@ -1948,18 +1978,21 @@ func (s *Fighter_Part2) Deserialize(input *tygo.ProtoBuf) (err error) {
 		// property: s.Ed
 		case 7:
 			if tag == 146 { // MAKE_TAG(18, WireBytes=2)
+			loop_tmp_24:
 				// type: map[int32]Corpus
-				loop_tmp_24: for {
+				for {
 					if x, e := input.ReadBuf(); e == nil {
 						tmpi := &tygo.ProtoBuf{Buffer: x}
 						var tmp_24 int32
 						var tmp_25 Corpus
-						dict_tmp_24: for !tmpi.ExpectEnd() {
+					dict_tmp_24:
+						for !tmpi.ExpectEnd() {
 							var tmpg int
 							if tmpg, err = tmpi.ReadTag(127); err != nil {
 								return
 							}
-							switch_tmp_24: switch tmpg >> 3 {
+						switch_tmp_24:
+							switch tmpg >> 3 {
 							// dict key
 							case 1:
 								if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
@@ -2017,8 +2050,9 @@ func (s *Fighter_Part2) Deserialize(input *tygo.ProtoBuf) (err error) {
 		// property: s.Ll
 		case 8:
 			if tag == 154 { // MAKE_TAG(19, WireBytes=2)
+			loop_tmp_26:
 				// type: [][]float32
-				loop_tmp_26: for {
+				for {
 					var tmp_26 []float32
 					// type: []float32
 					if x, e := input.ReadBuf(); e == nil {
@@ -4273,19 +4307,22 @@ func (s *Fighter) Deserialize(input *tygo.ProtoBuf) (err error) {
 	} else {
 		return
 	}
-	object_tmp_40: for !input.ExpectEnd() {
+object_tmp_40:
+	for !input.ExpectEnd() {
 		var tag int
 		if tag, err = input.ReadTag(1023); err != nil {
 			return
 		}
-		switch_tmp_40: switch (tag >> 3) - 19 {
+	switch_tmp_40:
+		switch (tag >> 3) - 19 {
 		// property: s.V0
 		case 1:
 			if tag == 162 { // MAKE_TAG(20, WireBytes=2)
 				// type: variant<int32, float32, bytes, *Vector2>
 				if x, e := input.ReadBuf(); e == nil {
 					tmpi := &tygo.ProtoBuf{Buffer: x}
-					variant_tmp_41: for !tmpi.ExpectEnd() {
+				variant_tmp_41:
+					for !tmpi.ExpectEnd() {
 						var tmpg int
 						if tmpg, err = tmpi.ReadTag(127); err != nil {
 							return
@@ -4366,7 +4403,8 @@ func (s *Fighter) Deserialize(input *tygo.ProtoBuf) (err error) {
 				// type: variant<int32, float32, bytes, *Vector2>
 				if x, e := input.ReadBuf(); e == nil {
 					tmpi := &tygo.ProtoBuf{Buffer: x}
-					variant_tmp_42: for !tmpi.ExpectEnd() {
+				variant_tmp_42:
+					for !tmpi.ExpectEnd() {
 						var tmpg int
 						if tmpg, err = tmpi.ReadTag(127); err != nil {
 							return
@@ -4447,7 +4485,8 @@ func (s *Fighter) Deserialize(input *tygo.ProtoBuf) (err error) {
 				// type: variant<int32, float32, bytes, *Vector2>
 				if x, e := input.ReadBuf(); e == nil {
 					tmpi := &tygo.ProtoBuf{Buffer: x}
-					variant_tmp_43: for !tmpi.ExpectEnd() {
+				variant_tmp_43:
+					for !tmpi.ExpectEnd() {
 						var tmpg int
 						if tmpg, err = tmpi.ReadTag(127); err != nil {
 							return
@@ -4528,7 +4567,8 @@ func (s *Fighter) Deserialize(input *tygo.ProtoBuf) (err error) {
 				// type: variant<int32, float32, bytes, *Vector2>
 				if x, e := input.ReadBuf(); e == nil {
 					tmpi := &tygo.ProtoBuf{Buffer: x}
-					variant_tmp_44: for !tmpi.ExpectEnd() {
+				variant_tmp_44:
+					for !tmpi.ExpectEnd() {
 						var tmpg int
 						if tmpg, err = tmpi.ReadTag(127); err != nil {
 							return
@@ -4609,7 +4649,8 @@ func (s *Fighter) Deserialize(input *tygo.ProtoBuf) (err error) {
 				// type: variant<int32, float32, bytes, *Vector2>
 				if x, e := input.ReadBuf(); e == nil {
 					tmpi := &tygo.ProtoBuf{Buffer: x}
-					variant_tmp_45: for !tmpi.ExpectEnd() {
+				variant_tmp_45:
+					for !tmpi.ExpectEnd() {
 						var tmpg int
 						if tmpg, err = tmpi.ReadTag(127); err != nil {
 							return
@@ -4687,13 +4728,15 @@ func (s *Fighter) Deserialize(input *tygo.ProtoBuf) (err error) {
 		// property: s.Vl
 		case 6:
 			if tag == 202 { // MAKE_TAG(25, WireBytes=2)
+			loop_tmp_46:
 				// type: []variant<int32, fixedpoint<3, 0>, string, *Vector2>
-				loop_tmp_46: for {
+				for {
 					var tmp_46 interface{}
 					// type: variant<int32, fixedpoint<3, 0>, string, *Vector2>
 					if x, e := input.ReadBuf(); e == nil {
 						tmpi := &tygo.ProtoBuf{Buffer: x}
-						variant_tmp_47: for !tmpi.ExpectEnd() {
+					variant_tmp_47:
+						for !tmpi.ExpectEnd() {
 							var tmpg int
 							if tmpg, err = tmpi.ReadTag(127); err != nil {
 								return
@@ -4775,18 +4818,21 @@ func (s *Fighter) Deserialize(input *tygo.ProtoBuf) (err error) {
 		// property: s.Vd
 		case 7:
 			if tag == 210 { // MAKE_TAG(26, WireBytes=2)
+			loop_tmp_48:
 				// type: map[int32]variant<Corpus, float64, string, *Vector2>
-				loop_tmp_48: for {
+				for {
 					if x, e := input.ReadBuf(); e == nil {
 						tmpi := &tygo.ProtoBuf{Buffer: x}
 						var tmp_48 int32
 						var tmp_49 interface{}
-						dict_tmp_48: for !tmpi.ExpectEnd() {
+					dict_tmp_48:
+						for !tmpi.ExpectEnd() {
 							var tmpg int
 							if tmpg, err = tmpi.ReadTag(127); err != nil {
 								return
 							}
-							switch_tmp_48: switch tmpg >> 3 {
+						switch_tmp_48:
+							switch tmpg >> 3 {
 							// dict key
 							case 1:
 								if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
@@ -4810,7 +4856,8 @@ func (s *Fighter) Deserialize(input *tygo.ProtoBuf) (err error) {
 									// type: variant<Corpus, float64, string, *Vector2>
 									if x, e := tmpi.ReadBuf(); e == nil {
 										tmpii := &tygo.ProtoBuf{Buffer: x}
-										variant_tmp_50: for !tmpii.ExpectEnd() {
+									variant_tmp_50:
+										for !tmpii.ExpectEnd() {
 											var tmpig int
 											if tmpig, err = tmpii.ReadTag(127); err != nil {
 												return
@@ -4906,18 +4953,21 @@ func (s *Fighter) Deserialize(input *tygo.ProtoBuf) (err error) {
 		// property: s.Ld
 		case 8:
 			if tag == 218 { // MAKE_TAG(27, WireBytes=2)
+			loop_tmp_51:
 				// type: map[int32][]variant<Corpus, float64, string, *Vector2>
-				loop_tmp_51: for {
+				for {
 					if x, e := input.ReadBuf(); e == nil {
 						tmpi := &tygo.ProtoBuf{Buffer: x}
 						var tmp_51 int32
 						var tmp_52 []interface{}
-						dict_tmp_51: for !tmpi.ExpectEnd() {
+					dict_tmp_51:
+						for !tmpi.ExpectEnd() {
 							var tmpg int
 							if tmpg, err = tmpi.ReadTag(127); err != nil {
 								return
 							}
-							switch_tmp_51: switch tmpg >> 3 {
+						switch_tmp_51:
+							switch tmpg >> 3 {
 							// dict key
 							case 1:
 								if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
@@ -4938,13 +4988,15 @@ func (s *Fighter) Deserialize(input *tygo.ProtoBuf) (err error) {
 								fallthrough
 							case 2:
 								if tmpg == 18 { // MAKE_TAG(2, WireBytes=2)
+								loop_tmp_53:
 									// type: []variant<Corpus, float64, string, *Vector2>
-									loop_tmp_53: for {
+									for {
 										var tmp_53 interface{}
 										// type: variant<Corpus, float64, string, *Vector2>
 										if x, e := tmpi.ReadBuf(); e == nil {
 											tmpii := &tygo.ProtoBuf{Buffer: x}
-											variant_tmp_54: for !tmpii.ExpectEnd() {
+										variant_tmp_54:
+											for !tmpii.ExpectEnd() {
 												var tmpig int
 												if tmpig, err = tmpii.ReadTag(127); err != nil {
 													return
@@ -5045,18 +5097,21 @@ func (s *Fighter) Deserialize(input *tygo.ProtoBuf) (err error) {
 		// property: s.Fld
 		case 9:
 			if tag == 226 { // MAKE_TAG(28, WireBytes=2)
+			loop_tmp_55:
 				// type: map[int32][]float32
-				loop_tmp_55: for {
+				for {
 					if x, e := input.ReadBuf(); e == nil {
 						tmpi := &tygo.ProtoBuf{Buffer: x}
 						var tmp_55 int32
 						var tmp_56 []float32
-						dict_tmp_55: for !tmpi.ExpectEnd() {
+					dict_tmp_55:
+						for !tmpi.ExpectEnd() {
 							var tmpg int
 							if tmpg, err = tmpi.ReadTag(127); err != nil {
 								return
 							}
-							switch_tmp_55: switch tmpg >> 3 {
+						switch_tmp_55:
+							switch tmpg >> 3 {
 							// dict key
 							case 1:
 								if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
@@ -5079,7 +5134,8 @@ func (s *Fighter) Deserialize(input *tygo.ProtoBuf) (err error) {
 								if tmpg == 21 { // MAKE_TAG(2, WireFixed32=5)
 									// type: []float32
 									if tmpg == 21 { // MAKE_TAG(2, WireFixed32=5)
-										loop_tmp_57: for {
+									loop_tmp_57:
+										for {
 											var tmp_57 float32
 											// type: float32
 											if x, e := tmpi.ReadFixed32(); e == nil {
@@ -5140,18 +5196,21 @@ func (s *Fighter) Deserialize(input *tygo.ProtoBuf) (err error) {
 		// property: s.Dd
 		case 10:
 			if tag == 234 { // MAKE_TAG(29, WireBytes=2)
+			loop_tmp_58:
 				// type: map[int32]map[int32]variant<int32, Corpus, float64, string, *Vector2>
-				loop_tmp_58: for {
+				for {
 					if x, e := input.ReadBuf(); e == nil {
 						tmpi := &tygo.ProtoBuf{Buffer: x}
 						var tmp_58 int32
 						var tmp_59 map[int32]interface{}
-						dict_tmp_58: for !tmpi.ExpectEnd() {
+					dict_tmp_58:
+						for !tmpi.ExpectEnd() {
 							var tmpg int
 							if tmpg, err = tmpi.ReadTag(127); err != nil {
 								return
 							}
-							switch_tmp_58: switch tmpg >> 3 {
+						switch_tmp_58:
+							switch tmpg >> 3 {
 							// dict key
 							case 1:
 								if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
@@ -5172,18 +5231,21 @@ func (s *Fighter) Deserialize(input *tygo.ProtoBuf) (err error) {
 								fallthrough
 							case 2:
 								if tmpg == 18 { // MAKE_TAG(2, WireBytes=2)
+								loop_tmp_60:
 									// type: map[int32]variant<int32, Corpus, float64, string, *Vector2>
-									loop_tmp_60: for {
+									for {
 										if x, e := tmpi.ReadBuf(); e == nil {
 											tmpii := &tygo.ProtoBuf{Buffer: x}
 											var tmp_60 int32
 											var tmp_61 interface{}
-											dict_tmp_60: for !tmpii.ExpectEnd() {
+										dict_tmp_60:
+											for !tmpii.ExpectEnd() {
 												var tmpig int
 												if tmpig, err = tmpii.ReadTag(127); err != nil {
 													return
 												}
-												switch_tmp_60: switch tmpig >> 3 {
+											switch_tmp_60:
+												switch tmpig >> 3 {
 												// dict key
 												case 1:
 													if tmpig == 8 { // MAKE_TAG(1, WireVarint=0)
@@ -5207,7 +5269,8 @@ func (s *Fighter) Deserialize(input *tygo.ProtoBuf) (err error) {
 														// type: variant<int32, Corpus, float64, string, *Vector2>
 														if x, e := tmpii.ReadBuf(); e == nil {
 															tmpiii := &tygo.ProtoBuf{Buffer: x}
-															variant_tmp_62: for !tmpiii.ExpectEnd() {
+														variant_tmp_62:
+															for !tmpiii.ExpectEnd() {
 																var tmpiig int
 																if tmpiig, err = tmpiii.ReadTag(127); err != nil {
 																	return
@@ -5333,18 +5396,21 @@ func (s *Fighter) Deserialize(input *tygo.ProtoBuf) (err error) {
 		// property: s.Fdd
 		case 11:
 			if tag == 242 { // MAKE_TAG(30, WireBytes=2)
+			loop_tmp_63:
 				// type: map[int32]map[int32]float32
-				loop_tmp_63: for {
+				for {
 					if x, e := input.ReadBuf(); e == nil {
 						tmpi := &tygo.ProtoBuf{Buffer: x}
 						var tmp_63 int32
 						var tmp_64 map[int32]float32
-						dict_tmp_63: for !tmpi.ExpectEnd() {
+					dict_tmp_63:
+						for !tmpi.ExpectEnd() {
 							var tmpg int
 							if tmpg, err = tmpi.ReadTag(127); err != nil {
 								return
 							}
-							switch_tmp_63: switch tmpg >> 3 {
+						switch_tmp_63:
+							switch tmpg >> 3 {
 							// dict key
 							case 1:
 								if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
@@ -5365,18 +5431,21 @@ func (s *Fighter) Deserialize(input *tygo.ProtoBuf) (err error) {
 								fallthrough
 							case 2:
 								if tmpg == 18 { // MAKE_TAG(2, WireBytes=2)
+								loop_tmp_65:
 									// type: map[int32]float32
-									loop_tmp_65: for {
+									for {
 										if x, e := tmpi.ReadBuf(); e == nil {
 											tmpii := &tygo.ProtoBuf{Buffer: x}
 											var tmp_65 int32
 											var tmp_66 float32
-											dict_tmp_65: for !tmpii.ExpectEnd() {
+										dict_tmp_65:
+											for !tmpii.ExpectEnd() {
 												var tmpig int
 												if tmpig, err = tmpii.ReadTag(127); err != nil {
 													return
 												}
-												switch_tmp_65: switch tmpig >> 3 {
+											switch_tmp_65:
+												switch tmpig >> 3 {
 												// dict key
 												case 1:
 													if tmpig == 8 { // MAKE_TAG(1, WireVarint=0)
@@ -5456,7 +5525,8 @@ func (s *Fighter) Deserialize(input *tygo.ProtoBuf) (err error) {
 				// type: variant<nil, int32>
 				if x, e := input.ReadBuf(); e == nil {
 					tmpi := &tygo.ProtoBuf{Buffer: x}
-					variant_tmp_67: for !tmpi.ExpectEnd() {
+				variant_tmp_67:
+					for !tmpi.ExpectEnd() {
 						var tmpg int
 						if tmpg, err = tmpi.ReadTag(127); err != nil {
 							return
@@ -5496,7 +5566,8 @@ func (s *Fighter) Deserialize(input *tygo.ProtoBuf) (err error) {
 				// type: variant<int32, []variant<float32, string>>
 				if x, e := input.ReadBuf(); e == nil {
 					tmpi := &tygo.ProtoBuf{Buffer: x}
-					variant_tmp_68: for !tmpi.ExpectEnd() {
+				variant_tmp_68:
+					for !tmpi.ExpectEnd() {
 						var tmpg int
 						if tmpg, err = tmpi.ReadTag(127); err != nil {
 							return
@@ -5515,13 +5586,15 @@ func (s *Fighter) Deserialize(input *tygo.ProtoBuf) (err error) {
 							}
 						case 2:
 							if tmpg == 18 { // MAKE_TAG(2, WireBytes=2)
+							loop_tmp_69:
 								// type: []variant<float32, string>
-								loop_tmp_69: for {
+								for {
 									var tmp_69 interface{}
 									// type: variant<float32, string>
 									if x, e := tmpi.ReadBuf(); e == nil {
 										tmpii := &tygo.ProtoBuf{Buffer: x}
-										variant_tmp_70: for !tmpii.ExpectEnd() {
+									variant_tmp_70:
+										for !tmpii.ExpectEnd() {
 											var tmpig int
 											if tmpig, err = tmpii.ReadTag(127); err != nil {
 												return
@@ -5588,7 +5661,8 @@ func (s *Fighter) Deserialize(input *tygo.ProtoBuf) (err error) {
 				// type: variant<int32, []float32>
 				if x, e := input.ReadBuf(); e == nil {
 					tmpi := &tygo.ProtoBuf{Buffer: x}
-					variant_tmp_71: for !tmpi.ExpectEnd() {
+				variant_tmp_71:
+					for !tmpi.ExpectEnd() {
 						var tmpg int
 						if tmpg, err = tmpi.ReadTag(127); err != nil {
 							return
@@ -5609,7 +5683,8 @@ func (s *Fighter) Deserialize(input *tygo.ProtoBuf) (err error) {
 							if tmpg == 21 { // MAKE_TAG(2, WireFixed32=5)
 								// type: []float32
 								if tmpg == 21 { // MAKE_TAG(2, WireFixed32=5)
-									loop_tmp_72: for {
+								loop_tmp_72:
+									for {
 										var tmp_72 float32
 										// type: float32
 										if x, e := tmpi.ReadFixed32(); e == nil {
@@ -5665,7 +5740,8 @@ func (s *Fighter) Deserialize(input *tygo.ProtoBuf) (err error) {
 				// type: variant<int32, map[int32]variant<float32, string>>
 				if x, e := input.ReadBuf(); e == nil {
 					tmpi := &tygo.ProtoBuf{Buffer: x}
-					variant_tmp_73: for !tmpi.ExpectEnd() {
+				variant_tmp_73:
+					for !tmpi.ExpectEnd() {
 						var tmpg int
 						if tmpg, err = tmpi.ReadTag(127); err != nil {
 							return
@@ -5684,18 +5760,21 @@ func (s *Fighter) Deserialize(input *tygo.ProtoBuf) (err error) {
 							}
 						case 2:
 							if tmpg == 18 { // MAKE_TAG(2, WireBytes=2)
+							loop_tmp_74:
 								// type: map[int32]variant<float32, string>
-								loop_tmp_74: for {
+								for {
 									if x, e := tmpi.ReadBuf(); e == nil {
 										tmpii := &tygo.ProtoBuf{Buffer: x}
 										var tmp_74 int32
 										var tmp_75 interface{}
-										dict_tmp_74: for !tmpii.ExpectEnd() {
+									dict_tmp_74:
+										for !tmpii.ExpectEnd() {
 											var tmpig int
 											if tmpig, err = tmpii.ReadTag(127); err != nil {
 												return
 											}
-											switch_tmp_74: switch tmpig >> 3 {
+										switch_tmp_74:
+											switch tmpig >> 3 {
 											// dict key
 											case 1:
 												if tmpig == 8 { // MAKE_TAG(1, WireVarint=0)
@@ -5719,7 +5798,8 @@ func (s *Fighter) Deserialize(input *tygo.ProtoBuf) (err error) {
 													// type: variant<float32, string>
 													if x, e := tmpii.ReadBuf(); e == nil {
 														tmpiii := &tygo.ProtoBuf{Buffer: x}
-														variant_tmp_76: for !tmpiii.ExpectEnd() {
+													variant_tmp_76:
+														for !tmpiii.ExpectEnd() {
 															var tmpiig int
 															if tmpiig, err = tmpiii.ReadTag(127); err != nil {
 																return
@@ -5800,7 +5880,8 @@ func (s *Fighter) Deserialize(input *tygo.ProtoBuf) (err error) {
 				// type: variant<int32, map[int32]float32>
 				if x, e := input.ReadBuf(); e == nil {
 					tmpi := &tygo.ProtoBuf{Buffer: x}
-					variant_tmp_77: for !tmpi.ExpectEnd() {
+				variant_tmp_77:
+					for !tmpi.ExpectEnd() {
 						var tmpg int
 						if tmpg, err = tmpi.ReadTag(127); err != nil {
 							return
@@ -5819,18 +5900,21 @@ func (s *Fighter) Deserialize(input *tygo.ProtoBuf) (err error) {
 							}
 						case 2:
 							if tmpg == 18 { // MAKE_TAG(2, WireBytes=2)
+							loop_tmp_78:
 								// type: map[int32]float32
-								loop_tmp_78: for {
+								for {
 									if x, e := tmpi.ReadBuf(); e == nil {
 										tmpii := &tygo.ProtoBuf{Buffer: x}
 										var tmp_78 int32
 										var tmp_79 float32
-										dict_tmp_78: for !tmpii.ExpectEnd() {
+									dict_tmp_78:
+										for !tmpii.ExpectEnd() {
 											var tmpig int
 											if tmpig, err = tmpii.ReadTag(127); err != nil {
 												return
 											}
-											switch_tmp_78: switch tmpig >> 3 {
+										switch_tmp_78:
+											switch tmpig >> 3 {
 											// dict key
 											case 1:
 												if tmpig == 8 { // MAKE_TAG(1, WireVarint=0)
@@ -5994,19 +6078,22 @@ func (s *Fighter) SerializeRPGParam(a0 *Fighter, a1 interface{}, a2 float64) (da
 // RPG Param(a0: *Fighter, a1: variant<nil, int32>, a2: fixedpoint<3, 0>)
 func (s *Fighter) DeserializeRPGParam(data []byte) (a0 *Fighter, a1 interface{}, a2 float64, err error) {
 	input := &tygo.ProtoBuf{Buffer: data}
-	method_tmp_28: for !input.ExpectEnd() {
+method_tmp_28:
+	for !input.ExpectEnd() {
 		var tag int
 		if tag, err = input.ReadTag(((3 << 3) | 7)); err != nil {
 			return
 		}
-		switch_tmp_28: switch tag >> 3 {
+	switch_tmp_28:
+		switch tag >> 3 {
 		// param deserialize: a0
 		case 1:
 			if tag == 10 { // MAKE_TAG(1, WireBytes=2)
 				// type: variant<nil, int32>
 				if x, e := input.ReadBuf(); e == nil {
 					tmpi := &tygo.ProtoBuf{Buffer: x}
-					variant_tmp_29: for !tmpi.ExpectEnd() {
+				variant_tmp_29:
+					for !tmpi.ExpectEnd() {
 						var tmpg int
 						if tmpg, err = tmpi.ReadTag(127); err != nil {
 							return
@@ -6174,19 +6261,22 @@ func (s *Fighter) SerializeRPGResult(a0 *Fighter, a1 interface{}, a2 float64) (d
 // RPG Result(a0: *Fighter, a1: variant<nil, int32>, a2: fixedpoint<3, 0>)
 func (s *Fighter) DeserializeRPGResult(data []byte) (a0 *Fighter, a1 interface{}, a2 float64, err error) {
 	input := &tygo.ProtoBuf{Buffer: data}
-	method_tmp_30: for !input.ExpectEnd() {
+method_tmp_30:
+	for !input.ExpectEnd() {
 		var tag int
 		if tag, err = input.ReadTag(((3 << 3) | 7)); err != nil {
 			return
 		}
-		switch_tmp_30: switch tag >> 3 {
+	switch_tmp_30:
+		switch tag >> 3 {
 		// result deserialize: a0
 		case 1:
 			if tag == 10 { // MAKE_TAG(1, WireBytes=2)
 				// type: variant<nil, int32>
 				if x, e := input.ReadBuf(); e == nil {
 					tmpi := &tygo.ProtoBuf{Buffer: x}
-					variant_tmp_31: for !tmpi.ExpectEnd() {
+				variant_tmp_31:
+					for !tmpi.ExpectEnd() {
 						var tmpg int
 						if tmpg, err = tmpi.ReadTag(127); err != nil {
 							return
@@ -6450,7 +6540,8 @@ func (s *Fighter) SerializeGPRParam(a0 map[int32]interface{}) (data []byte) {
 // GPR Param(a0: map[int32]variant<Corpus, float64, string, *Vector2>)
 func (s *Fighter) DeserializeGPRParam(data []byte) (a0 map[int32]interface{}, err error) {
 	input := &tygo.ProtoBuf{Buffer: data}
-	method_tmp_32: for !input.ExpectEnd() {
+method_tmp_32:
+	for !input.ExpectEnd() {
 		var tag int
 		if tag, err = input.ReadTag(((1 << 3) | 7)); err != nil {
 			return
@@ -6459,18 +6550,21 @@ func (s *Fighter) DeserializeGPRParam(data []byte) (a0 map[int32]interface{}, er
 		// param deserialize: a0
 		case 1:
 			if tag == 10 { // MAKE_TAG(1, WireBytes=2)
+			loop_tmp_33:
 				// type: map[int32]variant<Corpus, float64, string, *Vector2>
-				loop_tmp_33: for {
+				for {
 					if x, e := input.ReadBuf(); e == nil {
 						tmpi := &tygo.ProtoBuf{Buffer: x}
 						var tmp_33 int32
 						var tmp_34 interface{}
-						dict_tmp_33: for !tmpi.ExpectEnd() {
+					dict_tmp_33:
+						for !tmpi.ExpectEnd() {
 							var tmpg int
 							if tmpg, err = tmpi.ReadTag(127); err != nil {
 								return
 							}
-							switch_tmp_33: switch tmpg >> 3 {
+						switch_tmp_33:
+							switch tmpg >> 3 {
 							// dict key
 							case 1:
 								if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
@@ -6494,7 +6588,8 @@ func (s *Fighter) DeserializeGPRParam(data []byte) (a0 map[int32]interface{}, er
 									// type: variant<Corpus, float64, string, *Vector2>
 									if x, e := tmpi.ReadBuf(); e == nil {
 										tmpii := &tygo.ProtoBuf{Buffer: x}
-										variant_tmp_35: for !tmpii.ExpectEnd() {
+									variant_tmp_35:
+										for !tmpii.ExpectEnd() {
 											var tmpig int
 											if tmpig, err = tmpii.ReadTag(127); err != nil {
 												return
@@ -6781,7 +6876,8 @@ func (s *Fighter) SerializeGPRResult(a0 map[int32]interface{}) (data []byte) {
 // GPR Result(a0: map[int32]variant<Corpus, float64, string, *Vector2>)
 func (s *Fighter) DeserializeGPRResult(data []byte) (a0 map[int32]interface{}, err error) {
 	input := &tygo.ProtoBuf{Buffer: data}
-	method_tmp_36: for !input.ExpectEnd() {
+method_tmp_36:
+	for !input.ExpectEnd() {
 		var tag int
 		if tag, err = input.ReadTag(((1 << 3) | 7)); err != nil {
 			return
@@ -6790,18 +6886,21 @@ func (s *Fighter) DeserializeGPRResult(data []byte) (a0 map[int32]interface{}, e
 		// result deserialize: a0
 		case 1:
 			if tag == 10 { // MAKE_TAG(1, WireBytes=2)
+			loop_tmp_37:
 				// type: map[int32]variant<Corpus, float64, string, *Vector2>
-				loop_tmp_37: for {
+				for {
 					if x, e := input.ReadBuf(); e == nil {
 						tmpi := &tygo.ProtoBuf{Buffer: x}
 						var tmp_37 int32
 						var tmp_38 interface{}
-						dict_tmp_37: for !tmpi.ExpectEnd() {
+					dict_tmp_37:
+						for !tmpi.ExpectEnd() {
 							var tmpg int
 							if tmpg, err = tmpi.ReadTag(127); err != nil {
 								return
 							}
-							switch_tmp_37: switch tmpg >> 3 {
+						switch_tmp_37:
+							switch tmpg >> 3 {
 							// dict key
 							case 1:
 								if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
@@ -6825,7 +6924,8 @@ func (s *Fighter) DeserializeGPRResult(data []byte) (a0 map[int32]interface{}, e
 									// type: variant<Corpus, float64, string, *Vector2>
 									if x, e := tmpi.ReadBuf(); e == nil {
 										tmpii := &tygo.ProtoBuf{Buffer: x}
-										variant_tmp_39: for !tmpii.ExpectEnd() {
+									variant_tmp_39:
+										for !tmpii.ExpectEnd() {
 											var tmpig int
 											if tmpig, err = tmpii.ReadTag(127); err != nil {
 												return

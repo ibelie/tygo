@@ -256,7 +256,8 @@ func typeListGo(owner string, name string, typ string, ts []Type) (string, map[s
 	itemComment := strings.Join(itemsComment, ", ")
 	var switchLabel string
 	if len(ts) > 1 {
-		switchLabel = fmt.Sprintf("switch_%s: ", l)
+		switchLabel = fmt.Sprintf(`
+	switch_%s:`, l)
 	}
 
 	return fmt.Sprintf(`
@@ -275,12 +276,13 @@ func %sSerialize%s%s(%s) (data []byte) {
 // %s %s(%s)
 func %sDeserialize%s%s(data []byte) (%s, err error) {
 	input := &tygo.ProtoBuf{Buffer: data}
-	method_%s: for !input.ExpectEnd() {
+method_%s:
+	for !input.ExpectEnd() {
 		var tag int
 		if tag, err = input.ReadTag(%s); err != nil {
 			return
-		}
-		%sswitch %s {%s
+		}%s
+		switch %s {%s
 		}
 		if err = input.SkipField(tag); err != nil {
 			return
