@@ -329,9 +329,14 @@ func (t *ListType) DeserializeGo(tag string, input string, name string, preField
 	type_s, type_p := t.E.Go()
 	var pkgs map[string]string
 	pkgs = update(pkgs, type_p)
+	var init string
 	var assert string
 	if isVariant {
 		assert = fmt.Sprintf(".([]%s)", type_s)
+		init = fmt.Sprintf(`
+		if %s == nil {
+			%s = []%s(nil)
+		}`, name, name, type_s)
 	}
 
 	if l, ok := t.E.(*ListType); ok && !l.E.IsPrimitive() {
@@ -343,12 +348,12 @@ func (t *ListType) DeserializeGo(tag string, input string, name string, preField
 		%s := &tygo.ProtoBuf{Buffer: x}
 		var %s %s
 		for !%s.ExpectEnd() {%s
-		}
+		}%s
 		%s = append(%s%s, %s)
 	} else {
 		err = e
 		return
-	}`, input, tempInput, v, type_s, tempInput, addIndent(element_s, 2), name, name, assert, v)
+	}`, input, tempInput, v, type_s, tempInput, addIndent(element_s, 2), init, name, name, assert, v)
 		if tag_s == "" {
 			return fmt.Sprintf(`
 	// type: %s%s`, t, list_s), WireBytes, pkgs
@@ -369,19 +374,19 @@ loop_%s:
 		if tag_s == "" {
 			return fmt.Sprintf(`
 	// type: %s
-	var %s %s%s
-	%s = append(%s%s, %s)`, t, v, type_s, element_s, name, name, assert, v), WireBytes, pkgs
+	var %s %s%s%s
+	%s = append(%s%s, %s)`, t, v, type_s, element_s, init, name, name, assert, v), WireBytes, pkgs
 		} else {
 			return fmt.Sprintf(`
 loop_%s:
 	// type: %s
 	for {
-		var %s %s%s
+		var %s %s%s%s
 		%s = append(%s%s, %s)
 		if !%s.%s {%s
 			break loop_%s // end for %s
 		}
-	}`, v, t, v, type_s, addIndent(element_s, 1), name, name, assert, v, input, tag_s, tag_sc, v, t),
+	}`, v, t, v, type_s, addIndent(element_s, 1), init, name, name, assert, v, input, tag_s, tag_sc, v, t),
 				WireBytes, pkgs
 		}
 	} else {
@@ -395,12 +400,12 @@ loop_%s:
 		%s := &tygo.ProtoBuf{Buffer: x}
 		var %s %s
 		for !%s.ExpectEnd() {%s
-		}
+		}%s
 		%s = append(%s%s, %s)
 	} else {
 		err = e
 		return
-	}`, t, input, tempInput, v, type_s, tempInput, addIndent(element_s, 2), name, name, assert, v),
+	}`, t, input, tempInput, v, type_s, tempInput, addIndent(element_s, 2), init, name, name, assert, v),
 				element_w, pkgs
 		} else {
 			loop_s, _, _ := t.E.DeserializeGo(tag, input, v, preFieldNum, fieldNum, false)
@@ -410,7 +415,7 @@ loop_%s:
 	if %s == %s {%s
 	loop_%s:
 		for {
-			var %s %s%s
+			var %s %s%s%s
 			%s = append(%s%s, %s)
 			if !%s.%s {%s
 				break loop_%s // end for %s
@@ -420,14 +425,14 @@ loop_%s:
 		%s := &tygo.ProtoBuf{Buffer: x}
 		var %s %s
 		for !%s.ExpectEnd() {%s
-		}
+		}%s
 		%s = append(%s%s, %s)
 	} else {
 		err = e
 		return
-	}`, t, tag, tag_i, tag_ic, v, v, type_s,
-				addIndent(loop_s, 2), name, name, assert, v, input, tag_s, tag_sc, v, t, input, tempInput,
-				v, type_s, tempInput, addIndent(element_s, 2), name, name, assert, v), element_w, pkgs
+	}`, t, tag, tag_i, tag_ic, v, v, type_s, addIndent(loop_s, 2), init, name, name, assert, v,
+				input, tag_s, tag_sc, v, t, input, tempInput, v, type_s, tempInput,
+				addIndent(element_s, 2), init, name, name, assert, v), element_w, pkgs
 		}
 	}
 }
