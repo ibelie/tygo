@@ -287,6 +287,202 @@ func compareFighter(t *testing.T, f1 *Fighter, f2 *Fighter) {
 		debug.PrintStack()
 		t.Errorf("Fighter.V4: %v %v", f1.V4, f2.V4)
 	}
+	if len(f1.Vl) != len(f2.Vl) {
+		debug.PrintStack()
+		t.Errorf("Fighter_Part2.Vl: %v %v", f1.Vl, f2.Vl)
+	} else {
+		if int32(f1.Vl[0].(int)) != f2.Vl[0].(int32) {
+			debug.PrintStack()
+			t.Errorf("Fighter.Vl[0]: %v %v", f1.Vl[0], f2.Vl[0])
+		}
+		if f1.Vl[1].(string) != f2.Vl[1].(string) {
+			debug.PrintStack()
+			t.Errorf("Fighter.Vl[1]: %v %v", f1.Vl[1], f2.Vl[1])
+		}
+		if f1.Vl[2] != nil || f2.Vl[2] != nil {
+			debug.PrintStack()
+			t.Errorf("Fighter.Vl[2]: %v %v", f1.Vl[2], f2.Vl[2])
+		}
+		compareVector2(t, f1.Vl[3].(*Vector2), f2.Vl[3].(*Vector2), "Fighter.Vl[3]")
+		if f1.Vl[4].(float64) != f2.Vl[4].(float64) {
+			debug.PrintStack()
+			t.Errorf("Fighter.Vl[4]: %v %v", f1.Vl[4], f2.Vl[4])
+		}
+		if f1.Vl[5] != nil || f2.Vl[5] != nil {
+			debug.PrintStack()
+			t.Errorf("Fighter.Vl[5]: %v %v", f1.Vl[5], f2.Vl[5])
+		}
+	}
+	if len(f1.Vd) != len(f2.Vd) {
+		debug.PrintStack()
+		t.Errorf("Fighter_Part2.Vd: %v %v", f1.Vd, f2.Vd)
+	} else {
+		if f1.Vd[0] != nil || f2.Vd[0] != nil {
+			debug.PrintStack()
+			t.Errorf("Fighter.Vd[0]: %v %v", f1.Vd[0], f2.Vd[0])
+		}
+		if f1.Vd[12].(Corpus) != f2.Vd[12].(Corpus) {
+			debug.PrintStack()
+			t.Errorf("Fighter.Vd[12]: %v %v", f1.Vd[12], f2.Vd[12])
+		}
+		if f1.Vd[23].(string) != f2.Vd[23].(string) {
+			debug.PrintStack()
+			t.Errorf("Fighter.Vd[23]: %v %v", f1.Vd[23], f2.Vd[23])
+		}
+		compareVector2(t, f1.Vd[34].(*Vector2), f2.Vd[34].(*Vector2), "Fighter.Vd[34]")
+		if f1.Vd[45].(float64) != f2.Vd[45].(float64) {
+			debug.PrintStack()
+			t.Errorf("Fighter.Vd[45]: %v %v", f1.Vd[45], f2.Vd[45])
+		}
+	}
+	if len(f1.Ld) != len(f2.Ld) {
+		debug.PrintStack()
+		t.Errorf("Fighter_Part2.Ld: %v %v", f1.Ld, f2.Ld)
+	} else {
+		for k1, l1 := range f1.Ld {
+			if l2, ok := f2.Ld[k1]; !ok || len(l1) != len(l2) {
+				debug.PrintStack()
+				t.Errorf("Fighter_Part2.Ld[%v]: %v %v", k1, l1, l2)
+			} else if k1 == 12 && len(l1) == 2 && len(l2) == 2 {
+				if f1.Ld[12][0].(Corpus) != f2.Ld[12][0].(Corpus) {
+					debug.PrintStack()
+					t.Errorf("Fighter.Ld[12][0]: %v %v", f1.Ld[12][0], f2.Ld[12][0])
+				}
+				if f1.Ld[12][1].(string) != f2.Ld[12][1].(string) {
+					debug.PrintStack()
+					t.Errorf("Fighter.Ld[12][1]: %v %v", f1.Ld[12][1], f2.Ld[12][1])
+				}
+			} else if k1 == 34 && len(l1) == 2 && len(l2) == 2 {
+				compareVector2(t, f1.Ld[34][0].(*Vector2), f2.Ld[34][0].(*Vector2), "Fighter.Ld[34][0]")
+				if f1.Ld[34][1].(float64) != f2.Ld[34][1].(float64) {
+					debug.PrintStack()
+					t.Errorf("Fighter.Ld[34][1]: %v %v", f1.Ld[34][1], f2.Ld[34][1])
+				}
+			} else {
+				debug.PrintStack()
+				t.Errorf("Fighter_Part2.Ld[%v]: %v %v", k1, l1, l2)
+			}
+		}
+	}
+	if len(f1.Fld) != len(f2.Fld) {
+		debug.PrintStack()
+		t.Errorf("Fighter_Part2.Fld: %v %v", f1.Fld, f2.Fld)
+	} else {
+		for k1, l1 := range f1.Fld {
+			if l2, ok := f2.Fld[k1]; !ok || len(l1) != len(l2) {
+				debug.PrintStack()
+				t.Errorf("Fighter_Part2.Fld[%v]: %v %v", k1, l1, l2)
+			} else {
+				for k2, v1 := range l1 {
+					v2 := l2[k2]
+					if v1 != v2 {
+						debug.PrintStack()
+						t.Errorf("Fighter_Part2.Fld[%v][%v]: %v %v", k1, k2, v1, v2)
+					}
+				}
+			}
+		}
+	}
+	if len(f1.Dd) != len(f2.Dd) {
+		debug.PrintStack()
+		t.Errorf("Fighter_Part2.Dd: %v %v", f1.Dd, f2.Dd)
+	} else {
+		for k1, l1 := range f1.Dd {
+			if l2, ok := f2.Dd[k1]; !ok || len(l1) != len(l2) {
+				debug.PrintStack()
+				t.Errorf("Fighter_Part2.Dd[%v]: %v %v", k1, l1, l2)
+			} else if k1 == 12 && len(l1) == 2 && len(l2) == 2 {
+				if f1.Dd[12][111].(Corpus) != f2.Dd[12][111].(Corpus) {
+					debug.PrintStack()
+					t.Errorf("Fighter.Dd[12][111]: %v %v", f1.Dd[12][111], f2.Dd[12][111])
+				}
+				if f1.Dd[12][222].(string) != f2.Dd[12][222].(string) {
+					debug.PrintStack()
+					t.Errorf("Fighter.Dd[12][222]: %v %v", f1.Dd[12][222], f2.Dd[12][222])
+				}
+			} else if k1 == 34 && len(l1) == 2 && len(l2) == 2 {
+				compareVector2(t, f1.Dd[34][333].(*Vector2), f2.Dd[34][333].(*Vector2), "Fighter.Dd[34][333]")
+				if f1.Dd[34][444].(float64) != f2.Dd[34][444].(float64) {
+					debug.PrintStack()
+					t.Errorf("Fighter.Dd[34][444]: %v %v", f1.Dd[34][444], f2.Dd[34][444])
+				}
+			} else {
+				debug.PrintStack()
+				t.Errorf("Fighter_Part2.Dd[%v]: %v %v", k1, l1, l2)
+			}
+		}
+	}
+	if len(f1.Fdd) != len(f2.Fdd) {
+		debug.PrintStack()
+		t.Errorf("Fighter_Part2.Fdd: %v %v", f1.Fdd, f2.Fdd)
+	} else {
+		for k1, l1 := range f1.Fdd {
+			if l2, ok := f2.Fdd[k1]; !ok || len(l1) != len(l2) {
+				debug.PrintStack()
+				t.Errorf("Fighter_Part2.Fdd[%v]: %v %v", k1, l1, l2)
+			} else {
+				for k2, v1 := range l1 {
+					if v2, ok := l2[k2]; !ok || v1 != v2 {
+						debug.PrintStack()
+						t.Errorf("Fighter_Part2.Fdd[%v][%v]: %v %v", k1, k2, v1, v2)
+					}
+				}
+			}
+		}
+	}
+	if int32(f1.Nv.(int)) != f2.Nv.(int32) {
+		debug.PrintStack()
+		t.Errorf("Fighter.Nv: %v %v", f1.Nv, f2.Nv)
+	}
+	if len(f1.Lv.([]interface{})) != len(f2.Lv.([]interface{})) || len(f1.Lv.([]interface{})) != 2 {
+		debug.PrintStack()
+		t.Errorf("Fighter_Part2.Lv: %v %v", f1.Lv, f2.Lv)
+	} else {
+		if float32(f1.Lv.([]interface{})[0].(int)) != f2.Lv.([]interface{})[0].(float32) {
+			debug.PrintStack()
+			t.Errorf("Fighter.Lv[0]: %v %v", f1.Lv.([]interface{})[0], f2.Lv.([]interface{})[0])
+		}
+		if f1.Lv.([]interface{})[1].(string) != f2.Lv.([]interface{})[1].(string) {
+			debug.PrintStack()
+			t.Errorf("Fighter.Lv[1]: %v %v", f1.Lv.([]interface{})[1], f2.Lv.([]interface{})[1])
+		}
+	}
+	if len(f1.Flv.([]float32)) != len(f2.Flv.([]float32)) {
+		debug.PrintStack()
+		t.Errorf("Fighter_Part2.Flv: %v %v", f1.Flv, f2.Flv)
+	} else {
+		for k, v1 := range f1.Flv.([]float32) {
+			v2 := f2.Flv.([]float32)[k]
+			if v1 != v2 {
+				debug.PrintStack()
+				t.Errorf("Fighter.Flv[%v]: %v %v", k, v1, v2)
+			}
+		}
+	}
+	if len(f1.Dv.(map[int32]interface{})) != len(f2.Dv.(map[int32]interface{})) || len(f1.Dv.(map[int32]interface{})) != 2 {
+		debug.PrintStack()
+		t.Errorf("Fighter_Part2.Dv: %v %v", f1.Dv, f2.Dv)
+	} else {
+		if int32(f1.Dv.(map[int32]interface{})[333].(int)) != f2.Dv.(map[int32]interface{})[333].(int32) {
+			debug.PrintStack()
+			t.Errorf("Fighter.Dv[333]: %v %v", f1.Dv.(map[int32]interface{})[333], f2.Dv.(map[int32]interface{})[333])
+		}
+		if f1.Dv.(map[int32]interface{})[444].(string) != f2.Dv.(map[int32]interface{})[444].(string) {
+			debug.PrintStack()
+			t.Errorf("Fighter.Dv[444]: %v %v", f1.Dv.(map[int32]interface{})[444], f2.Dv.(map[int32]interface{})[444])
+		}
+	}
+	if len(f1.Fdv.(map[int32]float32)) != len(f2.Fdv.(map[int32]float32)) {
+		debug.PrintStack()
+		t.Errorf("Fighter_Part2.Fdv: %v %v", f1.Fdv, f2.Fdv)
+	} else {
+		for k, v1 := range f1.Fdv.(map[int32]float32) {
+			if v2, ok := f2.Fdv.(map[int32]float32)[k]; !ok || v1 != v2 {
+				debug.PrintStack()
+				t.Errorf("Fighter.Fdv[%v]: %v %v", k, v1, v2)
+			}
+		}
+	}
 }
 
 func TestVector2(t *testing.T) {
