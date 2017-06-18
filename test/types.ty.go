@@ -2108,8 +2108,8 @@ object_tmp_15:
 						// type: []float32
 						if x, e := input.ReadBuf(); e == nil {
 							tmpi := &tygo.ProtoBuf{Buffer: x}
-							var tmp_27 float32
 							for !tmpi.ExpectEnd() {
+								var tmp_27 float32
 								// type: float32
 								if x, e := tmpi.ReadFixed32(); e == nil {
 									tmp_27 = math.Float32frombits(x)
@@ -2117,8 +2117,8 @@ object_tmp_15:
 									err = e
 									return
 								}
+								tmp_26 = append(tmp_26, tmp_27)
 							}
-							tmp_26 = append(tmp_26, tmp_27)
 						} else {
 							err = e
 							return

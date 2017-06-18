@@ -398,14 +398,14 @@ loop_%s:
 	// type: %s
 	if x, e := %s.ReadBuf(); e == nil {
 		%s := &tygo.ProtoBuf{Buffer: x}
-		var %s %s
-		for !%s.ExpectEnd() {%s
-		}%s
-		%s = append(%s%s, %s)
+		for !%s.ExpectEnd() {
+			var %s %s%s%s
+			%s = append(%s%s, %s)
+		}
 	} else {
 		err = e
 		return
-	}`, t, input, tempInput, v, type_s, tempInput, addIndent(element_s, 2), init, name, name, assert, v),
+	}`, t, input, tempInput, tempInput, v, type_s, addIndent(element_s, 2), init, name, name, assert, v),
 				element_w, pkgs
 		} else {
 			loop_s, _, _ := t.E.DeserializeGo(tag, input, v, preFieldNum, fieldNum, false)
