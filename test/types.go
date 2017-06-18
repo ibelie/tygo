@@ -125,7 +125,7 @@ var v2 *Vector2 = &Vector2{
 	P: &GoType{PP: 321, AP: "qwer"},
 }
 
-var fighter Fighter = Fighter{
+var fighter *Fighter = &Fighter{
 	Fighter_Part2: Fighter_Part2{
 		Fighter_Part1: Fighter_Part1{
 			Pos:     v,
