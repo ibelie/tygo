@@ -463,7 +463,7 @@ func compareFighter(t *testing.T, f1 *Fighter, f2 *Fighter) {
 		debug.PrintStack()
 		t.Errorf("Fighter_Part2.Dv: %v %v", f1.Dv, f2.Dv)
 	} else {
-		if int32(f1.Dv.(map[int32]interface{})[333].(int)) != f2.Dv.(map[int32]interface{})[333].(int32) {
+		if float32(f1.Dv.(map[int32]interface{})[333].(int)) != f2.Dv.(map[int32]interface{})[333].(float32) {
 			debug.PrintStack()
 			t.Errorf("Fighter.Dv[333]: %v %v", f1.Dv.(map[int32]interface{})[333], f2.Dv.(map[int32]interface{})[333])
 		}
