@@ -464,6 +464,13 @@ func (t *DictType) DeserializeGo(tag string, input string, name string, preField
 	if isVariant {
 		assert = fmt.Sprintf(".(map[%s]%s)", key_t_s, value_t_s)
 	}
+	var listTag string
+	var listComment string
+	if l, ok := t.V.(*ListType); ok && l.E.IsPrimitive() {
+		listTag, listComment = tagInt("", 2, WireBytes)
+		listTag = fmt.Sprintf(" || tag == %s", listTag)
+		listComment = strings.Replace(listComment, "//", "||", 1)
+	}
 
 	dict_s := fmt.Sprintf(`
 	if x, e := %s.ReadBuf(); e == nil {
@@ -494,7 +501,7 @@ func (t *DictType) DeserializeGo(tag string, input string, name string, preField
 					}
 					fallthrough
 				case 2:
-					if %s == %d { // MAKE_TAG(2, %s=%d)%s
+					if %s == %d%s { // MAKE_TAG(2, %s=%d)%s%s
 						if %s.ExpectEnd() {
 							break dict_%s // end for %s
 						}
@@ -514,8 +521,8 @@ func (t *DictType) DeserializeGo(tag string, input string, name string, preField
 		tempTag, tempTag, tempInput, _MAKE_CUTOFF(2), k, _TAG_FIELD_STR(tempTag), tempTag,
 		_MAKE_TAG(1, key_d_w), key_d_w, key_d_w, addIndent(key_d_s, 5), tempInput, value_e,
 		value_c, k, t, tempTag, _MAKE_TAG(2, value_d_w), k, tempTag, _MAKE_TAG(2, value_d_w),
-		value_d_w, value_d_w, addIndent(value_d_s, 5), tempInput, k, t, k, t, tempInput,
-		tempTag, name, assert, k, v)
+		listTag, value_d_w, value_d_w, listComment, addIndent(value_d_s, 5), tempInput,
+		k, t, k, t, tempInput, tempTag, name, assert, k, v)
 
 	if tag_s == "" {
 		return fmt.Sprintf(`
@@ -551,12 +558,19 @@ func (t *VariantType) DeserializeGo(tag string, input string, name string, preFi
 		}
 		variant_s, variant_w, variant_p := ts.DeserializeGo(tempTag, tempInput, name, "", i+1, true)
 		pkgs = update(pkgs, variant_p)
+		var listTag string
+		var listComment string
+		if l, ok := ts.(*ListType); ok && l.E.IsPrimitive() {
+			listTag, listComment = tagInt("", i+1, WireBytes)
+			listTag = fmt.Sprintf(" || tag == %s", listTag)
+			listComment = strings.Replace(listComment, "//", "||", 1)
+		}
 		cases = append(cases, fmt.Sprintf(`
 				case %d:
-					if %s == %d { // MAKE_TAG(%d, %s=%d)%s
+					if %s == %d%s { // MAKE_TAG(%d, %s=%d)%s%s
 						continue variant_%s // next tag for %s
-					}`, i+1, tempTag, _MAKE_TAG(i+1, variant_w), i+1, variant_w, variant_w,
-			addIndent(variant_s, 5), v, t))
+					}`, i+1, tempTag, _MAKE_TAG(i+1, variant_w), listTag, i+1,
+			variant_w, variant_w, listComment, addIndent(variant_s, 5), v, t))
 	}
 
 	return fmt.Sprintf(`
