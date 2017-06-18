@@ -285,7 +285,8 @@ method_%s:
 		} else if cutoff {%s
 			switch %s {%s
 			}
-		} else if err = input.SkipField(tag); err != nil {
+		}
+		if err = input.SkipField(tag); err != nil {
 			return
 		}
 	}

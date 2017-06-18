@@ -295,7 +295,8 @@ object_tmp_1:
 					continue object_tmp_1 // next tag for Vector2
 				}
 			}
-		} else if err = input.SkipField(tag); err != nil {
+		}
+		if err = input.SkipField(tag); err != nil {
 			return
 		}
 	}
@@ -933,7 +934,8 @@ object_tmp_2:
 											continue dict_tmp_3 // next tag for map[int32]*Vector2
 										}
 									}
-								} else if err = tmpi.SkipField(tmpg); err != nil {
+								}
+								if err = tmpi.SkipField(tmpg); err != nil {
 									return
 								}
 							}
@@ -1009,7 +1011,8 @@ object_tmp_2:
 											continue dict_tmp_5 // next tag for map[int32]float32
 										}
 									}
-								} else if err = tmpi.SkipField(tmpg); err != nil {
+								}
+								if err = tmpi.SkipField(tmpg); err != nil {
 									return
 								}
 							}
@@ -1205,7 +1208,8 @@ object_tmp_2:
 											continue dict_tmp_11 // next tag for map[int32]*GoType
 										}
 									}
-								} else if err = tmpi.SkipField(tmpg); err != nil {
+								}
+								if err = tmpi.SkipField(tmpg); err != nil {
 									return
 								}
 							}
@@ -1270,7 +1274,8 @@ object_tmp_2:
 										continue variant_tmp_13 // next tag for variant<int32, *GoType>
 									}
 								}
-							} else if err = tmpi.SkipField(tmpg); err != nil {
+							}
+							if err = tmpi.SkipField(tmpg); err != nil {
 								return
 							}
 						}
@@ -1330,7 +1335,8 @@ object_tmp_2:
 										continue variant_tmp_14 // next tag for variant<int32, *GoType>
 									}
 								}
-							} else if err = tmpi.SkipField(tmpg); err != nil {
+							}
+							if err = tmpi.SkipField(tmpg); err != nil {
 								return
 							}
 						}
@@ -1344,7 +1350,8 @@ object_tmp_2:
 					continue object_tmp_2 // next tag for Fighter_Part1
 				}
 			}
-		} else if err = input.SkipField(tag); err != nil {
+		}
+		if err = input.SkipField(tag); err != nil {
 			return
 		}
 	}
@@ -1858,7 +1865,8 @@ object_tmp_15:
 											continue dict_tmp_19 // next tag for map[string]bytes
 										}
 									}
-								} else if err = tmpi.SkipField(tmpg); err != nil {
+								}
+								if err = tmpi.SkipField(tmpg); err != nil {
 									return
 								}
 							}
@@ -1934,7 +1942,8 @@ object_tmp_15:
 											continue dict_tmp_21 // next tag for map[int32]string
 										}
 									}
-								} else if err = tmpi.SkipField(tmpg); err != nil {
+								}
+								if err = tmpi.SkipField(tmpg); err != nil {
 									return
 								}
 							}
@@ -2055,7 +2064,8 @@ object_tmp_15:
 											continue dict_tmp_24 // next tag for map[int32]Corpus
 										}
 									}
-								} else if err = tmpi.SkipField(tmpg); err != nil {
+								}
+								if err = tmpi.SkipField(tmpg); err != nil {
 									return
 								}
 							}
@@ -2112,7 +2122,8 @@ object_tmp_15:
 					continue object_tmp_15 // next tag for Fighter_Part2
 				}
 			}
-		} else if err = input.SkipField(tag); err != nil {
+		}
+		if err = input.SkipField(tag); err != nil {
 			return
 		}
 	}
@@ -4412,7 +4423,8 @@ object_tmp_40:
 										continue variant_tmp_41 // next tag for variant<int32, float32, bytes, *Vector2>
 									}
 								}
-							} else if err = tmpi.SkipField(tmpg); err != nil {
+							}
+							if err = tmpi.SkipField(tmpg); err != nil {
 								return
 							}
 						}
@@ -4495,7 +4507,8 @@ object_tmp_40:
 										continue variant_tmp_42 // next tag for variant<int32, float32, bytes, *Vector2>
 									}
 								}
-							} else if err = tmpi.SkipField(tmpg); err != nil {
+							}
+							if err = tmpi.SkipField(tmpg); err != nil {
 								return
 							}
 						}
@@ -4578,7 +4591,8 @@ object_tmp_40:
 										continue variant_tmp_43 // next tag for variant<int32, float32, bytes, *Vector2>
 									}
 								}
-							} else if err = tmpi.SkipField(tmpg); err != nil {
+							}
+							if err = tmpi.SkipField(tmpg); err != nil {
 								return
 							}
 						}
@@ -4661,7 +4675,8 @@ object_tmp_40:
 										continue variant_tmp_44 // next tag for variant<int32, float32, bytes, *Vector2>
 									}
 								}
-							} else if err = tmpi.SkipField(tmpg); err != nil {
+							}
+							if err = tmpi.SkipField(tmpg); err != nil {
 								return
 							}
 						}
@@ -4744,7 +4759,8 @@ object_tmp_40:
 										continue variant_tmp_45 // next tag for variant<int32, float32, bytes, *Vector2>
 									}
 								}
-							} else if err = tmpi.SkipField(tmpg); err != nil {
+							}
+							if err = tmpi.SkipField(tmpg); err != nil {
 								return
 							}
 						}
@@ -4830,7 +4846,8 @@ object_tmp_40:
 											continue variant_tmp_47 // next tag for variant<int32, fixedpoint<3, 0>, string, *Vector2>
 										}
 									}
-								} else if err = tmpi.SkipField(tmpg); err != nil {
+								}
+								if err = tmpi.SkipField(tmpg); err != nil {
 									return
 								}
 							}
@@ -4956,7 +4973,8 @@ object_tmp_40:
 																continue variant_tmp_50 // next tag for variant<Corpus, float64, string, *Vector2>
 															}
 														}
-													} else if err = tmpii.SkipField(tmpig); err != nil {
+													}
+													if err = tmpii.SkipField(tmpig); err != nil {
 														return
 													}
 												}
@@ -4970,7 +4988,8 @@ object_tmp_40:
 											continue dict_tmp_48 // next tag for map[int32]variant<Corpus, float64, string, *Vector2>
 										}
 									}
-								} else if err = tmpi.SkipField(tmpg); err != nil {
+								}
+								if err = tmpi.SkipField(tmpg); err != nil {
 									return
 								}
 							}
@@ -5100,7 +5119,8 @@ object_tmp_40:
 																	continue variant_tmp_54 // next tag for variant<Corpus, float64, string, *Vector2>
 																}
 															}
-														} else if err = tmpii.SkipField(tmpig); err != nil {
+														}
+														if err = tmpii.SkipField(tmpig); err != nil {
 															return
 														}
 													}
@@ -5119,7 +5139,8 @@ object_tmp_40:
 											continue dict_tmp_51 // next tag for map[int32][]variant<Corpus, float64, string, *Vector2>
 										}
 									}
-								} else if err = tmpi.SkipField(tmpg); err != nil {
+								}
+								if err = tmpi.SkipField(tmpg); err != nil {
 									return
 								}
 							}
@@ -5222,7 +5243,8 @@ object_tmp_40:
 											continue dict_tmp_55 // next tag for map[int32][]float32
 										}
 									}
-								} else if err = tmpi.SkipField(tmpg); err != nil {
+								}
+								if err = tmpi.SkipField(tmpg); err != nil {
 									return
 								}
 							}
@@ -5398,7 +5420,8 @@ object_tmp_40:
 																						continue variant_tmp_62 // next tag for variant<int32, Corpus, float64, string, *Vector2>
 																					}
 																				}
-																			} else if err = tmpiii.SkipField(tmpiig); err != nil {
+																			}
+																			if err = tmpiii.SkipField(tmpiig); err != nil {
 																				return
 																			}
 																		}
@@ -5412,7 +5435,8 @@ object_tmp_40:
 																	continue dict_tmp_60 // next tag for map[int32]variant<int32, Corpus, float64, string, *Vector2>
 																}
 															}
-														} else if err = tmpii.SkipField(tmpig); err != nil {
+														}
+														if err = tmpii.SkipField(tmpig); err != nil {
 															return
 														}
 													}
@@ -5431,7 +5455,8 @@ object_tmp_40:
 											continue dict_tmp_58 // next tag for map[int32]map[int32]variant<int32, Corpus, float64, string, *Vector2>
 										}
 									}
-								} else if err = tmpi.SkipField(tmpg); err != nil {
+								}
+								if err = tmpi.SkipField(tmpg); err != nil {
 									return
 								}
 							}
@@ -5546,7 +5571,8 @@ object_tmp_40:
 																	continue dict_tmp_65 // next tag for map[int32]float32
 																}
 															}
-														} else if err = tmpii.SkipField(tmpig); err != nil {
+														}
+														if err = tmpii.SkipField(tmpig); err != nil {
 															return
 														}
 													}
@@ -5565,7 +5591,8 @@ object_tmp_40:
 											continue dict_tmp_63 // next tag for map[int32]map[int32]float32
 										}
 									}
-								} else if err = tmpi.SkipField(tmpg); err != nil {
+								}
+								if err = tmpi.SkipField(tmpg); err != nil {
 									return
 								}
 							}
@@ -5612,7 +5639,8 @@ object_tmp_40:
 										continue variant_tmp_67 // next tag for variant<nil, int32>
 									}
 								}
-							} else if err = tmpi.SkipField(tmpg); err != nil {
+							}
+							if err = tmpi.SkipField(tmpg); err != nil {
 								return
 							}
 						}
@@ -5693,7 +5721,8 @@ object_tmp_40:
 																continue variant_tmp_70 // next tag for variant<float32, string>
 															}
 														}
-													} else if err = tmpii.SkipField(tmpig); err != nil {
+													}
+													if err = tmpii.SkipField(tmpig); err != nil {
 														return
 													}
 												}
@@ -5709,7 +5738,8 @@ object_tmp_40:
 										continue variant_tmp_68 // next tag for variant<int32, []variant<float32, string>>
 									}
 								}
-							} else if err = tmpi.SkipField(tmpg); err != nil {
+							}
+							if err = tmpi.SkipField(tmpg); err != nil {
 								return
 							}
 						}
@@ -5789,7 +5819,8 @@ object_tmp_40:
 										continue variant_tmp_71 // next tag for variant<int32, []float32>
 									}
 								}
-							} else if err = tmpi.SkipField(tmpg); err != nil {
+							}
+							if err = tmpi.SkipField(tmpg); err != nil {
 								return
 							}
 						}
@@ -5905,7 +5936,8 @@ object_tmp_40:
 																					continue variant_tmp_76 // next tag for variant<float32, string>
 																				}
 																			}
-																		} else if err = tmpiii.SkipField(tmpiig); err != nil {
+																		}
+																		if err = tmpiii.SkipField(tmpiig); err != nil {
 																			return
 																		}
 																	}
@@ -5919,7 +5951,8 @@ object_tmp_40:
 																continue dict_tmp_74 // next tag for map[int32]variant<float32, string>
 															}
 														}
-													} else if err = tmpii.SkipField(tmpig); err != nil {
+													}
+													if err = tmpii.SkipField(tmpig); err != nil {
 														return
 													}
 												}
@@ -5935,7 +5968,8 @@ object_tmp_40:
 										continue variant_tmp_73 // next tag for variant<int32, map[int32]variant<float32, string>>
 									}
 								}
-							} else if err = tmpi.SkipField(tmpg); err != nil {
+							}
+							if err = tmpi.SkipField(tmpg); err != nil {
 								return
 							}
 						}
@@ -6030,7 +6064,8 @@ object_tmp_40:
 																continue dict_tmp_78 // next tag for map[int32]float32
 															}
 														}
-													} else if err = tmpii.SkipField(tmpig); err != nil {
+													}
+													if err = tmpii.SkipField(tmpig); err != nil {
 														return
 													}
 												}
@@ -6046,7 +6081,8 @@ object_tmp_40:
 										continue variant_tmp_77 // next tag for variant<int32, map[int32]float32>
 									}
 								}
-							} else if err = tmpi.SkipField(tmpg); err != nil {
+							}
+							if err = tmpi.SkipField(tmpg); err != nil {
 								return
 							}
 						}
@@ -6060,7 +6096,8 @@ object_tmp_40:
 					continue object_tmp_40 // next tag for Fighter
 				}
 			}
-		} else if err = input.SkipField(tag); err != nil {
+		}
+		if err = input.SkipField(tag); err != nil {
 			return
 		}
 	}
@@ -6195,7 +6232,8 @@ method_tmp_28:
 										continue variant_tmp_29 // next tag for variant<nil, int32>
 									}
 								}
-							} else if err = tmpi.SkipField(tmpg); err != nil {
+							}
+							if err = tmpi.SkipField(tmpg); err != nil {
 								return
 							}
 						}
@@ -6245,7 +6283,8 @@ method_tmp_28:
 					continue method_tmp_28 // next tag for param
 				}
 			}
-		} else if err = input.SkipField(tag); err != nil {
+		}
+		if err = input.SkipField(tag); err != nil {
 			return
 		}
 	}
@@ -6380,7 +6419,8 @@ method_tmp_30:
 										continue variant_tmp_31 // next tag for variant<nil, int32>
 									}
 								}
-							} else if err = tmpi.SkipField(tmpg); err != nil {
+							}
+							if err = tmpi.SkipField(tmpg); err != nil {
 								return
 							}
 						}
@@ -6430,7 +6470,8 @@ method_tmp_30:
 					continue method_tmp_30 // next tag for result
 				}
 			}
-		} else if err = input.SkipField(tag); err != nil {
+		}
+		if err = input.SkipField(tag); err != nil {
 			return
 		}
 	}
@@ -6739,7 +6780,8 @@ method_tmp_32:
 																continue variant_tmp_35 // next tag for variant<Corpus, float64, string, *Vector2>
 															}
 														}
-													} else if err = tmpii.SkipField(tmpig); err != nil {
+													}
+													if err = tmpii.SkipField(tmpig); err != nil {
 														return
 													}
 												}
@@ -6753,7 +6795,8 @@ method_tmp_32:
 											continue dict_tmp_33 // next tag for map[int32]variant<Corpus, float64, string, *Vector2>
 										}
 									}
-								} else if err = tmpi.SkipField(tmpg); err != nil {
+								}
+								if err = tmpi.SkipField(tmpg); err != nil {
 									return
 								}
 							}
@@ -6772,7 +6815,8 @@ method_tmp_32:
 					continue method_tmp_32 // next tag for param
 				}
 			}
-		} else if err = input.SkipField(tag); err != nil {
+		}
+		if err = input.SkipField(tag); err != nil {
 			return
 		}
 	}
@@ -7081,7 +7125,8 @@ method_tmp_36:
 																continue variant_tmp_39 // next tag for variant<Corpus, float64, string, *Vector2>
 															}
 														}
-													} else if err = tmpii.SkipField(tmpig); err != nil {
+													}
+													if err = tmpii.SkipField(tmpig); err != nil {
 														return
 													}
 												}
@@ -7095,7 +7140,8 @@ method_tmp_36:
 											continue dict_tmp_37 // next tag for map[int32]variant<Corpus, float64, string, *Vector2>
 										}
 									}
-								} else if err = tmpi.SkipField(tmpg); err != nil {
+								}
+								if err = tmpi.SkipField(tmpg); err != nil {
 									return
 								}
 							}
@@ -7114,7 +7160,8 @@ method_tmp_36:
 					continue method_tmp_36 // next tag for result
 				}
 			}
-		} else if err = input.SkipField(tag); err != nil {
+		}
+		if err = input.SkipField(tag); err != nil {
 			return
 		}
 	}

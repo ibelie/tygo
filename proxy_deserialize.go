@@ -181,7 +181,8 @@ object_%s:
 		} else if cutoff {%s
 			switch %s {%s
 			}
-		} else if err = %s.SkipField(tag); err != nil {
+		}
+		if err = %s.SkipField(tag); err != nil {
 			return
 		}
 	}`, strings.Join(parents, ""), l, input, input, cutoff, switchLabel, switchFlag,
@@ -495,7 +496,8 @@ func (t *DictType) DeserializeGo(tag string, input string, name string, preField
 						continue dict_%s // next tag for %s
 					}
 				}
-			} else if err = %s.SkipField(%s); err != nil {
+			}
+			if err = %s.SkipField(%s); err != nil {
 				return
 			}
 		}
@@ -565,7 +567,8 @@ func (t *VariantType) DeserializeGo(tag string, input string, name string, preFi
 			} else if cutoff {
 				switch %s {%s
 				}
-			} else if err = %s.SkipField(%s); err != nil {
+			}
+			if err = %s.SkipField(%s); err != nil {
 				return
 			}
 		}
