@@ -293,8 +293,11 @@ func TestVector2(t *testing.T) {
 	v.Serialize(vd)
 	vd.Reset()
 	v3 := &Vector2{}
-	v3.Deserialize(vd)
-	compareVector2(t, v, v3)
+	if err := v3.Deserialize(vd); err == nil {
+		compareVector2(t, v, v3)
+	} else {
+		t.Errorf("TestVector2 Deserialize error: %v", err)
+	}
 }
 
 func TestFighter(t *testing.T) {
@@ -302,6 +305,9 @@ func TestFighter(t *testing.T) {
 	fighter.Serialize(fd)
 	fd.Reset()
 	fighter2 := &Fighter{}
-	fighter2.Deserialize(fd)
-	compareFighter(t, fighter, fighter2)
+	if err := fighter2.Deserialize(fd); err == nil {
+		compareFighter(t, fighter, fighter2)
+	} else {
+		t.Errorf("TestFighter Deserialize error: %v", err)
+	}
 }
