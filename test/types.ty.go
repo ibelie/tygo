@@ -1731,8 +1731,8 @@ object_tmp_15:
 						}
 					} else if x, e := input.ReadBuf(); e == nil {
 						tmpi := &tygo.ProtoBuf{Buffer: x}
-						var tmp_16 float32
 						for !tmpi.ExpectEnd() {
+							var tmp_16 float32
 							// type: float32
 							if x, e := tmpi.ReadFixed32(); e == nil {
 								tmp_16 = math.Float32frombits(x)
@@ -1740,8 +1740,8 @@ object_tmp_15:
 								err = e
 								return
 							}
+							s.Fl = append(s.Fl, tmp_16)
 						}
-						s.Fl = append(s.Fl, tmp_16)
 					} else {
 						err = e
 						return
@@ -1986,8 +1986,8 @@ object_tmp_15:
 						}
 					} else if x, e := input.ReadBuf(); e == nil {
 						tmpi := &tygo.ProtoBuf{Buffer: x}
-						var tmp_23 Corpus
 						for !tmpi.ExpectEnd() {
+							var tmp_23 Corpus
 							// type: Corpus
 							if x, e := tmpi.ReadVarint(); e == nil {
 								tmp_23 = Corpus(x)
@@ -1995,8 +1995,8 @@ object_tmp_15:
 								err = e
 								return
 							}
+							s.El = append(s.El, tmp_23)
 						}
-						s.El = append(s.El, tmp_23)
 					} else {
 						err = e
 						return
@@ -5222,8 +5222,8 @@ object_tmp_40:
 												}
 											} else if x, e := tmpi.ReadBuf(); e == nil {
 												tmpii := &tygo.ProtoBuf{Buffer: x}
-												var tmp_57 float32
 												for !tmpii.ExpectEnd() {
+													var tmp_57 float32
 													// type: float32
 													if x, e := tmpii.ReadFixed32(); e == nil {
 														tmp_57 = math.Float32frombits(x)
@@ -5231,8 +5231,8 @@ object_tmp_40:
 														err = e
 														return
 													}
+													tmp_56 = append(tmp_56, tmp_57)
 												}
-												tmp_56 = append(tmp_56, tmp_57)
 											} else {
 												err = e
 												return
@@ -5807,8 +5807,8 @@ object_tmp_40:
 											}
 										} else if x, e := tmpi.ReadBuf(); e == nil {
 											tmpii := &tygo.ProtoBuf{Buffer: x}
-											var tmp_72 float32
 											for !tmpii.ExpectEnd() {
+												var tmp_72 float32
 												// type: float32
 												if x, e := tmpii.ReadFixed32(); e == nil {
 													tmp_72 = math.Float32frombits(x)
@@ -5816,11 +5816,11 @@ object_tmp_40:
 													err = e
 													return
 												}
-											}
 											if s.Flv == nil {
 												s.Flv = []float32(nil)
 											}
-											s.Flv = append(s.Flv.([]float32), tmp_72)
+												s.Flv = append(s.Flv.([]float32), tmp_72)
+											}
 										} else {
 											err = e
 											return
