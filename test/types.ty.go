@@ -5809,9 +5809,9 @@ object_tmp_40:
 													err = e
 													return
 												}
-											if s.Flv == nil {
-												s.Flv = []float32(nil)
-											}
+												if s.Flv == nil {
+													s.Flv = []float32(nil)
+												}
 												s.Flv = append(s.Flv.([]float32), tmp_72)
 												if !tmpi.ExpectBytes(21) { // tag: 21 MAKE_TAG(2, WireFixed32=5)
 													break loop_tmp_72 // end for []float32
@@ -5828,9 +5828,9 @@ object_tmp_40:
 													err = e
 													return
 												}
-											if s.Flv == nil {
-												s.Flv = []float32(nil)
-											}
+												if s.Flv == nil {
+													s.Flv = []float32(nil)
+												}
 												s.Flv = append(s.Flv.([]float32), tmp_72)
 											}
 										} else {

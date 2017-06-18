@@ -334,9 +334,9 @@ func (t *ListType) DeserializeGo(tag string, input string, name string, preField
 	if isVariant {
 		assert = fmt.Sprintf(".([]%s)", type_s)
 		init = fmt.Sprintf(`
-		if %s == nil {
-			%s = []%s(nil)
-		}`, name, name, type_s)
+	if %s == nil {
+		%s = []%s(nil)
+	}`, name, name, type_s)
 	}
 
 	if l, ok := t.E.(*ListType); ok && !l.E.IsPrimitive() {
@@ -353,7 +353,7 @@ func (t *ListType) DeserializeGo(tag string, input string, name string, preField
 	} else {
 		err = e
 		return
-	}`, input, tempInput, v, type_s, tempInput, addIndent(element_s, 2), init, name, name, assert, v)
+	}`, input, tempInput, v, type_s, tempInput, addIndent(element_s, 2), addIndent(init, 1), name, name, assert, v)
 		if tag_s == "" {
 			return fmt.Sprintf(`
 	// type: %s%s`, t, list_s), WireBytes, pkgs
@@ -386,7 +386,7 @@ loop_%s:
 		if !%s.%s {%s
 			break loop_%s // end for %s
 		}
-	}`, v, t, v, type_s, addIndent(element_s, 1), init, name, name, assert, v, input, tag_s, tag_sc, v, t),
+	}`, v, t, v, type_s, addIndent(element_s, 1), addIndent(init, 1), name, name, assert, v, input, tag_s, tag_sc, v, t),
 				WireBytes, pkgs
 		}
 	} else {
@@ -405,7 +405,7 @@ loop_%s:
 	} else {
 		err = e
 		return
-	}`, t, input, tempInput, tempInput, v, type_s, addIndent(element_s, 2), init, name, name, assert, v),
+	}`, t, input, tempInput, tempInput, v, type_s, addIndent(element_s, 2), addIndent(init, 2), name, name, assert, v),
 				element_w, pkgs
 		} else {
 			loop_s, _, _ := t.E.DeserializeGo(tag, input, v, preFieldNum, fieldNum, false)
@@ -430,9 +430,9 @@ loop_%s:
 	} else {
 		err = e
 		return
-	}`, t, tag, tag_i, tag_ic, v, v, type_s, addIndent(loop_s, 2), init, name, name, assert, v,
+	}`, t, tag, tag_i, tag_ic, v, v, type_s, addIndent(loop_s, 2), addIndent(init, 2), name, name, assert, v,
 				input, tag_s, tag_sc, v, t, input, tempInput, tempInput, v, type_s,
-				addIndent(element_s, 2), init, name, name, assert, v), element_w, pkgs
+				addIndent(element_s, 2), addIndent(init, 2), name, name, assert, v), element_w, pkgs
 		}
 	}
 }
