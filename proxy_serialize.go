@@ -257,16 +257,22 @@ func (t *ListType) SerializeGo(size string, name string, preFieldNum string, fie
 	} else if !t.E.IsPrimitive() {
 		element_s, element_p := t.E.SerializeGo(size, "e", "", 0, true)
 		pkgs = update(pkgs, element_p)
+		var checkNil string
+		if _, ok := t.E.(*VariantType); !ok {
+			checkNil = `
+				log.Printf("[Tygo][Serialize] Nil in a list is treated as an empty object contents default properties!")`
+			pkgs = update(pkgs, LOG_PKG)
+		}
 
 		return fmt.Sprintf(`
 	// type: %s
 	if len(%s) > 0 {
 		for _, e := range %s {
-			// list element%s%s else {
+			// list element%s%s else {%s
 				output.WriteBytes(0)
 			}
 		}
-	}`, t, name, name, writeTag(preFieldNum, fieldNum, WireBytes, 2), addIndent(element_s, 2)), pkgs
+	}`, t, name, name, writeTag(preFieldNum, fieldNum, WireBytes, 2), addIndent(element_s, 2), checkNil), pkgs
 
 	} else {
 		var bytesize_s string

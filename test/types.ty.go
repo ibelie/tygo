@@ -4,6 +4,7 @@ package test
 
 import "fmt"
 import "github.com/ibelie/tygo"
+import "log"
 import "math"
 
 type Corpus uint
@@ -392,6 +393,7 @@ func (s *Fighter_Part1) ByteSize() (size int) {
 					tmp := e.ByteSize()
 					size += 1 + tygo.SizeVarint(uint64(tmp)) + tmp
 				} else {
+					log.Printf("[Tygo][ByteSize] Nil in a list is treated as an empty object contents default properties!")
 					size += 1 + 1
 				}
 			}
@@ -412,6 +414,7 @@ func (s *Fighter_Part1) ByteSize() (size int) {
 							tmpp := e.ByteSize()
 							tmp += tygo.SizeVarint(uint64(tmpp)) + tmpp
 						} else {
+							log.Printf("[Tygo][ByteSize] Nil in a list is treated as an empty object contents default properties!")
 							tmp += 1
 						}
 					}
@@ -430,6 +433,7 @@ func (s *Fighter_Part1) ByteSize() (size int) {
 					tmp := e.ByteSize()
 					size += 1 + tygo.SizeVarint(uint64(tmp)) + tmp
 				} else {
+					log.Printf("[Tygo][ByteSize] Nil in a list is treated as an empty object contents default properties!")
 					size += 1 + 1
 				}
 			}
@@ -611,6 +615,7 @@ func (s *Fighter_Part1) Serialize(output *tygo.ProtoBuf) {
 					output.WriteVarint(uint64(e.CachedSize()))
 					e.Serialize(output)
 				} else {
+					log.Printf("[Tygo][Serialize] Nil in a list is treated as an empty object contents default properties!")
 					output.WriteBytes(0)
 				}
 			}
@@ -631,6 +636,7 @@ func (s *Fighter_Part1) Serialize(output *tygo.ProtoBuf) {
 							tmpp := e.CachedSize()
 							tmp += tygo.SizeVarint(uint64(tmpp)) + tmpp
 						} else {
+							log.Printf("[Tygo][ByteSize] Nil in a list is treated as an empty object contents default properties!")
 							tmp += 1
 						}
 					}
@@ -647,6 +653,7 @@ func (s *Fighter_Part1) Serialize(output *tygo.ProtoBuf) {
 							output.WriteVarint(uint64(e.CachedSize()))
 							e.Serialize(output)
 						} else {
+							log.Printf("[Tygo][Serialize] Nil in a list is treated as an empty object contents default properties!")
 							output.WriteBytes(0)
 						}
 					}
@@ -665,6 +672,7 @@ func (s *Fighter_Part1) Serialize(output *tygo.ProtoBuf) {
 					output.WriteVarint(uint64(e.CachedSize()))
 					e.Serialize(output)
 				} else {
+					log.Printf("[Tygo][Serialize] Nil in a list is treated as an empty object contents default properties!")
 					output.WriteBytes(0)
 				}
 			}
@@ -1394,6 +1402,7 @@ func (s *Fighter_Part2) ByteSize() (size int) {
 					l := len([]byte(e))
 					size += 1 + tygo.SizeVarint(uint64(l)) + l
 				} else {
+					log.Printf("[Tygo][ByteSize] Nil in a list is treated as an empty object contents default properties!")
 					size += 1 + 1
 				}
 			}
@@ -1409,6 +1418,7 @@ func (s *Fighter_Part2) ByteSize() (size int) {
 					l := len([]byte(e))
 					size += 1 + tygo.SizeVarint(uint64(l)) + l
 				} else {
+					log.Printf("[Tygo][ByteSize] Nil in a list is treated as an empty object contents default properties!")
 					size += 1 + 1
 				}
 			}
@@ -1532,6 +1542,7 @@ func (s *Fighter_Part2) Serialize(output *tygo.ProtoBuf) {
 				if len(e) > 0 {
 					output.WriteBuf([]byte(e))
 				} else {
+					log.Printf("[Tygo][Serialize] Nil in a list is treated as an empty object contents default properties!")
 					output.WriteBytes(0)
 				}
 			}
@@ -1547,6 +1558,7 @@ func (s *Fighter_Part2) Serialize(output *tygo.ProtoBuf) {
 				if len(e) > 0 {
 					output.WriteBuf([]byte(e))
 				} else {
+					log.Printf("[Tygo][Serialize] Nil in a list is treated as an empty object contents default properties!")
 					output.WriteBytes(0)
 				}
 			}

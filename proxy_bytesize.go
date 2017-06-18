@@ -277,16 +277,22 @@ func (t *ListType) _ByteSizeGo(size string, name string, preFieldNum string, fie
 	} else if !t.E.IsPrimitive() {
 		element_s, element_p := bytesizeMethod(size, "e", preFieldNum, fieldNum, true)
 		pkgs = update(pkgs, element_p)
+		var checkNil string
+		if _, ok := t.E.(*VariantType); !ok {
+			checkNil = `
+				log.Printf("[Tygo][ByteSize] Nil in a list is treated as an empty object contents default properties!")`
+			pkgs = update(pkgs, LOG_PKG)
+		}
 
 		return fmt.Sprintf(`
 	// type: %s
 	if len(%s) > 0 {
 		for _, e := range %s {
-			// list element%s else {
+			// list element%s else {%s
 				%s += %s1
 			}
 		}
-	}`, t, name, name, addIndent(element_s, 2), size, tagsize_s), pkgs
+	}`, t, name, name, addIndent(element_s, 2), checkNil, size, tagsize_s), pkgs
 
 	} else if st, ok := t.E.(SimpleType); ok && st == SimpleType_BOOL {
 		return fmt.Sprintf(`

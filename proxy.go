@@ -33,6 +33,7 @@ package %s
 
 var (
 	FMT_PKG  = map[string]string{"fmt": ""}
+	LOG_PKG  = map[string]string{"log": ""}
 	MATH_PKG = map[string]string{"math": ""}
 	SRC_PATH = os.Getenv("GOPATH") + "/src/"
 )
