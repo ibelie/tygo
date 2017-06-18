@@ -6,49 +6,50 @@ package test
 
 import (
 	"bytes"
+	"fmt"
 	"github.com/ibelie/tygo"
 	"runtime/debug"
 	"testing"
 )
 
-func compareGoType(t *testing.T, g1 *GoType, g2 *GoType) {
+func compareGoType(t *testing.T, g1 *GoType, g2 *GoType, prefix string) {
 	if g1 == g2 {
 		return
 	} else if g1 == nil || g2 == nil {
 		debug.PrintStack()
-		t.Errorf("GoType %v %v", g1, g2)
+		t.Errorf("%s GoType %v %v", prefix, g1, g2)
 	} else if g1.PP != g2.PP {
 		debug.PrintStack()
-		t.Errorf("GoType.PP: %v %v", g1.PP, g2.PP)
+		t.Errorf("%s GoType.PP: %v %v", prefix, g1.PP, g2.PP)
 	} else if g1.AP != g2.AP {
 		debug.PrintStack()
-		t.Errorf("GoType.AP: %v %v", g1.AP, g2.AP)
+		t.Errorf("%s GoType.AP: %v %v", prefix, g1.AP, g2.AP)
 	}
 }
 
-func compareVector2(t *testing.T, v1 *Vector2, v2 *Vector2) {
+func compareVector2(t *testing.T, v1 *Vector2, v2 *Vector2, prefix string) {
 	if v1 == v2 {
 		return
 	} else if v1 == nil || v2 == nil {
 		debug.PrintStack()
-		t.Errorf("Vector2 %v %v", v1, v2)
+		t.Errorf("%s Vector2 %v %v", prefix, v1, v2)
 	} else if v1.X != v2.X {
 		debug.PrintStack()
-		t.Errorf("Vector2.X: %v %v", v1.X, v2.X)
+		t.Errorf("%s Vector2.X: %v %v", prefix, v1.X, v2.X)
 	} else if v1.Y != v2.Y {
 		debug.PrintStack()
-		t.Errorf("Vector2.Y: %v %v", v1.Y, v2.Y)
+		t.Errorf("%s Vector2.Y: %v %v", prefix, v1.Y, v2.Y)
 	} else if v1.S != v2.S {
 		debug.PrintStack()
-		t.Errorf("Vector2.S: %v %v", v1.S, v2.S)
+		t.Errorf("%s Vector2.S: %v %v", prefix, v1.S, v2.S)
 	} else if bytes.Compare(v1.B, v2.B) != 0 {
 		debug.PrintStack()
-		t.Errorf("Vector2.B: %v %v", v1.B, v2.B)
+		t.Errorf("%s Vector2.B: %v %v", prefix, v1.B, v2.B)
 	} else if v1.E != v2.E {
 		debug.PrintStack()
-		t.Errorf("Vector2.E: %v %v", v1.E, v2.E)
+		t.Errorf("%s Vector2.E: %v %v", prefix, v1.E, v2.E)
 	} else {
-		compareGoType(t, v1.P, v2.P)
+		compareGoType(t, v1.P, v2.P, prefix+".P")
 	}
 }
 
@@ -60,7 +61,7 @@ func compareFighter_Part1(t *testing.T, f1 *Fighter_Part1, f2 *Fighter_Part1) {
 		t.Errorf("Fighter_Part1 %v %v", f1, f2)
 		return
 	}
-	compareVector2(t, f1.Pos, f2.Pos)
+	compareVector2(t, f1.Pos, f2.Pos, "Fighter_Part1.Pos")
 	if f1.IsAwake != f2.IsAwake {
 		debug.PrintStack()
 		t.Errorf("Fighter_Part1.IsAwake: %v %v", f1.IsAwake, f2.IsAwake)
@@ -78,7 +79,7 @@ func compareFighter_Part1(t *testing.T, f1 *Fighter_Part1, f2 *Fighter_Part1) {
 				debug.PrintStack()
 				t.Errorf("Fighter_Part1.Poss: %v %v %v", k, v1, v2)
 			} else {
-				compareVector2(t, v1, v2)
+				compareVector2(t, v1, v2, fmt.Sprintf("Fighter_Part1.Poss[%v]", k))
 			}
 		}
 	}
@@ -99,7 +100,7 @@ func compareFighter_Part1(t *testing.T, f1 *Fighter_Part1, f2 *Fighter_Part1) {
 	} else {
 		for k, v1 := range f1.Posl {
 			v2 := f2.Posl[k]
-			compareVector2(t, v1, v2)
+			compareVector2(t, v1, v2, fmt.Sprintf("Fighter_Part1.Posl[%v]", k))
 		}
 	}
 	if len(f1.Posll) != len(f2.Posll) {
@@ -114,7 +115,7 @@ func compareFighter_Part1(t *testing.T, f1 *Fighter_Part1, f2 *Fighter_Part1) {
 			} else {
 				for k2, v1 := range l1 {
 					v2 := l2[k2]
-					compareVector2(t, v1, v2)
+					compareVector2(t, v1, v2, fmt.Sprintf("Fighter_Part1.Posll[%v][%v]", k1, k2))
 				}
 			}
 		}
@@ -125,7 +126,7 @@ func compareFighter_Part1(t *testing.T, f1 *Fighter_Part1, f2 *Fighter_Part1) {
 	} else {
 		for k, v1 := range f1.Pyl {
 			v2 := f2.Pyl[k]
-			compareGoType(t, v1, v2)
+			compareGoType(t, v1, v2, fmt.Sprintf("Fighter_Part1.Pyl[%v]", k))
 		}
 	}
 	if len(f1.Pyd) != len(f2.Pyd) {
@@ -137,7 +138,7 @@ func compareFighter_Part1(t *testing.T, f1 *Fighter_Part1, f2 *Fighter_Part1) {
 				debug.PrintStack()
 				t.Errorf("Fighter_Part1.Pyd: %v %v %v", k, v1, v2)
 			} else {
-				compareGoType(t, v1, v2)
+				compareGoType(t, v1, v2, fmt.Sprintf("Fighter_Part1.Pyd[%v]", k))
 			}
 		}
 	}
@@ -145,7 +146,7 @@ func compareFighter_Part1(t *testing.T, f1 *Fighter_Part1, f2 *Fighter_Part1) {
 		debug.PrintStack()
 		t.Errorf("Fighter_Part1.Pyv1: %v %v", f1.Pyv1, f2.Pyv1)
 	}
-	compareGoType(t, f1.Pyv2.(*GoType), f2.Pyv2.(*GoType))
+	compareGoType(t, f1.Pyv2.(*GoType), f2.Pyv2.(*GoType), "Fighter_Part1.Pyv1")
 }
 
 func compareFighter_Part2(t *testing.T, f1 *Fighter_Part2, f2 *Fighter_Part2) {
@@ -281,7 +282,7 @@ func compareFighter(t *testing.T, f1 *Fighter, f2 *Fighter) {
 		debug.PrintStack()
 		t.Errorf("Fighter.V2: %v %v", f1.V1, f2.V1)
 	}
-	compareVector2(t, f1.V3.(*Vector2), f2.V3.(*Vector2))
+	compareVector2(t, f1.V3.(*Vector2), f2.V3.(*Vector2), "Fighter.V3")
 	if float32(f1.V4.(float64)) != f2.V4.(float32) {
 		debug.PrintStack()
 		t.Errorf("Fighter.V4: %v %v", f1.V4, f2.V4)
@@ -294,7 +295,7 @@ func TestVector2(t *testing.T) {
 	vd.Reset()
 	v3 := &Vector2{}
 	if err := v3.Deserialize(vd); err == nil {
-		compareVector2(t, v, v3)
+		compareVector2(t, v, v3, "")
 	} else {
 		t.Errorf("TestVector2 Deserialize error: %v", err)
 	}
