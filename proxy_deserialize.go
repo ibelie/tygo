@@ -468,7 +468,7 @@ func (t *DictType) DeserializeGo(tag string, input string, name string, preField
 	var listComment string
 	if l, ok := t.V.(*ListType); ok && l.E.IsPrimitive() {
 		listTag, listComment = tagInt("", 2, WireBytes)
-		listTag = fmt.Sprintf(" || tag == %s", listTag)
+		listTag = fmt.Sprintf(" || %s == %s", tempTag, listTag)
 		listComment = strings.Replace(listComment, "//", "||", 1)
 	}
 
@@ -562,7 +562,7 @@ func (t *VariantType) DeserializeGo(tag string, input string, name string, preFi
 		var listComment string
 		if l, ok := ts.(*ListType); ok && l.E.IsPrimitive() {
 			listTag, listComment = tagInt("", i+1, WireBytes)
-			listTag = fmt.Sprintf(" || tag == %s", listTag)
+			listTag = fmt.Sprintf(" || %s == %s", tempTag, listTag)
 			listComment = strings.Replace(listComment, "//", "||", 1)
 		}
 		cases = append(cases, fmt.Sprintf(`

@@ -5214,7 +5214,7 @@ object_tmp_40:
 										}
 										fallthrough
 									case 2:
-										if tmpg == 21 || tag == 18 { // MAKE_TAG(2, WireFixed32=5) || MAKE_TAG(2, WireBytes=2)
+										if tmpg == 21 || tmpg == 18 { // MAKE_TAG(2, WireFixed32=5) || MAKE_TAG(2, WireBytes=2)
 											// type: []float32
 											if tmpg == 21 { // MAKE_TAG(2, WireFixed32=5)
 											loop_tmp_57:
@@ -5796,7 +5796,7 @@ object_tmp_40:
 										continue variant_tmp_71 // next tag for variant<int32, []float32>
 									}
 								case 2:
-									if tmpg == 21 || tag == 18 { // MAKE_TAG(2, WireFixed32=5) || MAKE_TAG(2, WireBytes=2)
+									if tmpg == 21 || tmpg == 18 { // MAKE_TAG(2, WireFixed32=5) || MAKE_TAG(2, WireBytes=2)
 										// type: []float32
 										if tmpg == 21 { // MAKE_TAG(2, WireFixed32=5)
 										loop_tmp_72:
