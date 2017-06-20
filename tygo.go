@@ -7,11 +7,12 @@ package tygo
 import (
 	"fmt"
 	"log"
+	"reflect"
 	"sort"
 	"strings"
 )
 
-const TYGO_PATH = "github.com/ibelie/tygo"
+var TYGO_PATH string = reflect.TypeOf(Tygo{}).PkgPath()
 
 type Tygo struct {
 	cachedSize int
