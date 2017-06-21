@@ -38,7 +38,7 @@ var (
 	SRC_PATH = os.Getenv("GOPATH") + "/src/"
 )
 
-func Inject(path string) {
+func Inject(path string) (types []Type) {
 	buildPackage, err := build.Import(path, "", build.ImportComment)
 	if err != nil {
 		log.Fatalf("[Tygo][Inject] Cannot import package:\n>>>>%v", err)
@@ -67,14 +67,15 @@ func Inject(path string) {
 				if strings.TrimSpace(decl.Doc.Text()) == "" {
 					os.Remove(injectfile)
 				} else {
-					inject(injectfile, decl.Doc.Text(), file)
+					types = append(types, inject(injectfile, decl.Doc.Text(), file)...)
 				}
 			}
 		}
 	}
+	return
 }
 
-func inject(filename string, doc string, file *ast.File) {
+func inject(filename string, doc string, file *ast.File) []Type {
 	desVarCount = 0
 	imports := make(map[string]string)
 	typePkg := make(map[string][2]string)
@@ -97,6 +98,9 @@ func inject(filename string, doc string, file *ast.File) {
 		}
 	}
 	types := Parse(doc, imports, typePkg)
+	if types == nil {
+		return nil
+	}
 
 	var head bytes.Buffer
 	var body bytes.Buffer
@@ -119,6 +123,7 @@ func inject(filename string, doc string, file *ast.File) {
 
 	head.Write(body.Bytes())
 	ioutil.WriteFile(filename, head.Bytes(), 0666)
+	return types
 }
 
 func (t *Enum) Go() (string, map[string]string) {
