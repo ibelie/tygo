@@ -267,7 +267,20 @@ func (t *ListType) _ByteSizeGo(size string, name string, preFieldNum string, fie
 		}
 	}
 
-	if l, innerList := t.E.(*ListType); (innerList && l.E.IsPrimitive()) || (!innerList && !t.E.IsPrimitive()) {
+	if l, innerList := t.E.(*ListType); innerList && !l.E.IsPrimitive() {
+		element_s, element_p := bytesizeMethod(tempSize, "e", "", 0, true)
+		pkgs = update(pkgs, element_p)
+		return fmt.Sprintf(`
+	// type: %s
+	if len(%s) > 0 {
+		for _, e := range %s {
+			%s := 0
+			// list element%s
+			%s += %stygo.SizeVarint(uint64(%s)) + %s
+		}
+	}`, t, name, name, tempSize, addIndent(element_s, 2), size, tagsize_s, tempSize, tempSize), updateTygo(pkgs)
+
+	} else if !t.E.IsPrimitive() {
 		element_s, element_p := bytesizeMethod(size, "e", preFieldNum, fieldNum, true)
 		pkgs = update(pkgs, element_p)
 		var checkNil string
@@ -287,7 +300,7 @@ func (t *ListType) _ByteSizeGo(size string, name string, preFieldNum string, fie
 		}
 	}`, t, name, name, addIndent(element_s, 2), checkNil, size, tagsize_s), pkgs
 
-	} else if t.E.IsPrimitive() {
+	} else {
 		element_s, element_p := bytesizeMethod(tempSize, "e", "", 0, false)
 		pkgs = update(pkgs, element_p)
 
@@ -300,18 +313,6 @@ func (t *ListType) _ByteSizeGo(size string, name string, preFieldNum string, fie
 		}
 		%s += %stygo.SizeVarint(uint64(%s)) + %s
 	}`, t, name, tempSize, name, addIndent(element_s, 2), size, tagsize_s, tempSize, tempSize), updateTygo(pkgs)
-	} else {
-		element_s, element_p := bytesizeMethod(tempSize, "e", "", 0, true)
-		pkgs = update(pkgs, element_p)
-		return fmt.Sprintf(`
-	// type: %s
-	if len(%s) > 0 {
-		for _, e := range %s {
-			%s := 0
-			// list element%s
-			%s += %stygo.SizeVarint(uint64(%s)) + %s
-		}
-	}`, t, name, name, tempSize, addIndent(element_s, 2), size, tagsize_s, tempSize, tempSize), updateTygo(pkgs)
 	}
 }
 

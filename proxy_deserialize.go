@@ -339,7 +339,7 @@ func (t *ListType) DeserializeGo(tag string, input string, name string, preField
 	}`, name, name, type_s)
 	}
 
-	if l, ok := t.E.(*ListType); ok && !l.E.IsPrimitive() {
+	if l, innerList := t.E.(*ListType); innerList && !l.E.IsPrimitive() {
 		element_s, element_w, element_p := t.E.DeserializeGo(tag, tempInput, v, "", 0, false)
 		pkgs = update(pkgs, element_p)
 		tag_s, tag_sc := expectTag(preFieldNum, fieldNum, element_w)

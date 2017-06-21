@@ -224,7 +224,24 @@ func (t *ListType) SerializeGo(size string, name string, preFieldNum string, fie
 	}
 	var pkgs map[string]string
 
-	if l, innerList := t.E.(*ListType); (innerList && l.E.IsPrimitive()) || (!innerList && !t.E.IsPrimitive()) {
+	if l, innerList := t.E.(*ListType); innerList && !l.E.IsPrimitive() {
+		bytesize_s, bytesize_p := t.E.CachedSizeGo(tempSize, "e", "", 0, true)
+		serialize_s, serialize_p := t.E.SerializeGo(tempSize, "e", "", 0, true)
+		pkgs = update(pkgs, bytesize_p)
+		pkgs = update(pkgs, serialize_p)
+
+		return fmt.Sprintf(`
+	// type: %s
+	if len(%s) > 0 {
+		for _, e := range %s {
+			%s := 0
+			// list element size%s%s
+			output.WriteVarint(uint64(%s))
+			// list element serialize%s
+		}
+	}`, t, name, name, tempSize, addIndent(bytesize_s, 2), writeTag(preFieldNum, fieldNum, WireBytes, 2), tempSize, addIndent(serialize_s, 2)), pkgs
+
+	} else if !t.E.IsPrimitive() {
 		element_s, element_p := t.E.SerializeGo(size, "e", "", 0, true)
 		pkgs = update(pkgs, element_p)
 		var checkNil string
@@ -244,7 +261,7 @@ func (t *ListType) SerializeGo(size string, name string, preFieldNum string, fie
 		}
 	}`, t, name, name, writeTag(preFieldNum, fieldNum, WireBytes, 2), addIndent(element_s, 2), checkNil), pkgs
 
-	} else if t.E.IsPrimitive() {
+	} else {
 		var bytesize_s string
 		var bytesize_p map[string]string
 		if st, ok := t.E.(SimpleType); ok && st == SimpleType_BOOL {
@@ -276,23 +293,6 @@ func (t *ListType) SerializeGo(size string, name string, preFieldNum string, fie
 			// list element serialize%s
 		}
 	}`, t, name, bytesize_s, writeTag(preFieldNum, fieldNum, WireBytes, 1), tempSize, name, addIndent(serialize_s, 2)), pkgs
-
-	} else {
-		bytesize_s, bytesize_p := t.E.CachedSizeGo(tempSize, "e", "", 0, true)
-		serialize_s, serialize_p := t.E.SerializeGo(tempSize, "e", "", 0, true)
-		pkgs = update(pkgs, bytesize_p)
-		pkgs = update(pkgs, serialize_p)
-
-		return fmt.Sprintf(`
-	// type: %s
-	if len(%s) > 0 {
-		for _, e := range %s {
-			%s := 0
-			// list element size%s%s
-			output.WriteVarint(uint64(%s))
-			// list element serialize%s
-		}
-	}`, t, name, name, tempSize, addIndent(bytesize_s, 2), writeTag(preFieldNum, fieldNum, WireBytes, 2), tempSize, addIndent(serialize_s, 2)), pkgs
 	}
 }
 
