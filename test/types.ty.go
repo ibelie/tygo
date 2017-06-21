@@ -1686,10 +1686,10 @@ func (s *Fighter_Part2) Serialize(output *tygo.ProtoBuf) {
 		if len(s.Ll) > 0 {
 			for _, e := range s.Ll {
 				// list element
+				output.WriteBytes(154, 1) // tag: 154 MAKE_TAG(19, WireBytes=2)
 				// type: []float32
 				if len(e) > 0 {
 					tmp := len(e) * 4
-					output.WriteBytes(154, 1) // tag: 154 MAKE_TAG(19, WireBytes=2)
 					output.WriteVarint(uint64(tmp))
 					for _, e := range e {
 						// list element serialize
@@ -1697,7 +1697,7 @@ func (s *Fighter_Part2) Serialize(output *tygo.ProtoBuf) {
 						output.WriteFixed32(math.Float32bits(e))
 					}
 				} else {
-					output.WriteBytes(154, 1) // tag: 154 MAKE_TAG(19, WireBytes=2)
+					log.Printf("[Tygo][Serialize] Nil in a list is treated as an empty object contents default properties!")
 					output.WriteBytes(0)
 				}
 			}
