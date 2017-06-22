@@ -13,5 +13,5 @@ import (
 func main() {
 	pkg := flag.String("pkg", "", "target package")
 	flag.Parse()
-	tygo.Inject(*pkg)
+	tygo.Extract(*pkg, tygo.Inject)
 }
