@@ -261,7 +261,7 @@ func (t SimpleType) DeserializeGo(tag string, input string, name string, preFiel
 		return
 	}`, t, input, name), WireFixed64, MATH_PKG
 	default:
-		log.Fatalf("[Tygo][SimpleType] Unexpect enum value: %d", t)
+		log.Fatalf("[Tygo][SimpleType] Unexpect enum value for Deserialize: %d", t)
 		return "", WireVarint, nil
 	}
 }

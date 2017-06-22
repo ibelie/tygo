@@ -8,11 +8,22 @@ import (
 	"os"
 	"strings"
 
+	"crypto/md5"
+	"encoding/base64"
+
 	"go/build"
 	"go/doc"
 	"go/parser"
 	"go/token"
 )
+
+func shortName(name string) string {
+	if len(name) > 24 {
+		bytes := md5.Sum([]byte(name))
+		name = strings.Replace(base64.RawURLEncoding.EncodeToString(bytes[:]), "-", "__", -1)
+	}
+	return name
+}
 
 func pow10(x uint) uint {
 	if x == 0 {

@@ -160,7 +160,7 @@ func (t SimpleType) SerializeGo(size string, name string, preFieldNum string, fi
 	output.WriteFixed64(math.Float64bits(%s))`, t, writeTag(preFieldNum, fieldNum, WireFixed64, 0), name), MATH_PKG
 		}
 	default:
-		log.Fatalf("[Tygo][SimpleType] Unexpect enum value: %d", t)
+		log.Fatalf("[Tygo][SimpleType] Unexpect enum value: %d for Serialize", t)
 		return "", nil
 	}
 }

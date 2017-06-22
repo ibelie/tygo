@@ -28,11 +28,13 @@ func (t *Tygo) CachedSize() int {
 }
 
 type Type interface {
+	WireType() WireType
+	Identifier() string
 	String() string
 	IsPrimitive() bool
 	Go() (string, map[string]string)
 	Typescript() string
-	Javascript(io.Writer, map[string]Type, map[string]*Object) (WireType, string)
+	Javascript(io.Writer, io.Writer, map[string]Type, map[string]*Object) string
 	ByteSizeGo(string, string, string, int, bool) (string, map[string]string)
 	CachedSizeGo(string, string, string, int, bool) (string, map[string]string)
 	SerializeGo(string, string, string, int, bool) (string, map[string]string)
@@ -410,4 +412,80 @@ func (t *VariantType) String() string {
 		ts = append(ts, t.String())
 	}
 	return fmt.Sprintf("variant<%s>", strings.Join(ts, ", "))
+}
+
+func (t *Enum) Identifier() string {
+	return t.Name
+}
+
+func (t *Method) Identifier() string {
+	return t.Name
+}
+
+func (t *Object) Identifier() string {
+	return t.Name
+}
+
+func (t UnknownType) Identifier() string {
+	return string(t)
+}
+
+func (t SimpleType) Identifier() string {
+	switch t {
+	case SimpleType_NIL:
+		return "n"
+	case SimpleType_INT32:
+		return "i"
+	case SimpleType_INT64:
+		return "i2"
+	case SimpleType_UINT32:
+		return "ui"
+	case SimpleType_UINT64:
+		return "ui2"
+	case SimpleType_BYTES:
+		return "by"
+	case SimpleType_STRING:
+		return "s"
+	case SimpleType_BOOL:
+		return "b"
+	case SimpleType_FLOAT32:
+		return "f"
+	case SimpleType_FLOAT64:
+		return "d"
+	default:
+		log.Fatalf("[Tygo][SimpleType] Unexpect enum value for Identifier: %d", t)
+		return ""
+	}
+}
+
+func (t *EnumType) Identifier() string {
+	return t.Name
+}
+
+func (t *InstanceType) Identifier() string {
+	return t.Name
+}
+
+func (t *FixedPointType) Identifier() string {
+	if t.Floor >= 0 {
+		return fmt.Sprintf("FixedPoint_%d_%d", t.Precision, t.Floor)
+	} else {
+		return fmt.Sprintf("FixedPoint_%d_s%d", t.Precision, -t.Floor)
+	}
+}
+
+func (t *ListType) Identifier() string {
+	return "L" + t.E.Identifier()
+}
+
+func (t *DictType) Identifier() string {
+	return "D" + t.K.Identifier() + t.V.Identifier()
+}
+
+func (t *VariantType) Identifier() string {
+	var names []string
+	for _, v := range t.Ts {
+		names = append(names, v.Identifier())
+	}
+	return "V" + shortName(strings.Join(names, ""))
 }

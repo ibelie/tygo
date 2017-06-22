@@ -8,6 +8,7 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"log"
 )
 
 const (
@@ -21,8 +22,8 @@ const (
 	WireVarint WireType = iota
 	WireFixed64
 	WireBytes
-	WireStartGroup
-	WireEndGroup
+	WireStart
+	WireEnd
 	WireFixed32
 )
 
@@ -34,10 +35,10 @@ func (i WireType) String() string {
 		return "WireFixed64"
 	case WireBytes:
 		return "WireBytes"
-	case WireStartGroup:
-		return "WireStartGroup"
-	case WireEndGroup:
-		return "WireEndGroup"
+	case WireStart:
+		return "WireStart"
+	case WireEnd:
+		return "WireEnd"
 	case WireFixed32:
 		return "WireFixed32"
 	default:
@@ -308,4 +309,70 @@ func (p *ProtoBuf) SkipField(tag int) (err error) {
 		err = fmt.Errorf("[Tygo][WireType] Unexpect field type to skip: %d", tag)
 	}
 	return
+}
+
+func (t *Enum) WireType() WireType {
+	return WireVarint
+}
+
+func (t *Method) WireType() WireType {
+	return WireBytes
+}
+
+func (t *Object) WireType() WireType {
+	return WireBytes
+}
+
+func (t UnknownType) WireType() WireType {
+	return WireVarint
+}
+
+func (t SimpleType) WireType() WireType {
+	switch t {
+	case SimpleType_INT32:
+		fallthrough
+	case SimpleType_INT64:
+		fallthrough
+	case SimpleType_UINT32:
+		fallthrough
+	case SimpleType_UINT64:
+		fallthrough
+	case SimpleType_BOOL:
+		return WireVarint
+	case SimpleType_BYTES:
+		return WireBytes
+	case SimpleType_STRING:
+		return WireBytes
+	case SimpleType_FLOAT32:
+		return WireFixed32
+	case SimpleType_FLOAT64:
+		return WireFixed64
+	default:
+		log.Fatalf("[Tygo][SimpleType] Unexpect enum value for WireType: %d", t)
+		return WireVarint
+	}
+}
+
+func (t *EnumType) WireType() WireType {
+	return WireVarint
+}
+
+func (t *InstanceType) WireType() WireType {
+	return WireBytes
+}
+
+func (t *FixedPointType) WireType() WireType {
+	return WireVarint
+}
+
+func (t *ListType) WireType() WireType {
+	return WireBytes
+}
+
+func (t *DictType) WireType() WireType {
+	return WireBytes
+}
+
+func (t *VariantType) WireType() WireType {
+	return WireBytes
 }

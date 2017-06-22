@@ -149,7 +149,7 @@ func (t SimpleType) ByteSizeGo(size string, name string, preFieldNum string, fie
 	%s += %s8`, t, size, tagsize_s), tagsize_p
 		}
 	default:
-		log.Fatalf("[Tygo][SimpleType] Unexpect enum value: %d", t)
+		log.Fatalf("[Tygo][SimpleType] Unexpect enum value for ByteSize: %d", t)
 		return "", nil
 	}
 }
