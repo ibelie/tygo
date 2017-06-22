@@ -6,16 +6,16 @@ package tygo
 
 import (
 	"bytes"
-	"strings"
+	"path"
 
 	"io/ioutil"
 )
 
-func Typescript(path string, types []Type) {
+func Typescript(dir string, name string, types []Type) {
 	var buffer bytes.Buffer
 
-	ioutil.WriteFile(path, buffer.Bytes(), 0666)
-	Javascript(strings.Replace(path, ".js", ".d.ts", 1), types)
+	ioutil.WriteFile(path.Join(dir, name+".d.ts"), buffer.Bytes(), 0666)
+	Javascript(dir, name, types)
 }
 
 func (t *Enum) Typescript() string {

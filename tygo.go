@@ -12,7 +12,7 @@ import (
 	"strings"
 )
 
-var TYGO_PATH string = reflect.TypeOf(Tygo{}).PkgPath()
+var TYGO_PATH = reflect.TypeOf(Tygo{}).PkgPath()
 
 type Tygo struct {
 	cachedSize int

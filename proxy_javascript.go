@@ -6,16 +6,17 @@ package tygo
 
 import (
 	"bytes"
+	"path"
 
 	"io/ioutil"
 )
 
-func Javascript(path string, types []Type) {
+func Javascript(dir string, name string, types []Type) {
 	var head bytes.Buffer
 	var body bytes.Buffer
 
 	head.Write(body.Bytes())
-	ioutil.WriteFile(path, head.Bytes(), 0666)
+	ioutil.WriteFile(path.Join(dir, name+".js"), head.Bytes(), 0666)
 }
 
 func (t *Enum) Javascript() (string, []string) {
