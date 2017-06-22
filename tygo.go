@@ -487,5 +487,6 @@ func (t *VariantType) Identifier() string {
 	for _, v := range t.Ts {
 		names = append(names, v.Identifier())
 	}
+	sort.Strings(names)
 	return "V" + shortName(strings.Join(names, ""))
 }
