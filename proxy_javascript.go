@@ -6,59 +6,93 @@ package tygo
 
 import (
 	"bytes"
+	"fmt"
+	"io"
+	"log"
 	"path"
+	"sort"
+	"strings"
 
 	"io/ioutil"
 )
 
 func Javascript(dir string, name string, types []Type) {
-	var head bytes.Buffer
-	var body bytes.Buffer
+	var buffer bytes.Buffer
+	var sortedObjects []string
+	objects := make(map[string]*Object)
+	for _, t := range types {
+		if object, ok := t.(*Object); ok {
+			if o, exist := objects[object.Name]; exist {
+				log.Fatalf("[Tygo][Javascript] Object already exists: %v %v", o, object)
+			}
+			objects[object.Name] = object
+			sortedObjects = append(sortedObjects, object.Name)
+		}
+	}
+	sort.Strings(sortedObjects)
 
-	head.Write(body.Bytes())
-	ioutil.WriteFile(path.Join(dir, name+".js"), head.Bytes(), 0666)
+	genTypes := make(map[string]Type)
+	for _, name := range sortedObjects {
+		objects[name].Javascript(&buffer, genTypes, objects)
+	}
+
+	ioutil.WriteFile(path.Join(dir, name+".js"), buffer.Bytes(), 0666)
 }
 
-func (t *Enum) Javascript() (string, []string) {
-	return "", nil
+func (t *Enum) Javascript(writer io.Writer, types map[string]Type, objects map[string]*Object) (WireType, string) {
+	return WireVarint, ""
 }
 
-func (t *Method) Javascript() (string, []string) {
-	return "", nil
+func (t *Method) Javascript(writer io.Writer, types map[string]Type, objects map[string]*Object) (WireType, string) {
+	return WireVarint, ""
 }
 
-func (t *Object) Javascript() (string, []string) {
-	return "", nil
+func (t *Object) Javascript(writer io.Writer, types map[string]Type, objects map[string]*Object) (WireType, string) {
+	if _, exist := types[t.Name]; exist {
+		return WireVarint, ""
+	}
+	fields := t.AllFields(objects)
+	var codes []string
+	for i, field := range fields {
+		wiretype, typename := field.Javascript(writer, types, objects)
+		codes = append(codes, fmt.Sprintf(`
+	{name: %s, tag: %d, tagsize: %d, wiretype: %d, type: %s}`, field.Name, _MAKE_TAG(i+1, wiretype), TAG_SIZE(i+1), wiretype, typename))
+	}
+	types[t.Name] = t
+	writer.Write([]byte(fmt.Sprintf(`
+%s = tyts.Object('%s', %d, [%s
+]);`, t.Name, t.Name, _MAKE_CUTOFF(len(fields)), strings.Join(codes, ","))))
+	return WireVarint, ""
 }
 
-func (t UnknownType) Javascript() (string, []string) {
-	return "", nil
+func (t UnknownType) Javascript(writer io.Writer, types map[string]Type, objects map[string]*Object) (WireType, string) {
+	return WireVarint, ""
 }
 
-func (t SimpleType) Javascript() (string, []string) {
-	return "", nil
+func (t SimpleType) Javascript(writer io.Writer, types map[string]Type, objects map[string]*Object) (WireType, string) {
+	return WireVarint, ""
 }
 
-func (t *EnumType) Javascript() (string, []string) {
-	return "", nil
+func (t *EnumType) Javascript(writer io.Writer, types map[string]Type, objects map[string]*Object) (WireType, string) {
+	return WireVarint, ""
 }
 
-func (t *InstanceType) Javascript() (string, []string) {
-	return "", nil
+func (t *InstanceType) Javascript(writer io.Writer, types map[string]Type, objects map[string]*Object) (WireType, string) {
+	return WireVarint, ""
 }
 
-func (t *FixedPointType) Javascript() (string, []string) {
-	return "", nil
+func (t *FixedPointType) Javascript(writer io.Writer, types map[string]Type, objects map[string]*Object) (WireType, string) {
+	return WireVarint, ""
 }
 
-func (t *ListType) Javascript() (string, []string) {
-	return "", nil
+func (t *ListType) Javascript(writer io.Writer, types map[string]Type, objects map[string]*Object) (WireType, string) {
+	return WireVarint, ""
 }
 
-func (t *DictType) Javascript() (string, []string) {
-	return "", nil
+func (t *DictType) Javascript(writer io.Writer, types map[string]Type, objects map[string]*Object) (WireType, string) {
+	return WireVarint, ""
 }
 
-func (t *VariantType) Javascript() (string, []string) {
-	return "", nil
+func (t *VariantType) Javascript(writer io.Writer, types map[string]Type, objects map[string]*Object) (WireType, string) {
+	return WireVarint, ""
 }

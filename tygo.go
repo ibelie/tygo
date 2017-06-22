@@ -6,6 +6,7 @@ package tygo
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"reflect"
 	"sort"
@@ -31,7 +32,7 @@ type Type interface {
 	IsPrimitive() bool
 	Go() (string, map[string]string)
 	Typescript() string
-	Javascript() (string, []string)
+	Javascript(io.Writer, map[string]Type, map[string]*Object) (WireType, string)
 	ByteSizeGo(string, string, string, int, bool) (string, map[string]string)
 	CachedSizeGo(string, string, string, int, bool) (string, map[string]string)
 	SerializeGo(string, string, string, int, bool) (string, map[string]string)
@@ -247,6 +248,19 @@ func (t *Object) MaxFieldNum() (string, int) {
 		return name, num + len(t.Fields)
 	} else {
 		return t.Parent.Name, len(t.Fields)
+	}
+}
+
+func (t *Object) AllFields(objects map[string]*Object) []*Field {
+	if !t.HasParent() {
+		return t.Fields
+	} else if t.Parent.PkgPath == "" {
+		return append(t.Parent.Object.AllFields(objects), t.Fields...)
+	} else if object, ok := objects[t.Parent.Name]; ok {
+		return append(object.AllFields(objects), t.Fields...)
+	} else {
+		log.Fatalf("[Tygo][Object] Unsolved parent type: %s", t.Parent.Name)
+		return t.Fields
 	}
 }
 
