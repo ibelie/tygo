@@ -73,8 +73,16 @@ func (t *Object) Typescript(objects map[string]*Object) string {
 	}
 	return fmt.Sprintf(`
 
-	class %s {%s
-	}`, t.Name, strings.Join(fields, ""))
+	class %s {
+		__class__: string;
+		ByteSize(): number;
+		Serialize(): Uint8Array;
+		Deserialize(data: Uint8Array): void;%s
+	}
+
+	namespace %s {
+		function Deserialize(data: Uint8Array): %s;
+	}`, t.Name, strings.Join(fields, ""), t.Name, t.Name)
 }
 
 func (t UnknownType) Typescript(objects map[string]*Object) string {
