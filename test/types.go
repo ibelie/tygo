@@ -68,6 +68,8 @@ type Fighter object {
 	Flv variant<int32, []float32>
 	Dv  variant<int32, map[int32]variant<float32, string>>
 	Fdv variant<int32, map[int32]float32>
+	Poslll  [][][]*Vector2
+	Posdl   []map[string]*Vector2
 	RPG(*Fighter, variant<nil, int32>, fixedpoint<3, 0>) *Vector2
 	GPR(map[int32]variant<Corpus, float64, string, *Vector2>) (*Fighter, int32)
 }
@@ -134,6 +136,7 @@ var fighter *Fighter = &Fighter{
 			Poss:    map[int32]*Vector2{321: v, 320: nil, 231: v2},
 			Posi:    map[int32]float32{123: 0.456},
 			Posl:    []*Vector2{v, &Vector2{}, v2},
+			Posll:   [][]*Vector2{[]*Vector2{v, &Vector2{}, v2}, nil, []*Vector2{v2, v}},
 			Pyl:     []*GoType{&GoType{PP: 123, AP: "adsf"}, &GoType{}, &GoType{PP: 456, AP: "xxxx"}},
 			Pyd:     map[int32]*GoType{321: &GoType{PP: 123, AP: "adsf"}, 654: &GoType{PP: 456, AP: "xxxx"}, 320: nil},
 			Pyv1:    123,
@@ -148,19 +151,21 @@ var fighter *Fighter = &Fighter{
 		Ed: map[int32]Corpus{789: Corpus_WEB, 567: Corpus_IMAGES},
 		Ll: [][]float32{[]float32{12.3, 1.23}, []float32{1.234, 12.34, 123.4}},
 	},
-	V1:  98765,
-	V2:  []byte("adsf"),
-	V3:  v,
-	V4:  345.123,
-	Vl:  []interface{}{123, "adsf", nil, v, 345.123, nil},
-	Vd:  map[int32]interface{}{0: nil, 12: Corpus_IMAGES, 23: "adsf", 34: v2, 45: 345.123},
-	Ld:  map[int32][]interface{}{12: []interface{}{Corpus_IMAGES, "adsf"}, 34: []interface{}{v2, 345.123}},
-	Fld: map[int32][]float32{123: []float32{222.111, 345.123}},
-	Dd:  map[int32]map[int32]interface{}{12: map[int32]interface{}{111: Corpus_IMAGES, 222: "adsf"}, 34: map[int32]interface{}{333: v2, 444: 345.123}},
-	Fdd: map[int32]map[int32]float32{123: map[int32]float32{12: 222.111, 23: 345.123}},
-	Nv:  123456,
-	Lv:  []interface{}{123, "adsf"},
-	Flv: []float32{222.111, 345.123},
-	Dv:  map[int32]interface{}{333: 123, 444: "adsf"},
-	Fdv: map[int32]float32{333: 222.111, 444: 345.123},
+	V1:     98765,
+	V2:     []byte("adsf"),
+	V3:     v,
+	V4:     345.123,
+	Vl:     []interface{}{123, "adsf", nil, v, 345.123, nil},
+	Vd:     map[int32]interface{}{0: nil, 12: Corpus_IMAGES, 23: "adsf", 34: v2, 45: 345.123},
+	Ld:     map[int32][]interface{}{12: []interface{}{Corpus_IMAGES, "adsf"}, 34: []interface{}{v2, 345.123}},
+	Fld:    map[int32][]float32{123: []float32{222.111, 345.123}},
+	Dd:     map[int32]map[int32]interface{}{12: map[int32]interface{}{111: Corpus_IMAGES, 222: "adsf"}, 34: map[int32]interface{}{333: v2, 444: 345.123}},
+	Fdd:    map[int32]map[int32]float32{123: map[int32]float32{12: 222.111, 23: 345.123}},
+	Nv:     123456,
+	Lv:     []interface{}{123, "adsf"},
+	Flv:    []float32{222.111, 345.123},
+	Dv:     map[int32]interface{}{333: 123, 444: "adsf"},
+	Fdv:    map[int32]float32{333: 222.111, 444: 345.123},
+	Poslll: [][][]*Vector2{[][]*Vector2{[]*Vector2{v, &Vector2{}, v2}, nil}, nil, [][]*Vector2{[]*Vector2{v, &Vector2{}, v2}, []*Vector2{v2, v}}},
+	Posdl:  []map[string]*Vector2{map[string]*Vector2{"231": v, "320": nil, "321": v2}, nil, map[string]*Vector2{"321": v, "320": nil, "231": v2}},
 }

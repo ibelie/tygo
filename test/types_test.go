@@ -483,6 +483,52 @@ func compareFighter(t *testing.T, f1 *Fighter, f2 *Fighter) {
 			}
 		}
 	}
+	if len(f1.Poslll) != len(f2.Poslll) {
+		debug.PrintStack()
+		t.Errorf("Fighter_Part1.Poslll: %v %v", f1.Poslll, f2.Poslll)
+	} else {
+		for k1, ll1 := range f1.Poslll {
+			ll2 := f2.Poslll[k1]
+			if len(ll1) != len(ll2) {
+				debug.PrintStack()
+				t.Errorf("Fighter_Part1.Poslll[%v]: %v %v", k1, ll1, ll2)
+			} else {
+				for k2, l1 := range ll1 {
+					l2 := ll2[k2]
+					if len(l1) != len(l2) {
+						debug.PrintStack()
+						t.Errorf("Fighter_Part1.Poslll[%v][%v]: %v %v", k1, k2, l1, l2)
+					} else {
+						for k3, v1 := range l1 {
+							v2 := l2[k2]
+							compareVector2(t, v1, v2, fmt.Sprintf("Fighter_Part1.Poslll[%v][%v][%v]", k1, k2, k3))
+						}
+					}
+				}
+			}
+		}
+	}
+	if len(f1.Posdl) != len(f2.Posdl) {
+		debug.PrintStack()
+		t.Errorf("Fighter_Part2.Posdl: %v %v", f1.Posdl, f2.Posdl)
+	} else {
+		for k1, d1 := range f1.Posdl {
+			d2 := f2.Posdl[k1]
+			if len(d1) != len(d2) {
+				debug.PrintStack()
+				t.Errorf("Fighter_Part2.Posdl[%v]: %v %v", k1, d1, d2)
+			} else {
+				for k2, v1 := range d1 {
+					if v2, ok := d2[k2]; !ok {
+						debug.PrintStack()
+						t.Errorf("Fighter_Part2.Posdl[%v][%v]: %v %v", k1, k2, v1, v2)
+					} else {
+						compareVector2(t, v1, v2, fmt.Sprintf("Fighter_Part1.Posdl[%v][%v]", k1, k2))
+					}
+				}
+			}
+		}
+	}
 }
 
 func TestVector2(t *testing.T) {

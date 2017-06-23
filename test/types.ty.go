@@ -2143,26 +2143,28 @@ object_tmp_15:
 
 type Fighter struct {
 	Fighter_Part2
-	V0  interface{}                     // variant<int32, float32, bytes, *Vector2>
-	V1  interface{}                     // variant<int32, float32, bytes, *Vector2>
-	V2  interface{}                     // variant<int32, float32, bytes, *Vector2>
-	V3  interface{}                     // variant<int32, float32, bytes, *Vector2>
-	V4  interface{}                     // variant<int32, float32, bytes, *Vector2>
-	Vl  []interface{}                   // []variant<int32, fixedpoint<3, 0>, string, *Vector2>
-	Vd  map[int32]interface{}           // map[int32]variant<Corpus, float64, string, *Vector2>
-	Ld  map[int32][]interface{}         // map[int32][]variant<Corpus, float64, string, *Vector2>
-	Fld map[int32][]float32             // map[int32][]float32
-	Dd  map[int32]map[int32]interface{} // map[int32]map[int32]variant<int32, Corpus, float64, string, *Vector2>
-	Fdd map[int32]map[int32]float32     // map[int32]map[int32]float32
-	Nv  interface{}                     // variant<nil, int32>
-	Lv  interface{}                     // variant<int32, []variant<float32, string>>
-	Flv interface{}                     // variant<int32, []float32>
-	Dv  interface{}                     // variant<int32, map[int32]variant<float32, string>>
-	Fdv interface{}                     // variant<int32, map[int32]float32>
+	V0     interface{}                     // variant<int32, float32, bytes, *Vector2>
+	V1     interface{}                     // variant<int32, float32, bytes, *Vector2>
+	V2     interface{}                     // variant<int32, float32, bytes, *Vector2>
+	V3     interface{}                     // variant<int32, float32, bytes, *Vector2>
+	V4     interface{}                     // variant<int32, float32, bytes, *Vector2>
+	Vl     []interface{}                   // []variant<int32, fixedpoint<3, 0>, string, *Vector2>
+	Vd     map[int32]interface{}           // map[int32]variant<Corpus, float64, string, *Vector2>
+	Ld     map[int32][]interface{}         // map[int32][]variant<Corpus, float64, string, *Vector2>
+	Fld    map[int32][]float32             // map[int32][]float32
+	Dd     map[int32]map[int32]interface{} // map[int32]map[int32]variant<int32, Corpus, float64, string, *Vector2>
+	Fdd    map[int32]map[int32]float32     // map[int32]map[int32]float32
+	Nv     interface{}                     // variant<nil, int32>
+	Lv     interface{}                     // variant<int32, []variant<float32, string>>
+	Flv    interface{}                     // variant<int32, []float32>
+	Dv     interface{}                     // variant<int32, map[int32]variant<float32, string>>
+	Fdv    interface{}                     // variant<int32, map[int32]float32>
+	Poslll [][][]*Vector2                  // [][][]*Vector2
+	Posdl  []map[string]*Vector2           // []map[string]*Vector2
 }
 
 func (s *Fighter) MaxFieldNum() int {
-	return 35
+	return 37
 }
 
 func (s *Fighter) ByteSize() (size int) {
@@ -2822,6 +2824,67 @@ func (s *Fighter) ByteSize() (size int) {
 				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, map[int32]float32>: %v", v))
 			}
 			size += 2 + tygo.SizeVarint(uint64(tmp)) + tmp
+		}
+
+		// property: s.Poslll
+		// type: [][][]*Vector2
+		if len(s.Poslll) > 0 {
+			for _, e := range s.Poslll {
+				tmp := 0
+				// list element
+				// type: [][]*Vector2
+				if len(e) > 0 {
+					for _, e := range e {
+						tmpp := 0
+						// list element
+						// type: []*Vector2
+						if len(e) > 0 {
+							for _, e := range e {
+								// list element
+								// type: *Vector2
+								if e != nil {
+									tmppp := e.ByteSize()
+									tmpp += tygo.SizeVarint(uint64(tmppp)) + tmppp
+								} else {
+									log.Printf("[Tygo][ByteSize] Nil in a list is treated as an empty object contents default properties!")
+									tmpp += 1
+								}
+							}
+						}
+						tmp += tygo.SizeVarint(uint64(tmpp)) + tmpp
+					}
+				}
+				size += 2 + tygo.SizeVarint(uint64(tmp)) + tmp
+			}
+		}
+
+		// property: s.Posdl
+		// type: []map[string]*Vector2
+		if len(s.Posdl) > 0 {
+			for _, e := range s.Posdl {
+				tmp := 0
+				// list element
+				// type: map[string]*Vector2
+				if len(e) > 0 {
+					for k, v := range e {
+						tmpp := 0
+						// dict key
+						// type: string
+						if len(k) > 0 {
+							l := len([]byte(k))
+							tmpp += 1 + tygo.SizeVarint(uint64(l)) + l
+						}
+						// dict value
+						// type: *Vector2
+						if v != nil {
+							tmppp := v.ByteSize()
+							tmpp += 1 + tygo.SizeVarint(uint64(tmppp)) + tmppp
+						}
+						tmp += tygo.SizeVarint(uint64(tmpp)) + tmpp
+					}
+				}
+				size += 2 + tygo.SizeVarint(uint64(tmp)) + tmp
+			}
 		}
 
 	}
@@ -4346,6 +4409,140 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 				output.WriteVarint(uint64(v))
 			default:
 				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, map[int32]float32>: %v", v))
+			}
+		}
+
+		// property: s.Poslll
+		// type: [][][]*Vector2
+		if len(s.Poslll) > 0 {
+			for _, e := range s.Poslll {
+				tmp := 0
+				// list element size
+				// type: [][]*Vector2
+				if len(e) > 0 {
+					for _, e := range e {
+						tmpp := 0
+						// list element
+						// type: []*Vector2
+						if len(e) > 0 {
+							for _, e := range e {
+								// list element
+								// type: *Vector2
+								if e != nil {
+									tmppp := e.CachedSize()
+									tmpp += tygo.SizeVarint(uint64(tmppp)) + tmppp
+								} else {
+									log.Printf("[Tygo][ByteSize] Nil in a list is treated as an empty object contents default properties!")
+									tmpp += 1
+								}
+							}
+						}
+						tmp += tygo.SizeVarint(uint64(tmpp)) + tmpp
+					}
+				}
+				output.WriteBytes(162, 2) // tag: 290 MAKE_TAG(36, WireBytes=2)
+				output.WriteVarint(uint64(tmp))
+				// list element serialize
+				// type: [][]*Vector2
+				if len(e) > 0 {
+					for _, e := range e {
+						tmpp := 0
+						// list element size
+						// type: []*Vector2
+						if len(e) > 0 {
+							for _, e := range e {
+								// list element
+								// type: *Vector2
+								if e != nil {
+									tmppp := e.CachedSize()
+									tmpp += tygo.SizeVarint(uint64(tmppp)) + tmppp
+								} else {
+									log.Printf("[Tygo][ByteSize] Nil in a list is treated as an empty object contents default properties!")
+									tmpp += 1
+								}
+							}
+						}
+						output.WriteVarint(uint64(tmpp))
+						// list element serialize
+						// type: []*Vector2
+						if len(e) > 0 {
+							for _, e := range e {
+								// list element
+								// type: *Vector2
+								if e != nil {
+									output.WriteVarint(uint64(e.CachedSize()))
+									e.Serialize(output)
+								} else {
+									log.Printf("[Tygo][Serialize] Nil in a list is treated as an empty object contents default properties!")
+									output.WriteBytes(0)
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		// property: s.Posdl
+		// type: []map[string]*Vector2
+		if len(s.Posdl) > 0 {
+			for _, e := range s.Posdl {
+				tmp := 0
+				// list element size
+				// type: map[string]*Vector2
+				if len(e) > 0 {
+					for k, v := range e {
+						tmpp := 0
+						// dict key
+						// type: string
+						if len(k) > 0 {
+							l := len([]byte(k))
+							tmpp += 1 + tygo.SizeVarint(uint64(l)) + l
+						}
+						// dict value
+						// type: *Vector2
+						if v != nil {
+							tmppp := v.CachedSize()
+							tmpp += 1 + tygo.SizeVarint(uint64(tmppp)) + tmppp
+						}
+						tmp += tygo.SizeVarint(uint64(tmpp)) + tmpp
+					}
+				}
+				output.WriteBytes(170, 2) // tag: 298 MAKE_TAG(37, WireBytes=2)
+				output.WriteVarint(uint64(tmp))
+				// list element serialize
+				// type: map[string]*Vector2
+				if len(e) > 0 {
+					for k, v := range e {
+						tmpp := 0
+						// dict key size
+						// type: string
+						if len(k) > 0 {
+							l := len([]byte(k))
+							tmpp += 1 + tygo.SizeVarint(uint64(l)) + l
+						}
+						// dict value size
+						// type: *Vector2
+						if v != nil {
+							tmppp := v.CachedSize()
+							tmpp += 1 + tygo.SizeVarint(uint64(tmppp)) + tmppp
+						}
+						output.WriteVarint(uint64(tmpp))
+						// dict key serialize
+						// type: string
+						if len(k) > 0 {
+							output.WriteBytes(10) // tag: 10 MAKE_TAG(1, WireBytes=2)
+							output.WriteBuf([]byte(k))
+						}
+						// dict value serialize
+						// type: *Vector2
+						if v != nil {
+							output.WriteBytes(18) // tag: 18 MAKE_TAG(2, WireBytes=2)
+							output.WriteVarint(uint64(v.CachedSize()))
+							v.Serialize(output)
+						}
+					}
+				}
 			}
 		}
 
@@ -6109,6 +6306,157 @@ object_tmp_40:
 					} else {
 						err = e
 						return
+					}
+					if !input.ExpectBytes(162, 2) { // tag: 290 MAKE_TAG(36, WireBytes=2)
+						continue object_tmp_40 // next tag for Fighter
+					}
+					tag = 290 // MAKE_TAG(36, WireBytes=2) // fallthrough case 17
+				} else {
+					break switch_tmp_40 // skip tag
+				}
+				fallthrough
+			// property: s.Poslll
+			case 17:
+				if tag == 290 { // MAKE_TAG(36, WireBytes=2)
+				loop_tmp_80:
+					// type: [][][]*Vector2
+					for {
+						if x, e := input.ReadBuf(); e == nil {
+							tmpi := &tygo.ProtoBuf{Buffer: x}
+							var tmp_80 [][]*Vector2
+							for !tmpi.ExpectEnd() {
+								// type: [][]*Vector2
+								if x, e := tmpi.ReadBuf(); e == nil {
+									tmpii := &tygo.ProtoBuf{Buffer: x}
+									var tmp_81 []*Vector2
+									for !tmpii.ExpectEnd() {
+										// type: []*Vector2
+										var tmp_82 *Vector2
+										// type: *Vector2
+										if x, e := tmpii.ReadBuf(); e == nil {
+											if tmp_82 == nil {
+												tmp_82 = &Vector2{}
+											}
+											if len(x) > 0 {
+												if err = tmp_82.Deserialize(&tygo.ProtoBuf{Buffer: x}); err != nil {
+													return
+												}
+											}
+										} else {
+											err = e
+											return
+										}
+										tmp_81 = append(tmp_81, tmp_82)
+									}
+									tmp_80 = append(tmp_80, tmp_81)
+								} else {
+									err = e
+									return
+								}
+							}
+							s.Poslll = append(s.Poslll, tmp_80)
+						} else {
+							err = e
+							return
+						}
+						if !input.ExpectBytes(162, 2) { // tag: 290 MAKE_TAG(36, WireBytes=2)
+							break loop_tmp_80 // end for [][][]*Vector2
+						}
+					}
+					if !input.ExpectBytes(170, 2) { // tag: 298 MAKE_TAG(37, WireBytes=2)
+						continue object_tmp_40 // next tag for Fighter
+					}
+					tag = 298 // MAKE_TAG(37, WireBytes=2) // fallthrough case 18
+				} else {
+					break switch_tmp_40 // skip tag
+				}
+				fallthrough
+			// property: s.Posdl
+			case 18:
+				if tag == 298 { // MAKE_TAG(37, WireBytes=2)
+				loop_tmp_83:
+					// type: []map[string]*Vector2
+					for {
+						if x, e := input.ReadBuf(); e == nil {
+							tmpi := &tygo.ProtoBuf{Buffer: x}
+							var tmp_83 map[string]*Vector2
+							for !tmpi.ExpectEnd() {
+								// type: map[string]*Vector2
+								if x, e := tmpi.ReadBuf(); e == nil {
+									if tmp_83 == nil {
+										tmp_83 = make(map[string]*Vector2)
+									}
+									tmpii := &tygo.ProtoBuf{Buffer: x}
+									var tmp_84 string
+									var tmp_85 *Vector2
+								dict_tmp_84:
+									for !tmpii.ExpectEnd() {
+										var tmpig int
+										var cutoff bool
+										if tmpig, cutoff, err = tmpii.ReadTag(127); err != nil {
+											return
+										} else if cutoff {
+										switch_tmp_84:
+											switch tmpig >> 3 {
+											// dict key
+											case 1:
+												if tmpig == 10 { // MAKE_TAG(1, WireBytes=2)
+													// type: string
+													if x, e := tmpii.ReadBuf(); e == nil {
+														tmp_84 = string(x)
+													} else {
+														err = e
+														return
+													}
+													if !tmpii.ExpectBytes(18) { // tag: 18 MAKE_TAG(2, WireBytes=2)
+														continue dict_tmp_84 // next tag for map[string]*Vector2
+													}
+													tmpig = 18 // fallthrough case 2
+												} else {
+													break switch_tmp_84 // skip tag
+												}
+												fallthrough
+											case 2:
+												if tmpig == 18 { // MAKE_TAG(2, WireBytes=2)
+													// type: *Vector2
+													if x, e := tmpii.ReadBuf(); e == nil {
+														if tmp_85 == nil {
+															tmp_85 = &Vector2{}
+														}
+														if len(x) > 0 {
+															if err = tmp_85.Deserialize(&tygo.ProtoBuf{Buffer: x}); err != nil {
+																return
+															}
+														}
+													} else {
+														err = e
+														return
+													}
+													if tmpii.ExpectEnd() {
+														break dict_tmp_84 // end for map[string]*Vector2
+													}
+													continue dict_tmp_84 // next tag for map[string]*Vector2
+												}
+											}
+										}
+										if err = tmpii.SkipField(tmpig); err != nil {
+											return
+										}
+									}
+									tmp_83[tmp_84] = tmp_85
+								} else {
+									err = e
+									return
+								}
+							}
+							s.Posdl = append(s.Posdl, tmp_83)
+						} else {
+							err = e
+							return
+						}
+						if !input.ExpectBytes(170, 2) { // tag: 298 MAKE_TAG(37, WireBytes=2)
+							break loop_tmp_83 // end for []map[string]*Vector2
+						}
 					}
 					if input.ExpectEnd() {
 						break object_tmp_40 // end for Fighter
