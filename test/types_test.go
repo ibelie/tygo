@@ -500,7 +500,7 @@ func compareFighter(t *testing.T, f1 *Fighter, f2 *Fighter) {
 						t.Errorf("Fighter_Part1.Poslll[%v][%v]: %v %v", k1, k2, l1, l2)
 					} else {
 						for k3, v1 := range l1 {
-							v2 := l2[k2]
+							v2 := l2[k3]
 							compareVector2(t, v1, v2, fmt.Sprintf("Fighter_Part1.Poslll[%v][%v][%v]", k1, k2, k3))
 						}
 					}
