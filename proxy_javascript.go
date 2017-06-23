@@ -93,9 +93,10 @@ func (t *Object) Javascript(writer io.Writer, types map[string]Type, objects map
 	}
 	types[t.Name] = t
 	return fmt.Sprintf(`
-tyts.tygo.%s = tyts.Object('%s', %d, [%s
+%s = tyts.Object('%s', %d, [%s
 ]);
-`, t.Name, t.Name, _MAKE_CUTOFF(len(fields)), strings.Join(codes, ",")), requires
+tyts.tygo.%s = %s.Type;
+`, t.Name, t.Name, _MAKE_CUTOFF(len(fields)), strings.Join(codes, ","), t.Name, t.Name), requires
 }
 
 func (t UnknownType) Javascript(writer io.Writer, types map[string]Type, objects map[string]*Object) (string, map[string]string) {

@@ -33,7 +33,7 @@ type Type interface {
 	String() string
 	IsPrimitive() bool
 	Go() (string, map[string]string)
-	Typescript() string
+	Typescript(map[string]*Object) string
 	Javascript(io.Writer, map[string]Type, map[string]*Object) (string, map[string]string)
 	ByteSizeGo(string, string, string, int, bool) (string, map[string]string)
 	CachedSizeGo(string, string, string, int, bool) (string, map[string]string)

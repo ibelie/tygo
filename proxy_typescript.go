@@ -17,11 +17,30 @@ import (
 func Typescript(dir string, name string, types []Type) {
 	var buffer bytes.Buffer
 
+	objects := make(map[string]*Object)
+	for _, t := range types {
+		if object, ok := t.(*Object); ok {
+			if o, exist := objects[object.Name]; exist {
+				log.Fatalf("[Tygo][Typescript] Object already exists: %v %v", o, object)
+			}
+			objects[object.Name] = object
+		}
+	}
+
 	var codes []string
 	for _, t := range types {
-		codes = append(codes, t.Typescript())
+		codes = append(codes, t.Typescript(objects))
 	}
 	buffer.Write([]byte(fmt.Sprintf(`// Generated for tyts by tygo.  DO NOT EDIT!
+
+declare module tyts {
+	interface Type {
+		__class__: string;
+		ByteSize(): number;
+		Serialize(): Uint8Array;
+		Deserialize(data: Uint8Array): void;
+	}
+}
 
 declare module tyts.tygo {%s
 }`, strings.Join(codes, ""))))
@@ -30,7 +49,7 @@ declare module tyts.tygo {%s
 	Javascript(dir, name, types)
 }
 
-func (t *Enum) Typescript() string {
+func (t *Enum) Typescript(objects map[string]*Object) string {
 	var enums []string
 	for _, name := range t.Sorted() {
 		enums = append(enums, fmt.Sprintf(`
@@ -42,15 +61,15 @@ func (t *Enum) Typescript() string {
 	}`, t.Name, strings.Join(enums, ","))
 }
 
-func (t *Method) Typescript() string {
+func (t *Method) Typescript(objects map[string]*Object) string {
 	return ""
 }
 
-func (t *Object) Typescript() string {
+func (t *Object) Typescript(objects map[string]*Object) string {
 	var fields []string
 	for _, field := range t.Fields {
 		fields = append(fields, fmt.Sprintf(`
-		%s: %s;`, field.Name, field.Typescript()))
+		%s: %s;`, field.Name, field.Typescript(objects)))
 	}
 	return fmt.Sprintf(`
 
@@ -58,11 +77,11 @@ func (t *Object) Typescript() string {
 	}`, t.Name, strings.Join(fields, ""))
 }
 
-func (t UnknownType) Typescript() string {
+func (t UnknownType) Typescript(objects map[string]*Object) string {
 	return ""
 }
 
-func (t SimpleType) Typescript() string {
+func (t SimpleType) Typescript(objects map[string]*Object) string {
 	switch t {
 	case SimpleType_INT32:
 		fallthrough
@@ -88,26 +107,30 @@ func (t SimpleType) Typescript() string {
 	}
 }
 
-func (t *EnumType) Typescript() string {
+func (t *EnumType) Typescript(objects map[string]*Object) string {
 	return t.Name
 }
 
-func (t *InstanceType) Typescript() string {
-	return t.Name
+func (t *InstanceType) Typescript(objects map[string]*Object) string {
+	if _, ok := objects[t.Name]; ok {
+		return t.Name
+	} else {
+		return "tyts.Type"
+	}
 }
 
-func (t *FixedPointType) Typescript() string {
+func (t *FixedPointType) Typescript(objects map[string]*Object) string {
 	return "number"
 }
 
-func (t *ListType) Typescript() string {
-	return fmt.Sprintf("%s[]", t.E.Typescript())
+func (t *ListType) Typescript(objects map[string]*Object) string {
+	return fmt.Sprintf("%s[]", t.E.Typescript(objects))
 }
 
-func (t *DictType) Typescript() string {
-	return fmt.Sprintf("{[index: %s]: %s}", t.K.Typescript(), t.V.Typescript())
+func (t *DictType) Typescript(objects map[string]*Object) string {
+	return fmt.Sprintf("{[index: %s]: %s}", t.K.Typescript(objects), t.V.Typescript(objects))
 }
 
-func (t *VariantType) Typescript() string {
+func (t *VariantType) Typescript(objects map[string]*Object) string {
 	return "any"
 }
