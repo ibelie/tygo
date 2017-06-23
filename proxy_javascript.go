@@ -77,26 +77,59 @@ func (t *Method) Javascript(writer io.Writer, types map[string]Type, objects map
 	return "", nil
 }
 
+func typeListJavascript(name string, ts []Type, writer io.Writer, types map[string]Type, objects map[string]*Object) (string, map[string]string) {
+	requires := map[string]string{"goog.require('tyts.Method');": ""}
+	if _, exist := types[name]; !exist {
+		var items []string
+		for i, t := range ts {
+			js, rs := t.Javascript(writer, types, objects)
+			update(requires, rs)
+			items = append(items, fmt.Sprintf(`
+	{tag: %d, tagsize: %d, type: %s}`, _MAKE_TAG(i+1, t.WireType()), TAG_SIZE(i+1), js))
+		}
+		writer.Write([]byte(fmt.Sprintf(`
+%s = tyts.Method('%s', %d, [%s
+]);
+`, name, name, _MAKE_CUTOFF(len(items)), strings.Join(items, ", "))))
+		types[name] = SimpleType_NIL
+	}
+	return name, requires
+}
+
 func (t *Object) Javascript(writer io.Writer, types map[string]Type, objects map[string]*Object) (string, map[string]string) {
 	if _, exist := types[t.Name]; exist {
 		return "", nil
 	}
-	var codes []string
+	types[t.Name] = t
+
+	var fields []string
 	requires := map[string]string{"goog.require('tyts.Object');": ""}
-	fields := t.AllFields(objects)
-	for i, field := range fields {
+	for i, field := range t.AllFields(objects) {
 		wiretype := field.WireType()
 		js, rs := field.Javascript(writer, types, objects)
 		requires = update(requires, rs)
-		codes = append(codes, fmt.Sprintf(`
-	{name: %s, tag: %d, tagsize: %d, type: %s}`, field.Name, _MAKE_TAG(i+1, wiretype), TAG_SIZE(i+1), js))
+		fields = append(fields, fmt.Sprintf(`
+	{name: '%s', tag: %d, tagsize: %d, type: %s}`, field.Name, _MAKE_TAG(i+1, wiretype), TAG_SIZE(i+1), js))
 	}
-	types[t.Name] = t
+
+	var methods []string
+	for _, method := range t.Methods {
+		js_p, rs_p := typeListJavascript(t.Name+method.Name+"Param", method.Params, writer, types, objects)
+		js_r, rs_r := typeListJavascript(t.Name+method.Name+"Result", method.Results, writer, types, objects)
+		update(requires, rs_p)
+		update(requires, rs_r)
+		methods = append(methods, fmt.Sprintf(`
+	{name: '%s%s', type: %s}`, method.Name, "Param", js_p))
+		methods = append(methods, fmt.Sprintf(`
+	{name: '%s%s', type: %s}`, method.Name, "Result", js_r))
+	}
+
 	return fmt.Sprintf(`
 %s = tyts.Object('%s', %d, [%s
+], [%s
 ]);
 tyts.tygo.%s = %s.Type;
-`, t.Name, t.Name, _MAKE_CUTOFF(len(fields)), strings.Join(codes, ","), t.Name, t.Name), requires
+`, t.Name, t.Name, _MAKE_CUTOFF(len(fields)), strings.Join(fields, ","), strings.Join(methods, ","), t.Name, t.Name), requires
 }
 
 func (t UnknownType) Javascript(writer io.Writer, types map[string]Type, objects map[string]*Object) (string, map[string]string) {
@@ -210,9 +243,9 @@ func (t *VariantType) Javascript(writer io.Writer, types map[string]Type, object
 	{tag: %d, tagsize: %d, type: %s}`, _MAKE_TAG(i+1, wiretype), TAG_SIZE(i+1), js))
 		}
 		writer.Write([]byte(fmt.Sprintf(`
-%s = tyts.Variant('%s', [%s
+%s = tyts.Variant('%s', %d, [%s
 ])
-`, identifier, identifier, strings.Join(codes, ","))))
+`, identifier, identifier, _MAKE_CUTOFF(len(codes)), strings.Join(codes, ","))))
 		types[identifier] = t
 	}
 	return identifier, requires

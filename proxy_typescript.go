@@ -65,24 +65,42 @@ func (t *Method) Typescript(objects map[string]*Object) string {
 	return ""
 }
 
+func typeListTypescript(name string, typ string, ts []Type, objects map[string]*Object) string {
+	var items []string
+	for i, t := range ts {
+		items = append(items, fmt.Sprintf("a%d: %s", i, t.Typescript(objects)))
+	}
+	return fmt.Sprintf(`
+		Serialize%s%s(%s): Uint8Array;
+		Deserialize%s%s(data: Uint8Array): any;`, name, typ, strings.Join(items, ", "), name, typ)
+}
+
 func (t *Object) Typescript(objects map[string]*Object) string {
-	var fields []string
+	var members []string
 	for _, field := range t.Fields {
-		fields = append(fields, fmt.Sprintf(`
+		members = append(members, fmt.Sprintf(`
 		%s: %s;`, field.Name, field.Typescript(objects)))
 	}
+
+	for _, method := range t.Methods {
+		members = append(members, typeListTypescript(method.Name, "Param", method.Params, objects))
+		members = append(members, typeListTypescript(method.Name, "Result", method.Results, objects))
+	}
+
 	return fmt.Sprintf(`
 
 	class %s {
 		__class__: string;
+		constructor();
 		ByteSize(): number;
 		Serialize(): Uint8Array;
-		Deserialize(data: Uint8Array): void;%s
+		Deserialize(data: Uint8Array): void;
+%s
 	}
 
 	namespace %s {
 		function Deserialize(data: Uint8Array): %s;
-	}`, t.Name, strings.Join(fields, ""), t.Name, t.Name)
+	}`, t.Name, strings.Join(members, ""), t.Name, t.Name)
 }
 
 func (t UnknownType) Typescript(objects map[string]*Object) string {
