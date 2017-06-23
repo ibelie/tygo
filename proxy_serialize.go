@@ -224,7 +224,7 @@ func (t *ListType) SerializeGo(size string, name string, preFieldNum string, fie
 	}
 	var pkgs map[string]string
 
-	if l, innerList := t.E.(*ListType); innerList && !l.E.IsPrimitive() {
+	if t.E.IsIterative() {
 		bytesize_s, bytesize_p := t.E.CachedSizeGo(tempSize, "e", "", 0, true)
 		serialize_s, serialize_p := t.E.SerializeGo(tempSize, "e", "", 0, true)
 		pkgs = update(pkgs, bytesize_p)
@@ -245,7 +245,10 @@ func (t *ListType) SerializeGo(size string, name string, preFieldNum string, fie
 		element_s, element_p := t.E.SerializeGo(size, "e", "", 0, true)
 		pkgs = update(pkgs, element_p)
 		var checkNil string
-		if _, ok := t.E.(*VariantType); !ok {
+		switch t.E.(type) {
+		case *VariantType:
+		case *ListType:
+		default:
 			checkNil = `
 				log.Printf("[Tygo][Serialize] Nil in a list is treated as an empty object contents default properties!")`
 			pkgs = update(pkgs, LOG_PKG)

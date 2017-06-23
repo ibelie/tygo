@@ -1697,7 +1697,6 @@ func (s *Fighter_Part2) Serialize(output *tygo.ProtoBuf) {
 						output.WriteFixed32(math.Float32bits(e))
 					}
 				} else {
-					log.Printf("[Tygo][Serialize] Nil in a list is treated as an empty object contents default properties!")
 					output.WriteBytes(0)
 				}
 			}

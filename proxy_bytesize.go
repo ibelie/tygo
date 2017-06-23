@@ -267,7 +267,7 @@ func (t *ListType) _ByteSizeGo(size string, name string, preFieldNum string, fie
 		}
 	}
 
-	if l, innerList := t.E.(*ListType); innerList && !l.E.IsPrimitive() {
+	if t.E.IsIterative() {
 		element_s, element_p := bytesizeMethod(tempSize, "e", "", 0, true)
 		pkgs = update(pkgs, element_p)
 		return fmt.Sprintf(`
@@ -284,7 +284,10 @@ func (t *ListType) _ByteSizeGo(size string, name string, preFieldNum string, fie
 		element_s, element_p := bytesizeMethod(size, "e", preFieldNum, fieldNum, true)
 		pkgs = update(pkgs, element_p)
 		var checkNil string
-		if _, innerVariant := t.E.(*VariantType); !innerVariant && !innerList {
+		switch t.E.(type) {
+		case *VariantType:
+		case *ListType:
+		default:
 			checkNil = `
 				log.Printf("[Tygo][ByteSize] Nil in a list is treated as an empty object contents default properties!")`
 			pkgs = update(pkgs, LOG_PKG)

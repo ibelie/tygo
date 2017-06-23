@@ -32,6 +32,7 @@ type Type interface {
 	Identifier() string
 	String() string
 	IsPrimitive() bool
+	IsIterative() bool
 	Go() (string, map[string]string)
 	Typescript(map[string]*Object) string
 	Javascript(io.Writer, map[string]Type, map[string]*Object) (string, map[string]string)
@@ -173,6 +174,50 @@ func (t *DictType) IsPrimitive() bool {
 }
 
 func (t *VariantType) IsPrimitive() bool {
+	return false
+}
+
+func (t *Enum) IsIterative() bool {
+	return false
+}
+
+func (t *Method) IsIterative() bool {
+	return false
+}
+
+func (t *Object) IsIterative() bool {
+	return false
+}
+
+func (t UnknownType) IsIterative() bool {
+	return false
+}
+
+func (t SimpleType) IsIterative() bool {
+	return false
+}
+
+func (t *FixedPointType) IsIterative() bool {
+	return false
+}
+
+func (t *EnumType) IsIterative() bool {
+	return false
+}
+
+func (t *InstanceType) IsIterative() bool {
+	return false
+}
+
+func (t *ListType) IsIterative() bool {
+	return !t.E.IsPrimitive()
+}
+
+func (t *DictType) IsIterative() bool {
+	return true
+}
+
+func (t *VariantType) IsIterative() bool {
 	return false
 }
 
