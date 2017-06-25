@@ -86,8 +86,7 @@ func typeListJavascript(name string, ts []Type, writer io.Writer, types map[stri
 		items = append(items, fmt.Sprintf(`
 	{tag: %d, tagsize: %d, type: %s}`, _MAKE_TAG(i+1, t.WireType()), TAG_SIZE(i+1), js))
 	}
-	return fmt.Sprintf(`
-new tyts.Method('%s', %d, [%s
+	return fmt.Sprintf(`new tyts.Method('%s', %d, [%s
 ]);
 `, name, _MAKE_CUTOFF(len(items)), strings.Join(items, ",")), requires
 }
@@ -129,8 +128,13 @@ _%s.methods[%d].type = %s`, t.Name, i*2+1, js_r))
 var _%s = new tyts.Object('%s', %d, [%s
 ], [%s
 ]);%s
-var %s = _%s.Type;
-`, t.Name, t.Name, _MAKE_CUTOFF(len(fields)), strings.Join(fields, ","), strings.Join(method_props, ","), strings.Join(method_types, ""), t.Name, t.Name), requires
+%s = _%s.Type;
+if (typeof(module) != 'undefined') {
+	module.exports.%s = %s;
+}
+`, t.Name, t.Name, _MAKE_CUTOFF(len(fields)), strings.Join(fields, ","),
+		strings.Join(method_props, ","), strings.Join(method_types, ""),
+		t.Name, t.Name, t.Name, t.Name), requires
 }
 
 func (t UnknownType) Javascript(writer io.Writer, types map[string]Type, objects map[string]*Object) (string, map[string]string) {
@@ -176,7 +180,7 @@ func (t *InstanceType) Javascript(writer io.Writer, types map[string]Type, objec
 		identifier := t.Name + "Delegate"
 		if _, exist := types[identifier]; !exist {
 			writer.Write([]byte(fmt.Sprintf(`
-var %s = new tyts.Extension('%s', %s)
+%s = new tyts.Extension('%s', %s)
 `, identifier, identifier, t.Name)))
 			types[identifier] = t
 		}
@@ -191,7 +195,7 @@ func (t *FixedPointType) Javascript(writer io.Writer, types map[string]Type, obj
 	identifier := t.Identifier()
 	if _, exist := types[identifier]; !exist {
 		writer.Write([]byte(fmt.Sprintf(`
-var %s = new tyts.FixedPoint(%d, %d)
+%s = new tyts.FixedPoint(%d, %d)
 `, identifier, t.Floor, t.Precision)))
 		types[identifier] = t
 	}
@@ -205,7 +209,7 @@ func (t *ListType) Javascript(writer io.Writer, types map[string]Type, objects m
 		js, rs := t.E.Javascript(writer, types, objects)
 		requires = update(requires, rs)
 		writer.Write([]byte(fmt.Sprintf(`
-var %s = new tyts.List('%s', %s)
+%s = new tyts.List('%s', %s)
 `, identifier, identifier, js)))
 		types[identifier] = t
 	}
@@ -221,7 +225,7 @@ func (t *DictType) Javascript(writer io.Writer, types map[string]Type, objects m
 		requires = update(requires, rs_k)
 		requires = update(requires, rs_v)
 		writer.Write([]byte(fmt.Sprintf(`
-var %s = new tyts.Dict('%s', %s, %s)
+%s = new tyts.Dict('%s', %s, %s)
 `, identifier, identifier, js_k, js_v)))
 		types[identifier] = t
 	}
@@ -244,7 +248,7 @@ func (t *VariantType) Javascript(writer io.Writer, types map[string]Type, object
 	{tag: %d, tagsize: %d, type: %s}`, _MAKE_TAG(i+1, wiretype), TAG_SIZE(i+1), js))
 		}
 		writer.Write([]byte(fmt.Sprintf(`
-var %s = new tyts.Variant('%s', %d, [%s
+%s = new tyts.Variant('%s', %d, [%s
 ])
 `, identifier, identifier, _MAKE_CUTOFF(len(codes)), strings.Join(codes, ","))))
 		types[identifier] = t
