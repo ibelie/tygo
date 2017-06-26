@@ -35,7 +35,7 @@ type Type interface {
 	IsIterative() bool
 	Go() (string, map[string]string)
 	Typescript(map[string]*Object) string
-	Javascript(io.Writer, map[string]Type, map[string]*Object) (string, map[string]string)
+	Javascript(string, io.Writer, map[string]Type, map[string]*Object) (string, map[string]string)
 	ByteSizeGo(string, string, string, int, bool) (string, map[string]string)
 	CachedSizeGo(string, string, string, int, bool) (string, map[string]string)
 	SerializeGo(string, string, string, int, bool) (string, map[string]string)

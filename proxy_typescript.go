@@ -14,7 +14,7 @@ import (
 	"io/ioutil"
 )
 
-func Typescript(dir string, name string, types []Type) {
+func Typescript(dir string, module string, types []Type) {
 	var buffer bytes.Buffer
 
 	objects := make(map[string]*Object)
@@ -33,30 +33,30 @@ func Typescript(dir string, name string, types []Type) {
 	}
 	buffer.Write([]byte(fmt.Sprintf(`// Generated for tyts by tygo.  DO NOT EDIT!
 
-declare module tyts {
+declare module %s {
 	interface Type {
 		__class__: string;
 		ByteSize(): number;
 		Serialize(): Uint8Array;
 		Deserialize(data: Uint8Array): void;
-	}
-}%s
-`, strings.Join(codes, ""))))
+	}%s
+}
+`, module, strings.Join(codes, ""))))
 
-	ioutil.WriteFile(path.Join(dir, name+".d.ts"), buffer.Bytes(), 0666)
-	Javascript(dir, name, types)
+	ioutil.WriteFile(path.Join(dir, module+".d.ts"), buffer.Bytes(), 0666)
+	Javascript(dir, module, types)
 }
 
 func (t *Enum) Typescript(objects map[string]*Object) string {
 	var enums []string
 	for _, name := range t.Sorted() {
 		enums = append(enums, fmt.Sprintf(`
-	%s = %d`, name, t.Values[name]))
+		%s = %d`, name, t.Values[name]))
 	}
 	return fmt.Sprintf(`
 
-export declare const enum %s {%s
-}`, t.Name, strings.Join(enums, ","))
+	export const enum %s {%s
+	}`, t.Name, strings.Join(enums, ","))
 }
 
 func (t *Method) Typescript(objects map[string]*Object) string {
@@ -69,15 +69,15 @@ func typeListTypescript(name string, typ string, ts []Type, objects map[string]*
 		items = append(items, fmt.Sprintf("a%d: %s", i, t.Typescript(objects)))
 	}
 	return fmt.Sprintf(`
-	Serialize%s%s(%s): Uint8Array;
-	Deserialize%s%s(data: Uint8Array): any;`, name, typ, strings.Join(items, ", "), name, typ)
+		Serialize%s%s(%s): Uint8Array;
+		Deserialize%s%s(data: Uint8Array): any;`, name, typ, strings.Join(items, ", "), name, typ)
 }
 
 func (t *Object) Typescript(objects map[string]*Object) string {
 	var members []string
 	for _, field := range t.Fields {
 		members = append(members, fmt.Sprintf(`
-	%s: %s;`, field.Name, field.Typescript(objects)))
+		%s: %s;`, field.Name, field.Typescript(objects)))
 	}
 
 	for _, method := range t.Methods {
@@ -87,18 +87,18 @@ func (t *Object) Typescript(objects map[string]*Object) string {
 
 	return fmt.Sprintf(`
 
-export declare class %s {
-	__class__: string;
-	constructor();
-	ByteSize(): number;
-	Serialize(): Uint8Array;
-	Deserialize(data: Uint8Array): void;
+	export class %s {
+		__class__: string;
+		constructor();
+		ByteSize(): number;
+		Serialize(): Uint8Array;
+		Deserialize(data: Uint8Array): void;
 %s
-}
+	}
 
-export declare namespace %s {
-	function Deserialize(data: Uint8Array): %s;
-}`, t.Name, strings.Join(members, ""), t.Name, t.Name)
+	export namespace %s {
+		function Deserialize(data: Uint8Array): %s;
+	}`, t.Name, strings.Join(members, ""), t.Name, t.Name)
 }
 
 func (t UnknownType) Typescript(objects map[string]*Object) string {
@@ -139,7 +139,7 @@ func (t *InstanceType) Typescript(objects map[string]*Object) string {
 	if _, ok := objects[t.Name]; ok {
 		return t.Name
 	} else {
-		return "tyts.Type"
+		return "Type"
 	}
 }
 
