@@ -128,7 +128,7 @@ _%s.methods[%d].type = %s`, t.Name, i*2+1, js_r))
 var _%s = new tyts.Object('%s', %d, [%s
 ], [%s
 ]);%s
-%s = _%s.Type;
+var %s = _%s.Type;
 if (typeof(module) != 'undefined') {
 	module.exports.%s = %s;
 }
@@ -180,7 +180,7 @@ func (t *InstanceType) Javascript(writer io.Writer, types map[string]Type, objec
 		identifier := t.Name + "Delegate"
 		if _, exist := types[identifier]; !exist {
 			writer.Write([]byte(fmt.Sprintf(`
-%s = new tyts.Extension('%s', %s)
+var %s = new tyts.Extension('%s', %s)
 `, identifier, identifier, t.Name)))
 			types[identifier] = t
 		}
@@ -195,7 +195,7 @@ func (t *FixedPointType) Javascript(writer io.Writer, types map[string]Type, obj
 	identifier := t.Identifier()
 	if _, exist := types[identifier]; !exist {
 		writer.Write([]byte(fmt.Sprintf(`
-%s = new tyts.FixedPoint(%d, %d)
+var %s = new tyts.FixedPoint(%d, %d)
 `, identifier, t.Floor, t.Precision)))
 		types[identifier] = t
 	}
@@ -209,7 +209,7 @@ func (t *ListType) Javascript(writer io.Writer, types map[string]Type, objects m
 		js, rs := t.E.Javascript(writer, types, objects)
 		requires = update(requires, rs)
 		writer.Write([]byte(fmt.Sprintf(`
-%s = new tyts.List('%s', %s)
+var %s = new tyts.List('%s', %s)
 `, identifier, identifier, js)))
 		types[identifier] = t
 	}
@@ -225,7 +225,7 @@ func (t *DictType) Javascript(writer io.Writer, types map[string]Type, objects m
 		requires = update(requires, rs_k)
 		requires = update(requires, rs_v)
 		writer.Write([]byte(fmt.Sprintf(`
-%s = new tyts.Dict('%s', %s, %s)
+var %s = new tyts.Dict('%s', %s, %s)
 `, identifier, identifier, js_k, js_v)))
 		types[identifier] = t
 	}
@@ -248,7 +248,7 @@ func (t *VariantType) Javascript(writer io.Writer, types map[string]Type, object
 	{tag: %d, tagsize: %d, type: %s}`, _MAKE_TAG(i+1, wiretype), TAG_SIZE(i+1), js))
 		}
 		writer.Write([]byte(fmt.Sprintf(`
-%s = new tyts.Variant('%s', %d, [%s
+var %s = new tyts.Variant('%s', %d, [%s
 ])
 `, identifier, identifier, _MAKE_CUTOFF(len(codes)), strings.Join(codes, ","))))
 		types[identifier] = t
