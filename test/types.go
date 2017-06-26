@@ -239,7 +239,7 @@ func CompareFighter_Part1(p Errorf, f1 *Fighter_Part1, f2 *Fighter_Part1) {
 		for k, v1 := range f1.Poss {
 			if v2, ok := f2.Poss[k]; !ok {
 				debug.PrintStack()
-				p("Fighter_Part1.Poss: %v %v %v", k, v1, v2)
+				p("Fighter_Part1.Poss[%v]: %v %v", k, v1, v2)
 			} else {
 				CompareVector2(p, v1, v2, fmt.Sprintf("Fighter_Part1.Poss[%v]", k))
 			}
@@ -252,7 +252,7 @@ func CompareFighter_Part1(p Errorf, f1 *Fighter_Part1, f2 *Fighter_Part1) {
 		for k, v1 := range f1.Posi {
 			if v2, ok := f2.Posi[k]; !ok || v1 != v2 {
 				debug.PrintStack()
-				p("Fighter_Part1.Posi: %v %v %v", k, v1, v2)
+				p("Fighter_Part1.Posi[%v]: %v %v", k, v1, v2)
 			}
 		}
 	}
@@ -298,7 +298,7 @@ func CompareFighter_Part1(p Errorf, f1 *Fighter_Part1, f2 *Fighter_Part1) {
 		for k, v1 := range f1.Pyd {
 			if v2, ok := f2.Pyd[k]; !ok {
 				debug.PrintStack()
-				p("Fighter_Part1.Pyd: %v %v %v", k, v1, v2)
+				p("Fighter_Part1.Pyd[%v]: %v %v", k, v1, v2)
 			} else {
 				CompareGoType(p, v1, v2, fmt.Sprintf("Fighter_Part1.Pyd[%v]", k))
 			}
@@ -328,7 +328,7 @@ func CompareFighter_Part2(p Errorf, f1 *Fighter_Part2, f2 *Fighter_Part2) {
 			v2 := f2.Fl[k]
 			if v1 != v2 {
 				debug.PrintStack()
-				p("Fighter_Part2.Fl: %v %v %v", k, v1, v2)
+				p("Fighter_Part2.Fl[%v]: %v %v", k, v1, v2)
 			}
 		}
 	}
@@ -340,7 +340,7 @@ func CompareFighter_Part2(p Errorf, f1 *Fighter_Part2, f2 *Fighter_Part2) {
 			v2 := f2.Bl[k]
 			if bytes.Compare(v1, v2) != 0 {
 				debug.PrintStack()
-				p("Fighter_Part2.Bl: %v %v %v", k, v1, v2)
+				p("Fighter_Part2.Bl[%v]: %v %v", k, v1, v2)
 			}
 		}
 	}
@@ -352,7 +352,7 @@ func CompareFighter_Part2(p Errorf, f1 *Fighter_Part2, f2 *Fighter_Part2) {
 			v2 := f2.Sl[k]
 			if v1 != v2 {
 				debug.PrintStack()
-				p("Fighter_Part2.Sl: %v %v %v", k, v1, v2)
+				p("Fighter_Part2.Sl[%v]: %v %v", k, v1, v2)
 			}
 		}
 	}
@@ -363,7 +363,7 @@ func CompareFighter_Part2(p Errorf, f1 *Fighter_Part2, f2 *Fighter_Part2) {
 		for k, v1 := range f1.Bd {
 			if v2, ok := f2.Bd[k]; !ok || bytes.Compare(v1, v2) != 0 {
 				debug.PrintStack()
-				p("Fighter_Part2.Bd: %v %v %v", k, v1, v2)
+				p("Fighter_Part2.Bd[%v]: %v %v", k, v1, v2)
 			}
 		}
 	}
@@ -374,7 +374,7 @@ func CompareFighter_Part2(p Errorf, f1 *Fighter_Part2, f2 *Fighter_Part2) {
 		for k, v1 := range f1.Sd {
 			if v2, ok := f2.Sd[k]; !ok || v1 != v2 {
 				debug.PrintStack()
-				p("Fighter_Part2.Sd: %v %v %v", k, v1, v2)
+				p("Fighter_Part2.Sd[%v]: %v %v", k, v1, v2)
 			}
 		}
 	}
@@ -386,7 +386,7 @@ func CompareFighter_Part2(p Errorf, f1 *Fighter_Part2, f2 *Fighter_Part2) {
 			v2 := f2.El[k]
 			if v1 != v2 {
 				debug.PrintStack()
-				p("Fighter_Part2.El: %v %v %v", k, v1, v2)
+				p("Fighter_Part2.El[%v]: %v %v", k, v1, v2)
 			}
 		}
 	}
@@ -397,7 +397,7 @@ func CompareFighter_Part2(p Errorf, f1 *Fighter_Part2, f2 *Fighter_Part2) {
 		for k, v1 := range f1.Ed {
 			if v2, ok := f2.Ed[k]; !ok || v1 != v2 {
 				debug.PrintStack()
-				p("Fighter_Part2.Ed: %v %v %v", k, v1, v2)
+				p("Fighter_Part2.Ed[%v]: %v %v", k, v1, v2)
 			}
 		}
 	}
@@ -415,7 +415,7 @@ func CompareFighter_Part2(p Errorf, f1 *Fighter_Part2, f2 *Fighter_Part2) {
 					v2 := l2[k2]
 					if v1 != v2 {
 						debug.PrintStack()
-						p("Fighter_Part2.Ll[%v]: %v %v %v", k1, k2, v1, v2)
+						p("Fighter_Part2.Ll[%v][%v]: %v %v", k1, k2, v1, v2)
 					}
 				}
 			}
@@ -442,7 +442,7 @@ func CompareFighter(p Errorf, f1 *Fighter, f2 *Fighter) {
 	}
 	if bytes.Compare(f1.V2.([]byte), f2.V2.([]byte)) != 0 {
 		debug.PrintStack()
-		p("Fighter.V2: %v %v", f1.V1, f2.V1)
+		p("Fighter.V2: %v %v", f1.V2, f2.V2)
 	}
 	CompareVector2(p, f1.V3.(*Vector2), f2.V3.(*Vector2), "Fighter.V3")
 	if float32(f1.V4.(float64)) != f2.V4.(float32) {
@@ -549,11 +549,11 @@ func CompareFighter(p Errorf, f1 *Fighter, f2 *Fighter) {
 		debug.PrintStack()
 		p("Fighter_Part2.Dd: %v %v", f1.Dd, f2.Dd)
 	} else {
-		for k1, l1 := range f1.Dd {
-			if l2, ok := f2.Dd[k1]; !ok || len(l1) != len(l2) {
+		for k1, d1 := range f1.Dd {
+			if d2, ok := f2.Dd[k1]; !ok || len(d1) != len(d2) {
 				debug.PrintStack()
-				p("Fighter_Part2.Dd[%v]: %v %v", k1, l1, l2)
-			} else if k1 == 12 && len(l1) == 2 && len(l2) == 2 {
+				p("Fighter_Part2.Dd[%v]: %v %v", k1, d1, d2)
+			} else if k1 == 12 && len(d1) == 2 && len(d2) == 2 {
 				if f1.Dd[12][111].(Corpus) != f2.Dd[12][111].(Corpus) {
 					debug.PrintStack()
 					p("Fighter.Dd[12][111]: %v %v", f1.Dd[12][111], f2.Dd[12][111])
@@ -562,7 +562,7 @@ func CompareFighter(p Errorf, f1 *Fighter, f2 *Fighter) {
 					debug.PrintStack()
 					p("Fighter.Dd[12][222]: %v %v", f1.Dd[12][222], f2.Dd[12][222])
 				}
-			} else if k1 == 34 && len(l1) == 2 && len(l2) == 2 {
+			} else if k1 == 34 && len(d1) == 2 && len(d2) == 2 {
 				CompareVector2(p, f1.Dd[34][333].(*Vector2), f2.Dd[34][333].(*Vector2), "Fighter.Dd[34][333]")
 				if f1.Dd[34][444].(float64) != f2.Dd[34][444].(float64) {
 					debug.PrintStack()
@@ -570,7 +570,7 @@ func CompareFighter(p Errorf, f1 *Fighter, f2 *Fighter) {
 				}
 			} else {
 				debug.PrintStack()
-				p("Fighter_Part2.Dd[%v]: %v %v", k1, l1, l2)
+				p("Fighter_Part2.Dd[%v]: %v %v", k1, d1, d2)
 			}
 		}
 	}
@@ -578,13 +578,13 @@ func CompareFighter(p Errorf, f1 *Fighter, f2 *Fighter) {
 		debug.PrintStack()
 		p("Fighter_Part2.Fdd: %v %v", f1.Fdd, f2.Fdd)
 	} else {
-		for k1, l1 := range f1.Fdd {
-			if l2, ok := f2.Fdd[k1]; !ok || len(l1) != len(l2) {
+		for k1, d1 := range f1.Fdd {
+			if d2, ok := f2.Fdd[k1]; !ok || len(d1) != len(d2) {
 				debug.PrintStack()
-				p("Fighter_Part2.Fdd[%v]: %v %v", k1, l1, l2)
+				p("Fighter_Part2.Fdd[%v]: %v %v", k1, d1, d2)
 			} else {
-				for k2, v1 := range l1 {
-					if v2, ok := l2[k2]; !ok || v1 != v2 {
+				for k2, v1 := range d1 {
+					if v2, ok := d2[k2]; !ok || v1 != v2 {
 						debug.PrintStack()
 						p("Fighter_Part2.Fdd[%v][%v]: %v %v", k1, k2, v1, v2)
 					}
