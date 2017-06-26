@@ -74,6 +74,10 @@ func typeListTypescript(name string, typ string, ts []Type, objects map[string]*
 }
 
 func (t *Object) Typescript(objects map[string]*Object) string {
+	var parent string
+	if t.HasParent() {
+		parent = fmt.Sprintf(" extends %s", t.Parent.Typescript(objects))
+	}
 	var members []string
 	for _, field := range t.Fields {
 		members = append(members, fmt.Sprintf(`
@@ -87,7 +91,7 @@ func (t *Object) Typescript(objects map[string]*Object) string {
 
 	return fmt.Sprintf(`
 
-	export class %s {
+	export class %s%s {
 		__class__: string;
 		constructor();
 		ByteSize(): number;
@@ -98,7 +102,7 @@ func (t *Object) Typescript(objects map[string]*Object) string {
 
 	export namespace %s {
 		function Deserialize(data: Uint8Array): %s;
-	}`, t.Name, strings.Join(members, ""), t.Name, t.Name)
+	}`, t.Name, parent, strings.Join(members, ""), t.Name, t.Name)
 }
 
 func (t UnknownType) Typescript(objects map[string]*Object) string {
