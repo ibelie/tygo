@@ -365,11 +365,14 @@ func (t *VariantType) _ByteSizeGo(size string, name string, preFieldNum string, 
 	pkgs := updateTygo(nil)
 	pkgs = update(pkgs, tagsize_p)
 
-	for i, st := range t.Ts {
+	variantNum := 0
+	for _, st := range t.Ts {
 		type_s, type_p := st.Go()
 		if type_s == "nil" {
 			continue
-		} else if t, ok := st.(SimpleType); ok {
+		}
+		variantNum++
+		if t, ok := st.(SimpleType); ok {
 			switch t {
 			case SimpleType_INT32:
 				fallthrough
@@ -378,11 +381,11 @@ func (t *VariantType) _ByteSizeGo(size string, name string, preFieldNum string, 
 			case SimpleType_UINT32:
 				fallthrough
 			case SimpleType_UINT64:
-				tagInteger = i + 1
+				tagInteger = variantNum
 			case SimpleType_FLOAT32:
-				tagFloat32 = i + 1
+				tagFloat32 = variantNum
 			case SimpleType_FLOAT64:
-				tagFloat64 = i + 1
+				tagFloat64 = variantNum
 			}
 		}
 
@@ -390,7 +393,7 @@ func (t *VariantType) _ByteSizeGo(size string, name string, preFieldNum string, 
 		if isCached {
 			bytesizeMethod = st.CachedSizeGo
 		}
-		variant_s, variant_p := bytesizeMethod(tempSize, "v", "", i+1, false)
+		variant_s, variant_p := bytesizeMethod(tempSize, "v", "", variantNum, false)
 		cases = append(cases, fmt.Sprintf(`
 		// variant type: %s
 		case %s:%s`, st, type_s, addIndent(variant_s, 2)))

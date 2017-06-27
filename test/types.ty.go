@@ -3964,11 +3964,11 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 			// variant type serialize: int32
 			case int32:
 				// type: int32
-				output.WriteBytes(16) // tag: 16 MAKE_TAG(2, WireVarint=0)
+				output.WriteBytes(8) // tag: 8 MAKE_TAG(1, WireVarint=0)
 				output.WriteVarint(uint64(v))
 			// addition type serialize: int
 			case int:
-				output.WriteBytes(16) // tag: 16 MAKE_TAG(2, WireVarint=0)
+				output.WriteBytes(8) // tag: 8 MAKE_TAG(1, WireVarint=0)
 				output.WriteVarint(uint64(v))
 			default:
 				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<nil, int32>: %v", v))
@@ -5835,8 +5835,8 @@ object_tmp_40:
 								return
 							} else if cutoff {
 								switch tmpg >> 3 {
-								case 2:
-									if tmpg == 16 { // MAKE_TAG(2, WireVarint=0)
+								case 1:
+									if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
 										// type: int32
 										if x, e := tmpi.ReadVarint(); e == nil {
 											s.Nv = int32(x)
@@ -6541,11 +6541,11 @@ func (s *Fighter) SerializeRPGParam(a0 *Fighter, a1 interface{}, a2 float64) (da
 		// variant type serialize: int32
 		case int32:
 			// type: int32
-			output.WriteBytes(16) // tag: 16 MAKE_TAG(2, WireVarint=0)
+			output.WriteBytes(8) // tag: 8 MAKE_TAG(1, WireVarint=0)
 			output.WriteVarint(uint64(v))
 		// addition type serialize: int
 		case int:
-			output.WriteBytes(16) // tag: 16 MAKE_TAG(2, WireVarint=0)
+			output.WriteBytes(8) // tag: 8 MAKE_TAG(1, WireVarint=0)
 			output.WriteVarint(uint64(v))
 		default:
 			panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<nil, int32>: %v", v))
@@ -6588,8 +6588,8 @@ method_tmp_28:
 								return
 							} else if cutoff {
 								switch tmpg >> 3 {
-								case 2:
-									if tmpg == 16 { // MAKE_TAG(2, WireVarint=0)
+								case 1:
+									if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
 										// type: int32
 										if x, e := tmpi.ReadVarint(); e == nil {
 											a1 = int32(x)
@@ -6728,11 +6728,11 @@ func (s *Fighter) SerializeRPGResult(a0 *Fighter, a1 interface{}, a2 float64) (d
 		// variant type serialize: int32
 		case int32:
 			// type: int32
-			output.WriteBytes(16) // tag: 16 MAKE_TAG(2, WireVarint=0)
+			output.WriteBytes(8) // tag: 8 MAKE_TAG(1, WireVarint=0)
 			output.WriteVarint(uint64(v))
 		// addition type serialize: int
 		case int:
-			output.WriteBytes(16) // tag: 16 MAKE_TAG(2, WireVarint=0)
+			output.WriteBytes(8) // tag: 8 MAKE_TAG(1, WireVarint=0)
 			output.WriteVarint(uint64(v))
 		default:
 			panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<nil, int32>: %v", v))
@@ -6775,8 +6775,8 @@ method_tmp_30:
 								return
 							} else if cutoff {
 								switch tmpg >> 3 {
-								case 2:
-									if tmpg == 16 { // MAKE_TAG(2, WireVarint=0)
+								case 1:
+									if tmpg == 8 { // MAKE_TAG(1, WireVarint=0)
 										// type: int32
 										if x, e := tmpi.ReadVarint(); e == nil {
 											a1 = int32(x)

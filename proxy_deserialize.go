@@ -552,16 +552,18 @@ func (t *VariantType) DeserializeGo(tag string, input string, name string, preFi
 	var pkgs map[string]string
 
 	var cases []string
-	for i, ts := range t.Ts {
+	variantNum := 0
+	for _, ts := range t.Ts {
 		if s, ok := ts.(SimpleType); ok && s == SimpleType_NIL {
 			continue
 		}
-		variant_s, variant_w, variant_p := ts.DeserializeGo(tempTag, tempInput, name, "", i+1, true)
+		variantNum++
+		variant_s, variant_w, variant_p := ts.DeserializeGo(tempTag, tempInput, name, "", variantNum, true)
 		pkgs = update(pkgs, variant_p)
 		var listTag string
 		var listComment string
 		if l, ok := ts.(*ListType); ok && l.E.IsPrimitive() {
-			listTag, listComment = tagInt("", i+1, WireBytes)
+			listTag, listComment = tagInt("", variantNum, WireBytes)
 			listTag = fmt.Sprintf(" || %s == %s", tempTag, listTag)
 			listComment = strings.Replace(listComment, "//", "||", 1)
 		}
@@ -569,7 +571,7 @@ func (t *VariantType) DeserializeGo(tag string, input string, name string, preFi
 				case %d:
 					if %s == %d%s { // MAKE_TAG(%d, %s=%d)%s%s
 						continue variant_%s // next tag for %s
-					}`, i+1, tempTag, _MAKE_TAG(i+1, variant_w), listTag, i+1,
+					}`, variantNum, tempTag, _MAKE_TAG(variantNum, variant_w), listTag, variantNum,
 			variant_w, variant_w, listComment, addIndent(variant_s, 5), v, t))
 	}
 

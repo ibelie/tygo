@@ -234,15 +234,17 @@ func (t *VariantType) Javascript(module string, writer io.Writer, types map[stri
 	requires := map[string]string{"goog.require('tyts.Variant');": ""}
 	if _, exist := types[identifier]; !exist {
 		var codes []string
-		for i, st := range t.Ts {
+		variantNum := 0
+		for _, st := range t.Ts {
 			if s, ok := st.(SimpleType); ok && s == SimpleType_NIL {
 				continue
 			}
+			variantNum++
 			js, rs := st.Javascript(module, writer, types, objects)
 			wiretype := st.WireType()
 			requires = update(requires, rs)
 			codes = append(codes, fmt.Sprintf(`
-	{tag: %d, tagsize: %d, type: %s}`, _MAKE_TAG(i+1, wiretype), TAG_SIZE(i+1), js))
+	{tag: %d, tagsize: %d, type: %s}`, _MAKE_TAG(variantNum, wiretype), TAG_SIZE(variantNum), js))
 		}
 		writer.Write([]byte(fmt.Sprintf(`
 var %s = new tyts.Variant('%s', %d, [%s

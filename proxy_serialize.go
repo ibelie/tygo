@@ -340,11 +340,14 @@ func (t *VariantType) SerializeGo(size string, name string, preFieldNum string, 
 	tagFloat32 := 0
 	tagFloat64 := 0
 
-	for i, st := range t.Ts {
+	variantNum := 0
+	for _, st := range t.Ts {
 		type_s, type_p := st.Go()
 		if type_s == "nil" {
 			continue
-		} else if t, ok := st.(SimpleType); ok {
+		}
+		variantNum++
+		if t, ok := st.(SimpleType); ok {
 			switch t {
 			case SimpleType_INT32:
 				fallthrough
@@ -353,16 +356,16 @@ func (t *VariantType) SerializeGo(size string, name string, preFieldNum string, 
 			case SimpleType_UINT32:
 				fallthrough
 			case SimpleType_UINT64:
-				tagInteger = i + 1
+				tagInteger = variantNum
 			case SimpleType_FLOAT32:
-				tagFloat32 = i + 1
+				tagFloat32 = variantNum
 			case SimpleType_FLOAT64:
-				tagFloat64 = i + 1
+				tagFloat64 = variantNum
 			}
 		}
 
-		bytesize_s, bytesize_p := st.CachedSizeGo(tempSize, "v", "", i+1, false)
-		serialize_s, serialize_p := st.SerializeGo(tempSize, "v", "", i+1, false)
+		bytesize_s, bytesize_p := st.CachedSizeGo(tempSize, "v", "", variantNum, false)
+		serialize_s, serialize_p := st.SerializeGo(tempSize, "v", "", variantNum, false)
 		pkgs = update(pkgs, type_p)
 		pkgs = update(pkgs, bytesize_p)
 		pkgs = update(pkgs, serialize_p)
