@@ -42,7 +42,7 @@ func (i WireType) String() string {
 	case WireFixed32:
 		return "WireFixed32"
 	default:
-		panic(fmt.Sprintf("[Tygo][WireType] Unexpect enum value: %d", i))
+		log.Panicf("[Tygo][WireType] Unexpect enum value: %d", i)
 		return "Unknown"
 	}
 }

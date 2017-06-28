@@ -2,7 +2,6 @@
 
 package test
 
-import "fmt"
 import "github.com/ibelie/tygo"
 import "log"
 import "math"
@@ -36,7 +35,7 @@ func (i Corpus) String() string {
 	case Corpus_VIDEO:
 		return "VIDEO"
 	default:
-		panic(fmt.Sprintf("[Tygo][Corpus] Unexpect enum value: %d", i))
+		log.Panicf("[Tygo][Corpus] Unexpect enum value: %d", i)
 		return "UNKNOWN"
 	}
 }
@@ -479,7 +478,7 @@ func (s *Fighter_Part1) ByteSize() (size int) {
 			case int:
 				tmp += 1 + tygo.SizeVarint(uint64(v))
 			default:
-				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, *GoType>: %v", v))
+				log.Panicf("[Tygo][Variant] Unexpect type for variant<int32, *GoType>: %v", v)
 			}
 			size += 1 + tygo.SizeVarint(uint64(tmp)) + tmp
 		}
@@ -504,7 +503,7 @@ func (s *Fighter_Part1) ByteSize() (size int) {
 			case int:
 				tmp += 1 + tygo.SizeVarint(uint64(v))
 			default:
-				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, *GoType>: %v", v))
+				log.Panicf("[Tygo][Variant] Unexpect type for variant<int32, *GoType>: %v", v)
 			}
 			size += 1 + tygo.SizeVarint(uint64(tmp)) + tmp
 		}
@@ -732,7 +731,7 @@ func (s *Fighter_Part1) Serialize(output *tygo.ProtoBuf) {
 			case int:
 				tmp += 1 + tygo.SizeVarint(uint64(v))
 			default:
-				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, *GoType>: %v", v))
+				log.Panicf("[Tygo][Variant] Unexpect type for variant<int32, *GoType>: %v", v)
 			}
 			output.WriteBytes(82) // tag: 82 MAKE_TAG(10, WireBytes=2)
 			output.WriteVarint(uint64(tmp))
@@ -755,7 +754,7 @@ func (s *Fighter_Part1) Serialize(output *tygo.ProtoBuf) {
 				output.WriteBytes(8) // tag: 8 MAKE_TAG(1, WireVarint=0)
 				output.WriteVarint(uint64(v))
 			default:
-				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, *GoType>: %v", v))
+				log.Panicf("[Tygo][Variant] Unexpect type for variant<int32, *GoType>: %v", v)
 			}
 		}
 
@@ -779,7 +778,7 @@ func (s *Fighter_Part1) Serialize(output *tygo.ProtoBuf) {
 			case int:
 				tmp += 1 + tygo.SizeVarint(uint64(v))
 			default:
-				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, *GoType>: %v", v))
+				log.Panicf("[Tygo][Variant] Unexpect type for variant<int32, *GoType>: %v", v)
 			}
 			output.WriteBytes(90) // tag: 90 MAKE_TAG(11, WireBytes=2)
 			output.WriteVarint(uint64(tmp))
@@ -802,7 +801,7 @@ func (s *Fighter_Part1) Serialize(output *tygo.ProtoBuf) {
 				output.WriteBytes(8) // tag: 8 MAKE_TAG(1, WireVarint=0)
 				output.WriteVarint(uint64(v))
 			default:
-				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, *GoType>: %v", v))
+				log.Panicf("[Tygo][Variant] Unexpect type for variant<int32, *GoType>: %v", v)
 			}
 		}
 
@@ -2204,7 +2203,7 @@ func (s *Fighter) ByteSize() (size int) {
 			case float64:
 				tmp += 5
 			default:
-				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, float32, bytes, *Vector2>: %v", v))
+				log.Panicf("[Tygo][Variant] Unexpect type for variant<int32, float32, bytes, *Vector2>: %v", v)
 			}
 			size += 2 + tygo.SizeVarint(uint64(tmp)) + tmp
 		}
@@ -2243,7 +2242,7 @@ func (s *Fighter) ByteSize() (size int) {
 			case float64:
 				tmp += 5
 			default:
-				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, float32, bytes, *Vector2>: %v", v))
+				log.Panicf("[Tygo][Variant] Unexpect type for variant<int32, float32, bytes, *Vector2>: %v", v)
 			}
 			size += 2 + tygo.SizeVarint(uint64(tmp)) + tmp
 		}
@@ -2282,7 +2281,7 @@ func (s *Fighter) ByteSize() (size int) {
 			case float64:
 				tmp += 5
 			default:
-				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, float32, bytes, *Vector2>: %v", v))
+				log.Panicf("[Tygo][Variant] Unexpect type for variant<int32, float32, bytes, *Vector2>: %v", v)
 			}
 			size += 2 + tygo.SizeVarint(uint64(tmp)) + tmp
 		}
@@ -2321,7 +2320,7 @@ func (s *Fighter) ByteSize() (size int) {
 			case float64:
 				tmp += 5
 			default:
-				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, float32, bytes, *Vector2>: %v", v))
+				log.Panicf("[Tygo][Variant] Unexpect type for variant<int32, float32, bytes, *Vector2>: %v", v)
 			}
 			size += 2 + tygo.SizeVarint(uint64(tmp)) + tmp
 		}
@@ -2360,7 +2359,7 @@ func (s *Fighter) ByteSize() (size int) {
 			case float64:
 				tmp += 5
 			default:
-				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, float32, bytes, *Vector2>: %v", v))
+				log.Panicf("[Tygo][Variant] Unexpect type for variant<int32, float32, bytes, *Vector2>: %v", v)
 			}
 			size += 2 + tygo.SizeVarint(uint64(tmp)) + tmp
 		}
@@ -2400,7 +2399,7 @@ func (s *Fighter) ByteSize() (size int) {
 					case int:
 						tmp += 1 + tygo.SizeVarint(uint64(v))
 					default:
-						panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, fixedpoint<3, 0>, string, *Vector2>: %v", v))
+						log.Panicf("[Tygo][Variant] Unexpect type for variant<int32, fixedpoint<3, 0>, string, *Vector2>: %v", v)
 					}
 					size += 2 + tygo.SizeVarint(uint64(tmp)) + tmp
 				} else {
@@ -2450,7 +2449,7 @@ func (s *Fighter) ByteSize() (size int) {
 					case int:
 						tmpp += 9
 					default:
-						panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<Corpus, float64, string, *Vector2>: %v", v))
+						log.Panicf("[Tygo][Variant] Unexpect type for variant<Corpus, float64, string, *Vector2>: %v", v)
 					}
 					tmp += 1 + tygo.SizeVarint(uint64(tmpp)) + tmpp
 				}
@@ -2503,7 +2502,7 @@ func (s *Fighter) ByteSize() (size int) {
 							case int:
 								tmpp += 9
 							default:
-								panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<Corpus, float64, string, *Vector2>: %v", v))
+								log.Panicf("[Tygo][Variant] Unexpect type for variant<Corpus, float64, string, *Vector2>: %v", v)
 							}
 							tmp += 1 + tygo.SizeVarint(uint64(tmpp)) + tmpp
 						} else {
@@ -2590,7 +2589,7 @@ func (s *Fighter) ByteSize() (size int) {
 							case int:
 								tmppp += 1 + tygo.SizeVarint(uint64(v))
 							default:
-								panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, Corpus, float64, string, *Vector2>: %v", v))
+								log.Panicf("[Tygo][Variant] Unexpect type for variant<int32, Corpus, float64, string, *Vector2>: %v", v)
 							}
 							tmpp += 1 + tygo.SizeVarint(uint64(tmppp)) + tmppp
 						}
@@ -2646,7 +2645,7 @@ func (s *Fighter) ByteSize() (size int) {
 			case int:
 				tmp += 1 + tygo.SizeVarint(uint64(v))
 			default:
-				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<nil, int32>: %v", v))
+				log.Panicf("[Tygo][Variant] Unexpect type for variant<nil, int32>: %v", v)
 			}
 			size += 2 + tygo.SizeVarint(uint64(tmp)) + tmp
 		}
@@ -2688,7 +2687,7 @@ func (s *Fighter) ByteSize() (size int) {
 							case float64:
 								tmpp += 5
 							default:
-								panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<float32, string>: %v", v))
+								log.Panicf("[Tygo][Variant] Unexpect type for variant<float32, string>: %v", v)
 							}
 							tmp += 1 + tygo.SizeVarint(uint64(tmpp)) + tmpp
 						} else {
@@ -2700,7 +2699,7 @@ func (s *Fighter) ByteSize() (size int) {
 			case int:
 				tmp += 1 + tygo.SizeVarint(uint64(v))
 			default:
-				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, []variant<float32, string>>: %v", v))
+				log.Panicf("[Tygo][Variant] Unexpect type for variant<int32, []variant<float32, string>>: %v", v)
 			}
 			size += 2 + tygo.SizeVarint(uint64(tmp)) + tmp
 		}
@@ -2725,7 +2724,7 @@ func (s *Fighter) ByteSize() (size int) {
 			case int:
 				tmp += 1 + tygo.SizeVarint(uint64(v))
 			default:
-				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, []float32>: %v", v))
+				log.Panicf("[Tygo][Variant] Unexpect type for variant<int32, []float32>: %v", v)
 			}
 			size += 2 + tygo.SizeVarint(uint64(tmp)) + tmp
 		}
@@ -2773,7 +2772,7 @@ func (s *Fighter) ByteSize() (size int) {
 							case float64:
 								tmppp += 5
 							default:
-								panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<float32, string>: %v", v))
+								log.Panicf("[Tygo][Variant] Unexpect type for variant<float32, string>: %v", v)
 							}
 							tmpp += 1 + tygo.SizeVarint(uint64(tmppp)) + tmppp
 						}
@@ -2784,7 +2783,7 @@ func (s *Fighter) ByteSize() (size int) {
 			case int:
 				tmp += 1 + tygo.SizeVarint(uint64(v))
 			default:
-				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, map[int32]variant<float32, string>>: %v", v))
+				log.Panicf("[Tygo][Variant] Unexpect type for variant<int32, map[int32]variant<float32, string>>: %v", v)
 			}
 			size += 2 + tygo.SizeVarint(uint64(tmp)) + tmp
 		}
@@ -2821,7 +2820,7 @@ func (s *Fighter) ByteSize() (size int) {
 			case int:
 				tmp += 1 + tygo.SizeVarint(uint64(v))
 			default:
-				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, map[int32]float32>: %v", v))
+				log.Panicf("[Tygo][Variant] Unexpect type for variant<int32, map[int32]float32>: %v", v)
 			}
 			size += 2 + tygo.SizeVarint(uint64(tmp)) + tmp
 		}
@@ -2929,7 +2928,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 			case float64:
 				tmp += 5
 			default:
-				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, float32, bytes, *Vector2>: %v", v))
+				log.Panicf("[Tygo][Variant] Unexpect type for variant<int32, float32, bytes, *Vector2>: %v", v)
 			}
 			output.WriteBytes(162, 1) // tag: 162 MAKE_TAG(20, WireBytes=2)
 			output.WriteVarint(uint64(tmp))
@@ -2968,7 +2967,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 				output.WriteBytes(21) // tag: 21 MAKE_TAG(2, WireFixed32=5)
 				output.WriteFixed32(math.Float32bits(float32(v)))
 			default:
-				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, float32, bytes, *Vector2>: %v", v))
+				log.Panicf("[Tygo][Variant] Unexpect type for variant<int32, float32, bytes, *Vector2>: %v", v)
 			}
 		}
 
@@ -3006,7 +3005,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 			case float64:
 				tmp += 5
 			default:
-				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, float32, bytes, *Vector2>: %v", v))
+				log.Panicf("[Tygo][Variant] Unexpect type for variant<int32, float32, bytes, *Vector2>: %v", v)
 			}
 			output.WriteBytes(170, 1) // tag: 170 MAKE_TAG(21, WireBytes=2)
 			output.WriteVarint(uint64(tmp))
@@ -3045,7 +3044,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 				output.WriteBytes(21) // tag: 21 MAKE_TAG(2, WireFixed32=5)
 				output.WriteFixed32(math.Float32bits(float32(v)))
 			default:
-				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, float32, bytes, *Vector2>: %v", v))
+				log.Panicf("[Tygo][Variant] Unexpect type for variant<int32, float32, bytes, *Vector2>: %v", v)
 			}
 		}
 
@@ -3083,7 +3082,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 			case float64:
 				tmp += 5
 			default:
-				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, float32, bytes, *Vector2>: %v", v))
+				log.Panicf("[Tygo][Variant] Unexpect type for variant<int32, float32, bytes, *Vector2>: %v", v)
 			}
 			output.WriteBytes(178, 1) // tag: 178 MAKE_TAG(22, WireBytes=2)
 			output.WriteVarint(uint64(tmp))
@@ -3122,7 +3121,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 				output.WriteBytes(21) // tag: 21 MAKE_TAG(2, WireFixed32=5)
 				output.WriteFixed32(math.Float32bits(float32(v)))
 			default:
-				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, float32, bytes, *Vector2>: %v", v))
+				log.Panicf("[Tygo][Variant] Unexpect type for variant<int32, float32, bytes, *Vector2>: %v", v)
 			}
 		}
 
@@ -3160,7 +3159,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 			case float64:
 				tmp += 5
 			default:
-				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, float32, bytes, *Vector2>: %v", v))
+				log.Panicf("[Tygo][Variant] Unexpect type for variant<int32, float32, bytes, *Vector2>: %v", v)
 			}
 			output.WriteBytes(186, 1) // tag: 186 MAKE_TAG(23, WireBytes=2)
 			output.WriteVarint(uint64(tmp))
@@ -3199,7 +3198,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 				output.WriteBytes(21) // tag: 21 MAKE_TAG(2, WireFixed32=5)
 				output.WriteFixed32(math.Float32bits(float32(v)))
 			default:
-				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, float32, bytes, *Vector2>: %v", v))
+				log.Panicf("[Tygo][Variant] Unexpect type for variant<int32, float32, bytes, *Vector2>: %v", v)
 			}
 		}
 
@@ -3237,7 +3236,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 			case float64:
 				tmp += 5
 			default:
-				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, float32, bytes, *Vector2>: %v", v))
+				log.Panicf("[Tygo][Variant] Unexpect type for variant<int32, float32, bytes, *Vector2>: %v", v)
 			}
 			output.WriteBytes(194, 1) // tag: 194 MAKE_TAG(24, WireBytes=2)
 			output.WriteVarint(uint64(tmp))
@@ -3276,7 +3275,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 				output.WriteBytes(21) // tag: 21 MAKE_TAG(2, WireFixed32=5)
 				output.WriteFixed32(math.Float32bits(float32(v)))
 			default:
-				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, float32, bytes, *Vector2>: %v", v))
+				log.Panicf("[Tygo][Variant] Unexpect type for variant<int32, float32, bytes, *Vector2>: %v", v)
 			}
 		}
 
@@ -3316,7 +3315,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 					case int:
 						tmp += 1 + tygo.SizeVarint(uint64(v))
 					default:
-						panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, fixedpoint<3, 0>, string, *Vector2>: %v", v))
+						log.Panicf("[Tygo][Variant] Unexpect type for variant<int32, fixedpoint<3, 0>, string, *Vector2>: %v", v)
 					}
 					output.WriteVarint(uint64(tmp))
 					switch v := e.(type) {
@@ -3350,7 +3349,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 						output.WriteBytes(8) // tag: 8 MAKE_TAG(1, WireVarint=0)
 						output.WriteVarint(uint64(v))
 					default:
-						panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, fixedpoint<3, 0>, string, *Vector2>: %v", v))
+						log.Panicf("[Tygo][Variant] Unexpect type for variant<int32, fixedpoint<3, 0>, string, *Vector2>: %v", v)
 					}
 				} else {
 					output.WriteBytes(0)
@@ -3399,7 +3398,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 					case int:
 						tmpp += 9
 					default:
-						panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<Corpus, float64, string, *Vector2>: %v", v))
+						log.Panicf("[Tygo][Variant] Unexpect type for variant<Corpus, float64, string, *Vector2>: %v", v)
 					}
 					tmp += 1 + tygo.SizeVarint(uint64(tmpp)) + tmpp
 				}
@@ -3442,7 +3441,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 					case int:
 						tmpp += 9
 					default:
-						panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<Corpus, float64, string, *Vector2>: %v", v))
+						log.Panicf("[Tygo][Variant] Unexpect type for variant<Corpus, float64, string, *Vector2>: %v", v)
 					}
 					output.WriteBytes(18) // tag: 18 MAKE_TAG(2, WireBytes=2)
 					output.WriteVarint(uint64(tmpp))
@@ -3477,7 +3476,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 						output.WriteBytes(17) // tag: 17 MAKE_TAG(2, WireFixed64=1)
 						output.WriteFixed64(math.Float64bits(float64(v)))
 					default:
-						panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<Corpus, float64, string, *Vector2>: %v", v))
+						log.Panicf("[Tygo][Variant] Unexpect type for variant<Corpus, float64, string, *Vector2>: %v", v)
 					}
 				}
 			}
@@ -3528,7 +3527,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 							case int:
 								tmpp += 9
 							default:
-								panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<Corpus, float64, string, *Vector2>: %v", v))
+								log.Panicf("[Tygo][Variant] Unexpect type for variant<Corpus, float64, string, *Vector2>: %v", v)
 							}
 							tmp += 1 + tygo.SizeVarint(uint64(tmpp)) + tmpp
 						} else {
@@ -3580,7 +3579,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 							case int:
 								tmpp += 9
 							default:
-								panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<Corpus, float64, string, *Vector2>: %v", v))
+								log.Panicf("[Tygo][Variant] Unexpect type for variant<Corpus, float64, string, *Vector2>: %v", v)
 							}
 							output.WriteVarint(uint64(tmpp))
 							switch v := e.(type) {
@@ -3614,7 +3613,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 								output.WriteBytes(17) // tag: 17 MAKE_TAG(2, WireFixed64=1)
 								output.WriteFixed64(math.Float64bits(float64(v)))
 							default:
-								panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<Corpus, float64, string, *Vector2>: %v", v))
+								log.Panicf("[Tygo][Variant] Unexpect type for variant<Corpus, float64, string, *Vector2>: %v", v)
 							}
 						} else {
 							output.WriteBytes(0)
@@ -3718,7 +3717,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 							case int:
 								tmppp += 1 + tygo.SizeVarint(uint64(v))
 							default:
-								panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, Corpus, float64, string, *Vector2>: %v", v))
+								log.Panicf("[Tygo][Variant] Unexpect type for variant<int32, Corpus, float64, string, *Vector2>: %v", v)
 							}
 							tmpp += 1 + tygo.SizeVarint(uint64(tmppp)) + tmppp
 						}
@@ -3778,7 +3777,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 							case int:
 								tmppp += 1 + tygo.SizeVarint(uint64(v))
 							default:
-								panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, Corpus, float64, string, *Vector2>: %v", v))
+								log.Panicf("[Tygo][Variant] Unexpect type for variant<int32, Corpus, float64, string, *Vector2>: %v", v)
 							}
 							tmpp += 1 + tygo.SizeVarint(uint64(tmppp)) + tmppp
 						}
@@ -3825,7 +3824,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 							case int:
 								tmppp += 1 + tygo.SizeVarint(uint64(v))
 							default:
-								panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, Corpus, float64, string, *Vector2>: %v", v))
+								log.Panicf("[Tygo][Variant] Unexpect type for variant<int32, Corpus, float64, string, *Vector2>: %v", v)
 							}
 							output.WriteBytes(18) // tag: 18 MAKE_TAG(2, WireBytes=2)
 							output.WriteVarint(uint64(tmppp))
@@ -3865,7 +3864,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 								output.WriteBytes(8) // tag: 8 MAKE_TAG(1, WireVarint=0)
 								output.WriteVarint(uint64(v))
 							default:
-								panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, Corpus, float64, string, *Vector2>: %v", v))
+								log.Panicf("[Tygo][Variant] Unexpect type for variant<int32, Corpus, float64, string, *Vector2>: %v", v)
 							}
 						}
 					}
@@ -3956,7 +3955,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 			case int:
 				tmp += 1 + tygo.SizeVarint(uint64(v))
 			default:
-				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<nil, int32>: %v", v))
+				log.Panicf("[Tygo][Variant] Unexpect type for variant<nil, int32>: %v", v)
 			}
 			output.WriteBytes(250, 1) // tag: 250 MAKE_TAG(31, WireBytes=2)
 			output.WriteVarint(uint64(tmp))
@@ -3971,7 +3970,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 				output.WriteBytes(8) // tag: 8 MAKE_TAG(1, WireVarint=0)
 				output.WriteVarint(uint64(v))
 			default:
-				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<nil, int32>: %v", v))
+				log.Panicf("[Tygo][Variant] Unexpect type for variant<nil, int32>: %v", v)
 			}
 		}
 
@@ -4012,7 +4011,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 							case float64:
 								tmpp += 5
 							default:
-								panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<float32, string>: %v", v))
+								log.Panicf("[Tygo][Variant] Unexpect type for variant<float32, string>: %v", v)
 							}
 							tmp += 1 + tygo.SizeVarint(uint64(tmpp)) + tmpp
 						} else {
@@ -4024,7 +4023,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 			case int:
 				tmp += 1 + tygo.SizeVarint(uint64(v))
 			default:
-				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, []variant<float32, string>>: %v", v))
+				log.Panicf("[Tygo][Variant] Unexpect type for variant<int32, []variant<float32, string>>: %v", v)
 			}
 			output.WriteBytes(130, 2) // tag: 258 MAKE_TAG(32, WireBytes=2)
 			output.WriteVarint(uint64(tmp))
@@ -4063,7 +4062,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 							case float64:
 								tmpp += 5
 							default:
-								panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<float32, string>: %v", v))
+								log.Panicf("[Tygo][Variant] Unexpect type for variant<float32, string>: %v", v)
 							}
 							output.WriteVarint(uint64(tmpp))
 							switch v := e.(type) {
@@ -4088,7 +4087,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 								output.WriteBytes(13) // tag: 13 MAKE_TAG(1, WireFixed32=5)
 								output.WriteFixed32(math.Float32bits(float32(v)))
 							default:
-								panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<float32, string>: %v", v))
+								log.Panicf("[Tygo][Variant] Unexpect type for variant<float32, string>: %v", v)
 							}
 						} else {
 							output.WriteBytes(0)
@@ -4100,7 +4099,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 				output.WriteBytes(8) // tag: 8 MAKE_TAG(1, WireVarint=0)
 				output.WriteVarint(uint64(v))
 			default:
-				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, []variant<float32, string>>: %v", v))
+				log.Panicf("[Tygo][Variant] Unexpect type for variant<int32, []variant<float32, string>>: %v", v)
 			}
 		}
 
@@ -4124,7 +4123,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 			case int:
 				tmp += 1 + tygo.SizeVarint(uint64(v))
 			default:
-				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, []float32>: %v", v))
+				log.Panicf("[Tygo][Variant] Unexpect type for variant<int32, []float32>: %v", v)
 			}
 			output.WriteBytes(138, 2) // tag: 266 MAKE_TAG(33, WireBytes=2)
 			output.WriteVarint(uint64(tmp))
@@ -4152,7 +4151,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 				output.WriteBytes(8) // tag: 8 MAKE_TAG(1, WireVarint=0)
 				output.WriteVarint(uint64(v))
 			default:
-				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, []float32>: %v", v))
+				log.Panicf("[Tygo][Variant] Unexpect type for variant<int32, []float32>: %v", v)
 			}
 		}
 
@@ -4199,7 +4198,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 							case float64:
 								tmppp += 5
 							default:
-								panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<float32, string>: %v", v))
+								log.Panicf("[Tygo][Variant] Unexpect type for variant<float32, string>: %v", v)
 							}
 							tmpp += 1 + tygo.SizeVarint(uint64(tmppp)) + tmppp
 						}
@@ -4210,7 +4209,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 			case int:
 				tmp += 1 + tygo.SizeVarint(uint64(v))
 			default:
-				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, map[int32]variant<float32, string>>: %v", v))
+				log.Panicf("[Tygo][Variant] Unexpect type for variant<int32, map[int32]variant<float32, string>>: %v", v)
 			}
 			output.WriteBytes(146, 2) // tag: 274 MAKE_TAG(34, WireBytes=2)
 			output.WriteVarint(uint64(tmp))
@@ -4254,7 +4253,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 							case float64:
 								tmppp += 5
 							default:
-								panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<float32, string>: %v", v))
+								log.Panicf("[Tygo][Variant] Unexpect type for variant<float32, string>: %v", v)
 							}
 							tmpp += 1 + tygo.SizeVarint(uint64(tmppp)) + tmppp
 						}
@@ -4289,7 +4288,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 							case float64:
 								tmppp += 5
 							default:
-								panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<float32, string>: %v", v))
+								log.Panicf("[Tygo][Variant] Unexpect type for variant<float32, string>: %v", v)
 							}
 							output.WriteBytes(18) // tag: 18 MAKE_TAG(2, WireBytes=2)
 							output.WriteVarint(uint64(tmppp))
@@ -4315,7 +4314,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 								output.WriteBytes(13) // tag: 13 MAKE_TAG(1, WireFixed32=5)
 								output.WriteFixed32(math.Float32bits(float32(v)))
 							default:
-								panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<float32, string>: %v", v))
+								log.Panicf("[Tygo][Variant] Unexpect type for variant<float32, string>: %v", v)
 							}
 						}
 					}
@@ -4325,7 +4324,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 				output.WriteBytes(8) // tag: 8 MAKE_TAG(1, WireVarint=0)
 				output.WriteVarint(uint64(v))
 			default:
-				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, map[int32]variant<float32, string>>: %v", v))
+				log.Panicf("[Tygo][Variant] Unexpect type for variant<int32, map[int32]variant<float32, string>>: %v", v)
 			}
 		}
 
@@ -4361,7 +4360,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 			case int:
 				tmp += 1 + tygo.SizeVarint(uint64(v))
 			default:
-				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, map[int32]float32>: %v", v))
+				log.Panicf("[Tygo][Variant] Unexpect type for variant<int32, map[int32]float32>: %v", v)
 			}
 			output.WriteBytes(154, 2) // tag: 282 MAKE_TAG(35, WireBytes=2)
 			output.WriteVarint(uint64(tmp))
@@ -4408,7 +4407,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 				output.WriteBytes(8) // tag: 8 MAKE_TAG(1, WireVarint=0)
 				output.WriteVarint(uint64(v))
 			default:
-				panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<int32, map[int32]float32>: %v", v))
+				log.Panicf("[Tygo][Variant] Unexpect type for variant<int32, map[int32]float32>: %v", v)
 			}
 		}
 
@@ -6495,7 +6494,7 @@ func (s *Fighter) SerializeRPGParam(a0 *Fighter, a1 interface{}, a2 float64) (da
 		case int:
 			tmp += 1 + tygo.SizeVarint(uint64(v))
 		default:
-			panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<nil, int32>: %v", v))
+			log.Panicf("[Tygo][Variant] Unexpect type for variant<nil, int32>: %v", v)
 		}
 		size += 1 + tygo.SizeVarint(uint64(tmp)) + tmp
 	}
@@ -6533,7 +6532,7 @@ func (s *Fighter) SerializeRPGParam(a0 *Fighter, a1 interface{}, a2 float64) (da
 		case int:
 			tmp += 1 + tygo.SizeVarint(uint64(v))
 		default:
-			panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<nil, int32>: %v", v))
+			log.Panicf("[Tygo][Variant] Unexpect type for variant<nil, int32>: %v", v)
 		}
 		output.WriteBytes(18) // tag: 18 MAKE_TAG(2, WireBytes=2)
 		output.WriteVarint(uint64(tmp))
@@ -6548,7 +6547,7 @@ func (s *Fighter) SerializeRPGParam(a0 *Fighter, a1 interface{}, a2 float64) (da
 			output.WriteBytes(8) // tag: 8 MAKE_TAG(1, WireVarint=0)
 			output.WriteVarint(uint64(v))
 		default:
-			panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<nil, int32>: %v", v))
+			log.Panicf("[Tygo][Variant] Unexpect type for variant<nil, int32>: %v", v)
 		}
 	}
 
@@ -6682,7 +6681,7 @@ func (s *Fighter) SerializeRPGResult(a0 *Fighter, a1 interface{}, a2 float64) (d
 		case int:
 			tmp += 1 + tygo.SizeVarint(uint64(v))
 		default:
-			panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<nil, int32>: %v", v))
+			log.Panicf("[Tygo][Variant] Unexpect type for variant<nil, int32>: %v", v)
 		}
 		size += 1 + tygo.SizeVarint(uint64(tmp)) + tmp
 	}
@@ -6720,7 +6719,7 @@ func (s *Fighter) SerializeRPGResult(a0 *Fighter, a1 interface{}, a2 float64) (d
 		case int:
 			tmp += 1 + tygo.SizeVarint(uint64(v))
 		default:
-			panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<nil, int32>: %v", v))
+			log.Panicf("[Tygo][Variant] Unexpect type for variant<nil, int32>: %v", v)
 		}
 		output.WriteBytes(18) // tag: 18 MAKE_TAG(2, WireBytes=2)
 		output.WriteVarint(uint64(tmp))
@@ -6735,7 +6734,7 @@ func (s *Fighter) SerializeRPGResult(a0 *Fighter, a1 interface{}, a2 float64) (d
 			output.WriteBytes(8) // tag: 8 MAKE_TAG(1, WireVarint=0)
 			output.WriteVarint(uint64(v))
 		default:
-			panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<nil, int32>: %v", v))
+			log.Panicf("[Tygo][Variant] Unexpect type for variant<nil, int32>: %v", v)
 		}
 	}
 
@@ -6890,7 +6889,7 @@ func (s *Fighter) SerializeGPRParam(a0 map[int32]interface{}) (data []byte) {
 				case int:
 					tmpp += 9
 				default:
-					panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<Corpus, float64, string, *Vector2>: %v", v))
+					log.Panicf("[Tygo][Variant] Unexpect type for variant<Corpus, float64, string, *Vector2>: %v", v)
 				}
 				tmp += 1 + tygo.SizeVarint(uint64(tmpp)) + tmpp
 			}
@@ -6945,7 +6944,7 @@ func (s *Fighter) SerializeGPRParam(a0 map[int32]interface{}) (data []byte) {
 				case int:
 					tmpp += 9
 				default:
-					panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<Corpus, float64, string, *Vector2>: %v", v))
+					log.Panicf("[Tygo][Variant] Unexpect type for variant<Corpus, float64, string, *Vector2>: %v", v)
 				}
 				tmp += 1 + tygo.SizeVarint(uint64(tmpp)) + tmpp
 			}
@@ -6988,7 +6987,7 @@ func (s *Fighter) SerializeGPRParam(a0 map[int32]interface{}) (data []byte) {
 				case int:
 					tmpp += 9
 				default:
-					panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<Corpus, float64, string, *Vector2>: %v", v))
+					log.Panicf("[Tygo][Variant] Unexpect type for variant<Corpus, float64, string, *Vector2>: %v", v)
 				}
 				output.WriteBytes(18) // tag: 18 MAKE_TAG(2, WireBytes=2)
 				output.WriteVarint(uint64(tmpp))
@@ -7023,7 +7022,7 @@ func (s *Fighter) SerializeGPRParam(a0 map[int32]interface{}) (data []byte) {
 					output.WriteBytes(17) // tag: 17 MAKE_TAG(2, WireFixed64=1)
 					output.WriteFixed64(math.Float64bits(float64(v)))
 				default:
-					panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<Corpus, float64, string, *Vector2>: %v", v))
+					log.Panicf("[Tygo][Variant] Unexpect type for variant<Corpus, float64, string, *Vector2>: %v", v)
 				}
 			}
 		}
@@ -7235,7 +7234,7 @@ func (s *Fighter) SerializeGPRResult(a0 map[int32]interface{}) (data []byte) {
 				case int:
 					tmpp += 9
 				default:
-					panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<Corpus, float64, string, *Vector2>: %v", v))
+					log.Panicf("[Tygo][Variant] Unexpect type for variant<Corpus, float64, string, *Vector2>: %v", v)
 				}
 				tmp += 1 + tygo.SizeVarint(uint64(tmpp)) + tmpp
 			}
@@ -7290,7 +7289,7 @@ func (s *Fighter) SerializeGPRResult(a0 map[int32]interface{}) (data []byte) {
 				case int:
 					tmpp += 9
 				default:
-					panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<Corpus, float64, string, *Vector2>: %v", v))
+					log.Panicf("[Tygo][Variant] Unexpect type for variant<Corpus, float64, string, *Vector2>: %v", v)
 				}
 				tmp += 1 + tygo.SizeVarint(uint64(tmpp)) + tmpp
 			}
@@ -7333,7 +7332,7 @@ func (s *Fighter) SerializeGPRResult(a0 map[int32]interface{}) (data []byte) {
 				case int:
 					tmpp += 9
 				default:
-					panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<Corpus, float64, string, *Vector2>: %v", v))
+					log.Panicf("[Tygo][Variant] Unexpect type for variant<Corpus, float64, string, *Vector2>: %v", v)
 				}
 				output.WriteBytes(18) // tag: 18 MAKE_TAG(2, WireBytes=2)
 				output.WriteVarint(uint64(tmpp))
@@ -7368,7 +7367,7 @@ func (s *Fighter) SerializeGPRResult(a0 map[int32]interface{}) (data []byte) {
 					output.WriteBytes(17) // tag: 17 MAKE_TAG(2, WireFixed64=1)
 					output.WriteFixed64(math.Float64bits(float64(v)))
 				default:
-					panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for variant<Corpus, float64, string, *Vector2>: %v", v))
+					log.Panicf("[Tygo][Variant] Unexpect type for variant<Corpus, float64, string, *Vector2>: %v", v)
 				}
 			}
 		}

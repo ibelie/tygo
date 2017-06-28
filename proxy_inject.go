@@ -19,7 +19,6 @@ import (
 const TEMP_PREFIX = "tmp"
 
 var (
-	FMT_PKG  = map[string]string{"fmt": ""}
 	LOG_PKG  = map[string]string{"log": ""}
 	MATH_PKG = map[string]string{"math": ""}
 	SRC_PATH = os.Getenv("GOPATH") + "/src/"
@@ -65,7 +64,7 @@ import %s"%s"`, pkgs[path], path)))
 func (t *Enum) Go() (string, map[string]string) {
 	var names []string
 	var values []string
-	pkgs := map[string]string{"fmt": "", TYGO_PATH: ""}
+	pkgs := updateTygo(LOG_PKG)
 	for _, name := range t.Sorted() {
 		names = append(names, fmt.Sprintf(`
 	case %s_%s:
@@ -88,7 +87,7 @@ const (%s
 func (i %s) String() string {
 	switch i {%s
 	default:
-		panic(fmt.Sprintf("[Tygo][%s] Unexpect enum value: %%d", i))
+		log.Panicf("[Tygo][%s] Unexpect enum value: %%d", i)
 		return "UNKNOWN"
 	}
 }

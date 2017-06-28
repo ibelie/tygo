@@ -362,7 +362,7 @@ func (t *VariantType) _ByteSizeGo(size string, name string, preFieldNum string, 
 	tagFloat32 := 0
 	tagFloat64 := 0
 	tagsize_s, tagsize_p := tagSize(preFieldNum, fieldNum)
-	pkgs := updateTygo(nil)
+	pkgs := updateTygo(LOG_PKG)
 	pkgs = update(pkgs, tagsize_p)
 
 	variantNum := 0
@@ -436,7 +436,7 @@ func (t *VariantType) _ByteSizeGo(size string, name string, preFieldNum string, 
 		%s := 0
 		switch v := %s.(type) {%s
 		default:
-			panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for %s: %%v", v))
+			log.Panicf("[Tygo][Variant] Unexpect type for %s: %%v", v)
 		}
 		%s += %stygo.SizeVarint(uint64(%s)) + %s
 	}`, t, compareZero, tempSize, name, strings.Join(cases, ""), t, size, tagsize_s, tempSize, tempSize), pkgs

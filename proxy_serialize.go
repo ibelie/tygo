@@ -335,7 +335,7 @@ func (t *VariantType) SerializeGo(size string, name string, preFieldNum string, 
 	}
 	var bytesize_cases []string
 	var serialize_cases []string
-	var pkgs map[string]string
+	pkgs := LOG_PKG
 	tagInteger := 0
 	tagFloat32 := 0
 	tagFloat64 := 0
@@ -386,6 +386,7 @@ func (t *VariantType) SerializeGo(size string, name string, preFieldNum string, 
 		// addition type serialize: int
 		case int:%s
 			output.WriteVarint(uint64(v))`, writeTag("", tagInteger, WireVarint, 2)))
+		pkgs = updateTygo(pkgs)
 	} else if tagFloat32 != 0 {
 		bytesize_cases = append(bytesize_cases, fmt.Sprintf(`
 		// addition type size: int -> float32
@@ -431,12 +432,12 @@ func (t *VariantType) SerializeGo(size string, name string, preFieldNum string, 
 		%s := 0
 		switch v := %s.(type) {%s
 		default:
-			panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for %s: %%v", v))
+			log.Panicf("[Tygo][Variant] Unexpect type for %s: %%v", v)
 		}%s
 		output.WriteVarint(uint64(%s))
 		switch v := %s.(type) {%s
 		default:
-			panic(fmt.Sprintf("[Tygo][Variant] Unexpect type for %s: %%v", v))
+			log.Panicf("[Tygo][Variant] Unexpect type for %s: %%v", v)
 		}
 	}`, t, compareZero, tempSize, name, strings.Join(bytesize_cases, ""), t,
 		writeTag(preFieldNum, fieldNum, WireBytes, 1), tempSize, name,
