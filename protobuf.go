@@ -315,10 +315,6 @@ func (t *Enum) WireType() WireType {
 	return WireVarint
 }
 
-func (t *Method) WireType() WireType {
-	return WireBytes
-}
-
 func (t *Object) WireType() WireType {
 	return WireBytes
 }
