@@ -73,10 +73,6 @@ func (t *Enum) Javascript(module string, writer io.Writer, types map[string]Type
 	return "", nil
 }
 
-func (t *Method) Javascript(module string, writer io.Writer, types map[string]Type, objects map[string]*Object) (string, map[string]string) {
-	return "", nil
-}
-
 func typeListJavascript(module string, name string, ts []Type, writer io.Writer, types map[string]Type, objects map[string]*Object) (string, map[string]string) {
 	requires := map[string]string{"goog.require('tyts.Method');": ""}
 	var items []string

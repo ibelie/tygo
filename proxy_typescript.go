@@ -59,10 +59,6 @@ func (t *Enum) Typescript(objects map[string]*Object) string {
 	}`, t.Name, strings.Join(enums, ","))
 }
 
-func (t *Method) Typescript(objects map[string]*Object) string {
-	return ""
-}
-
 func typeListTypescript(name string, typ string, ts []Type, objects map[string]*Object) string {
 	var items []string
 	for i, t := range ts {

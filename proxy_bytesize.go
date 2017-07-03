@@ -29,10 +29,6 @@ func (t *Enum) ByteSizeGo(size string, name string, preFieldNum string, fieldNum
 	}`, name, size, name), updateTygo(nil)
 }
 
-func (t *Method) ByteSizeGo(size string, name string, preFieldNum string, fieldNum int, ignore bool) (string, map[string]string) {
-	return "", nil
-}
-
 func (t *Object) ByteSizeGo(size string, name string, preFieldNum string, fieldNum int, ignore bool) (string, map[string]string) {
 	var pkgs map[string]string
 	var fields []string
@@ -445,10 +441,6 @@ func (t *VariantType) _ByteSizeGo(size string, name string, preFieldNum string, 
 //=============================================================================
 
 func (t *Enum) CachedSizeGo(size string, name string, preFieldNum string, fieldNum int, ignore bool) (string, map[string]string) {
-	return t.ByteSizeGo(size, name, preFieldNum, fieldNum, ignore)
-}
-
-func (t *Method) CachedSizeGo(size string, name string, preFieldNum string, fieldNum int, ignore bool) (string, map[string]string) {
 	return t.ByteSizeGo(size, name, preFieldNum, fieldNum, ignore)
 }
 

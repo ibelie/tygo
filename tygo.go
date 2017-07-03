@@ -120,10 +120,6 @@ func (t *Enum) IsPrimitive() bool {
 	return false
 }
 
-func (t *Method) IsPrimitive() bool {
-	return false
-}
-
 func (t *Object) IsPrimitive() bool {
 	return false
 }
@@ -178,10 +174,6 @@ func (t *VariantType) IsPrimitive() bool {
 }
 
 func (t *Enum) IsIterative() bool {
-	return false
-}
-
-func (t *Method) IsIterative() bool {
 	return false
 }
 
@@ -460,10 +452,6 @@ func (t *VariantType) String() string {
 }
 
 func (t *Enum) Identifier() string {
-	return t.Name
-}
-
-func (t *Method) Identifier() string {
 	return t.Name
 }
 

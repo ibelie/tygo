@@ -110,10 +110,6 @@ func (i *%s) Deserialize(input *tygo.ProtoBuf) (err error) {%s
 		t.Name, t.Name, bytesize_s, t.Name, t.Name, serialize_s, t.Name, deserialize_s), pkgs
 }
 
-func (t *Method) Go() (string, map[string]string) {
-	return "", nil
-}
-
 func typeListGo(owner string, name string, typ string, ts []Type) (string, map[string]string) {
 	if ts == nil {
 		return "", nil

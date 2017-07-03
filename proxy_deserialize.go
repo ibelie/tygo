@@ -53,10 +53,6 @@ func (t *Enum) DeserializeGo(tag string, input string, name string, preFieldNum 
 	*%s = %s(x)`, input, name, t.Name), WireVarint, nil
 }
 
-func (t *Method) DeserializeGo(tag string, input string, name string, preFieldNum string, fieldNum int, isVariant bool) (string, WireType, map[string]string) {
-	return "", WireVarint, nil
-}
-
 func (t *Object) DeserializeGo(tag string, input string, name string, preFieldNum string, fieldNum int, isVariant bool) (string, WireType, map[string]string) {
 	var pkgs map[string]string
 	var parents []string

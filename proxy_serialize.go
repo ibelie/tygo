@@ -39,10 +39,6 @@ func (t *Enum) SerializeGo(size string, name string, preFieldNum string, fieldNu
 	}`, name, name), nil
 }
 
-func (t *Method) SerializeGo(size string, name string, preFieldNum string, fieldNum int, ignore bool) (string, map[string]string) {
-	return "", nil
-}
-
 func (t *Object) SerializeGo(size string, name string, preFieldNum string, fieldNum int, ignore bool) (string, map[string]string) {
 	var pkgs map[string]string
 	var fields []string
