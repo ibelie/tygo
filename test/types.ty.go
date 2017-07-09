@@ -118,8 +118,8 @@ func (s *Vector2) ByteSize() (size int) {
 			size += 1 + tygo.SizeVarint(uint64(tmp)) + tmp
 		}
 
+		s.SetCachedSize(size)
 	}
-	s.SetCachedSize(size)
 	return
 }
 
@@ -508,8 +508,8 @@ func (s *Fighter_Part1) ByteSize() (size int) {
 			size += 1 + tygo.SizeVarint(uint64(tmp)) + tmp
 		}
 
+		s.SetCachedSize(size)
 	}
-	s.SetCachedSize(size)
 	return
 }
 
@@ -1510,8 +1510,8 @@ func (s *Fighter_Part2) ByteSize() (size int) {
 			}
 		}
 
+		s.SetCachedSize(size)
 	}
-	s.SetCachedSize(size)
 	return
 }
 
@@ -2886,8 +2886,8 @@ func (s *Fighter) ByteSize() (size int) {
 			}
 		}
 
+		s.SetCachedSize(size)
 	}
-	s.SetCachedSize(size)
 	return
 }
 

@@ -295,7 +295,6 @@ func (s *%s) MaxFieldNum() int {
 }
 
 func (s *%s) ByteSize() (size int) {%s
-	s.SetCachedSize(size)
 	return
 }
 

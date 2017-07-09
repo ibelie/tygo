@@ -62,7 +62,8 @@ func (t *Object) ByteSizeGo(size string, name string, preFieldNum string, fieldN
 
 	return fmt.Sprintf(`
 	if %s != nil {%s
-	}`, name, strings.Join(fields, "")), pkgs
+		%s.SetCachedSize(%s)
+	}`, name, strings.Join(fields, ""), name, size), pkgs
 }
 
 func (t UnknownType) ByteSizeGo(size string, name string, preFieldNum string, fieldNum int, ignore bool) (string, map[string]string) {
