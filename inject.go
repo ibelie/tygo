@@ -110,7 +110,7 @@ func (i *%s) Deserialize(input *tygo.ProtoBuf) (err error) {%s
 		t.Name, t.Name, bytesize_s, t.Name, t.Name, serialize_s, t.Name, deserialize_s), pkgs
 }
 
-func typeListGo(owner string, name string, typ string, ts []Type) (string, map[string]string) {
+func TypeListSerialize(owner string, name string, typ string, ts []Type) (string, map[string]string) {
 	if ts == nil {
 		return "", nil
 	}
@@ -120,6 +120,53 @@ func typeListGo(owner string, name string, typ string, ts []Type) (string, map[s
 	var itemsComment []string
 	var itemsByteSize []string
 	var itemsSerialize []string
+
+	for i, t := range ts {
+		n := fmt.Sprintf("a%d", i)
+		item_s, item_p := t.Go()
+		bytesize_s, bytesize_p := t.ByteSizeGo("size", n, "", i+1, true)
+		serialize_s, serialize_p := t.SerializeGo("size", n, "", i+1, true)
+		pkgs = update(pkgs, item_p)
+		pkgs = update(pkgs, bytesize_p)
+		pkgs = update(pkgs, serialize_p)
+
+		items = append(items, fmt.Sprintf("a%d %s", i, item_s))
+		itemsComment = append(itemsComment, fmt.Sprintf("a%d: %s", i, t))
+		itemsByteSize = append(itemsByteSize, fmt.Sprintf(`
+	// %s size: a%d%s
+`, typ, i, bytesize_s))
+		itemsSerialize = append(itemsSerialize, fmt.Sprintf(`
+	// %s serialize: a%d%s
+`, typ, i, serialize_s))
+	}
+
+	Typ := strings.Title(typ)
+	itemComment := strings.Join(itemsComment, ", ")
+
+	return fmt.Sprintf(`
+// %s %s(%s)
+func (s *%s) Serialize%s%s(%s) (data []byte) {
+	size := 0%s
+	if size <= 0 {
+		return
+	}
+	data = make([]byte, size)
+	output := &tygo.ProtoBuf{Buffer: data}
+%s
+	return
+}
+`, name, Typ, itemComment, owner, name, Typ, strings.Join(items, ", "),
+		strings.Join(itemsByteSize, ""), strings.Join(itemsSerialize, "")), updateTygo(pkgs)
+}
+
+func TypeListDeserialize(owner string, name string, typ string, ts []Type) (string, map[string]string) {
+	if ts == nil {
+		return "", nil
+	}
+
+	var pkgs map[string]string
+	var items []string
+	var itemsComment []string
 	var itemsDeserialize []string
 
 	l := desVar()
@@ -130,11 +177,7 @@ func typeListGo(owner string, name string, typ string, ts []Type) (string, map[s
 	for i, t := range ts {
 		n := fmt.Sprintf("a%d", i)
 		item_s, item_p := t.Go()
-		bytesize_s, bytesize_p := t.ByteSizeGo("size", n, "", i+1, true)
-		serialize_s, serialize_p := t.SerializeGo("size", n, "", i+1, true)
 		pkgs = update(pkgs, item_p)
-		pkgs = update(pkgs, bytesize_p)
-		pkgs = update(pkgs, serialize_p)
 
 		if i == 0 {
 			deserialize_s, deserialize_w, deserialize_p = t.DeserializeGo("tag", "input", n, "", i+1, false)
@@ -175,12 +218,6 @@ func typeListGo(owner string, name string, typ string, ts []Type) (string, map[s
 
 		items = append(items, fmt.Sprintf("a%d %s", i, item_s))
 		itemsComment = append(itemsComment, fmt.Sprintf("a%d: %s", i, t))
-		itemsByteSize = append(itemsByteSize, fmt.Sprintf(`
-	// %s size: a%d%s
-`, typ, i, bytesize_s))
-		itemsSerialize = append(itemsSerialize, fmt.Sprintf(`
-	// %s serialize: a%d%s
-`, typ, i, serialize_s))
 		itemsDeserialize = append(itemsDeserialize, fmt.Sprintf(`
 			// %s deserialize: a%d
 			case %d:
@@ -199,19 +236,7 @@ func typeListGo(owner string, name string, typ string, ts []Type) (string, map[s
 
 	return fmt.Sprintf(`
 // %s %s(%s)
-func %sSerialize%s%s(%s) (data []byte) {
-	size := 0%s
-	if size <= 0 {
-		return
-	}
-	data = make([]byte, size)
-	output := &tygo.ProtoBuf{Buffer: data}
-%s
-	return
-}
-
-// %s %s(%s)
-func %sDeserialize%s%s(data []byte) (%s, err error) {
+func (s *%s) Deserialize%s%s(data []byte) (%s, err error) {
 	input := &tygo.ProtoBuf{Buffer: data}
 method_%s:
 	for !input.ExpectEnd() {
@@ -230,8 +255,6 @@ method_%s:
 	return
 }
 `, name, Typ, itemComment, owner, name, Typ, strings.Join(items, ", "),
-		strings.Join(itemsByteSize, ""), strings.Join(itemsSerialize, ""),
-		name, Typ, itemComment, owner, name, Typ, strings.Join(items, ", "),
 		l, _MAKE_CUTOFF_STR(strconv.Itoa(len(ts))), switchLabel, _TAG_FIELD_STR("tag"),
 		strings.Join(itemsDeserialize, "")), updateTygo(pkgs)
 }
@@ -266,8 +289,8 @@ func (t *Object) Go() (string, map[string]string) {
 
 	var methods []string
 	for _, method := range t.Methods {
-		param_s, param_p := typeListGo(fmt.Sprintf("(s *%s) ", t.Name), method.Name, "param", method.Params)
-		result_s, result_p := typeListGo(fmt.Sprintf("(s *%s) ", t.Name), method.Name, "result", method.Params)
+		param_s, param_p := TypeListDeserialize(t.Name, method.Name, "param", method.Params)
+		result_s, result_p := TypeListSerialize(t.Name, method.Name, "result", method.Params)
 		pkgs = update(pkgs, param_p)
 		pkgs = update(pkgs, result_p)
 		methods = append(methods, param_s)
