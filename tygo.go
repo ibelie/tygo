@@ -276,7 +276,14 @@ func (t *Method) String() string {
 }
 
 func (t *Object) HasParent() bool {
-	return t.Parent.Name != "Tygo" || t.Parent.PkgName != "tygo" || t.Parent.PkgPath != TYGO_PATH
+	if t.Parent.Name == "Tygo" && t.Parent.PkgName == "tygo" && t.Parent.PkgPath == TYGO_PATH {
+		return false
+	} else if t.Parent.PkgPath != "" {
+		return true
+	} else {
+		name, num := t.Parent.Object.MaxFieldNum()
+		return name != "" || num != 0
+	}
 }
 
 func (t *Object) MaxFieldNum() (string, int) {
