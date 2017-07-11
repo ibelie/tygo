@@ -290,7 +290,7 @@ func (t *Object) Go() (string, map[string]string) {
 	var methods []string
 	for _, method := range t.Methods {
 		param_s, param_p := TypeListDeserialize(t.Name, method.Name, "param", method.Params)
-		result_s, result_p := TypeListSerialize(t.Name, method.Name, "result", method.Params)
+		result_s, result_p := TypeListSerialize(t.Name, method.Name, "result", method.Results)
 		pkgs = update(pkgs, param_p)
 		pkgs = update(pkgs, result_p)
 		methods = append(methods, param_s)
