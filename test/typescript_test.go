@@ -16,5 +16,5 @@ func TestTypescript(t *testing.T) {
 	TEST_PATH := os.Getenv("TYPESCRIPT_PATH") + "/tyts/test"
 	THIS_PATH := reflect.TypeOf(GoType{}).PkgPath()
 	types := tygo.Extract(THIS_PATH, nil)
-	tygo.Typescript(TEST_PATH, "types", types)
+	tygo.Typescript(TEST_PATH, "types", types, nil)
 }
