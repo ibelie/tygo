@@ -62,8 +62,10 @@ goog.provide('%s.%s');`, module, name)))
 			sortedRequires = append(sortedRequires, require)
 		}
 	}
-	sort.Strings(sortedRequires)
-	head.Write([]byte("\n\n" + strings.Join(sortedRequires, "\n")))
+	if len(sortedRequires) > 0 {
+		sort.Strings(sortedRequires)
+		head.Write([]byte("\n\n" + strings.Join(sortedRequires, "\n")))
+	}
 
 	head.Write(body.Bytes())
 	ioutil.WriteFile(path.Join(dir, module+".js"), head.Bytes(), 0666)
