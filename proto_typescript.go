@@ -95,7 +95,6 @@ func (t *Object) Typescript(objects map[string]*Object, propPre []Type) string {
 
 	class %s%s {
 		__class__: string;
-		constructor();
 		ByteSize(): number;
 		Serialize(): Uint8Array;
 		Deserialize(data: Uint8Array): void;
