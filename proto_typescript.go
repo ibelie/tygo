@@ -55,7 +55,7 @@ func (t *Enum) Typescript(objects map[string]*Object, propPre []Type) string {
 	}
 	return fmt.Sprintf(`
 
-	export const enum %s {%s
+	const enum %s {%s
 	}`, t.Name, strings.Join(enums, ","))
 }
 
@@ -93,7 +93,7 @@ func (t *Object) Typescript(objects map[string]*Object, propPre []Type) string {
 
 	return fmt.Sprintf(`
 
-	export class %s%s {
+	class %s%s {
 		__class__: string;
 		constructor();
 		ByteSize(): number;
@@ -102,7 +102,7 @@ func (t *Object) Typescript(objects map[string]*Object, propPre []Type) string {
 %s
 	}
 
-	export namespace %s {
+	namespace %s {
 		function Deserialize(data: Uint8Array): %s;
 	}`, t.Name, parent, strings.Join(members, ""), t.Name, t.Name)
 }
