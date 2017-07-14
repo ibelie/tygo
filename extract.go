@@ -6,6 +6,7 @@ package tygo
 
 import (
 	"log"
+	"path"
 	"strings"
 
 	"go/ast"
@@ -16,15 +17,15 @@ import (
 
 type Extracter func(string, string, string, []Type)
 
-func Extract(path string, extracter Extracter) (types []Type) {
-	buildPackage, err := build.Import(path, "", build.ImportComment)
+func Extract(dir string, extracter Extracter) (types []Type) {
+	buildPackage, err := build.Import(dir, "", build.ImportComment)
 	if err != nil {
 		log.Fatalf("[Tygo][Extract] Cannot import package:\n>>>>%v", err)
 		return
 	}
 	fs := token.NewFileSet()
 	for _, filename := range buildPackage.GoFiles {
-		file, err := parser.ParseFile(fs, buildPackage.Dir+"/"+filename, nil, parser.ParseComments)
+		file, err := parser.ParseFile(fs, path.Join(buildPackage.Dir, filename), nil, parser.ParseComments)
 		if err != nil {
 			log.Fatalf("[Tygo][Extract] Cannot parse file:\n>>>>%v", err)
 		}
@@ -45,7 +46,7 @@ func Extract(path string, extracter Extracter) (types []Type) {
 					types = append(types, ts...)
 				}
 				if extracter != nil {
-					extracter(path, filename, file.Name.Name, ts)
+					extracter(dir, filename, file.Name.Name, ts)
 				}
 			}
 		}

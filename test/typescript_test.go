@@ -6,6 +6,7 @@ package test
 
 import (
 	"os"
+	"path"
 	"reflect"
 	"testing"
 
@@ -13,7 +14,7 @@ import (
 )
 
 func TestTypescript(t *testing.T) {
-	TEST_PATH := os.Getenv("TYPESCRIPT_PATH") + "/tyts/test"
+	TEST_PATH := path.Join(os.Getenv("TYPESCRIPT_PATH"), "tyts", "test")
 	THIS_PATH := reflect.TypeOf(GoType{}).PkgPath()
 	types := tygo.Extract(THIS_PATH, nil)
 	tygo.Typescript(TEST_PATH, "types", types, nil)

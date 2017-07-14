@@ -8,6 +8,7 @@ import (
 	"bytes"
 	"fmt"
 	"os"
+	"path"
 	"sort"
 	"strconv"
 	"strings"
@@ -21,11 +22,11 @@ const TEMP_PREFIX = "tmp"
 var (
 	LOG_PKG  = map[string]string{"log": ""}
 	MATH_PKG = map[string]string{"math": ""}
-	SRC_PATH = os.Getenv("GOPATH") + "/src/"
+	SRC_PATH = path.Join(os.Getenv("GOPATH"), "src")
 )
 
-func Inject(path string, filename string, pkgname string, types []Type) {
-	injectfile := SRC_PATH + path + "/" + strings.Replace(filename, ".go", ".ty.go", 1)
+func Inject(dir string, filename string, pkgname string, types []Type) {
+	injectfile := path.Join(SRC_PATH, dir, strings.Replace(filename, ".go", ".ty.go", 1))
 	if types == nil {
 		os.Remove(injectfile)
 		return
@@ -48,13 +49,13 @@ package %s
 		body.Write([]byte(type_s))
 	}
 	var sortedPkg []string
-	for path, _ := range pkgs {
-		sortedPkg = append(sortedPkg, path)
+	for pkg, _ := range pkgs {
+		sortedPkg = append(sortedPkg, pkg)
 	}
 	sort.Strings(sortedPkg)
-	for _, path := range sortedPkg {
+	for _, pkg := range sortedPkg {
 		head.Write([]byte(fmt.Sprintf(`
-import %s"%s"`, pkgs[path], path)))
+import %s"%s"`, pkgs[pkg], pkg)))
 	}
 
 	head.Write(body.Bytes())
