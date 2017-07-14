@@ -12,8 +12,9 @@ import (
 
 func main() {
 	input := flag.String("in", "", "input package")
-	output := flag.String("out", "", "output dir")
+	output := flag.String("out", "", "output file")
+	name := flag.String("name", "", "file name")
 	module := flag.String("module", "", "module name")
 	flag.Parse()
-	tygo.Typescript(*output, *module, tygo.Extract(*input, nil), nil)
+	tygo.Typescript(*output, *name, *module, tygo.Extract(*input, nil), nil)
 }

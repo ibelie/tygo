@@ -14,7 +14,7 @@ import (
 	"io/ioutil"
 )
 
-func Typescript(dir string, module string, types []Type, propPre []Type) {
+func Typescript(dir string, name string, module string, types []Type, propPre []Type) {
 	var buffer bytes.Buffer
 
 	objects := make(map[string]*Object)
@@ -43,8 +43,11 @@ declare module %s {
 }
 `, module, strings.Join(codes, ""))))
 
-	ioutil.WriteFile(path.Join(dir, module+".d.ts"), buffer.Bytes(), 0666)
-	Javascript(dir, module, types, propPre)
+	if name == "" {
+		name = module
+	}
+	ioutil.WriteFile(path.Join(dir, name+".d.ts"), buffer.Bytes(), 0666)
+	Javascript(dir, name, module, types, propPre)
 }
 
 func (t *Enum) Typescript(objects map[string]*Object, propPre []Type) string {

@@ -16,7 +16,7 @@ import (
 	"io/ioutil"
 )
 
-func Javascript(dir string, module string, types []Type, propPre []Type) {
+func Javascript(dir string, name string, module string, types []Type, propPre []Type) {
 	var head bytes.Buffer
 	var body bytes.Buffer
 	head.Write([]byte(`// Generated for tyts by tygo.  DO NOT EDIT!
@@ -67,8 +67,11 @@ goog.provide('%s.%s');`, module, name)))
 		head.Write([]byte("\n\n" + strings.Join(sortedRequires, "\n")))
 	}
 
+	if name == "" {
+		name = module
+	}
 	head.Write(body.Bytes())
-	ioutil.WriteFile(path.Join(dir, module+".js"), head.Bytes(), 0666)
+	ioutil.WriteFile(path.Join(dir, name+".js"), head.Bytes(), 0666)
 }
 
 func (t *Enum) Javascript(module string, writer io.Writer, types map[string]Type, objects map[string]*Object, propPre []Type) (string, map[string]string) {
