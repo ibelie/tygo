@@ -15,7 +15,7 @@ import (
 	"go/token"
 )
 
-type Extracter func(string, string, string, []Type, []Type)
+type Extracter func(string, string, string, []Type)
 
 func Extract(dir string, extracter Extracter) (types []Type) {
 	buildPackage, err := build.Import(dir, "", build.ImportComment)
@@ -46,7 +46,7 @@ func Extract(dir string, extracter Extracter) (types []Type) {
 					types = append(types, ts...)
 				}
 				if extracter != nil {
-					extracter(dir, filename, file.Name.Name, ts, nil)
+					extracter(dir, filename, file.Name.Name, ts)
 				}
 			}
 		}

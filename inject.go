@@ -24,9 +24,10 @@ var (
 	MATH_PKG = map[string]string{"math": ""}
 	SRC_PATH = path.Join(os.Getenv("GOPATH"), "src")
 	PROP_PRE []Type
+	DELEGATE string
 )
 
-func Inject(dir string, filename string, pkgname string, types []Type, propPre []Type) {
+func Inject(dir string, filename string, pkgname string, types []Type) {
 	injectfile := path.Join(SRC_PATH, dir, strings.Replace(filename, ".go", ".ty.go", 1))
 	if types == nil {
 		os.Remove(injectfile)
@@ -43,7 +44,6 @@ package %s
 	body.Write([]byte(`
 `))
 
-	PROP_PRE = propPre
 	var pkgs map[string]string
 	for _, t := range types {
 		type_s, type_p := t.Go()
@@ -62,7 +62,6 @@ import %s"%s"`, pkgs[pkg], pkg)))
 
 	head.Write(body.Bytes())
 	ioutil.WriteFile(injectfile, head.Bytes(), 0666)
-	PROP_PRE = nil
 }
 
 func (t *Enum) Go() (string, map[string]string) {
@@ -301,12 +300,22 @@ func (t *Object) Go() (string, map[string]string) {
 	}
 
 	for _, method := range t.Methods {
-		param_s, param_p := TypeListDeserialize(t.Name, method.Name, "param", method.Params)
-		result_s, result_p := TypeListSerialize(t.Name, method.Name, "result", method.Results)
-		pkgs = update(pkgs, param_p)
-		pkgs = update(pkgs, result_p)
-		methods = append(methods, param_s)
-		methods = append(methods, result_s)
+		if len(method.Params) > 0 {
+			param_d_s, param_d_p := TypeListDeserialize(t.Name, method.Name, "param", method.Params)
+			param_s_s, param_s_p := TypeListSerialize(t.Name+DELEGATE, method.Name, "param", method.Params)
+			pkgs = update(pkgs, param_d_p)
+			pkgs = update(pkgs, param_s_p)
+			methods = append(methods, param_d_s)
+			methods = append(methods, param_s_s)
+		}
+		if len(method.Results) > 0 {
+			result_d_s, result_d_p := TypeListDeserialize(t.Name+DELEGATE, method.Name, "result", method.Results)
+			result_s_s, result_s_p := TypeListSerialize(t.Name, method.Name, "result", method.Results)
+			pkgs = update(pkgs, result_d_p)
+			pkgs = update(pkgs, result_s_p)
+			methods = append(methods, result_d_s)
+			methods = append(methods, result_s_s)
+		}
 	}
 
 	mfn_n, mfn_i := t.MaxFieldNum()
