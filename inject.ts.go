@@ -27,9 +27,10 @@ func Typescript(dir string, name string, module string, types []Type, propPre []
 		}
 	}
 
+	PROP_PRE = propPre
 	var codes []string
 	for _, t := range types {
-		codes = append(codes, t.Typescript(objects, propPre))
+		codes = append(codes, t.Typescript(objects))
 	}
 	buffer.Write([]byte(fmt.Sprintf(`// Generated for tyts by tygo.  DO NOT EDIT!
 
@@ -48,9 +49,10 @@ declare module %s {
 	}
 	ioutil.WriteFile(path.Join(dir, name+".d.ts"), buffer.Bytes(), 0666)
 	Javascript(dir, name, module, types, propPre)
+	PROP_PRE = nil
 }
 
-func (t *Enum) Typescript(objects map[string]*Object, propPre []Type) string {
+func (t *Enum) Typescript(objects map[string]*Object) string {
 	var enums []string
 	for _, name := range t.Sorted() {
 		enums = append(enums, fmt.Sprintf(`
@@ -62,39 +64,39 @@ func (t *Enum) Typescript(objects map[string]*Object, propPre []Type) string {
 	}`, t.Name, strings.Join(enums, ","))
 }
 
-func typeListTypescript(name string, typ string, ts []Type, objects map[string]*Object, propPre []Type) string {
+func typeListTypescript(name string, typ string, ts []Type, objects map[string]*Object) string {
 	var items []string
 	for i, t := range ts {
-		items = append(items, fmt.Sprintf("a%d: %s", i, t.Typescript(objects, propPre)))
+		items = append(items, fmt.Sprintf("a%d: %s", i, t.Typescript(objects)))
 	}
 	return fmt.Sprintf(`
 		static Serialize%s%s(%s): Uint8Array;
 		static Deserialize%s%s(data: Uint8Array): any;`, name, typ, strings.Join(items, ", "), name, typ)
 }
 
-func (t *Object) Typescript(objects map[string]*Object, propPre []Type) string {
+func (t *Object) Typescript(objects map[string]*Object) string {
 	var parent string
 	if t.HasParent() {
-		parent = fmt.Sprintf(" extends %s", t.Parent.Typescript(objects, propPre))
+		parent = fmt.Sprintf(" extends %s", t.Parent.Typescript(objects))
 	}
 	var members []string
 	for _, field := range t.Fields {
 		members = append(members, fmt.Sprintf(`
-		%s: %s;`, field.Name, field.Typescript(objects, propPre)))
+		%s: %s;`, field.Name, field.Typescript(objects)))
 	}
 
-	if propPre != nil {
+	if PROP_PRE != nil {
 		for _, field := range t.Fields {
-			members = append(members, typeListTypescript(field.Name, "", append(propPre, field), objects, propPre))
+			members = append(members, typeListTypescript(field.Name, "", append(PROP_PRE, field), objects))
 		}
 	}
 
 	for _, method := range t.Methods {
 		if len(method.Params) > 0 {
-			members = append(members, typeListTypescript(method.Name, "Param", method.Params, objects, propPre))
+			members = append(members, typeListTypescript(method.Name, "Param", method.Params, objects))
 		}
 		if len(method.Results) > 0 {
-			members = append(members, typeListTypescript(method.Name, "Result", method.Results, objects, propPre))
+			members = append(members, typeListTypescript(method.Name, "Result", method.Results, objects))
 		}
 	}
 
@@ -113,11 +115,11 @@ func (t *Object) Typescript(objects map[string]*Object, propPre []Type) string {
 	}`, t.Name, parent, strings.Join(members, ""), t.Name, t.Name)
 }
 
-func (t UnknownType) Typescript(objects map[string]*Object, propPre []Type) string {
+func (t UnknownType) Typescript(objects map[string]*Object) string {
 	return ""
 }
 
-func (t SimpleType) Typescript(objects map[string]*Object, propPre []Type) string {
+func (t SimpleType) Typescript(objects map[string]*Object) string {
 	switch t {
 	case SimpleType_INT32:
 		fallthrough
@@ -143,11 +145,11 @@ func (t SimpleType) Typescript(objects map[string]*Object, propPre []Type) strin
 	}
 }
 
-func (t *EnumType) Typescript(objects map[string]*Object, propPre []Type) string {
+func (t *EnumType) Typescript(objects map[string]*Object) string {
 	return t.Name
 }
 
-func (t *InstanceType) Typescript(objects map[string]*Object, propPre []Type) string {
+func (t *InstanceType) Typescript(objects map[string]*Object) string {
 	if _, ok := objects[t.Name]; ok {
 		return t.Name
 	} else {
@@ -155,18 +157,18 @@ func (t *InstanceType) Typescript(objects map[string]*Object, propPre []Type) st
 	}
 }
 
-func (t *FixedPointType) Typescript(objects map[string]*Object, propPre []Type) string {
+func (t *FixedPointType) Typescript(objects map[string]*Object) string {
 	return "number"
 }
 
-func (t *ListType) Typescript(objects map[string]*Object, propPre []Type) string {
-	return fmt.Sprintf("%s[]", t.E.Typescript(objects, propPre))
+func (t *ListType) Typescript(objects map[string]*Object) string {
+	return fmt.Sprintf("%s[]", t.E.Typescript(objects))
 }
 
-func (t *DictType) Typescript(objects map[string]*Object, propPre []Type) string {
-	return fmt.Sprintf("{[index: %s]: %s}", t.K.Typescript(objects, propPre), t.V.Typescript(objects, propPre))
+func (t *DictType) Typescript(objects map[string]*Object) string {
+	return fmt.Sprintf("{[index: %s]: %s}", t.K.Typescript(objects), t.V.Typescript(objects))
 }
 
-func (t *VariantType) Typescript(objects map[string]*Object, propPre []Type) string {
+func (t *VariantType) Typescript(objects map[string]*Object) string {
 	return "any"
 }

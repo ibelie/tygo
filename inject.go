@@ -23,9 +23,10 @@ var (
 	LOG_PKG  = map[string]string{"log": ""}
 	MATH_PKG = map[string]string{"math": ""}
 	SRC_PATH = path.Join(os.Getenv("GOPATH"), "src")
+	PROP_PRE []Type
 )
 
-func Inject(dir string, filename string, pkgname string, types []Type) {
+func Inject(dir string, filename string, pkgname string, types []Type, propPre []Type) {
 	injectfile := path.Join(SRC_PATH, dir, strings.Replace(filename, ".go", ".ty.go", 1))
 	if types == nil {
 		os.Remove(injectfile)
@@ -42,6 +43,7 @@ package %s
 	body.Write([]byte(`
 `))
 
+	PROP_PRE = propPre
 	var pkgs map[string]string
 	for _, t := range types {
 		type_s, type_p := t.Go()
@@ -60,6 +62,7 @@ import %s"%s"`, pkgs[pkg], pkg)))
 
 	head.Write(body.Bytes())
 	ioutil.WriteFile(injectfile, head.Bytes(), 0666)
+	PROP_PRE = nil
 }
 
 func (t *Enum) Go() (string, map[string]string) {
@@ -289,6 +292,14 @@ func (t *Object) Go() (string, map[string]string) {
 	}
 
 	var methods []string
+	if PROP_PRE != nil {
+		for _, field := range t.Fields {
+			field_s, field_p := TypeListSerialize(t.Name, field.Name, "", append(PROP_PRE, field))
+			pkgs = update(pkgs, field_p)
+			methods = append(methods, field_s)
+		}
+	}
+
 	for _, method := range t.Methods {
 		param_s, param_p := TypeListDeserialize(t.Name, method.Name, "param", method.Params)
 		result_s, result_p := TypeListSerialize(t.Name, method.Name, "result", method.Results)
