@@ -126,20 +126,24 @@ func (t *Object) Javascript(module string, writer io.Writer, types map[string]Ty
 	}
 
 	for _, method := range t.Methods {
-		js_p, rs_p := typeListJavascript(module, t.Name+method.Name+"Param", method.Params, writer, types, objects, propPre)
-		js_r, rs_r := typeListJavascript(module, t.Name+method.Name+"Result", method.Results, writer, types, objects, propPre)
-		update(requires, rs_p)
-		update(requires, rs_r)
-		method_props = append(method_props, fmt.Sprintf(`
+		if len(method.Params) > 0 {
+			js_p, rs_p := typeListJavascript(module, t.Name+method.Name+"Param", method.Params, writer, types, objects, propPre)
+			update(requires, rs_p)
+			method_props = append(method_props, fmt.Sprintf(`
 	{name: '%s%s', type: null}`, method.Name, "Param"))
-		method_props = append(method_props, fmt.Sprintf(`
-	{name: '%s%s', type: null}`, method.Name, "Result"))
-		method_types = append(method_types, fmt.Sprintf(`
+			method_types = append(method_types, fmt.Sprintf(`
 %s.methods[%d].type = %s`, t.Name, method_index, js_p))
-		method_index++
-		method_types = append(method_types, fmt.Sprintf(`
+			method_index++
+		}
+		if len(method.Results) > 0 {
+			js_r, rs_r := typeListJavascript(module, t.Name+method.Name+"Result", method.Results, writer, types, objects, propPre)
+			update(requires, rs_r)
+			method_props = append(method_props, fmt.Sprintf(`
+	{name: '%s%s', type: null}`, method.Name, "Result"))
+			method_types = append(method_types, fmt.Sprintf(`
 %s.methods[%d].type = %s`, t.Name, method_index, js_r))
-		method_index++
+			method_index++
+		}
 	}
 
 	return fmt.Sprintf(`

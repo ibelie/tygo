@@ -68,8 +68,8 @@ func typeListTypescript(name string, typ string, ts []Type, objects map[string]*
 		items = append(items, fmt.Sprintf("a%d: %s", i, t.Typescript(objects, propPre)))
 	}
 	return fmt.Sprintf(`
-		Serialize%s%s(%s): Uint8Array;
-		Deserialize%s%s(data: Uint8Array): any;`, name, typ, strings.Join(items, ", "), name, typ)
+		static Serialize%s%s(%s): Uint8Array;
+		static Deserialize%s%s(data: Uint8Array): any;`, name, typ, strings.Join(items, ", "), name, typ)
 }
 
 func (t *Object) Typescript(objects map[string]*Object, propPre []Type) string {
@@ -90,8 +90,12 @@ func (t *Object) Typescript(objects map[string]*Object, propPre []Type) string {
 	}
 
 	for _, method := range t.Methods {
-		members = append(members, typeListTypescript(method.Name, "Param", method.Params, objects, propPre))
-		members = append(members, typeListTypescript(method.Name, "Result", method.Results, objects, propPre))
+		if len(method.Params) > 0 {
+			members = append(members, typeListTypescript(method.Name, "Param", method.Params, objects, propPre))
+		}
+		if len(method.Results) > 0 {
+			members = append(members, typeListTypescript(method.Name, "Result", method.Results, objects, propPre))
+		}
 	}
 
 	return fmt.Sprintf(`
