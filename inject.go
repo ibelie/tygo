@@ -189,8 +189,11 @@ func TypeListDeserialize(owner string, name string, typ string, ts []Type) (stri
 
 		var next string
 		var fall string
+		var next_s string
+		var next_w WireType
+		var next_p map[string]string
 		if i < len(ts)-1 {
-			next_s, next_w, next_p := ts[i+1].DeserializeGo("tag", "input", fmt.Sprintf("a%d", i+1), "", i+2, false)
+			next_s, next_w, next_p = ts[i+1].DeserializeGo("tag", "input", fmt.Sprintf("a%d", i+1), "", i+2, false)
 			pkgs = update(pkgs, next_p)
 			tag_i, tag_ic := tagInt("", i+2, next_w)
 			tag_s, tag_sc := expectTag("", i+2, next_w)
@@ -203,7 +206,6 @@ func TypeListDeserialize(owner string, name string, typ string, ts []Type) (stri
 					break switch_%s // skip tag
 				}
 				fallthrough`, l)
-			deserialize_s, deserialize_w, deserialize_p = next_s, next_w, next_p
 		} else {
 			next = fmt.Sprintf(`
 					if input.ExpectEnd() {
@@ -227,6 +229,9 @@ func TypeListDeserialize(owner string, name string, typ string, ts []Type) (stri
 				if tag == %d%s { // MAKE_TAG(%d, %s=%d)%s%s%s
 				}%s`, typ, i, i+1, _MAKE_TAG(i+1, deserialize_w), listTag, i+1, deserialize_w,
 			deserialize_w, listComment, addIndent(deserialize_s, 4), next, fall))
+		if i < len(ts)-1 {
+			deserialize_s, deserialize_w, deserialize_p = next_s, next_w, next_p
+		}
 	}
 
 	Typ := strings.Title(typ)

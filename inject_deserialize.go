@@ -80,6 +80,10 @@ func (t *Object) DeserializeGo(tag string, input string, name string, preFieldNu
 		p_name = "preFieldNum"
 	}
 
+	if len(t.Fields) <= 0 {
+		return strings.Join(parents, ""), WireBytes, pkgs
+	}
+
 	l := desVar()
 	var field_s string
 	var field_w WireType
