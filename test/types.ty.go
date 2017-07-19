@@ -6486,6 +6486,31 @@ method_tmp_28:
 			// param deserialize: a0
 			case 1:
 				if tag == 10 { // MAKE_TAG(1, WireBytes=2)
+					// type: *Fighter
+					if x, e := input.ReadBuf(); e == nil {
+						if a0 == nil {
+							a0 = &Fighter{}
+						}
+						if len(x) > 0 {
+							if err = a0.Deserialize(&tygo.ProtoBuf{Buffer: x}); err != nil {
+								return
+							}
+						}
+					} else {
+						err = e
+						return
+					}
+					if !input.ExpectBytes(18) { // tag: 18 MAKE_TAG(2, WireBytes=2)
+						continue method_tmp_28 // next tag for param
+					}
+					tag = 18 // MAKE_TAG(2, WireBytes=2) // fallthrough case 2
+				} else {
+					break switch_tmp_28 // skip tag
+				}
+				fallthrough
+			// param deserialize: a1
+			case 2:
+				if tag == 18 { // MAKE_TAG(2, WireBytes=2)
 					// type: variant<nil, int32>
 					if x, e := input.ReadBuf(); e == nil {
 						tmpi := &tygo.ProtoBuf{Buffer: x}
@@ -6514,24 +6539,6 @@ method_tmp_28:
 								return
 							}
 						}
-					} else {
-						err = e
-						return
-					}
-					if !input.ExpectBytes(18) { // tag: 18 MAKE_TAG(2, WireBytes=2)
-						continue method_tmp_28 // next tag for param
-					}
-					tag = 18 // MAKE_TAG(2, WireBytes=2) // fallthrough case 2
-				} else {
-					break switch_tmp_28 // skip tag
-				}
-				fallthrough
-			// param deserialize: a1
-			case 2:
-				if tag == 16 { // MAKE_TAG(2, WireVarint=0)
-					// type: fixedpoint<3, 0>
-					if x, e := input.ReadVarint(); e == nil {
-						a2 = float64(x) / 1000
 					} else {
 						err = e
 						return
@@ -7086,10 +7093,17 @@ method_tmp_35:
 			switch tag >> 3 {
 			// result deserialize: a0
 			case 1:
-				if tag == 8 { // MAKE_TAG(1, WireVarint=0)
-					// type: int32
-					if x, e := input.ReadVarint(); e == nil {
-						a1 = int32(x)
+				if tag == 10 { // MAKE_TAG(1, WireBytes=2)
+					// type: *Fighter
+					if x, e := input.ReadBuf(); e == nil {
+						if a0 == nil {
+							a0 = &Fighter{}
+						}
+						if len(x) > 0 {
+							if err = a0.Deserialize(&tygo.ProtoBuf{Buffer: x}); err != nil {
+								return
+							}
+						}
 					} else {
 						err = e
 						return
