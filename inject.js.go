@@ -16,7 +16,7 @@ import (
 	"io/ioutil"
 )
 
-func Javascript(dir string, name string, module string, types []Type, propPre []Type) {
+func Javascript(dir string, name string, module string, types []Type, methodPre []Type) {
 	var head bytes.Buffer
 	var body bytes.Buffer
 	head.Write([]byte(`// Generated for tyts by tygo.  DO NOT EDIT!
@@ -37,7 +37,7 @@ func Javascript(dir string, name string, module string, types []Type, propPre []
 	}
 	sort.Strings(sortedObjects)
 
-	PROP_PRE = propPre
+	METH_PRE = methodPre
 	var requires map[string]string
 	genTypes := make(map[string]Type)
 	for _, name := range sortedObjects {
@@ -47,6 +47,7 @@ func Javascript(dir string, name string, module string, types []Type, propPre []
 goog.provide('%s.%s');`, module, name)))
 		body.Write([]byte(js))
 	}
+	METH_PRE = nil
 
 	var sortedRequires []string
 	for require, _ := range requires {
@@ -73,7 +74,6 @@ goog.provide('%s.%s');`, module, name)))
 	}
 	head.Write(body.Bytes())
 	ioutil.WriteFile(path.Join(dir, name+".js"), head.Bytes(), 0666)
-	PROP_PRE = nil
 }
 
 func (t *Enum) Javascript(module string, writer io.Writer, types map[string]Type, objects map[string]*Object) (string, map[string]string) {
@@ -114,10 +114,9 @@ func (t *Object) Javascript(module string, writer io.Writer, types map[string]Ty
 	var method_types []string
 	method_index := 0
 
-	if PROP_PRE != nil {
+	if METH_PRE != nil {
 		for _, field := range t.Fields {
-			js, rs := typeListJavascript(module, t.Name+field.Name,
-				append(PROP_PRE, field), writer, types, objects)
+			js, rs := typeListJavascript(module, t.Name+field.Name, []Type{field}, writer, types, objects)
 			update(requires, rs)
 			method_props = append(method_props, fmt.Sprintf(`
 	{name: '%s', type: null}`, field.Name))
