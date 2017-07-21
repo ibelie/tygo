@@ -129,6 +129,27 @@ func TypeListSerialize(owner string, name string, typ string, ts []Type) (string
 	var itemsByteSize []string
 	var itemsSerialize []string
 
+	if typ == "" {
+		for i, t := range PROP_PRE {
+			n := fmt.Sprintf("p%d", i)
+			item_s, item_p := t.Go()
+			bytesize_s, bytesize_p := t.ByteSizeGo("size", n, "", 0, false)
+			serialize_s, serialize_p := t.SerializeGo("size", n, "", 0, false)
+			pkgs = update(pkgs, item_p)
+			pkgs = update(pkgs, bytesize_p)
+			pkgs = update(pkgs, serialize_p)
+
+			items = append(items, fmt.Sprintf("p%d %s", i, item_s))
+			itemsComment = append(itemsComment, fmt.Sprintf("p%d: %s", i, t))
+			itemsByteSize = append(itemsByteSize, fmt.Sprintf(`
+	// %s size: p%d%s
+`, typ, i, bytesize_s))
+			itemsSerialize = append(itemsSerialize, fmt.Sprintf(`
+	// %s serialize: p%d%s
+`, typ, i, serialize_s))
+		}
+	}
+
 	for i, t := range ts {
 		n := fmt.Sprintf("a%d", i)
 		item_s, item_p := t.Go()
