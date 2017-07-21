@@ -20,14 +20,14 @@ type Extracter func(string, string, string, []Type)
 func Extract(dir string, extracter Extracter) (types []Type) {
 	buildPackage, err := build.Import(dir, "", build.ImportComment)
 	if err != nil {
-		log.Fatalf("[Tygo][Extract] Cannot import package:\n>>>>%v", err)
+		log.Fatalf("[Tygo][Extract] Cannot import package:\n>>>> %v", err)
 		return
 	}
 	fs := token.NewFileSet()
 	for _, filename := range buildPackage.GoFiles {
 		file, err := parser.ParseFile(fs, path.Join(buildPackage.Dir, filename), nil, parser.ParseComments)
 		if err != nil {
-			log.Fatalf("[Tygo][Extract] Cannot parse file:\n>>>>%v", err)
+			log.Fatalf("[Tygo][Extract] Cannot parse file:\n>>>> %v", err)
 		}
 		for _, d := range file.Decls {
 			decl, ok := d.(*ast.GenDecl)
@@ -61,7 +61,7 @@ func extractPkgs(file *ast.File) (map[string]string, map[string][2]string) {
 		pkg := strings.Trim(importSpec.Path.Value, "\"")
 		if importSpec.Name == nil {
 			if p, err := build.Import(pkg, "", build.AllowBinary); err != nil {
-				log.Fatalf("[Tygo][Inject] Cannot import package:\n>>>>%v", err)
+				log.Fatalf("[Tygo][Inject] Cannot import package:\n>>>> %v", err)
 			} else {
 				imports[p.Name] = p.ImportPath
 			}
