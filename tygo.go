@@ -6,7 +6,6 @@ package tygo
 
 import (
 	"fmt"
-	"io"
 	"log"
 	"reflect"
 	"sort"
@@ -34,8 +33,8 @@ type Type interface {
 	IsPrimitive() bool
 	IsIterative() bool
 	Go() (string, map[string]string)
-	Typescript(map[string]*Object) string
-	Javascript(string, io.Writer, map[string]Type, map[string]*Object) (string, map[string]string)
+	Typescript() string
+	Javascript() (string, map[string]string)
 	ByteSizeGo(string, string, string, int, bool) (string, map[string]string)
 	CachedSizeGo(string, string, string, int, bool) (string, map[string]string)
 	SerializeGo(string, string, string, int, bool) (string, map[string]string)
