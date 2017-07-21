@@ -16,7 +16,7 @@ import (
 
 var TS_OBJECTS map[string]*Object
 
-func Typescript(dir string, name string, module string, types []Type, methodPre []Type) {
+func Typescript(dir string, name string, module string, types []Type, propPre []Type) {
 	var buffer bytes.Buffer
 
 	TS_OBJECTS = make(map[string]*Object)
@@ -29,12 +29,12 @@ func Typescript(dir string, name string, module string, types []Type, methodPre 
 		}
 	}
 
-	METH_PRE = methodPre
+	PROP_PRE = propPre
 	var codes []string
 	for _, t := range types {
 		codes = append(codes, t.Typescript())
 	}
-	METH_PRE = nil
+	PROP_PRE = nil
 	TS_OBJECTS = nil
 
 	buffer.Write([]byte(fmt.Sprintf(`// Generated for tyts by tygo.  DO NOT EDIT!
@@ -53,7 +53,7 @@ declare module %s {
 		name = module
 	}
 	ioutil.WriteFile(path.Join(dir, name+".d.ts"), buffer.Bytes(), 0666)
-	Javascript(dir, name, module, types, methodPre)
+	Javascript(dir, name, module, types, propPre)
 }
 
 func (t *Enum) Typescript() string {
@@ -89,7 +89,7 @@ func (t *Object) Typescript() string {
 		%s: %s;`, field.Name, field.Typescript()))
 	}
 
-	if METH_PRE != nil {
+	if PROP_PRE != nil {
 		for _, field := range t.Fields {
 			members = append(members, typeListTypescript(field.Name, "", []Type{field}))
 		}

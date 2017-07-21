@@ -23,7 +23,7 @@ var (
 	JS_OBJECTS map[string]*Object
 )
 
-func Javascript(dir string, name string, module string, types []Type, methodPre []Type) {
+func Javascript(dir string, name string, module string, types []Type, propPre []Type) {
 	var head bytes.Buffer
 	var body bytes.Buffer
 	head.Write([]byte(`// Generated for tyts by tygo.  DO NOT EDIT!
@@ -44,7 +44,7 @@ func Javascript(dir string, name string, module string, types []Type, methodPre 
 	}
 	sort.Strings(sortedObjects)
 
-	METH_PRE = methodPre
+	PROP_PRE = propPre
 	JS_MODULE = module
 	JS_WRITER = &body
 	JS_TYPES = make(map[string]Type)
@@ -56,7 +56,7 @@ func Javascript(dir string, name string, module string, types []Type, methodPre 
 goog.provide('%s.%s');`, module, name)))
 		body.Write([]byte(js))
 	}
-	METH_PRE = nil
+	PROP_PRE = nil
 	JS_TYPES = nil
 	JS_WRITER = nil
 	JS_OBJECTS = nil
@@ -127,7 +127,7 @@ func (t *Object) Javascript() (string, map[string]string) {
 	var method_types []string
 	method_index := 0
 
-	if METH_PRE != nil {
+	if PROP_PRE != nil {
 		for _, field := range t.Fields {
 			js, rs := typeListJavascript(t.Name+field.Name, []Type{field})
 			update(requires, rs)

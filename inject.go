@@ -23,11 +23,11 @@ var (
 	LOG_PKG  = map[string]string{"log": ""}
 	MATH_PKG = map[string]string{"math": ""}
 	SRC_PATH = path.Join(os.Getenv("GOPATH"), "src")
-	METH_PRE []Type
+	PROP_PRE []Type
 	DELEGATE string
 )
 
-func Inject(dir string, filename string, pkgname string, types []Type, methodPre []Type, delegate string) {
+func Inject(dir string, filename string, pkgname string, types []Type, propPre []Type, delegate string) {
 	injectfile := path.Join(SRC_PATH, dir, strings.Replace(filename, ".go", ".ty.go", 1))
 	if types == nil {
 		os.Remove(injectfile)
@@ -44,7 +44,7 @@ package %s
 	body.Write([]byte(`
 `))
 
-	METH_PRE = methodPre
+	PROP_PRE = propPre
 	DELEGATE = delegate
 	var pkgs map[string]string
 	for _, t := range types {
@@ -52,7 +52,7 @@ package %s
 		pkgs = update(pkgs, type_p)
 		body.Write([]byte(type_s))
 	}
-	METH_PRE = nil
+	PROP_PRE = nil
 	DELEGATE = ""
 
 	var sortedPkg []string
@@ -301,7 +301,7 @@ func (t *Object) Go() (string, map[string]string) {
 	}
 
 	var methods []string
-	if METH_PRE != nil {
+	if PROP_PRE != nil {
 		for _, field := range t.Fields {
 			field_s, field_p := TypeListSerialize(t.Name, field.Name, "", []Type{field})
 			pkgs = update(pkgs, field_p)
