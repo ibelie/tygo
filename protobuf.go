@@ -107,6 +107,10 @@ func (p *ProtoBuf) Reset() {
 	p.offset = 0
 }
 
+func (p *ProtoBuf) Bytes() []byte {
+	return p.Buffer[p.offset:]
+}
+
 func (p *ProtoBuf) Write(b []byte) (n int, err error) {
 	n = copy(p.Buffer[p.offset:], b)
 	p.offset += n
