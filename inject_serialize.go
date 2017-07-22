@@ -331,7 +331,8 @@ func (t *VariantType) SerializeGo(size string, name string, preFieldNum string, 
 	}
 	var bytesize_cases []string
 	var serialize_cases []string
-	pkgs := LOG_PKG
+	var pkgs map[string]string
+	pkgs = update(pkgs, LOG_PKG)
 	tagInteger := 0
 	tagFloat32 := 0
 	tagFloat64 := 0

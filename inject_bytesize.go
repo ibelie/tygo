@@ -359,7 +359,8 @@ func (t *VariantType) _ByteSizeGo(size string, name string, preFieldNum string, 
 	tagFloat32 := 0
 	tagFloat64 := 0
 	tagsize_s, tagsize_p := tagSize(preFieldNum, fieldNum)
-	pkgs := updateTygo(LOG_PKG)
+	pkgs := updateTygo(nil)
+	pkgs = update(pkgs, LOG_PKG)
 	pkgs = update(pkgs, tagsize_p)
 
 	variantNum := 0

@@ -72,7 +72,8 @@ import %s"%s"`, pkgs[pkg], pkg)))
 func (t *Enum) Go() (string, map[string]string) {
 	var names []string
 	var values []string
-	pkgs := updateTygo(LOG_PKG)
+	pkgs := updateTygo(nil)
+	pkgs = update(pkgs, LOG_PKG)
 	for _, name := range t.Sorted() {
 		names = append(names, fmt.Sprintf(`
 	case %s_%s:
@@ -295,7 +296,7 @@ method_%s:
 
 func (t *Object) Go() (string, map[string]string) {
 	var fields []string
-	pkgs := map[string]string{TYGO_PATH: ""}
+	pkgs := updateTygo(nil)
 	parent_s, parent_p := t.Parent.Go()
 	pkgs = update(pkgs, parent_p)
 	fields = append(fields, fmt.Sprintf(`
