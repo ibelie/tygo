@@ -62,7 +62,7 @@ package %s
 	sort.Strings(sortedPkg)
 	for _, pkg := range sortedPkg {
 		head.Write([]byte(fmt.Sprintf(`
-import %s"%s"`, pkgs[pkg], pkg)))
+import %s%q`, pkgs[pkg], pkg)))
 	}
 
 	head.Write(body.Bytes())
@@ -77,7 +77,7 @@ func (t *Enum) Go() (string, map[string]string) {
 	for _, name := range t.Sorted() {
 		names = append(names, fmt.Sprintf(`
 	case %s_%s:
-		return "%s"`, t.Name, name, name))
+		return %q`, t.Name, name, name))
 		values = append(values, fmt.Sprintf(`
 	%s_%s %s%s = %d`, t.Name, name, strings.Repeat(" ", t.nameMax-len(name)), t.Name, t.Values[name]))
 	}
