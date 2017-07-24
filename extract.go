@@ -29,6 +29,7 @@ func Extract(dir string, extracter Extracter) (types []Type) {
 		if err != nil {
 			log.Fatalf("[Tygo][Extract] Cannot parse file:\n>>>> %v", err)
 		}
+	file_loop:
 		for _, d := range file.Decls {
 			decl, ok := d.(*ast.GenDecl)
 			if !ok || decl.Tok != token.IMPORT {
@@ -48,6 +49,7 @@ func Extract(dir string, extracter Extracter) (types []Type) {
 				if extracter != nil {
 					extracter(dir, filename, file.Name.Name, ts, nil, "")
 				}
+				break file_loop
 			}
 		}
 	}
