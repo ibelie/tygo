@@ -84,13 +84,13 @@ func (t *Object) Typescript() string {
 		parent = fmt.Sprintf(" extends %s", t.Parent.Typescript())
 	}
 	var members []string
-	for _, field := range t.Fields {
+	for _, field := range t.VisibleFields() {
 		members = append(members, fmt.Sprintf(`
 		%s: %s;`, field.Name, field.Typescript()))
 	}
 
 	if PROP_PRE != nil {
-		for _, field := range t.Fields {
+		for _, field := range t.VisibleFields() {
 			members = append(members, typeListTypescript(field.Name, "", []Type{field}))
 		}
 	}

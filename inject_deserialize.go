@@ -80,7 +80,8 @@ func (t *Object) DeserializeGo(tag string, input string, name string, preFieldNu
 		p_name = "preFieldNum"
 	}
 
-	if len(t.Fields) <= 0 {
+	visiblefields := t.VisibleFields()
+	if len(visiblefields) <= 0 {
 		return strings.Join(parents, ""), WireBytes, pkgs
 	}
 
@@ -89,7 +90,7 @@ func (t *Object) DeserializeGo(tag string, input string, name string, preFieldNu
 	var field_w WireType
 	var field_p map[string]string
 	var fields []string
-	for i, field := range t.Fields {
+	for i, field := range visiblefields {
 		if i == 0 {
 			field_s, field_w, field_p = field.DeserializeGo("tag", input,
 				fmt.Sprintf("%s.%s", name, field.Name), p_name, p_num+i+1, false)
@@ -101,9 +102,9 @@ func (t *Object) DeserializeGo(tag string, input string, name string, preFieldNu
 		var next_s string
 		var next_w WireType
 		var next_p map[string]string
-		if i < len(t.Fields)-1 {
-			next_s, next_w, next_p = t.Fields[i+1].DeserializeGo("tag", input,
-				fmt.Sprintf("%s.%s", name, t.Fields[i+1].Name), p_name, p_num+i+2, false)
+		if i < len(visiblefields)-1 {
+			next_s, next_w, next_p = visiblefields[i+1].DeserializeGo("tag", input,
+				fmt.Sprintf("%s.%s", name, visiblefields[i+1].Name), p_name, p_num+i+2, false)
 			pkgs = update(pkgs, next_p)
 			tag_i, tag_ic := tagInt(p_name, p_num+i+2, next_w)
 			tag_s, tag_sc := expectTag(p_name, p_num+i+2, next_w)
@@ -139,19 +140,19 @@ func (t *Object) DeserializeGo(tag string, input string, name string, preFieldNu
 				if tag == %s%s {%s%s%s%s
 				}%s`, name, field.Name, i+1, tag_i, listTag, tag_ic, listComment,
 			addIndent(field_s, 4), next, fall))
-		if i < len(t.Fields)-1 {
+		if i < len(visiblefields)-1 {
 			field_s, field_w, field_p = next_s, next_w, next_p
 		}
 	}
 
 	var cutoff string
 	if p_name == "" {
-		cutoff = strconv.Itoa(_MAKE_CUTOFF(p_num + len(t.Fields)))
+		cutoff = strconv.Itoa(_MAKE_CUTOFF(p_num + len(visiblefields)))
 	} else {
-		cutoff = _MAKE_CUTOFF_STR(fmt.Sprintf("(%s + %d)", p_name, p_num+len(t.Fields)))
+		cutoff = _MAKE_CUTOFF_STR(fmt.Sprintf("(%s + %d)", p_name, p_num+len(visiblefields)))
 	}
 	var switchLabel string
-	if len(t.Fields) > 1 {
+	if len(visiblefields) > 1 {
 		switchLabel = fmt.Sprintf(`
 		switch_%s:`, l)
 	}

@@ -106,6 +106,11 @@ object:
 		$$ = $1
 		$$.Fields = append($$.Fields, &Field{Type: $4, Name: $3})
 	}
+|	object '\t' '.' IDENT spec newline
+	{
+		$$ = $1
+		$$.Fields = append($$.Fields, &Field{Type: $5, Name: $4, Hide: true})
+	}
 |	object '\t' spec1 newline
 	{
 		if $1.Parent != nil {

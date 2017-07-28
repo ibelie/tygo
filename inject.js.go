@@ -114,7 +114,7 @@ func (t *Object) Javascript() (string, map[string]string) {
 
 	var fields []string
 	requires := map[string]string{"goog.require('tyts.Object');": ""}
-	for i, field := range t.AllFields(JS_OBJECTS) {
+	for i, field := range t.AllFields(JS_OBJECTS, true) {
 		wiretype := field.WireType()
 		js, rs := field.Javascript()
 		requires = update(requires, rs)
@@ -128,7 +128,7 @@ func (t *Object) Javascript() (string, map[string]string) {
 	method_index := 0
 
 	if PROP_PRE != nil {
-		for _, field := range t.Fields {
+		for _, field := range t.VisibleFields() {
 			js, rs := typeListJavascript(t.Name+field.Name, []Type{field})
 			update(requires, rs)
 			method_props = append(method_props, fmt.Sprintf(`

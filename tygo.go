@@ -51,6 +51,7 @@ type Enum struct {
 type Field struct {
 	Type
 	Name string
+	Hide bool
 }
 
 type Method struct {
@@ -287,25 +288,38 @@ func (t *Object) HasParent() bool {
 
 func (t *Object) MaxFieldNum() (string, int) {
 	if !t.HasParent() {
-		return "", len(t.Fields)
+		return "", len(t.VisibleFields())
 	} else if t.Parent.PkgPath == "" {
 		name, num := t.Parent.Object.MaxFieldNum()
-		return name, num + len(t.Fields)
+		return name, num + len(t.VisibleFields())
 	} else {
-		return t.Parent.Name, len(t.Fields)
+		return t.Parent.Name, len(t.VisibleFields())
 	}
 }
 
-func (t *Object) AllFields(objects map[string]*Object) []*Field {
+func (t *Object) VisibleFields() (fields []*Field) {
+	for _, field := range t.Fields {
+		if !field.Hide {
+			fields = append(fields, field)
+		}
+	}
+	return
+}
+
+func (t *Object) AllFields(objects map[string]*Object, visible bool) []*Field {
+	fields := t.Fields
+	if visible {
+		fields = t.VisibleFields()
+	}
 	if !t.HasParent() {
-		return t.Fields
+		return fields
 	} else if t.Parent.PkgPath == "" {
-		return append(t.Parent.Object.AllFields(objects), t.Fields...)
+		return append(t.Parent.Object.AllFields(objects, visible), fields...)
 	} else if object, ok := objects[t.Parent.Name]; ok {
-		return append(object.AllFields(objects), t.Fields...)
+		return append(object.AllFields(objects, visible), fields...)
 	} else {
 		log.Fatalf("[Tygo][Object] Unsolved parent type: %s", t.Parent.Name)
-		return t.Fields
+		return fields
 	}
 }
 
@@ -317,13 +331,21 @@ func (t *Object) String() string {
 
 	nameMax := 0
 	for _, field := range t.Fields {
-		if nameMax < len(field.Name) {
-			nameMax = len(field.Name)
+		length := len(field.Name)
+		if field.Hide {
+			length++
+		}
+		if nameMax < length {
+			nameMax = length
 		}
 	}
 	for _, field := range t.Fields {
+		name := field.Name
+		if field.Hide {
+			name = "." + field.Name
+		}
 		fields = append(fields, fmt.Sprintf(`
-	%s %s%s`, field.Name, strings.Repeat(" ", nameMax-len(field.Name)), field))
+	%s %s%s`, name, strings.Repeat(" ", nameMax-len(name)), field))
 	}
 	for _, method := range t.Methods {
 		fields = append(fields, fmt.Sprintf(`

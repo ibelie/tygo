@@ -62,7 +62,7 @@ func (t *Object) SerializeGo(size string, name string, preFieldNum string, field
 		p_name = "preFieldNum"
 	}
 
-	for i, field := range t.Fields {
+	for i, field := range t.VisibleFields() {
 		field_s, field_p := field.SerializeGo(size, fmt.Sprintf("%s.%s", name, field.Name), p_name, p_num+i+1, true)
 		pkgs = update(pkgs, field_p)
 		fields = append(fields, fmt.Sprintf(`

@@ -324,7 +324,7 @@ func (t *Object) Go() (string, map[string]string) {
 
 	var methods []string
 	if PROP_PRE != nil {
-		for _, field := range t.Fields {
+		for _, field := range t.VisibleFields() {
 			field_s, field_p := TypeListSerialize(t.Name, field.Name, "", []Type{field})
 			pkgs = update(pkgs, field_p)
 			methods = append(methods, field_s)
