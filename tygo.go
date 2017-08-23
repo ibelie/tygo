@@ -33,6 +33,8 @@ type Type interface {
 	IsPrimitive() bool
 	IsIterative() bool
 	Go() (string, map[string]string)
+	Typyd() string
+	Python() string
 	Typescript() string
 	Javascript() (string, map[string]string)
 	ByteSizeGo(string, string, string, int, bool) (string, map[string]string)
