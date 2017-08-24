@@ -19,17 +19,8 @@ var TS_OBJECTS map[string]*Object
 func Typescript(dir string, name string, module string, types []Type, propPre []Type) {
 	var buffer bytes.Buffer
 
-	TS_OBJECTS = make(map[string]*Object)
-	for _, t := range types {
-		if object, ok := t.(*Object); ok {
-			if o, exist := TS_OBJECTS[object.Name]; exist {
-				log.Fatalf("[Tygo][Typescript] Object already exists: %v %v", o, object)
-			}
-			TS_OBJECTS[object.Name] = object
-		}
-	}
-
 	PROP_PRE = propPre
+	TS_OBJECTS = ObjectMap(types)
 	var codes []string
 	for _, t := range types {
 		codes = append(codes, t.Typescript())

@@ -6,6 +6,7 @@ package tygo
 
 import (
 	"os"
+	"log"
 	"strings"
 
 	"crypto/md5"
@@ -16,6 +17,19 @@ import (
 	"go/parser"
 	"go/token"
 )
+
+func ObjectMap(types []Type) (objects map[string]*Object){
+	objects = make(map[string]*Object)
+	for _, t := range types {
+		if object, ok := t.(*Object); ok {
+			if o, exist := objects[object.Name]; exist {
+				log.Fatalf("[Tygo] Object already exists: %v %v", o, object)
+			}
+			objects[object.Name] = object
+		}
+	}
+	return
+}
 
 func shortName(name string) string {
 	if len(name) > 24 {

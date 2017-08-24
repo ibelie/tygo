@@ -31,16 +31,10 @@ func Javascript(dir string, name string, module string, types []Type, propPre []
 	body.Write([]byte(`
 `))
 
+	JS_OBJECTS = ObjectMap(types)
 	var sortedObjects []string
-	JS_OBJECTS = make(map[string]*Object)
-	for _, t := range types {
-		if object, ok := t.(*Object); ok {
-			if o, exist := JS_OBJECTS[object.Name]; exist {
-				log.Fatalf("[Tygo][Javascript] Object already exists: %v %v", o, object)
-			}
-			JS_OBJECTS[object.Name] = object
-			sortedObjects = append(sortedObjects, object.Name)
-		}
+	for n, _ := range JS_OBJECTS {
+		sortedObjects = append(sortedObjects, n)
 	}
 	sort.Strings(sortedObjects)
 
