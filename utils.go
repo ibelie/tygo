@@ -5,8 +5,8 @@
 package tygo
 
 import (
-	"os"
 	"log"
+	"os"
 	"strings"
 
 	"crypto/md5"
@@ -18,7 +18,7 @@ import (
 	"go/token"
 )
 
-func ObjectMap(types []Type) (objects map[string]*Object){
+func ObjectMap(types []Type) (objects map[string]*Object) {
 	objects = make(map[string]*Object)
 	for _, t := range types {
 		if object, ok := t.(*Object); ok {

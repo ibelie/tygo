@@ -22,9 +22,9 @@ func Python(dir string, name string, types []Type, propPre []Type) {
 	PROP_PRE = propPre
 	PY_OBJECTS = ObjectMap(types)
 	var codes []string
-	// for _, t := range types {
-	// 	codes = append(codes, t.Python())
-	// }
+	for _, t := range types {
+		codes = append(codes, t.Python())
+	}
 	PROP_PRE = nil
 	PY_OBJECTS = nil
 
@@ -43,23 +43,22 @@ func (t *Enum) Python() string {
 	var enums []string
 	for _, name := range t.Sorted() {
 		enums = append(enums, fmt.Sprintf(`
-		%s = %d`, name, t.Values[name]))
+	%s = %d, "%s"`, name, t.Values[name], name))
 	}
 	return fmt.Sprintf(`
-
-	const enum %s {%s
-	}`, t.Name, strings.Join(enums, ","))
+class %s(typy.Enum):%s
+`, t.Name, strings.Join(enums, ""))
 }
 
 func (t *Object) Python() string {
-	var parent string
+	parent := "typy.Object"
 	if t.HasParent() {
-		parent = fmt.Sprintf(" extends %s", t.Parent.Python())
+		parent = t.Parent.Name
 	}
 	var members []string
 	for _, field := range t.VisibleFields() {
 		members = append(members, fmt.Sprintf(`
-		%s: %s;`, field.Name, field.Python()))
+	%s = %s`, field.Name, field.Python()))
 	}
 
 	if PROP_PRE != nil {
