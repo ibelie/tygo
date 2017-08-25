@@ -21,10 +21,9 @@ var (
 	PY_OBJECTS map[string]*Object
 )
 
-func Python(dir string, name string, types []Type, propPre []Type) {
+func Python(dir string, name string, types []Type) {
 	var buffer bytes.Buffer
 
-	PROP_PRE = propPre
 	PY_WRITER = &buffer
 	PY_OBJECTS = ObjectMap(types)
 	PY_TYPES = make(map[string]bool)
@@ -32,7 +31,6 @@ func Python(dir string, name string, types []Type, propPre []Type) {
 	for _, t := range types {
 		codes = append(codes, t.Python())
 	}
-	PROP_PRE = nil
 	PY_TYPES = nil
 	PY_WRITER = nil
 	PY_OBJECTS = nil
@@ -59,15 +57,15 @@ class %s(typy.Enum):%s
 `, t.Name, strings.Join(enums, ""))
 }
 
-func fieldsPython(name string, parent string, fs []*Field) string {
-	if ok, exist := PY_TYPES[name]; exist && ok {
+func (t *Object) Python() string {
+	if ok, exist := PY_TYPES[t.Name]; exist && ok {
 		return ""
 	}
 
-	PY_TYPES[name] = true
+	PY_TYPES[t.Name] = true
 	var fields []string
 	var sequences []string
-	for _, f := range fs {
+	for _, f := range t.VisibleFields() {
 		sequences = append(sequences, fmt.Sprintf("'%s'", f.Name))
 		fields = append(fields, fmt.Sprintf(`
 	%s = %s`, f.Name, strings.Replace(f.Python(), "typy.", "typy.pb.", 1)))
@@ -81,46 +79,14 @@ func fieldsPython(name string, parent string, fs []*Field) string {
 	____propertySequence__ = %s`, strings.Join(sequences, ", "))
 	}
 
-	return fmt.Sprintf(`
-class %s(%s):%s%s
-`, name, parent, sequence, strings.Join(fields, ""))
-}
-
-func (t *Object) Python() string {
-	var objects []string
 	parent := "typy.Object"
 	if t.HasParent() {
 		parent = t.Parent.Name
 	}
-	objects = append(objects, fieldsPython(t.Name, parent, t.VisibleFields()))
 
-	if PROP_PRE != nil {
-		for _, field := range t.VisibleFields() {
-			objects = append(objects, fieldsPython(fmt.Sprintf("%s_%s", t.Name, field.Name),
-				"typy.Object", []*Field{field}))
-		}
-	}
-
-	for _, method := range t.Methods {
-		if len(method.Params) > 0 {
-			var params []*Field
-			for i, p := range method.Params {
-				params = append(params, &Field{Type: p, Name: fmt.Sprintf("a%d", i)})
-			}
-			objects = append(objects, fieldsPython(fmt.Sprintf("%s_%sParam", t.Name, method.Name),
-				"typy.Object", params))
-		}
-		if len(method.Results) > 0 {
-			var results []*Field
-			for i, r := range method.Results {
-				results = append(results, &Field{Type: r, Name: fmt.Sprintf("a%d", i)})
-			}
-			objects = append(objects, fieldsPython(fmt.Sprintf("%s_%sResult", t.Name, method.Name),
-				"typy.Object", results))
-		}
-	}
-
-	return strings.Join(objects, "")
+	return fmt.Sprintf(`
+class %s(%s):%s%s
+`, t.Name, parent, sequence, strings.Join(fields, ""))
 }
 
 func (t UnknownType) Python() string {
@@ -194,16 +160,14 @@ func (t *VariantType) Python() string {
 	return fmt.Sprintf("typy.Instance(%s)", strings.Join(variants, ", "))
 }
 
-func Typyd(dir string, name string, types []Type, propPre []Type) {
+func Typyd(dir string, name string, types []Type) {
 	var buffer bytes.Buffer
 
-	PROP_PRE = propPre
 	PY_OBJECTS = ObjectMap(types)
 	var codes []string
 	// for _, t := range types {
 	// 	codes = append(codes, t.Typyd())
 	// }
-	PROP_PRE = nil
 	PY_OBJECTS = nil
 
 	buffer.Write([]byte(fmt.Sprintf(`#-*- coding: utf-8 -*-
@@ -238,22 +202,6 @@ func (t *Object) Typyd() string {
 	for _, field := range t.VisibleFields() {
 		members = append(members, fmt.Sprintf(`
 		%s: %s;`, field.Name, field.Typyd()))
-	}
-
-	if PROP_PRE != nil {
-		for _, field := range t.VisibleFields() {
-			members = append(members, field.Python())
-			// members = append(members, typeListPython(field.Name, "", []Type{field}))
-		}
-	}
-
-	for _, method := range t.Methods {
-		if len(method.Params) > 0 {
-			// members = append(members, typeListPython(method.Name, "Param", method.Params))
-		}
-		if len(method.Results) > 0 {
-			// members = append(members, typeListPython(method.Name, "Result", method.Results))
-		}
 	}
 
 	return fmt.Sprintf(`
