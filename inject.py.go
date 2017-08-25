@@ -70,7 +70,7 @@ func fieldsPython(name string, parent string, fs []*Field) string {
 	for _, f := range fs {
 		sequences = append(sequences, fmt.Sprintf("'%s'", f.Name))
 		fields = append(fields, fmt.Sprintf(`
-	%s = typy.pb.%s`, f.Name, f.Python()))
+	%s = %s`, f.Name, strings.Replace(f.Python(), "typy.", "typy.pb.", 1)))
 	}
 
 	var sequence string
@@ -136,17 +136,17 @@ func (t SimpleType) Python() string {
 	case SimpleType_UINT32:
 		fallthrough
 	case SimpleType_UINT64:
-		return "Integer"
+		return "typy.Integer"
 	case SimpleType_FLOAT32:
 		fallthrough
 	case SimpleType_FLOAT64:
-		return "Float"
+		return "typy.Float"
 	case SimpleType_BYTES:
-		return "Bytes"
+		return "typy.Bytes"
 	case SimpleType_STRING:
-		return "String"
+		return "typy.String"
 	case SimpleType_BOOL:
-		return "Boolean"
+		return "typy.Boolean"
 	default:
 		log.Fatalf("[Tygo][SimpleType] Unexpect enum value for Python: %d", t)
 		return "Unknown"
@@ -154,28 +154,29 @@ func (t SimpleType) Python() string {
 }
 
 func (t *EnumType) Python() string {
-	return fmt.Sprintf("Enum(%s)", t.Name)
+	PY_WRITER.Write([]byte(t.Enum.Python()))
+	return fmt.Sprintf("typy.Enum(%s)", t.Name)
 }
 
 func (t *InstanceType) Python() string {
 	if object, ok := TS_OBJECTS[t.Name]; ok {
 		PY_WRITER.Write([]byte(object.Python()))
-		return fmt.Sprintf("Instance(%s)", t.Name)
+		return fmt.Sprintf("typy.Instance(%s)", t.Name)
 	} else {
-		return fmt.Sprintf("Python(%s)", t.Name)
+		return fmt.Sprintf("typy.Python(%s)", t.Name)
 	}
 }
 
 func (t *FixedPointType) Python() string {
-	return fmt.Sprintf("FixedPoint(%d, %d)", t.Precision, t.Floor)
+	return fmt.Sprintf("typy.FixedPoint(%d, %d)", t.Precision, t.Floor)
 }
 
 func (t *ListType) Python() string {
-	return fmt.Sprintf("List(%s)", t.E.Python())
+	return fmt.Sprintf("typy.List(%s)", t.E.Python())
 }
 
 func (t *DictType) Python() string {
-	return fmt.Sprintf("Dict(%s, %s)", t.K.Python(), t.V.Python())
+	return fmt.Sprintf("typy.Dict(%s, %s)", t.K.Python(), t.V.Python())
 }
 
 func (t *VariantType) Python() string {
@@ -190,7 +191,7 @@ func (t *VariantType) Python() string {
 		}
 		variants = append(variants, v.Python())
 	}
-	return fmt.Sprintf("Instance(%s)", strings.Join(variants, ", "))
+	return fmt.Sprintf("typy.Instance(%s)", strings.Join(variants, ", "))
 }
 
 func Typyd(dir string, name string, types []Type, propPre []Type) {
