@@ -7,6 +7,7 @@ package tygo
 import (
 	"bytes"
 	"fmt"
+	"io"
 	"log"
 	"path"
 	"strings"
@@ -14,18 +15,26 @@ import (
 	"io/ioutil"
 )
 
-var PY_OBJECTS map[string]*Object
+var (
+	PY_WRITER  io.Writer
+	PY_TYPES   map[string]bool
+	PY_OBJECTS map[string]*Object
+)
 
 func Python(dir string, name string, types []Type, propPre []Type) {
 	var buffer bytes.Buffer
 
 	PROP_PRE = propPre
+	PY_WRITER = &buffer
 	PY_OBJECTS = ObjectMap(types)
+	PY_TYPES = make(map[string]bool)
 	var codes []string
 	for _, t := range types {
 		codes = append(codes, t.Python())
 	}
 	PROP_PRE = nil
+	PY_TYPES = nil
+	PY_WRITER = nil
 	PY_OBJECTS = nil
 
 	buffer.Write([]byte(fmt.Sprintf(`#-*- coding: utf-8 -*-
@@ -50,46 +59,68 @@ class %s(typy.Enum):%s
 `, t.Name, strings.Join(enums, ""))
 }
 
+func fieldsPython(name string, parent string, fs []*Field) string {
+	if ok, exist := PY_TYPES[name]; exist && ok {
+		return ""
+	}
+
+	PY_TYPES[name] = true
+	var fields []string
+	var sequences []string
+	for _, f := range fs {
+		sequences = append(sequences, fmt.Sprintf("'%s'", f.Name))
+		fields = append(fields, fmt.Sprintf(`
+	%s = typy.pb.%s`, f.Name, f.Python()))
+	}
+
+	var sequence string
+	if sequences == nil {
+		return ""
+	} else if len(sequences) > 1 {
+		sequence = fmt.Sprintf(`
+	____propertySequence__ = %s`, strings.Join(sequences, ", "))
+	}
+
+	return fmt.Sprintf(`
+class %s(%s):%s%s
+`, name, parent, sequence, strings.Join(fields, ""))
+}
+
 func (t *Object) Python() string {
+	var objects []string
 	parent := "typy.Object"
 	if t.HasParent() {
 		parent = t.Parent.Name
 	}
-	var members []string
-	for _, field := range t.VisibleFields() {
-		members = append(members, fmt.Sprintf(`
-	%s = %s`, field.Name, field.Python()))
-	}
+	objects = append(objects, fieldsPython(t.Name, parent, t.VisibleFields()))
 
 	if PROP_PRE != nil {
 		for _, field := range t.VisibleFields() {
-			members = append(members, field.Python())
-			// members = append(members, typeListPython(field.Name, "", []Type{field}))
+			objects = append(objects, fieldsPython(fmt.Sprintf("%s_%s", t.Name, field.Name),
+				"typy.Object", []*Field{field}))
 		}
 	}
 
 	for _, method := range t.Methods {
 		if len(method.Params) > 0 {
-			// members = append(members, typeListPython(method.Name, "Param", method.Params))
+			var params []*Field
+			for i, p := range method.Params {
+				params = append(params, &Field{Type: p, Name: fmt.Sprintf("a%d", i)})
+			}
+			objects = append(objects, fieldsPython(fmt.Sprintf("%s_%sParam", t.Name, method.Name),
+				"typy.Object", params))
 		}
 		if len(method.Results) > 0 {
-			// members = append(members, typeListPython(method.Name, "Result", method.Results))
+			var results []*Field
+			for i, r := range method.Results {
+				results = append(results, &Field{Type: r, Name: fmt.Sprintf("a%d", i)})
+			}
+			objects = append(objects, fieldsPython(fmt.Sprintf("%s_%sResult", t.Name, method.Name),
+				"typy.Object", results))
 		}
 	}
 
-	return fmt.Sprintf(`
-
-	class %s%s {
-		__class__: string;
-		ByteSize(): number;
-		Serialize(): Uint8Array;
-		Deserialize(data: Uint8Array): void;
-%s
-	}
-
-	namespace %s {
-		function Deserialize(data: Uint8Array): %s;
-	}`, t.Name, parent, strings.Join(members, ""), t.Name, t.Name)
+	return strings.Join(objects, "")
 }
 
 func (t UnknownType) Python() string {
@@ -105,49 +136,61 @@ func (t SimpleType) Python() string {
 	case SimpleType_UINT32:
 		fallthrough
 	case SimpleType_UINT64:
-		fallthrough
+		return "Integer"
 	case SimpleType_FLOAT32:
 		fallthrough
 	case SimpleType_FLOAT64:
-		return "number"
+		return "Float"
 	case SimpleType_BYTES:
-		return "Uint8Array"
+		return "Bytes"
 	case SimpleType_STRING:
-		return "string"
+		return "String"
 	case SimpleType_BOOL:
-		return "boolean"
+		return "Boolean"
 	default:
 		log.Fatalf("[Tygo][SimpleType] Unexpect enum value for Python: %d", t)
-		return "unknown"
+		return "Unknown"
 	}
 }
 
 func (t *EnumType) Python() string {
-	return t.Name
+	return fmt.Sprintf("Enum(%s)", t.Name)
 }
 
 func (t *InstanceType) Python() string {
-	if _, ok := TS_OBJECTS[t.Name]; ok {
-		return t.Name
+	if object, ok := TS_OBJECTS[t.Name]; ok {
+		PY_WRITER.Write([]byte(object.Python()))
+		return fmt.Sprintf("Instance(%s)", t.Name)
 	} else {
-		return "Type"
+		return fmt.Sprintf("Python(%s)", t.Name)
 	}
 }
 
 func (t *FixedPointType) Python() string {
-	return "number"
+	return fmt.Sprintf("FixedPoint(%d, %d)", t.Precision, t.Floor)
 }
 
 func (t *ListType) Python() string {
-	return fmt.Sprintf("%s[]", t.E.Python())
+	return fmt.Sprintf("List(%s)", t.E.Python())
 }
 
 func (t *DictType) Python() string {
-	return fmt.Sprintf("{[index: %s]: %s}", t.K.Python(), t.V.Python())
+	return fmt.Sprintf("Dict(%s, %s)", t.K.Python(), t.V.Python())
 }
 
 func (t *VariantType) Python() string {
-	return "any"
+	var variants []string
+	for _, v := range t.Ts {
+		if inst, ok := v.(*InstanceType); ok {
+			if object, ok := TS_OBJECTS[inst.Name]; ok {
+				PY_WRITER.Write([]byte(object.Python()))
+				variants = append(variants, inst.Name)
+				continue
+			}
+		}
+		variants = append(variants, v.Python())
+	}
+	return fmt.Sprintf("Instance(%s)", strings.Join(variants, ", "))
 }
 
 func Typyd(dir string, name string, types []Type, propPre []Type) {
