@@ -268,10 +268,16 @@ func (t *EnumType) Typyd() string {
 }
 
 func (t *InstanceType) Typyd() string {
-	if _, ok := TS_OBJECTS[t.Name]; ok {
-		return t.Name
+	if object, ok := TS_OBJECTS[t.Name]; ok {
+		PY_WRITER.Write([]byte(object.Typyd()))
+		return fmt.Sprintf("%d, %s", TYPYD_OBJECT, t.Name)
 	} else {
-		return "Type"
+		if ok, exist := PY_TYPES[t.Name]; !exist || !ok {
+			PY_WRITER.Write([]byte(fmt.Sprintf(`
+%s = _typyd.Python('%s')`, t.Name, t.Name)))
+			PY_TYPES[t.Name] = true
+		}
+		return fmt.Sprintf("%d, %s", TYPYD_PYTHON, t.Name)
 	}
 }
 
