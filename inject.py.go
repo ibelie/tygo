@@ -191,7 +191,7 @@ func Typyd(dir string, name string, types []Type) {
 	var buffer bytes.Buffer
 	buffer.Write([]byte(PY_HEADER))
 	buffer.Write([]byte(`
-import _typyd
+from typy import _typyd
 `))
 
 	PY_WRITER = &buffer
