@@ -206,7 +206,9 @@ func (t *Enum) Typyd() string {
 	} else {
 		PY_TYPES[t.Name] = true
 		return fmt.Sprintf(`
-%s = _typyd.Enum('%s')`, t.Name, t.Name)
+%s = _typyd.Enum('%s')%s%s(%s_Declare)`, t.Name, t.Name, strings.Replace(t.Python(),
+			fmt.Sprintf("class %s(typy.Enum):", t.Name),
+			fmt.Sprintf("class %s_Declare(typy.Enum):", t.Name), 1), t.Name, t.Name)
 	}
 }
 
