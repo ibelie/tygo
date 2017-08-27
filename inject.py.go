@@ -27,12 +27,14 @@ import typy
 `))
 
 	PY_WRITER = &buffer
+	PY_OBJECTS = ObjectMap(types)
 	PY_TYPES = make(map[string]bool)
 	var codes []string
 	for _, t := range types {
 		codes = append(codes, t.Python())
 	}
 	PY_TYPES = nil
+	PY_OBJECTS = nil
 	PY_WRITER = nil
 
 	buffer.Write([]byte(strings.Join(codes, "")))
@@ -124,7 +126,7 @@ func (t *EnumType) Python() string {
 }
 
 func (t *InstanceType) Python() string {
-	if object, ok := TS_OBJECTS[t.Name]; ok {
+	if object, ok := PY_OBJECTS[t.Name]; ok {
 		PY_WRITER.Write([]byte(object.Python()))
 		return fmt.Sprintf("typy.Instance(%s)", t.Name)
 	} else {
@@ -148,7 +150,7 @@ func (t *VariantType) Python() string {
 	var variants []string
 	for _, v := range t.Ts {
 		if inst, ok := v.(*InstanceType); ok {
-			if object, ok := TS_OBJECTS[inst.Name]; ok {
+			if object, ok := PY_OBJECTS[inst.Name]; ok {
 				PY_WRITER.Write([]byte(object.Python()))
 				variants = append(variants, inst.Name)
 				continue
@@ -270,7 +272,7 @@ func (t *EnumType) Typyd() string {
 }
 
 func (t *InstanceType) Typyd() string {
-	if object, ok := TS_OBJECTS[t.Name]; ok {
+	if object, ok := PY_OBJECTS[t.Name]; ok {
 		PY_WRITER.Write([]byte(object.Typyd()))
 		return fmt.Sprintf("%d, %s", TYPYD_OBJECT, t.Name)
 	} else {
