@@ -98,6 +98,19 @@ func SizeVarint(x uint64) int {
 	return n
 }
 
+func SizeBuffer(b []byte) int {
+	x := len(b)
+	n := 0
+	for {
+		n++
+		x >>= 7
+		if x == 0 {
+			break
+		}
+	}
+	return n + x
+}
+
 type ProtoBuf struct {
 	offset int
 	Buffer []byte
