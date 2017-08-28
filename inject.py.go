@@ -50,7 +50,7 @@ func (t *Enum) Python() string {
 	var enums []string
 	for _, name := range t.Sorted() {
 		enums = append(enums, fmt.Sprintf(`
-	%s = %d, "%s"`, name, t.Values[name], name))
+	%s = %d, '%s'`, name, t.Values[name], name))
 	}
 
 	return fmt.Sprintf(`
