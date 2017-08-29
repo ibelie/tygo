@@ -130,6 +130,8 @@ func (t SimpleType) Typescript() string {
 		return "number"
 	case SimpleType_BYTES:
 		return "Uint8Array"
+	case SimpleType_SYMBOL:
+		fallthrough
 	case SimpleType_STRING:
 		return "string"
 	case SimpleType_BOOL:

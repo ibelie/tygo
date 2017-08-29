@@ -82,6 +82,7 @@ const (
 	SimpleType_UINT64
 	SimpleType_BYTES
 	SimpleType_STRING
+	SimpleType_SYMBOL
 	SimpleType_BOOL
 	SimpleType_FLOAT32
 	SimpleType_FLOAT64
@@ -380,6 +381,8 @@ func SimpleType_FromString(s string) Type {
 		return SimpleType_BYTES
 	case "string":
 		return SimpleType_STRING
+	case "symbol":
+		return SimpleType_SYMBOL
 	case "bool":
 		return SimpleType_BOOL
 	case "float32":
@@ -407,6 +410,8 @@ func (t SimpleType) String() string {
 		return "bytes"
 	case SimpleType_STRING:
 		return "string"
+	case SimpleType_SYMBOL:
+		return "symbol"
 	case SimpleType_BOOL:
 		return "bool"
 	case SimpleType_FLOAT32:
@@ -509,6 +514,8 @@ func (t SimpleType) Identifier() string {
 		return "by"
 	case SimpleType_STRING:
 		return "s"
+	case SimpleType_SYMBOL:
+		return "sy"
 	case SimpleType_BOOL:
 		return "b"
 	case SimpleType_FLOAT32:

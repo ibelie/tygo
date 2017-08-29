@@ -22,6 +22,7 @@ const TEMP_PREFIX = "tmp"
 var (
 	LOG_PKG  = map[string]string{"log": ""}
 	MATH_PKG = map[string]string{"math": ""}
+	BS64_PKG = map[string]string{"encoding/base64": ""}
 	SRC_PATH = path.Join(os.Getenv("GOPATH"), "src")
 	PROP_PRE []Type
 	DELEGATE string
@@ -391,6 +392,8 @@ func (t UnknownType) Go() (string, map[string]string) {
 func (t SimpleType) Go() (string, map[string]string) {
 	switch t {
 	case SimpleType_BYTES:
+		return "[]byte", nil
+	case SimpleType_SYMBOL:
 		return "[]byte", nil
 	default:
 		return t.String(), nil

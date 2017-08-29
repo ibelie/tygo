@@ -112,6 +112,8 @@ func (t SimpleType) Python() string {
 		return "typy.Bytes"
 	case SimpleType_STRING:
 		return "typy.String"
+	case SimpleType_SYMBOL:
+		return "typy.Symbol"
 	case SimpleType_BOOL:
 		return "typy.Boolean"
 	default:
@@ -173,12 +175,13 @@ const (
 	TYPYD_BOOL       = 8
 	TYPYD_BYTES      = 9
 	TYPYD_STRING     = 10
-	TYPYD_OBJECT     = 11
-	TYPYD_VARIANT    = 12
-	TYPYD_LIST       = 13
-	TYPYD_DICT       = 14
-	TYPYD_PYTHON     = 15
-	MAX_TYPYD_TYPE   = 16
+	TYPYD_SYMBOL     = 11
+	TYPYD_OBJECT     = 12
+	TYPYD_VARIANT    = 13
+	TYPYD_LIST       = 14
+	TYPYD_DICT       = 15
+	TYPYD_PYTHON     = 16
+	MAX_TYPYD_TYPE   = 17
 )
 
 func Typyd(types []Type) []byte {
@@ -258,6 +261,8 @@ func (t SimpleType) Typyd() string {
 		return strconv.Itoa(TYPYD_BYTES)
 	case SimpleType_STRING:
 		return strconv.Itoa(TYPYD_STRING)
+	case SimpleType_SYMBOL:
+		return strconv.Itoa(TYPYD_SYMBOL)
 	case SimpleType_BOOL:
 		return strconv.Itoa(TYPYD_BOOL)
 	default:
@@ -340,6 +345,8 @@ func (t *VariantType) Typyd() string {
 					properties["Bytes"] = v
 				case SimpleType_STRING:
 					properties["String"] = v
+				case SimpleType_SYMBOL:
+					properties["Symbol"] = v
 				case SimpleType_BOOL:
 					properties["Boolean"] = v
 				default:

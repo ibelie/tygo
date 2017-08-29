@@ -229,11 +229,20 @@ func (t SimpleType) DeserializeGo(tag string, input string, name string, preFiel
 		return fmt.Sprintf(`
 	// type: %s
 	if x, e := %s.ReadBuf(); e == nil {
-		%s = %s(x)
+		%s = string(x)
 	} else {
 		err = e
 		return
-	}`, t, input, name, t), WireBytes, nil
+	}`, t, input, name), WireBytes, nil
+	case SimpleType_SYMBOL:
+		return fmt.Sprintf(`
+	// type: %s
+	if x, e := %s.ReadBuf(); e == nil {
+		%s = base64.RawURLEncoding.EncodeToString(x)
+	} else {
+		err = e
+		return
+	}`, t, input, name), WireBytes, BS64_PKG
 	case SimpleType_BOOL:
 		return fmt.Sprintf(`
 	// type: %s

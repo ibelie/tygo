@@ -356,6 +356,8 @@ func (t SimpleType) WireType() WireType {
 		return WireBytes
 	case SimpleType_STRING:
 		return WireBytes
+	case SimpleType_SYMBOL:
+		return WireBytes
 	case SimpleType_FLOAT32:
 		return WireFixed32
 	case SimpleType_FLOAT64:

@@ -115,6 +115,22 @@ func (t SimpleType) SerializeGo(size string, name string, preFieldNum string, fi
 		output.WriteBuf([]byte(%s))
 	}`, t, writeTag(preFieldNum, fieldNum, WireBytes, 1), name), nil
 		}
+	case SimpleType_SYMBOL:
+		if ignore {
+			return fmt.Sprintf(`
+	// type: %s
+	if len(%s) > 0 {%s
+		output.WriteVarint(uint64(base64.RawURLEncoding.DecodedLen(len(%s))))
+		base64.RawURLEncoding.Decode(output.Bytes(), []byte(%s))
+	}`, t, name, writeTag(preFieldNum, fieldNum, WireBytes, 1), name, name), BS64_PKG
+		} else {
+			return fmt.Sprintf(`
+	// type: %s
+	{%s
+		output.WriteVarint(uint64(base64.RawURLEncoding.DecodedLen(len(%s))))
+		base64.RawURLEncoding.Decode(output.Bytes(), []byte(%s))
+	}`, t, writeTag(preFieldNum, fieldNum, WireBytes, 1), name, name), BS64_PKG
+		}
 	case SimpleType_BOOL:
 		if ignore {
 			return fmt.Sprintf(`

@@ -182,6 +182,8 @@ func (t SimpleType) Javascript() (string, map[string]string) {
 		return "tyts.Bytes", map[string]string{"goog.require('tyts.Bytes');": ""}
 	case SimpleType_STRING:
 		return "tyts.String", map[string]string{"goog.require('tyts.String');": ""}
+	case SimpleType_SYMBOL:
+		return "tyts.Symbol", map[string]string{"goog.require('tyts.Symbol');": ""}
 	case SimpleType_BOOL:
 		return "tyts.Bool", map[string]string{"goog.require('tyts.Bool');": ""}
 	case SimpleType_FLOAT32:

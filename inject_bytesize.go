@@ -92,7 +92,17 @@ func (t SimpleType) ByteSizeGo(size string, name string, preFieldNum string, fie
 	%s += %stygo.SizeVarint(uint64(%s))`, t, size, tagsize_s, name), updateTygo(tagsize_p)
 		}
 	case SimpleType_BYTES:
-		fallthrough
+		if ignore {
+			return fmt.Sprintf(`
+	// type: %s
+	if len(%s) > 0 {
+		%s += %stygo.SizeBuffer(%s)
+	}`, t, name, size, tagsize_s, name), updateTygo(tagsize_p)
+		} else {
+			return fmt.Sprintf(`
+	// type: %s
+	%s += %stygo.SizeBuffer(%s)`, t, size, tagsize_s, name), updateTygo(tagsize_p)
+		}
 	case SimpleType_STRING:
 		if ignore {
 			return fmt.Sprintf(`
@@ -103,9 +113,22 @@ func (t SimpleType) ByteSizeGo(size string, name string, preFieldNum string, fie
 		} else {
 			return fmt.Sprintf(`
 	// type: %s
-	{
-		%s += %stygo.SizeBuffer([]byte(%s))
-	}`, t, size, tagsize_s, name), updateTygo(tagsize_p)
+	%s += %stygo.SizeBuffer([]byte(%s))`, t, size, tagsize_s, name), updateTygo(tagsize_p)
+		}
+	case SimpleType_SYMBOL:
+		if ignore {
+			return fmt.Sprintf(`
+	// type: %s
+	if len(%s) > 0 {
+		encodedLen := base64.RawURLEncoding.DecodedLen(len(%s))
+		%s += %stygo.SizeVarint(uint64(encodedLen)) + encodedLen
+	}`, t, name, name, size, tagsize_s), updateTygo(update(tagsize_p, BS64_PKG))
+		} else {
+			return fmt.Sprintf(`
+	// type: %s
+	encodedLen := base64.RawURLEncoding.DecodedLen(len(%s))
+	%s += %stygo.SizeVarint(uint64(encodedLen)) + encodedLen`,
+				t, name, size, tagsize_s), updateTygo(update(tagsize_p, BS64_PKG))
 		}
 	case SimpleType_BOOL:
 		if ignore {
