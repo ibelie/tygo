@@ -108,7 +108,7 @@ func SizeBuffer(b []byte) int {
 			break
 		}
 	}
-	return n + x
+	return n + len(b)
 }
 
 type ProtoBuf struct {
