@@ -120,15 +120,12 @@ func (t SimpleType) ByteSizeGo(size string, name string, preFieldNum string, fie
 			return fmt.Sprintf(`
 	// type: %s
 	if len(%s) > 0 {
-		encodedLen := base64.RawURLEncoding.DecodedLen(len(%s))
-		%s += %stygo.SizeVarint(uint64(encodedLen)) + encodedLen
-	}`, t, name, name, size, tagsize_s), updateTygo(update(tagsize_p, BS64_PKG))
+		%s += %stygo.SizeSymbol(%s)
+	}`, t, name, size, tagsize_s, name), updateTygo(tagsize_p)
 		} else {
 			return fmt.Sprintf(`
 	// type: %s
-	encodedLen := base64.RawURLEncoding.DecodedLen(len(%s))
-	%s += %stygo.SizeVarint(uint64(encodedLen)) + encodedLen`,
-				t, name, size, tagsize_s), updateTygo(update(tagsize_p, BS64_PKG))
+	%s += %stygo.SizeSymbol(%s)`, t, size, tagsize_s, name), updateTygo(tagsize_p)
 		}
 	case SimpleType_BOOL:
 		if ignore {

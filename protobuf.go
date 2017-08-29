@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"sync"
 )
 
 const (
@@ -100,7 +101,7 @@ func SizeVarint(x uint64) int {
 
 func SizeBuffer(b []byte) int {
 	x := len(b)
-	n := 0
+	n := x
 	for {
 		n++
 		x >>= 7
@@ -108,7 +109,20 @@ func SizeBuffer(b []byte) int {
 			break
 		}
 	}
-	return n + len(b)
+	return n
+}
+
+func SizeSymbol(s string) int {
+	x := (len(s)*6 + 7) / 8
+	n := x
+	for {
+		n++
+		x >>= 7
+		if x == 0 {
+			break
+		}
+	}
+	return n
 }
 
 type ProtoBuf struct {
@@ -158,11 +172,106 @@ func (p *ProtoBuf) ReadBuf() ([]byte, error) {
 	}
 }
 
+var (
+	SymbolInit      sync.Once
+	SymbolDecodeMap [256]byte
+)
+
+const SymbolEncodeMap = "-ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_"
+
+func (p *ProtoBuf) WriteSymbol(s string) {
+	SymbolInit.Do(func() {
+		for i := 0; i < len(SymbolDecodeMap); i++ {
+			SymbolDecodeMap[i] = 0xFF
+		}
+		for i := 0; i < len(SymbolEncodeMap); i++ {
+			SymbolDecodeMap[SymbolEncodeMap[i]] = byte(i)
+		}
+	})
+
+	p.WriteVarint(uint64(SizeSymbol(s)))
+
+	si := 0
+	src := []byte(s)
+	n := (len(src) / 4) * 4
+	for si < n {
+		// Convert 4x 6bit source bytes into 3 bytes
+		val := uint(SymbolDecodeMap[src[si]])<<18 |
+			uint(SymbolDecodeMap[src[si+1]])<<12 |
+			uint(SymbolDecodeMap[src[si+2]])<<6 |
+			uint(SymbolDecodeMap[src[si+3]])
+
+		p.Buffer[p.offset+0] = byte(val >> 16)
+		p.Buffer[p.offset+1] = byte(val >> 8)
+		p.Buffer[p.offset+2] = byte(val >> 0)
+		p.offset += 3
+		si += 4
+	}
+
+	if len(src) > si {
+		var j, val uint
+		remain := uint(len(src) - si)
+		for j < remain {
+			val |= uint(SymbolDecodeMap[src[si+int(j)]]) << (18 - j*6)
+			j++
+		}
+		j = 0
+		for j < remain {
+			p.Buffer[p.offset] = byte(val >> (16 - j*8))
+			p.offset++
+			j++
+		}
+	}
+}
+
+func (p *ProtoBuf) ReadSymbol() (string, error) {
+	var src []byte
+	if l, err := p.ReadVarint(); err != nil {
+		return "", err
+	} else if l == 0 {
+		return "", nil
+	} else if p.offset+int(l) > len(p.Buffer) {
+		return "", io.EOF
+	} else {
+		p.offset += int(l)
+		src = p.Buffer[p.offset-int(l) : p.offset]
+	}
+
+	dst := make([]byte, len(src)*8/6)
+	di, si := 0, 0
+	n := (len(src) / 3) * 3
+	for si < n {
+		// Convert 3x 8bit source bytes into 4 bytes
+		val := uint(src[si+0])<<16 | uint(src[si+1])<<8 | uint(src[si+2])
+
+		dst[di+0] = SymbolEncodeMap[val>>18&0x3F]
+		dst[di+1] = SymbolEncodeMap[val>>12&0x3F]
+		dst[di+2] = SymbolEncodeMap[val>>6&0x3F]
+		if di+3 < len(dst) {
+			dst[di+3] = SymbolEncodeMap[val&0x3F]
+		}
+
+		si += 3
+		di += 4
+	}
+
+	switch len(src) - si {
+	case 2:
+		val := uint(src[si])<<8 | uint(src[si+1])
+		dst[di+0] = SymbolEncodeMap[val>>10&0x3F]
+		dst[di+1] = SymbolEncodeMap[val>>4&0x3F]
+	case 1:
+		dst[di+0] = SymbolEncodeMap[uint(src[si])>>2&0x3F]
+	}
+
+	return string(dst), nil
+}
+
 func (p *ProtoBuf) WriteVarint(x uint64) {
 	for x >= 0x80 {
 		p.Buffer[p.offset] = byte(x) | 0x80
-		x >>= 7
 		p.offset++
+		x >>= 7
 	}
 	p.Buffer[p.offset] = byte(x)
 	p.offset++
