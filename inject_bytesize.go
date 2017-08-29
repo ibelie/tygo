@@ -98,16 +98,14 @@ func (t SimpleType) ByteSizeGo(size string, name string, preFieldNum string, fie
 			return fmt.Sprintf(`
 	// type: %s
 	if len(%s) > 0 {
-		l := len([]byte(%s))
-		%s += %stygo.SizeVarint(uint64(l)) + l
-	}`, t, name, name, size, tagsize_s), updateTygo(tagsize_p)
+		%s += %stygo.SizeBuffer([]byte(%s))
+	}`, t, name, size, tagsize_s, name), updateTygo(tagsize_p)
 		} else {
 			return fmt.Sprintf(`
 	// type: %s
 	{
-		l := len([]byte(%s))
-		%s += %stygo.SizeVarint(uint64(l)) + l
-	}`, t, name, size, tagsize_s), updateTygo(tagsize_p)
+		%s += %stygo.SizeBuffer([]byte(%s))
+	}`, t, size, tagsize_s, name), updateTygo(tagsize_p)
 		}
 	case SimpleType_BOOL:
 		if ignore {

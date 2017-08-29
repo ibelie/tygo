@@ -94,15 +94,13 @@ func (s *Vector2) ByteSize() (size int) {
 		// property: s.B
 		// type: bytes
 		if len(s.B) > 0 {
-			l := len([]byte(s.B))
-			size += 1 + tygo.SizeVarint(uint64(l)) + l
+			size += 1 + tygo.SizeBuffer([]byte(s.B))
 		}
 
 		// property: s.S
 		// type: string
 		if len(s.S) > 0 {
-			l := len([]byte(s.S))
-			size += 1 + tygo.SizeVarint(uint64(l)) + l
+			size += 1 + tygo.SizeBuffer([]byte(s.S))
 		}
 
 		// property: s.E
@@ -1398,8 +1396,7 @@ func (s *Fighter_Part2) ByteSize() (size int) {
 				// list element
 				// type: bytes
 				if len(e) > 0 {
-					l := len([]byte(e))
-					size += 1 + tygo.SizeVarint(uint64(l)) + l
+					size += 1 + tygo.SizeBuffer([]byte(e))
 				} else {
 					log.Printf("[Tygo][ByteSize] Nil in a list is treated as an empty object contents default properties!")
 					size += 1 + 1
@@ -1414,8 +1411,7 @@ func (s *Fighter_Part2) ByteSize() (size int) {
 				// list element
 				// type: string
 				if len(e) > 0 {
-					l := len([]byte(e))
-					size += 1 + tygo.SizeVarint(uint64(l)) + l
+					size += 1 + tygo.SizeBuffer([]byte(e))
 				} else {
 					log.Printf("[Tygo][ByteSize] Nil in a list is treated as an empty object contents default properties!")
 					size += 1 + 1
@@ -1431,14 +1427,12 @@ func (s *Fighter_Part2) ByteSize() (size int) {
 				// dict key
 				// type: string
 				if len(k) > 0 {
-					l := len([]byte(k))
-					tmp += 1 + tygo.SizeVarint(uint64(l)) + l
+					tmp += 1 + tygo.SizeBuffer([]byte(k))
 				}
 				// dict value
 				// type: bytes
 				if len(v) > 0 {
-					l := len([]byte(v))
-					tmp += 1 + tygo.SizeVarint(uint64(l)) + l
+					tmp += 1 + tygo.SizeBuffer([]byte(v))
 				}
 				size += 1 + tygo.SizeVarint(uint64(tmp)) + tmp
 			}
@@ -1457,8 +1451,7 @@ func (s *Fighter_Part2) ByteSize() (size int) {
 				// dict value
 				// type: string
 				if len(v) > 0 {
-					l := len([]byte(v))
-					tmp += 1 + tygo.SizeVarint(uint64(l)) + l
+					tmp += 1 + tygo.SizeBuffer([]byte(v))
 				}
 				size += 2 + tygo.SizeVarint(uint64(tmp)) + tmp
 			}
@@ -1571,14 +1564,12 @@ func (s *Fighter_Part2) Serialize(output *tygo.ProtoBuf) {
 				// dict key size
 				// type: string
 				if len(k) > 0 {
-					l := len([]byte(k))
-					tmp += 1 + tygo.SizeVarint(uint64(l)) + l
+					tmp += 1 + tygo.SizeBuffer([]byte(k))
 				}
 				// dict value size
 				// type: bytes
 				if len(v) > 0 {
-					l := len([]byte(v))
-					tmp += 1 + tygo.SizeVarint(uint64(l)) + l
+					tmp += 1 + tygo.SizeBuffer([]byte(v))
 				}
 				output.WriteBytes(122) // tag: 122 MAKE_TAG(15, WireBytes=2)
 				output.WriteVarint(uint64(tmp))
@@ -1610,8 +1601,7 @@ func (s *Fighter_Part2) Serialize(output *tygo.ProtoBuf) {
 				// dict value size
 				// type: string
 				if len(v) > 0 {
-					l := len([]byte(v))
-					tmp += 1 + tygo.SizeVarint(uint64(l)) + l
+					tmp += 1 + tygo.SizeBuffer([]byte(v))
 				}
 				output.WriteBytes(130, 1) // tag: 130 MAKE_TAG(16, WireBytes=2)
 				output.WriteVarint(uint64(tmp))
@@ -2186,8 +2176,7 @@ func (s *Fighter) ByteSize() (size int) {
 			case []byte:
 				// type: bytes
 				{
-					l := len([]byte(v))
-					tmp += 1 + tygo.SizeVarint(uint64(l)) + l
+					tmp += 1 + tygo.SizeBuffer([]byte(v))
 				}
 			// variant type: *Vector2
 			case *Vector2:
@@ -2225,8 +2214,7 @@ func (s *Fighter) ByteSize() (size int) {
 			case []byte:
 				// type: bytes
 				{
-					l := len([]byte(v))
-					tmp += 1 + tygo.SizeVarint(uint64(l)) + l
+					tmp += 1 + tygo.SizeBuffer([]byte(v))
 				}
 			// variant type: *Vector2
 			case *Vector2:
@@ -2264,8 +2252,7 @@ func (s *Fighter) ByteSize() (size int) {
 			case []byte:
 				// type: bytes
 				{
-					l := len([]byte(v))
-					tmp += 1 + tygo.SizeVarint(uint64(l)) + l
+					tmp += 1 + tygo.SizeBuffer([]byte(v))
 				}
 			// variant type: *Vector2
 			case *Vector2:
@@ -2303,8 +2290,7 @@ func (s *Fighter) ByteSize() (size int) {
 			case []byte:
 				// type: bytes
 				{
-					l := len([]byte(v))
-					tmp += 1 + tygo.SizeVarint(uint64(l)) + l
+					tmp += 1 + tygo.SizeBuffer([]byte(v))
 				}
 			// variant type: *Vector2
 			case *Vector2:
@@ -2342,8 +2328,7 @@ func (s *Fighter) ByteSize() (size int) {
 			case []byte:
 				// type: bytes
 				{
-					l := len([]byte(v))
-					tmp += 1 + tygo.SizeVarint(uint64(l)) + l
+					tmp += 1 + tygo.SizeBuffer([]byte(v))
 				}
 			// variant type: *Vector2
 			case *Vector2:
@@ -2385,8 +2370,7 @@ func (s *Fighter) ByteSize() (size int) {
 					case string:
 						// type: string
 						{
-							l := len([]byte(v))
-							tmp += 1 + tygo.SizeVarint(uint64(l)) + l
+							tmp += 1 + tygo.SizeBuffer([]byte(v))
 						}
 					// variant type: *Vector2
 					case *Vector2:
@@ -2435,8 +2419,7 @@ func (s *Fighter) ByteSize() (size int) {
 					case string:
 						// type: string
 						{
-							l := len([]byte(v))
-							tmpp += 1 + tygo.SizeVarint(uint64(l)) + l
+							tmpp += 1 + tygo.SizeBuffer([]byte(v))
 						}
 					// variant type: *Vector2
 					case *Vector2:
@@ -2488,8 +2471,7 @@ func (s *Fighter) ByteSize() (size int) {
 							case string:
 								// type: string
 								{
-									l := len([]byte(v))
-									tmpp += 1 + tygo.SizeVarint(uint64(l)) + l
+									tmpp += 1 + tygo.SizeBuffer([]byte(v))
 								}
 							// variant type: *Vector2
 							case *Vector2:
@@ -2575,8 +2557,7 @@ func (s *Fighter) ByteSize() (size int) {
 							case string:
 								// type: string
 								{
-									l := len([]byte(v))
-									tmppp += 1 + tygo.SizeVarint(uint64(l)) + l
+									tmppp += 1 + tygo.SizeBuffer([]byte(v))
 								}
 							// variant type: *Vector2
 							case *Vector2:
@@ -2677,8 +2658,7 @@ func (s *Fighter) ByteSize() (size int) {
 							case string:
 								// type: string
 								{
-									l := len([]byte(v))
-									tmpp += 1 + tygo.SizeVarint(uint64(l)) + l
+									tmpp += 1 + tygo.SizeBuffer([]byte(v))
 								}
 							// addition type: int -> float32
 							case int:
@@ -2762,8 +2742,7 @@ func (s *Fighter) ByteSize() (size int) {
 							case string:
 								// type: string
 								{
-									l := len([]byte(v))
-									tmppp += 1 + tygo.SizeVarint(uint64(l)) + l
+									tmppp += 1 + tygo.SizeBuffer([]byte(v))
 								}
 							// addition type: int -> float32
 							case int:
@@ -2870,8 +2849,7 @@ func (s *Fighter) ByteSize() (size int) {
 						// dict key
 						// type: string
 						if len(k) > 0 {
-							l := len([]byte(k))
-							tmpp += 1 + tygo.SizeVarint(uint64(l)) + l
+							tmpp += 1 + tygo.SizeBuffer([]byte(k))
 						}
 						// dict value
 						// type: *Vector2
@@ -2911,8 +2889,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 			case []byte:
 				// type: bytes
 				{
-					l := len([]byte(v))
-					tmp += 1 + tygo.SizeVarint(uint64(l)) + l
+					tmp += 1 + tygo.SizeBuffer([]byte(v))
 				}
 			// variant type size: *Vector2
 			case *Vector2:
@@ -2988,8 +2965,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 			case []byte:
 				// type: bytes
 				{
-					l := len([]byte(v))
-					tmp += 1 + tygo.SizeVarint(uint64(l)) + l
+					tmp += 1 + tygo.SizeBuffer([]byte(v))
 				}
 			// variant type size: *Vector2
 			case *Vector2:
@@ -3065,8 +3041,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 			case []byte:
 				// type: bytes
 				{
-					l := len([]byte(v))
-					tmp += 1 + tygo.SizeVarint(uint64(l)) + l
+					tmp += 1 + tygo.SizeBuffer([]byte(v))
 				}
 			// variant type size: *Vector2
 			case *Vector2:
@@ -3142,8 +3117,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 			case []byte:
 				// type: bytes
 				{
-					l := len([]byte(v))
-					tmp += 1 + tygo.SizeVarint(uint64(l)) + l
+					tmp += 1 + tygo.SizeBuffer([]byte(v))
 				}
 			// variant type size: *Vector2
 			case *Vector2:
@@ -3219,8 +3193,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 			case []byte:
 				// type: bytes
 				{
-					l := len([]byte(v))
-					tmp += 1 + tygo.SizeVarint(uint64(l)) + l
+					tmp += 1 + tygo.SizeBuffer([]byte(v))
 				}
 			// variant type size: *Vector2
 			case *Vector2:
@@ -3301,8 +3274,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 					case string:
 						// type: string
 						{
-							l := len([]byte(v))
-							tmp += 1 + tygo.SizeVarint(uint64(l)) + l
+							tmp += 1 + tygo.SizeBuffer([]byte(v))
 						}
 					// variant type size: *Vector2
 					case *Vector2:
@@ -3384,8 +3356,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 					case string:
 						// type: string
 						{
-							l := len([]byte(v))
-							tmpp += 1 + tygo.SizeVarint(uint64(l)) + l
+							tmpp += 1 + tygo.SizeBuffer([]byte(v))
 						}
 					// variant type: *Vector2
 					case *Vector2:
@@ -3427,8 +3398,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 					case string:
 						// type: string
 						{
-							l := len([]byte(v))
-							tmpp += 1 + tygo.SizeVarint(uint64(l)) + l
+							tmpp += 1 + tygo.SizeBuffer([]byte(v))
 						}
 					// variant type size: *Vector2
 					case *Vector2:
@@ -3513,8 +3483,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 							case string:
 								// type: string
 								{
-									l := len([]byte(v))
-									tmpp += 1 + tygo.SizeVarint(uint64(l)) + l
+									tmpp += 1 + tygo.SizeBuffer([]byte(v))
 								}
 							// variant type: *Vector2
 							case *Vector2:
@@ -3565,8 +3534,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 							case string:
 								// type: string
 								{
-									l := len([]byte(v))
-									tmpp += 1 + tygo.SizeVarint(uint64(l)) + l
+									tmpp += 1 + tygo.SizeBuffer([]byte(v))
 								}
 							// variant type size: *Vector2
 							case *Vector2:
@@ -3703,8 +3671,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 							case string:
 								// type: string
 								{
-									l := len([]byte(v))
-									tmppp += 1 + tygo.SizeVarint(uint64(l)) + l
+									tmppp += 1 + tygo.SizeBuffer([]byte(v))
 								}
 							// variant type: *Vector2
 							case *Vector2:
@@ -3763,8 +3730,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 							case string:
 								// type: string
 								{
-									l := len([]byte(v))
-									tmppp += 1 + tygo.SizeVarint(uint64(l)) + l
+									tmppp += 1 + tygo.SizeBuffer([]byte(v))
 								}
 							// variant type: *Vector2
 							case *Vector2:
@@ -3810,8 +3776,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 							case string:
 								// type: string
 								{
-									l := len([]byte(v))
-									tmppp += 1 + tygo.SizeVarint(uint64(l)) + l
+									tmppp += 1 + tygo.SizeBuffer([]byte(v))
 								}
 							// variant type size: *Vector2
 							case *Vector2:
@@ -4001,8 +3966,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 							case string:
 								// type: string
 								{
-									l := len([]byte(v))
-									tmpp += 1 + tygo.SizeVarint(uint64(l)) + l
+									tmpp += 1 + tygo.SizeBuffer([]byte(v))
 								}
 							// addition type: int -> float32
 							case int:
@@ -4052,8 +4016,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 							case string:
 								// type: string
 								{
-									l := len([]byte(v))
-									tmpp += 1 + tygo.SizeVarint(uint64(l)) + l
+									tmpp += 1 + tygo.SizeBuffer([]byte(v))
 								}
 							// addition type size: int -> float32
 							case int:
@@ -4188,8 +4151,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 							case string:
 								// type: string
 								{
-									l := len([]byte(v))
-									tmppp += 1 + tygo.SizeVarint(uint64(l)) + l
+									tmppp += 1 + tygo.SizeBuffer([]byte(v))
 								}
 							// addition type: int -> float32
 							case int:
@@ -4243,8 +4205,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 							case string:
 								// type: string
 								{
-									l := len([]byte(v))
-									tmppp += 1 + tygo.SizeVarint(uint64(l)) + l
+									tmppp += 1 + tygo.SizeBuffer([]byte(v))
 								}
 							// addition type: int -> float32
 							case int:
@@ -4278,8 +4239,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 							case string:
 								// type: string
 								{
-									l := len([]byte(v))
-									tmppp += 1 + tygo.SizeVarint(uint64(l)) + l
+									tmppp += 1 + tygo.SizeBuffer([]byte(v))
 								}
 							// addition type size: int -> float32
 							case int:
@@ -4495,8 +4455,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 						// dict key
 						// type: string
 						if len(k) > 0 {
-							l := len([]byte(k))
-							tmpp += 1 + tygo.SizeVarint(uint64(l)) + l
+							tmpp += 1 + tygo.SizeBuffer([]byte(k))
 						}
 						// dict value
 						// type: *Vector2
@@ -4517,8 +4476,7 @@ func (s *Fighter) Serialize(output *tygo.ProtoBuf) {
 						// dict key size
 						// type: string
 						if len(k) > 0 {
-							l := len([]byte(k))
-							tmpp += 1 + tygo.SizeVarint(uint64(l)) + l
+							tmpp += 1 + tygo.SizeBuffer([]byte(k))
 						}
 						// dict value size
 						// type: *Vector2
@@ -6923,8 +6881,7 @@ func (s *Fighter) SerializeGPRParam(a0 map[int32]interface{}) (data []byte) {
 				case string:
 					// type: string
 					{
-						l := len([]byte(v))
-						tmpp += 1 + tygo.SizeVarint(uint64(l)) + l
+						tmpp += 1 + tygo.SizeBuffer([]byte(v))
 					}
 				// variant type: *Vector2
 				case *Vector2:
@@ -6978,8 +6935,7 @@ func (s *Fighter) SerializeGPRParam(a0 map[int32]interface{}) (data []byte) {
 				case string:
 					// type: string
 					{
-						l := len([]byte(v))
-						tmpp += 1 + tygo.SizeVarint(uint64(l)) + l
+						tmpp += 1 + tygo.SizeBuffer([]byte(v))
 					}
 				// variant type: *Vector2
 				case *Vector2:
@@ -7021,8 +6977,7 @@ func (s *Fighter) SerializeGPRParam(a0 map[int32]interface{}) (data []byte) {
 				case string:
 					// type: string
 					{
-						l := len([]byte(v))
-						tmpp += 1 + tygo.SizeVarint(uint64(l)) + l
+						tmpp += 1 + tygo.SizeBuffer([]byte(v))
 					}
 				// variant type size: *Vector2
 				case *Vector2:
