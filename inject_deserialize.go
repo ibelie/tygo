@@ -212,19 +212,23 @@ func (t SimpleType) DeserializeGo(tag string, input string, name string, preFiel
 		return
 	}`, t, input, name, t), WireVarint, nil
 	case SimpleType_BYTES:
+		nilValue := "nil"
 		var assert string
 		if isVariant {
+			nilValue = "make([]byte, 0)"
 			assert = ".([]byte)"
 		}
 		return fmt.Sprintf(`
 	// type: %s
-	if x, e := %s.ReadBuf(); e == nil {
-		%s = make([]byte, len(x))
-		copy(%s%s, x)
-	} else {
+	if x, e := %s.ReadBuf(); e != nil {
 		err = e
 		return
-	}`, t, input, name, name, assert), WireBytes, nil
+	} else if len(x) <= 0 {
+		%s = %s
+	} else {
+		%s = make([]byte, len(x))
+		copy(%s%s, x)
+	}`, t, input, name, nilValue, name, name, assert), WireBytes, nil
 	case SimpleType_STRING:
 		return fmt.Sprintf(`
 	// type: %s

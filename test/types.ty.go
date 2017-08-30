@@ -233,12 +233,14 @@ object_tmp_1:
 			case 3:
 				if tag == 26 { // MAKE_TAG(3, WireBytes=2)
 					// type: bytes
-					if x, e := input.ReadBuf(); e == nil {
-						s.B = make([]byte, len(x))
-						copy(s.B, x)
-					} else {
+					if x, e := input.ReadBuf(); e != nil {
 						err = e
 						return
+					} else if len(x) <= 0 {
+						s.B = nil
+					} else {
+						s.B = make([]byte, len(x))
+						copy(s.B, x)
 					}
 					if !input.ExpectBytes(34) { // tag: 34 MAKE_TAG(4, WireBytes=2)
 						continue object_tmp_1 // next tag for Vector2
@@ -1430,7 +1432,6 @@ func (s *Fighter_Part2) ByteSize() (size int) {
 				if len(e) > 0 {
 					size += 1 + tygo.SizeBuffer(e)
 				} else {
-					log.Printf("[Tygo][ByteSize] Nil in a list is treated as an empty object contents default properties!")
 					size += 1 + 1
 				}
 			}
@@ -1445,7 +1446,6 @@ func (s *Fighter_Part2) ByteSize() (size int) {
 				if len(e) > 0 {
 					size += 1 + tygo.SizeBuffer([]byte(e))
 				} else {
-					log.Printf("[Tygo][ByteSize] Nil in a list is treated as an empty object contents default properties!")
 					size += 1 + 1
 				}
 			}
@@ -1498,7 +1498,6 @@ func (s *Fighter_Part2) ByteSize() (size int) {
 				if len(e) > 0 {
 					size += 2 + tygo.SizeSymbol(e)
 				} else {
-					log.Printf("[Tygo][ByteSize] Nil in a list is treated as an empty object contents default properties!")
 					size += 2 + 1
 				}
 			}
@@ -1619,7 +1618,6 @@ func (s *Fighter_Part2) Serialize(output *tygo.ProtoBuf) {
 				if len(e) > 0 {
 					output.WriteBuf([]byte(e))
 				} else {
-					log.Printf("[Tygo][Serialize] Nil in a list is treated as an empty object contents default properties!")
 					output.WriteBytes(0)
 				}
 			}
@@ -1635,7 +1633,6 @@ func (s *Fighter_Part2) Serialize(output *tygo.ProtoBuf) {
 				if len(e) > 0 {
 					output.WriteBuf([]byte(e))
 				} else {
-					log.Printf("[Tygo][Serialize] Nil in a list is treated as an empty object contents default properties!")
 					output.WriteBytes(0)
 				}
 			}
@@ -1715,7 +1712,6 @@ func (s *Fighter_Part2) Serialize(output *tygo.ProtoBuf) {
 				if len(e) > 0 {
 					output.WriteSymbol(e)
 				} else {
-					log.Printf("[Tygo][Serialize] Nil in a list is treated as an empty object contents default properties!")
 					output.WriteBytes(0)
 				}
 			}
@@ -1927,12 +1923,14 @@ object_tmp_15:
 					for {
 						var tmp_17 []byte
 						// type: bytes
-						if x, e := input.ReadBuf(); e == nil {
-							tmp_17 = make([]byte, len(x))
-							copy(tmp_17, x)
-						} else {
+						if x, e := input.ReadBuf(); e != nil {
 							err = e
 							return
+						} else if len(x) <= 0 {
+							tmp_17 = nil
+						} else {
+							tmp_17 = make([]byte, len(x))
+							copy(tmp_17, x)
 						}
 						s.Bl = append(s.Bl, tmp_17)
 						if !input.ExpectBytes(106) { // tag: 106 MAKE_TAG(13, WireBytes=2)
@@ -2017,12 +2015,14 @@ object_tmp_15:
 									case 2:
 										if tmpg == 18 { // MAKE_TAG(2, WireBytes=2)
 											// type: bytes
-											if x, e := tmpi.ReadBuf(); e == nil {
-												tmp_20 = make([]byte, len(x))
-												copy(tmp_20, x)
-											} else {
+											if x, e := tmpi.ReadBuf(); e != nil {
 												err = e
 												return
+											} else if len(x) <= 0 {
+												tmp_20 = nil
+											} else {
+												tmp_20 = make([]byte, len(x))
+												copy(tmp_20, x)
 											}
 											if tmpi.ExpectEnd() {
 												break dict_tmp_19 // end for map[string]bytes
@@ -2193,12 +2193,14 @@ object_tmp_15:
 									case 2:
 										if tmpg == 18 { // MAKE_TAG(2, WireBytes=2)
 											// type: bytes
-											if x, e := tmpi.ReadBuf(); e == nil {
-												tmp_25 = make([]byte, len(x))
-												copy(tmp_25, x)
-											} else {
+											if x, e := tmpi.ReadBuf(); e != nil {
 												err = e
 												return
+											} else if len(x) <= 0 {
+												tmp_25 = nil
+											} else {
+												tmp_25 = make([]byte, len(x))
+												copy(tmp_25, x)
 											}
 											if tmpi.ExpectEnd() {
 												break dict_tmp_24 // end for map[symbol]bytes
@@ -4840,12 +4842,14 @@ object_tmp_41:
 								case 3:
 									if tmpg == 26 { // MAKE_TAG(3, WireBytes=2)
 										// type: bytes
-										if x, e := tmpi.ReadBuf(); e == nil {
-											s.V0 = make([]byte, len(x))
-											copy(s.V0.([]byte), x)
-										} else {
+										if x, e := tmpi.ReadBuf(); e != nil {
 											err = e
 											return
+										} else if len(x) <= 0 {
+											s.V0 = make([]byte, 0)
+										} else {
+											s.V0 = make([]byte, len(x))
+											copy(s.V0.([]byte), x)
 										}
 										continue variant_tmp_42 // next tag for variant<int32, float32, bytes, *Vector2>
 									}
@@ -4924,12 +4928,14 @@ object_tmp_41:
 								case 3:
 									if tmpg == 26 { // MAKE_TAG(3, WireBytes=2)
 										// type: bytes
-										if x, e := tmpi.ReadBuf(); e == nil {
-											s.V1 = make([]byte, len(x))
-											copy(s.V1.([]byte), x)
-										} else {
+										if x, e := tmpi.ReadBuf(); e != nil {
 											err = e
 											return
+										} else if len(x) <= 0 {
+											s.V1 = make([]byte, 0)
+										} else {
+											s.V1 = make([]byte, len(x))
+											copy(s.V1.([]byte), x)
 										}
 										continue variant_tmp_43 // next tag for variant<int32, float32, bytes, *Vector2>
 									}
@@ -5008,12 +5014,14 @@ object_tmp_41:
 								case 3:
 									if tmpg == 26 { // MAKE_TAG(3, WireBytes=2)
 										// type: bytes
-										if x, e := tmpi.ReadBuf(); e == nil {
-											s.V2 = make([]byte, len(x))
-											copy(s.V2.([]byte), x)
-										} else {
+										if x, e := tmpi.ReadBuf(); e != nil {
 											err = e
 											return
+										} else if len(x) <= 0 {
+											s.V2 = make([]byte, 0)
+										} else {
+											s.V2 = make([]byte, len(x))
+											copy(s.V2.([]byte), x)
 										}
 										continue variant_tmp_44 // next tag for variant<int32, float32, bytes, *Vector2>
 									}
@@ -5092,12 +5100,14 @@ object_tmp_41:
 								case 3:
 									if tmpg == 26 { // MAKE_TAG(3, WireBytes=2)
 										// type: bytes
-										if x, e := tmpi.ReadBuf(); e == nil {
-											s.V3 = make([]byte, len(x))
-											copy(s.V3.([]byte), x)
-										} else {
+										if x, e := tmpi.ReadBuf(); e != nil {
 											err = e
 											return
+										} else if len(x) <= 0 {
+											s.V3 = make([]byte, 0)
+										} else {
+											s.V3 = make([]byte, len(x))
+											copy(s.V3.([]byte), x)
 										}
 										continue variant_tmp_45 // next tag for variant<int32, float32, bytes, *Vector2>
 									}
@@ -5176,12 +5186,14 @@ object_tmp_41:
 								case 3:
 									if tmpg == 26 { // MAKE_TAG(3, WireBytes=2)
 										// type: bytes
-										if x, e := tmpi.ReadBuf(); e == nil {
-											s.V4 = make([]byte, len(x))
-											copy(s.V4.([]byte), x)
-										} else {
+										if x, e := tmpi.ReadBuf(); e != nil {
 											err = e
 											return
+										} else if len(x) <= 0 {
+											s.V4 = make([]byte, 0)
+										} else {
+											s.V4 = make([]byte, len(x))
+											copy(s.V4.([]byte), x)
 										}
 										continue variant_tmp_46 // next tag for variant<int32, float32, bytes, *Vector2>
 									}

@@ -164,6 +164,8 @@ func (p *ProtoBuf) WriteBuf(b []byte) {
 func (p *ProtoBuf) ReadBuf() ([]byte, error) {
 	if l, err := p.ReadVarint(); err != nil {
 		return nil, err
+	} else if l == 0 {
+		return nil, nil
 	} else if p.offset+int(l) > len(p.Buffer) {
 		return nil, io.EOF
 	} else {

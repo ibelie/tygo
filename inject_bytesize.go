@@ -300,6 +300,7 @@ func (t *ListType) _ByteSizeGo(size string, name string, preFieldNum string, fie
 		pkgs = update(pkgs, element_p)
 		var checkNil string
 		switch t.E.(type) {
+		case SimpleType:
 		case *VariantType:
 		case *ListType:
 		default:
