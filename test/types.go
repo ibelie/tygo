@@ -20,6 +20,7 @@ type Vector2 object {
 	Y fixedpoint<1, -10>
 	B bytes
 	S string
+	M symbol
 	E Corpus
 	P *GoType
 }
@@ -45,6 +46,9 @@ type Fighter_Part2 object {
 	Sl []string
 	Bd map[string]bytes
 	Sd map[int32]string
+	Ml []symbol
+	Mbd map[symbol]bytes
+	Md map[int32]symbol
 	El []Corpus
 	Ed map[int32]Corpus
 	Ll [][]float32
@@ -118,6 +122,7 @@ var v *Vector2 = &Vector2{
 	Y: 45.6,
 	B: []byte("asdf 1234"),
 	S: "哈哈哈哈",
+	M: "Symbol_A",
 	E: Corpus_LOCAL,
 	P: &GoType{PP: 123, AP: "asdf"},
 }
@@ -127,6 +132,7 @@ var v2 *Vector2 = &Vector2{
 	Y: 345.6,
 	B: []byte("xxx 1234"),
 	S: "哈哈 吼吼吼",
+	M: "Symbol_B",
 	E: Corpus_PRODUCTS,
 	P: &GoType{PP: 321, AP: "qwer"},
 }
@@ -146,14 +152,17 @@ var fighter *Fighter = &Fighter{
 			Pyv1:    123,
 			Pyv2:    &GoType{PP: 123, AP: "adsf"},
 		},
-		Fl: []float32{0.123, 456, 7.89},
-		Sl: []string{"哈哈", "吼吼", "嘿嘿"},
-		Bl: [][]byte{[]byte("aaa 0.123"), []byte("bbb 456"), []byte("ccc 7.89")},
-		Bd: map[string][]byte{"哈哈": []byte("aaa 0.123"), "asdf": []byte("bbb 456")},
-		Sd: map[int32]string{321: "哈哈 3", 231: "吼吼 2"},
-		El: []Corpus{Corpus_LOCAL, Corpus_NEWS, Corpus_VIDEO},
-		Ed: map[int32]Corpus{789: Corpus_WEB, 567: Corpus_IMAGES},
-		Ll: [][]float32{[]float32{12.3, 1.23}, []float32{1.234, 12.34, 123.4}},
+		Fl:  []float32{0.123, 456, 7.89},
+		Sl:  []string{"哈哈", "吼吼", "嘿嘿"},
+		Bl:  [][]byte{[]byte("aaa 0.123"), []byte("bbb 456"), []byte("ccc 7.89")},
+		Bd:  map[string][]byte{"哈哈": []byte("aaa 0.123"), "asdf": []byte("bbb 456")},
+		Sd:  map[int32]string{321: "哈哈 3", 231: "吼吼 2"},
+		Ml:  []string{"Symbol_X", "", "Symbol_Y"},
+		Mbd: map[string][]byte{"Symbol_aaa": []byte("aaa 0.123"), "Symbol_bbb": []byte("bbb 456")},
+		Md:  map[int32]string{321: "Symbol_321", 231: "Symbol_231"},
+		El:  []Corpus{Corpus_LOCAL, Corpus_NEWS, Corpus_VIDEO},
+		Ed:  map[int32]Corpus{789: Corpus_WEB, 567: Corpus_IMAGES},
+		Ll:  [][]float32{[]float32{12.3, 1.23}, []float32{1.234, 12.34, 123.4}},
 	},
 	V1:     98765,
 	V2:     []byte("adsf"),
@@ -204,6 +213,9 @@ func CompareVector2(p Errorf, v1 *Vector2, v2 *Vector2, prefix string) {
 	} else if v1.S != v2.S {
 		debug.PrintStack()
 		p("%s Vector2.S: %v %v", prefix, v1.S, v2.S)
+	} else if v1.M != v2.M {
+		debug.PrintStack()
+		p("%s Vector2.M: %v %v", prefix, v1.M, v2.M)
 	} else if bytes.Compare(v1.B, v2.B) != 0 {
 		debug.PrintStack()
 		p("%s Vector2.B: %v %v", prefix, v1.B, v2.B)
@@ -375,6 +387,40 @@ func CompareFighter_Part2(p Errorf, f1 *Fighter_Part2, f2 *Fighter_Part2) {
 			if v2, ok := f2.Sd[k]; !ok || v1 != v2 {
 				debug.PrintStack()
 				p("Fighter_Part2.Sd[%v]: %v %v", k, v1, v2)
+			}
+		}
+	}
+	if len(f1.Ml) != len(f2.Ml) {
+		debug.PrintStack()
+		p("Fighter_Part2.Ml: %v %v", f1.Ml, f2.Ml)
+	} else {
+		for k, v1 := range f1.Ml {
+			v2 := f2.Ml[k]
+			if v1 != v2 {
+				debug.PrintStack()
+				p("Fighter_Part2.Ml[%v]: %v %v", k, v1, v2)
+			}
+		}
+	}
+	if len(f1.Mbd) != len(f2.Mbd) {
+		debug.PrintStack()
+		p("Fighter_Part2.Mbd: %v %v", f1.Mbd, f2.Mbd)
+	} else {
+		for k, v1 := range f1.Mbd {
+			if v2, ok := f2.Mbd[k]; !ok || bytes.Compare(v1, v2) != 0 {
+				debug.PrintStack()
+				p("Fighter_Part2.Mbd[%v]: %v %v", k, v1, v2)
+			}
+		}
+	}
+	if len(f1.Md) != len(f2.Md) {
+		debug.PrintStack()
+		p("Fighter_Part2.Md: %v %v", f1.Md, f2.Md)
+	} else {
+		for k, v1 := range f1.Md {
+			if v2, ok := f2.Md[k]; !ok || v1 != v2 {
+				debug.PrintStack()
+				p("Fighter_Part2.Md[%v]: %v %v", k, v1, v2)
 			}
 		}
 	}

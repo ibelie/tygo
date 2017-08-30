@@ -393,7 +393,7 @@ func (t SimpleType) Go() (string, map[string]string) {
 	case SimpleType_BYTES:
 		return "[]byte", nil
 	case SimpleType_SYMBOL:
-		return "[]byte", nil
+		return "string", nil
 	default:
 		return t.String(), nil
 	}
