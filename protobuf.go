@@ -237,7 +237,7 @@ func (p *ProtoBuf) ReadSymbol() (string, error) {
 		src = p.Buffer[p.offset-int(l) : p.offset]
 	}
 
-	dst := make([]byte, len(src)*8/6)
+	dst := make([]byte, len(src)*4/3)
 	di, si := 0, 0
 	n := (len(src) / 3) * 3
 	for si < n {
