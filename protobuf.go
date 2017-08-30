@@ -184,7 +184,7 @@ func (p *ProtoBuf) WriteSymbol(s string) {
 		for i := 0; i < len(SymbolDecodeMap); i++ {
 			SymbolDecodeMap[i] = 0xFF
 		}
-		for i := 0; i < len(SymbolEncodeMap); i++ {
+		for i := 1; i < len(SymbolEncodeMap); i++ {
 			SymbolDecodeMap[SymbolEncodeMap[i]] = byte(i)
 		}
 	})
