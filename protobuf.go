@@ -240,24 +240,26 @@ func DecodeSymbol(src []byte) string {
 		dst[di+0] = SymbolDecodeMap[val>>18&0x3F]
 		dst[di+1] = SymbolDecodeMap[val>>12&0x3F]
 		dst[di+2] = SymbolDecodeMap[val>>6&0x3F]
-		if di+3 < len(dst) {
-			dst[di+3] = SymbolDecodeMap[val&0x3F]
-		}
+		dst[di+3] = SymbolDecodeMap[val&0x3F]
 
 		si += 3
 		di += 4
 	}
 
 	switch len(src) - si {
+	case 1:
+		dst[di+0] = SymbolDecodeMap[uint(src[si])>>2&0x3F]
 	case 2:
 		val := uint(src[si])<<8 | uint(src[si+1])
 		dst[di+0] = SymbolDecodeMap[val>>10&0x3F]
 		dst[di+1] = SymbolDecodeMap[val>>4&0x3F]
-	case 1:
-		dst[di+0] = SymbolDecodeMap[uint(src[si])>>2&0x3F]
 	}
 
-	return string(dst)
+	if dst[len(dst)-1] == SymbolDecodeMap[0] {
+		return string(dst[:len(dst)-1])
+	} else {
+		return string(dst)
+	}
 }
 
 func (p *ProtoBuf) WriteSymbol(s string) {
