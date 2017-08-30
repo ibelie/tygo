@@ -159,7 +159,7 @@ var fighter *Fighter = &Fighter{
 		Sd:  map[int32]string{321: "哈哈 3", 231: "吼吼 2"},
 		Ml:  []string{"Symbol_ABCD", "", "Sym"},
 		Mbd: map[string][]byte{"Symbol_aaa": []byte("aaa 0.123"), "Symbol_bbb": []byte("bbb 456")},
-		Md:  map[int32]string{321: "S", 231: "Symbol_231"},
+		Md:  map[int32]string{321: "S", 231: "Scene"},
 		El:  []Corpus{Corpus_LOCAL, Corpus_NEWS, Corpus_VIDEO},
 		Ed:  map[int32]Corpus{789: Corpus_WEB, 567: Corpus_IMAGES},
 		Ll:  [][]float32{[]float32{12.3, 1.23}, []float32{1.234, 12.34, 123.4}},
