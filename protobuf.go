@@ -211,10 +211,9 @@ var SymbolEncodeMap = [256]byte{
 }
 
 func (p *ProtoBuf) EncodeSymbol(s string) {
-	si := 0
 	src := []byte(s)
-	n := (len(src) / 4) * 4
-	for si < n {
+	n := len(src) / 4 * 4
+	for si := 0; si < n; si += 4 {
 		// Convert 4x 6bit source bytes into 3 bytes
 		val := uint(SymbolEncodeMap[src[si]])<<18 |
 			uint(SymbolEncodeMap[src[si+1]])<<12 |
@@ -225,22 +224,16 @@ func (p *ProtoBuf) EncodeSymbol(s string) {
 		p.Buffer[p.offset+1] = byte(val >> 8)
 		p.Buffer[p.offset+2] = byte(val >> 0)
 		p.offset += 3
-		si += 4
 	}
 
-	if len(src) > si {
-		var j, val uint
-		remain := uint(len(src) - si)
-		for j < remain {
-			val |= uint(SymbolEncodeMap[src[si+int(j)]]) << (18 - j*6)
-			j++
-		}
-		j = 0
-		for j < remain {
-			p.Buffer[p.offset] = byte(val >> (16 - j*8))
-			p.offset++
-			j++
-		}
+	var val uint
+	remain := len(src) - n
+	for j := 0; j < remain; j++ {
+		val |= uint(SymbolEncodeMap[src[n+j]]) << (18 - uint(j)*6)
+	}
+	for j := 0; j < remain; j++ {
+		p.Buffer[p.offset] = byte(val >> (16 - uint(j)*8))
+		p.offset++
 	}
 }
 
@@ -249,10 +242,10 @@ func SymbolEncodedLen(data string) int {
 }
 
 func DecodeSymbol(src []byte) string {
+	di := 0
 	dst := make([]byte, len(src)*4/3)
-	di, si := 0, 0
-	n := (len(src) / 3) * 3
-	for si < n {
+	n := len(src) / 3 * 3
+	for si := 0; si < n; si += 3 {
 		// Convert 3x 8bit source bytes into 4 bytes
 		val := uint(src[si+0])<<16 | uint(src[si+1])<<8 | uint(src[si+2])
 
@@ -260,16 +253,14 @@ func DecodeSymbol(src []byte) string {
 		dst[di+1] = SymbolDecodeMap[val>>12&0x3F]
 		dst[di+2] = SymbolDecodeMap[val>>6&0x3F]
 		dst[di+3] = SymbolDecodeMap[val&0x3F]
-
-		si += 3
 		di += 4
 	}
 
-	switch len(src) - si {
+	switch len(src) - n {
 	case 1:
-		dst[di+0] = SymbolDecodeMap[uint(src[si])>>2&0x3F]
+		dst[di+0] = SymbolDecodeMap[uint(src[n])>>2&0x3F]
 	case 2:
-		val := uint(src[si])<<8 | uint(src[si+1])
+		val := uint(src[n])<<8 | uint(src[n+1])
 		dst[di+0] = SymbolDecodeMap[val>>10&0x3F]
 		dst[di+1] = SymbolDecodeMap[val>>4&0x3F]
 	}
