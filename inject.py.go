@@ -98,16 +98,16 @@ func (t SimpleType) Python() string {
 	switch t {
 	case SimpleType_INT32:
 		fallthrough
+	case SimpleType_UINT32:
+		return "typy.Integer"
 	case SimpleType_INT64:
 		fallthrough
-	case SimpleType_UINT32:
-		fallthrough
 	case SimpleType_UINT64:
-		return "typy.Integer"
+		return "typy.Long"
 	case SimpleType_FLOAT32:
-		fallthrough
-	case SimpleType_FLOAT64:
 		return "typy.Float"
+	case SimpleType_FLOAT64:
+		return "typy.Double"
 	case SimpleType_BYTES:
 		return "typy.Bytes"
 	case SimpleType_STRING:
@@ -331,12 +331,12 @@ func (t *VariantType) Typyd() string {
 				switch v {
 				case SimpleType_INT32:
 					fallthrough
+				case SimpleType_UINT32:
+					properties["Integer"] = v
 				case SimpleType_INT64:
 					fallthrough
-				case SimpleType_UINT32:
-					fallthrough
 				case SimpleType_UINT64:
-					properties["Integer"] = v
+					properties["Long"] = v
 				case SimpleType_FLOAT32:
 					properties["Float"] = v
 				case SimpleType_FLOAT64:
@@ -357,9 +357,9 @@ func (t *VariantType) Typyd() string {
 			case *InstanceType:
 				properties[v.Name] = v
 			case *FixedPointType:
-				properties["Dict"] = v
+				properties["FixedPoint"] = v
 			case *ListType:
-				properties["Dict"] = v
+				properties["List"] = v
 			case *DictType:
 				properties["Dict"] = v
 			default:
