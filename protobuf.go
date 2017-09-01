@@ -211,28 +211,29 @@ var SymbolEncodeMap = [256]byte{
 }
 
 func (p *ProtoBuf) EncodeSymbol(s string) {
+	var v uint
 	src := []byte(s)
 	n := len(src) / 4 * 4
 	for si := 0; si < n; si += 4 {
 		// Convert 4x 6bit source bytes into 3 bytes
-		val := (uint(SymbolEncodeMap[src[si]]) << 18) |
+		v = (uint(SymbolEncodeMap[src[si+0]]) << 18) |
 			(uint(SymbolEncodeMap[src[si+1]]) << 12) |
 			(uint(SymbolEncodeMap[src[si+2]]) << 6) |
 			(uint(SymbolEncodeMap[src[si+3]]) << 0)
 
-		p.Buffer[p.offset+0] = byte(0xFF & (val >> 16))
-		p.Buffer[p.offset+1] = byte(0xFF & (val >> 8))
-		p.Buffer[p.offset+2] = byte(0xFF & (val >> 0))
+		p.Buffer[p.offset+0] = byte(0xFF & (v >> 16))
+		p.Buffer[p.offset+1] = byte(0xFF & (v >> 8))
+		p.Buffer[p.offset+2] = byte(0xFF & (v >> 0))
 		p.offset += 3
 	}
 
-	var val uint
+	v = 0
 	remain := len(src) - n
 	for j := 0; j < remain; j++ {
-		val |= uint(SymbolEncodeMap[src[n+j]]) << (18 - uint(j)*6)
+		v |= uint(SymbolEncodeMap[src[n+j]]) << (18 - uint(j)*6)
 	}
 	for j := 0; j < remain; j++ {
-		p.Buffer[p.offset] = byte(0xFF & (val >> (16 - uint(j)*8)))
+		p.Buffer[p.offset] = byte(0xFF & (v >> (16 - uint(j)*8)))
 		p.offset++
 	}
 }
@@ -245,14 +246,17 @@ func DecodeSymbol(src []byte) string {
 	di := 0
 	dst := make([]byte, len(src)*4/3)
 	n := len(src) / 3 * 3
+	var v uint
 	for si := 0; si < n; si += 3 {
 		// Convert 3x 8bit source bytes into 4 bytes
-		val := (uint(src[si+0]) << 16) | (uint(src[si+1]) << 8) | uint(src[si+2])
+		v = (uint(src[si+0]) << 16) |
+			(uint(src[si+1]) << 8) |
+			(uint(src[si+2]) << 0)
 
-		dst[di+0] = SymbolDecodeMap[0x3F&(val>>18)]
-		dst[di+1] = SymbolDecodeMap[0x3F&(val>>12)]
-		dst[di+2] = SymbolDecodeMap[0x3F&(val>>6)]
-		dst[di+3] = SymbolDecodeMap[0x3F&(val>>0)]
+		dst[di+0] = SymbolDecodeMap[0x3F&(v>>18)]
+		dst[di+1] = SymbolDecodeMap[0x3F&(v>>12)]
+		dst[di+2] = SymbolDecodeMap[0x3F&(v>>6)]
+		dst[di+3] = SymbolDecodeMap[0x3F&(v>>0)]
 		di += 4
 	}
 
@@ -260,9 +264,10 @@ func DecodeSymbol(src []byte) string {
 	case 1:
 		dst[di+0] = SymbolDecodeMap[0x3F&(uint(src[n])>>2)]
 	case 2:
-		val := uint(src[n])<<8 | uint(src[n+1])
-		dst[di+0] = SymbolDecodeMap[0x3F&(val>>10)]
-		dst[di+1] = SymbolDecodeMap[0x3F&(val>>4)]
+		v = (uint(src[n+0]) << 8) |
+			(uint(src[n+1]) << 0)
+		dst[di+0] = SymbolDecodeMap[0x3F&(v>>10)]
+		dst[di+1] = SymbolDecodeMap[0x3F&(v>>4)]
 	}
 
 	if dst[len(dst)-1] == SymbolDecodeMap[0] {
