@@ -243,11 +243,10 @@ func SymbolEncodedLen(data string) int {
 }
 
 func DecodeSymbol(src []byte) string {
-	di := 0
 	dst := make([]byte, len(src)*4/3)
 	n := len(src) / 3 * 3
 	var v uint
-	for si := 0; si < n; si += 3 {
+	for si, di := 0, 0; si < n; si += 3 {
 		// Convert 3x 8bit source bytes into 4 bytes
 		v = (uint(src[si+0]) << 16) |
 			(uint(src[si+1]) << 8) |
@@ -262,12 +261,12 @@ func DecodeSymbol(src []byte) string {
 
 	switch len(src) - n {
 	case 1:
-		dst[di+0] = SymbolDecodeMap[0x3F&(uint(src[n])>>2)]
+		dst[len(dst)-1] = SymbolDecodeMap[0x3F&(uint(src[n])>>2)]
 	case 2:
 		v = (uint(src[n+0]) << 8) |
 			(uint(src[n+1]) << 0)
-		dst[di+0] = SymbolDecodeMap[0x3F&(v>>10)]
-		dst[di+1] = SymbolDecodeMap[0x3F&(v>>4)]
+		dst[len(dst)-2] = SymbolDecodeMap[0x3F&(v>>10)]
+		dst[len(dst)-1] = SymbolDecodeMap[0x3F&(v>>4)]
 	}
 
 	if dst[len(dst)-1] == SymbolDecodeMap[0] {
