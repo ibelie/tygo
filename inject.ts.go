@@ -65,8 +65,8 @@ func typeListTypescript(name string, typ string, ts []Type) string {
 		items = append(items, fmt.Sprintf("a%d: %s", i, t.Typescript()))
 	}
 	return fmt.Sprintf(`
-		static Serialize%s%s(%s): Uint8Array;
-		static Deserialize%s%s(data: Uint8Array): any;`, name, typ, strings.Join(items, ", "), name, typ)
+		static S_%s%s(%s): Uint8Array;
+		static D_%s%s(data: Uint8Array): any;`, name, typ, strings.Join(items, ", "), name, typ)
 }
 
 func (t *Object) Typescript() string {
