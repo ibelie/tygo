@@ -367,27 +367,27 @@ func (t UnknownType) String() string {
 
 func SimpleType_FromString(s string) Type {
 	switch s {
-	case "nil":
+	case STR_NIL:
 		return SimpleType_NIL
-	case "int32":
+	case STR_INT32:
 		return SimpleType_INT32
-	case "int64":
+	case STR_INT64:
 		return SimpleType_INT64
-	case "uint32":
+	case STR_UINT32:
 		return SimpleType_UINT32
-	case "uint64":
+	case STR_UINT64:
 		return SimpleType_UINT64
-	case "bytes":
+	case STR_BYTES:
 		return SimpleType_BYTES
-	case "string":
+	case STR_STRING:
 		return SimpleType_STRING
-	case "symbol":
+	case STR_SYMBOL:
 		return SimpleType_SYMBOL
-	case "bool":
+	case STR_BOOL:
 		return SimpleType_BOOL
-	case "float32":
+	case STR_FLOAT32:
 		return SimpleType_FLOAT32
-	case "float64":
+	case STR_FLOAT64:
 		return SimpleType_FLOAT64
 	default:
 		return UnknownType(s)
@@ -397,30 +397,30 @@ func SimpleType_FromString(s string) Type {
 func (t SimpleType) String() string {
 	switch t {
 	case SimpleType_NIL:
-		return "nil"
+		return STR_NIL
 	case SimpleType_INT32:
-		return "int32"
+		return STR_INT32
 	case SimpleType_INT64:
-		return "int64"
+		return STR_INT64
 	case SimpleType_UINT32:
-		return "uint32"
+		return STR_UINT32
 	case SimpleType_UINT64:
-		return "uint64"
+		return STR_UINT64
 	case SimpleType_BYTES:
-		return "bytes"
+		return STR_BYTES
 	case SimpleType_STRING:
-		return "string"
+		return STR_STRING
 	case SimpleType_SYMBOL:
-		return "symbol"
+		return STR_SYMBOL
 	case SimpleType_BOOL:
-		return "bool"
+		return STR_BOOL
 	case SimpleType_FLOAT32:
-		return "float32"
+		return STR_FLOAT32
 	case SimpleType_FLOAT64:
-		return "float64"
+		return STR_FLOAT64
 	default:
 		log.Fatalf("[Tygo][SimpleType] Unexpect enum value: %d", t)
-		return "unknown"
+		return STR_UNKNOWN
 	}
 }
 

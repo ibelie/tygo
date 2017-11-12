@@ -49,7 +49,7 @@ func (t *Object) ByteSizeGo(size string, name string, preFieldNum string, fieldN
 	if p_name != "" {
 		fields = append(fields, fmt.Sprintf(`
 		preFieldNum := %s.%s.MaxFieldNum()`, name, p_name))
-		p_name = "preFieldNum"
+		p_name = STR_PREFIELDNUM
 	}
 
 	for i, field := range t.VisibleFields() {
@@ -230,9 +230,9 @@ func (t *InstanceType) _ByteSizeGo(size string, name string, preFieldNum string,
 	if ignore {
 		var zero string
 		if t.IsPtr {
-			zero = "nil"
+			zero = STR_NIL
 		} else {
-			zero = "0"
+			zero = STR_ZERO
 		}
 		return fmt.Sprintf(`
 	// type: %s
@@ -385,7 +385,7 @@ func (t *VariantType) _ByteSizeGo(size string, name string, preFieldNum string, 
 	variantNum := 0
 	for _, st := range t.Ts {
 		type_s, type_p := st.Go()
-		if type_s == "nil" {
+		if type_s == STR_NIL {
 			continue
 		}
 		variantNum++

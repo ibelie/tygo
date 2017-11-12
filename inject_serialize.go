@@ -207,9 +207,9 @@ func (t *InstanceType) SerializeGo(size string, name string, preFieldNum string,
 	if ignore {
 		var zero string
 		if t.IsPtr {
-			zero = "nil"
+			zero = STR_NIL
 		} else {
-			zero = "0"
+			zero = STR_ZERO
 		}
 		return fmt.Sprintf(`
 	// type: %s

@@ -18,6 +18,23 @@ import (
 	"go/token"
 )
 
+const (
+	STR_ZERO        = "0"
+	STR_NIL         = "nil"
+	STR_INT32       = "int32"
+	STR_UINT32      = "uint32"
+	STR_INT64       = "int64"
+	STR_UINT64      = "uint64"
+	STR_BYTES       = "bytes"
+	STR_STRING      = "string"
+	STR_SYMBOL      = "symbol"
+	STR_BOOL        = "bool"
+	STR_FLOAT32     = "float32"
+	STR_FLOAT64     = "float64"
+	STR_UNKNOWN     = "unknown"
+	STR_PREFIELDNUM = "preFieldNum"
+)
+
 func ObjectMap(types []Type) (objects map[string]*Object) {
 	objects = make(map[string]*Object)
 	for _, t := range types {
