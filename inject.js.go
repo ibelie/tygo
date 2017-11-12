@@ -58,7 +58,7 @@ goog.provide('%s.%s');`, module, name)))
 
 	var sortedRequires []string
 	for require, _ := range requires {
-		if strings.HasPrefix(require, "goog.require('tyts.") {
+		if strings.HasPrefix(require, "goog.require('ibelie.tyts.") {
 			sortedRequires = append(sortedRequires, require)
 		}
 	}
@@ -67,7 +67,7 @@ goog.provide('%s.%s');`, module, name)))
 
 	sortedRequires = nil
 	for require, _ := range requires {
-		if !strings.HasPrefix(require, "goog.require('tyts.") {
+		if !strings.HasPrefix(require, "goog.require('ibelie.tyts.") {
 			sortedRequires = append(sortedRequires, require)
 		}
 	}
@@ -88,7 +88,7 @@ func (t *Enum) Javascript() (string, map[string]string) {
 }
 
 func typeListJavascript(name string, ts []Type) (string, map[string]string) {
-	requires := map[string]string{"goog.require('tyts.Method');": ""}
+	requires := map[string]string{"goog.require('ibelie.tyts.Method');": ""}
 	var items []string
 	for i, t := range ts {
 		js, rs := t.Javascript()
@@ -96,7 +96,7 @@ func typeListJavascript(name string, ts []Type) (string, map[string]string) {
 		items = append(items, fmt.Sprintf(`
 	{tag: %d, tagsize: %d, type: %s}`, _MAKE_TAG(i+1, t.WireType()), TAG_SIZE(i+1), js))
 	}
-	return fmt.Sprintf(`new tyts.Method('%s', %d, [%s
+	return fmt.Sprintf(`new ibelie.tyts.Method('%s', %d, [%s
 ]);
 `, name, _MAKE_CUTOFF(len(items)), strings.Join(items, ",")), requires
 }
@@ -107,7 +107,7 @@ func (t *Object) Javascript() (string, map[string]string) {
 	}
 
 	var fields []string
-	requires := map[string]string{"goog.require('tyts.Object');": ""}
+	requires := map[string]string{"goog.require('ibelie.tyts.Object');": ""}
 	for i, field := range t.AllFields(JS_OBJECTS, true) {
 		wiretype := field.WireType()
 		js, rs := field.Javascript()
@@ -155,7 +155,7 @@ func (t *Object) Javascript() (string, map[string]string) {
 	}
 
 	return fmt.Sprintf(`
-var %s = new tyts.Object('%s', %d, [%s
+var %s = new ibelie.tyts.Object('%s', %d, [%s
 ], [%s
 ]);%s
 %s.%s = %s.Type;
@@ -177,19 +177,19 @@ func (t SimpleType) Javascript() (string, map[string]string) {
 	case SimpleType_UINT32:
 		fallthrough
 	case SimpleType_UINT64:
-		return "tyts.Integer", map[string]string{"goog.require('tyts.Integer');": ""}
+		return "ibelie.tyts.Integer", map[string]string{"goog.require('ibelie.tyts.Integer');": ""}
 	case SimpleType_BYTES:
-		return "tyts.Bytes", map[string]string{"goog.require('tyts.Bytes');": ""}
+		return "ibelie.tyts.Bytes", map[string]string{"goog.require('ibelie.tyts.Bytes');": ""}
 	case SimpleType_STRING:
-		return "tyts.String", map[string]string{"goog.require('tyts.String');": ""}
+		return "ibelie.tyts.String", map[string]string{"goog.require('ibelie.tyts.String');": ""}
 	case SimpleType_SYMBOL:
-		return "tyts.Symbol", map[string]string{"goog.require('tyts.Symbol');": ""}
+		return "ibelie.tyts.Symbol", map[string]string{"goog.require('ibelie.tyts.Symbol');": ""}
 	case SimpleType_BOOL:
-		return "tyts.Bool", map[string]string{"goog.require('tyts.Bool');": ""}
+		return "ibelie.tyts.Bool", map[string]string{"goog.require('ibelie.tyts.Bool');": ""}
 	case SimpleType_FLOAT32:
-		return "tyts.Float32", map[string]string{"goog.require('tyts.Float32');": ""}
+		return "ibelie.tyts.Float32", map[string]string{"goog.require('ibelie.tyts.Float32');": ""}
 	case SimpleType_FLOAT64:
-		return "tyts.Float64", map[string]string{"goog.require('tyts.Float64');": ""}
+		return "ibelie.tyts.Float64", map[string]string{"goog.require('ibelie.tyts.Float64');": ""}
 	default:
 		log.Fatalf("[Tygo][SimpleType] Unexpect enum value for Javascript: %d", t)
 		return "", nil
@@ -197,7 +197,7 @@ func (t SimpleType) Javascript() (string, map[string]string) {
 }
 
 func (t *EnumType) Javascript() (string, map[string]string) {
-	return "tyts.Integer", map[string]string{"goog.require('tyts.Integer');": ""}
+	return "ibelie.tyts.Integer", map[string]string{"goog.require('ibelie.tyts.Integer');": ""}
 }
 
 func (t *InstanceType) Javascript() (string, map[string]string) {
@@ -209,12 +209,12 @@ func (t *InstanceType) Javascript() (string, map[string]string) {
 		identifier := t.Name + "Delegate"
 		if _, exist := JS_TYPES[identifier]; !exist {
 			JS_WRITER.Write([]byte(fmt.Sprintf(`
-var %s = new tyts.Extension('%s', %s)
+var %s = new ibelie.tyts.Extension('%s', %s)
 `, identifier, identifier, t.Name)))
 			JS_TYPES[identifier] = t
 		}
 		return identifier, map[string]string{
-			"goog.require('tyts.Extension');":          "",
+			"goog.require('ibelie.tyts.Extension');":   "",
 			fmt.Sprintf("goog.require('%s');", t.Name): "",
 		}
 	}
@@ -224,21 +224,21 @@ func (t *FixedPointType) Javascript() (string, map[string]string) {
 	identifier := t.Identifier()
 	if _, exist := JS_TYPES[identifier]; !exist {
 		JS_WRITER.Write([]byte(fmt.Sprintf(`
-var %s = new tyts.FixedPoint(%d, %d)
+var %s = new ibelie.tyts.FixedPoint(%d, %d)
 `, identifier, t.Floor, t.Precision)))
 		JS_TYPES[identifier] = t
 	}
-	return identifier, map[string]string{"goog.require('tyts.FixedPoint');": ""}
+	return identifier, map[string]string{"goog.require('ibelie.tyts.FixedPoint');": ""}
 }
 
 func (t *ListType) Javascript() (string, map[string]string) {
 	identifier := t.Identifier()
-	requires := map[string]string{"goog.require('tyts.List');": ""}
+	requires := map[string]string{"goog.require('ibelie.tyts.List');": ""}
 	if _, exist := JS_TYPES[identifier]; !exist {
 		js, rs := t.E.Javascript()
 		requires = update(requires, rs)
 		JS_WRITER.Write([]byte(fmt.Sprintf(`
-var %s = new tyts.List('%s', %s)
+var %s = new ibelie.tyts.List('%s', %s)
 `, identifier, identifier, js)))
 		JS_TYPES[identifier] = t
 	}
@@ -247,14 +247,14 @@ var %s = new tyts.List('%s', %s)
 
 func (t *DictType) Javascript() (string, map[string]string) {
 	identifier := t.Identifier()
-	requires := map[string]string{"goog.require('tyts.Dict');": ""}
+	requires := map[string]string{"goog.require('ibelie.tyts.Dict');": ""}
 	if _, exist := JS_TYPES[identifier]; !exist {
 		js_k, rs_k := t.K.Javascript()
 		js_v, rs_v := t.V.Javascript()
 		requires = update(requires, rs_k)
 		requires = update(requires, rs_v)
 		JS_WRITER.Write([]byte(fmt.Sprintf(`
-var %s = new tyts.Dict('%s', %s, %s)
+var %s = new ibelie.tyts.Dict('%s', %s, %s)
 `, identifier, identifier, js_k, js_v)))
 		JS_TYPES[identifier] = t
 	}
@@ -263,7 +263,7 @@ var %s = new tyts.Dict('%s', %s, %s)
 
 func (t *VariantType) Javascript() (string, map[string]string) {
 	identifier := t.Identifier()
-	requires := map[string]string{"goog.require('tyts.Variant');": ""}
+	requires := map[string]string{"goog.require('ibelie.tyts.Variant');": ""}
 	if _, exist := JS_TYPES[identifier]; !exist {
 		var codes []string
 		variantNum := 0
@@ -279,7 +279,7 @@ func (t *VariantType) Javascript() (string, map[string]string) {
 	{tag: %d, tagsize: %d, type: %s}`, _MAKE_TAG(variantNum, wiretype), TAG_SIZE(variantNum), js))
 		}
 		JS_WRITER.Write([]byte(fmt.Sprintf(`
-var %s = new tyts.Variant('%s', %d, [%s
+var %s = new ibelie.tyts.Variant('%s', %d, [%s
 ])
 `, identifier, identifier, _MAKE_CUTOFF(len(codes)), strings.Join(codes, ","))))
 		JS_TYPES[identifier] = t
