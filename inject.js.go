@@ -171,7 +171,7 @@ var %s = new ibelie.tyts.Object('%s', %d, [%s
 %s['%s'] = %s.Type;
 `, t.Name, t.Name, _MAKE_CUTOFF(len(fields)), strings.Join(fields, ","),
 		strings.Join(method_props, ","), strings.Join(method_types, ""),
-		m, t.Name, t.Name), requires
+		strings.Replace(m, "/", ".", -1), t.Name, t.Name), requires
 }
 
 func (t UnknownType) Javascript() (string, map[string]string) {

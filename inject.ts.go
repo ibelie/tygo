@@ -50,7 +50,7 @@ declare module %s {
 		Deserialize(data: Uint8Array): void;
 	}%s
 }
-`, pkg, strings.Join(codes, "")))
+`, strings.Replace(pkg, "/", ".", -1), strings.Join(codes, "")))
 	}
 
 	PROP_PRE = nil
