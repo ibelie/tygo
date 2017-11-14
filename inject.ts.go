@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"log"
 	"path"
+	"sort"
 	"strings"
 
 	"io/ioutil"
@@ -34,8 +35,15 @@ func Typescript(dir string, name string, module string, types []Type, propPre []
 		pkgTypes = map[string][]Type{module: types}
 	}
 
+	var sortedPkgs []string
+	for pkg, _ := range pkgTypes {
+		sortedPkgs = append(sortedPkgs, pkg)
+	}
+	sort.Strings(sortedPkgs)
+
 	var modules []string
-	for pkg, ts := range pkgTypes {
+	for _, pkg := range sortedPkgs {
+		ts := pkgTypes[pkg]
 		TS_CUR_MODULE = pkg
 		var codes []string
 		for _, t := range ts {
