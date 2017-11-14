@@ -31,24 +31,28 @@ func Javascript(dir string, name string, module string, types []Type, propPre []
 	body.Write([]byte(`
 `))
 
-	PROP_PRE = propPre
-	JS_MODULE = module
-	JS_WRITER = &body
-	JS_TYPES = make(map[string]Type)
-
-	JS_OBJECTS = ObjectMap(types, JS_MODULE == "")
+	JS_OBJECTS = ObjectMap(types, false)
 	var sortedObjects []string
 	for n, _ := range JS_OBJECTS {
 		sortedObjects = append(sortedObjects, n)
 	}
 	sort.Strings(sortedObjects)
 
+	PROP_PRE = propPre
+	JS_MODULE = module
+	JS_WRITER = &body
+	JS_TYPES = make(map[string]Type)
 	var requires map[string]string
 	for _, name := range sortedObjects {
+		object := JS_OBJECTS[name]
+		m := JS_MODULE
+		if m == "" {
+			m = object.Package
+		}
 		js, rs := JS_OBJECTS[name].Javascript()
 		requires = update(requires, rs)
 		head.Write([]byte(fmt.Sprintf(`
-goog.provide('%s.%s');`, module, name)))
+goog.provide('%s.%s');`, strings.Replace(m, "/", ".", -1), name)))
 		body.Write([]byte(js))
 	}
 	PROP_PRE = nil
@@ -155,6 +159,11 @@ func (t *Object) Javascript() (string, map[string]string) {
 		}
 	}
 
+	m := JS_MODULE
+	if m == "" {
+		m = t.Package
+	}
+
 	return fmt.Sprintf(`
 var %s = new ibelie.tyts.Object('%s', %d, [%s
 ], [%s
@@ -162,7 +171,7 @@ var %s = new ibelie.tyts.Object('%s', %d, [%s
 %s['%s'] = %s.Type;
 `, t.Name, t.Name, _MAKE_CUTOFF(len(fields)), strings.Join(fields, ","),
 		strings.Join(method_props, ","), strings.Join(method_types, ""),
-		JS_MODULE, t.Name, t.Name), requires
+		m, t.Name, t.Name), requires
 }
 
 func (t UnknownType) Javascript() (string, map[string]string) {

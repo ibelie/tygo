@@ -42,15 +42,15 @@ func Typescript(dir string, name string, module string, types []Type, propPre []
 			codes = append(codes, t.Typescript())
 		}
 		modules = append(modules, fmt.Sprintf(`
-	declare module %s {
-		interface Type {
-			__class__: string;
-			ByteSize(): number;
-			Serialize(): Uint8Array;
-			Deserialize(data: Uint8Array): void;
-		}%s
-	}
-	`, pkg, strings.Join(codes, "")))
+declare module %s {
+	interface Type {
+		__class__: string;
+		ByteSize(): number;
+		Serialize(): Uint8Array;
+		Deserialize(data: Uint8Array): void;
+	}%s
+}
+`, pkg, strings.Join(codes, "")))
 	}
 
 	PROP_PRE = nil
