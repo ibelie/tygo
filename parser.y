@@ -75,7 +75,7 @@ enum:
 	TYPE IDENT ENUM '{' newline
 	{
 		eiota = 0
-		$$ = &Enum{Name: $2, Values: make(map[string]int)}
+		$$ = &Enum{Name: $2, Package: parserPkg, Values: make(map[string]int)}
 	}
 |	enum '\t' IDENT '=' INTEGER newline
 	{
@@ -99,7 +99,7 @@ enum:
 object:
 	TYPE IDENT OBJECT '{' newline
 	{
-		$$ = &Object{Name: $2}
+		$$ = &Object{Name: $2, Package: parserPkg}
 	}
 |	object '\t' IDENT spec newline
 	{
@@ -233,13 +233,15 @@ newline:
 var eiota int
 
 var (
+	parserPkg     string
 	parserTypes   []Type
 	parserTypeMap map[string]Type
 	parserImports map[string]string
 	parserTypePkg map[string][2]string
 )
 
-func Parse(code string, imports map[string]string, typePkg map[string][2]string) ([]Type) {
+func Parse(code string, pkg string, imports map[string]string, typePkg map[string][2]string) ([]Type) {
+	parserPkg     = pkg
 	parserTypes   = nil
 	parserTypeMap = make(map[string]Type)
 	parserImports = imports

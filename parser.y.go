@@ -73,13 +73,15 @@ const tygoInitialStackSize = 16
 var eiota int
 
 var (
+	parserPkg     string
 	parserTypes   []Type
 	parserTypeMap map[string]Type
 	parserImports map[string]string
 	parserTypePkg map[string][2]string
 )
 
-func Parse(code string, imports map[string]string, typePkg map[string][2]string) []Type {
+func Parse(code string, pkg string, imports map[string]string, typePkg map[string][2]string) []Type {
+	parserPkg = pkg
 	parserTypes = nil
 	parserTypeMap = make(map[string]Type)
 	parserImports = imports
@@ -697,7 +699,7 @@ tygodefault:
 		//line parser.y:76
 		{
 			eiota = 0
-			tygoVAL.enum = &Enum{Name: tygoDollar[2].ident, Values: make(map[string]int)}
+			tygoVAL.enum = &Enum{Name: tygoDollar[2].ident, Package: parserPkg, Values: make(map[string]int)}
 		}
 	case 6:
 		tygoDollar = tygoS[tygopt-6 : tygopt+1]
@@ -727,7 +729,7 @@ tygodefault:
 		tygoDollar = tygoS[tygopt-5 : tygopt+1]
 		//line parser.y:101
 		{
-			tygoVAL.object = &Object{Name: tygoDollar[2].ident}
+			tygoVAL.object = &Object{Name: tygoDollar[2].ident, Package: parserPkg}
 		}
 	case 10:
 		tygoDollar = tygoS[tygopt-5 : tygopt+1]

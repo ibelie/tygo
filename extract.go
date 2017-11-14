@@ -43,7 +43,7 @@ func Extract(dir string, extracter Extracter) (types []Type) {
 				imports, typePkg := extractPkgs(file)
 				var ts []Type
 				if strings.TrimSpace(decl.Doc.Text()) != "" {
-					ts = Parse(decl.Doc.Text(), imports, typePkg)
+					ts = Parse(decl.Doc.Text(), buildPackage.ImportPath, imports, typePkg)
 					types = append(types, ts...)
 				}
 				if extracter != nil {

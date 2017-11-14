@@ -47,6 +47,7 @@ type Enum struct {
 	nameMax int
 	sorted  []string
 	Name    string
+	Package string
 	Values  map[string]int
 }
 
@@ -64,6 +65,7 @@ type Method struct {
 
 type Object struct {
 	Name    string
+	Package string
 	Parent  *InstanceType
 	Fields  []*Field
 	Methods []*Method
