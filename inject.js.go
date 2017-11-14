@@ -31,17 +31,18 @@ func Javascript(dir string, name string, module string, types []Type, propPre []
 	body.Write([]byte(`
 `))
 
-	JS_OBJECTS = ObjectMap(types)
+	PROP_PRE = propPre
+	JS_MODULE = module
+	JS_WRITER = &body
+	JS_TYPES = make(map[string]Type)
+
+	JS_OBJECTS = ObjectMap(types, JS_MODULE == "")
 	var sortedObjects []string
 	for n, _ := range JS_OBJECTS {
 		sortedObjects = append(sortedObjects, n)
 	}
 	sort.Strings(sortedObjects)
 
-	PROP_PRE = propPre
-	JS_MODULE = module
-	JS_WRITER = &body
-	JS_TYPES = make(map[string]Type)
 	var requires map[string]string
 	for _, name := range sortedObjects {
 		js, rs := JS_OBJECTS[name].Javascript()

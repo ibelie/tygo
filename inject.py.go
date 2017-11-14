@@ -27,7 +27,7 @@ import typy
 `))
 
 	PY_WRITER = &buffer
-	PY_OBJECTS = ObjectMap(types)
+	PY_OBJECTS = ObjectMap(types, false)
 	PY_TYPES = make(map[string]bool)
 	var codes []string
 	for _, t := range types {
@@ -191,7 +191,7 @@ from typy import _typyd
 `))
 
 	PY_WRITER = &buffer
-	PY_OBJECTS = ObjectMap(types)
+	PY_OBJECTS = ObjectMap(types, false)
 	PY_TYPES = make(map[string]bool)
 	var codes []string
 	for _, t := range types {

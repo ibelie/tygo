@@ -218,6 +218,10 @@ func (t *VariantType) IsIterative() bool {
 	return false
 }
 
+func (t *Enum) FullName() string {
+	return t.Package + "/" + t.Name
+}
+
 func (t *Enum) Sorted() []string {
 	if t.sorted == nil || len(t.sorted) != len(t.Values) {
 		t.sorted = nil
@@ -278,6 +282,10 @@ func (t *Method) String() string {
 	}
 
 	return s
+}
+
+func (t *Object) FullName() string {
+	return t.Package + "/" + t.Name
 }
 
 func (t *Object) HasParent() bool {

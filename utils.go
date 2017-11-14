@@ -35,14 +35,30 @@ const (
 	STR_PREFIELDNUM = "preFieldNum"
 )
 
-func ObjectMap(types []Type) (objects map[string]*Object) {
+func ObjectMap(types []Type, useFullName bool) (objects map[string]*Object) {
 	objects = make(map[string]*Object)
 	for _, t := range types {
 		if object, ok := t.(*Object); ok {
-			if o, exist := objects[object.Name]; exist {
+			fullName := object.Name
+			if useFullName {
+				fullName = object.FullName()
+			}
+			if o, exist := objects[fullName]; exist {
 				log.Fatalf("[Tygo] Object already exists: %v %v", o, object)
 			}
-			objects[object.Name] = object
+			objects[fullName] = object
+		}
+	}
+	return
+}
+
+func PkgTypeMap(types []Type) (pkgs map[string][]Type) {
+	pkgs = make(map[string][]Type)
+	for _, t := range types {
+		if enum, ok := t.(*Enum); ok {
+			pkgs[enum.Package] = append(pkgs[enum.Package], enum)
+		} else if object, ok := t.(*Object); ok {
+			pkgs[object.Package] = append(pkgs[object.Package], object)
 		}
 	}
 	return

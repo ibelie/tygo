@@ -14,31 +14,52 @@ import (
 	"io/ioutil"
 )
 
-var TS_OBJECTS map[string]*Object
+var (
+	TS_MODULE     string
+	TS_CUR_MODULE string
+	TS_OBJECTS    map[string]*Object
+)
 
 func Typescript(dir string, name string, module string, types []Type, propPre []Type) {
 	var buffer bytes.Buffer
 
 	PROP_PRE = propPre
-	TS_OBJECTS = ObjectMap(types)
-	var codes []string
-	for _, t := range types {
-		codes = append(codes, t.Typescript())
+	TS_MODULE = module
+	TS_OBJECTS = ObjectMap(types, TS_MODULE == "")
+
+	var pkgTypes map[string][]Type
+	if TS_MODULE == "" {
+		pkgTypes = PkgTypeMap(types)
+	} else {
+		pkgTypes = map[string][]Type{module: types}
 	}
+
+	var modules []string
+	for pkg, ts := range pkgTypes {
+		TS_CUR_MODULE = pkg
+		var codes []string
+		for _, t := range ts {
+			codes = append(codes, t.Typescript())
+		}
+		modules = append(modules, fmt.Sprintf(`
+	declare module %s {
+		interface Type {
+			__class__: string;
+			ByteSize(): number;
+			Serialize(): Uint8Array;
+			Deserialize(data: Uint8Array): void;
+		}%s
+	}
+	`, pkg, strings.Join(codes, "")))
+	}
+
 	PROP_PRE = nil
 	TS_OBJECTS = nil
+	TS_MODULE = ""
+	TS_CUR_MODULE = ""
 
 	buffer.Write([]byte(fmt.Sprintf(`// Generated for tyts by tygo.  DO NOT EDIT!
-
-declare module %s {
-	interface Type {
-		__class__: string;
-		ByteSize(): number;
-		Serialize(): Uint8Array;
-		Deserialize(data: Uint8Array): void;
-	}%s
-}
-`, module, strings.Join(codes, ""))))
+%s`, strings.Join(modules, ""))))
 
 	if name == "" {
 		name = module
@@ -147,8 +168,15 @@ func (t *EnumType) Typescript() string {
 }
 
 func (t *InstanceType) Typescript() string {
-	if _, ok := TS_OBJECTS[t.Name]; ok {
-		return t.Name
+	fullName := t.Name
+	if TS_MODULE == "" {
+		fullName = t.PkgPath + "/" + t.Name
+	}
+	if _, ok := TS_OBJECTS[fullName]; ok {
+		if TS_CUR_MODULE == t.PkgPath {
+			return t.Name
+		}
+		return strings.Replace(fullName, "/", ".", -1)
 	} else {
 		return "Type"
 	}
