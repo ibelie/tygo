@@ -21,6 +21,7 @@ var (
 	JS_WRITER  io.Writer
 	JS_TYPES   map[string]Type
 	JS_OBJECTS map[string]*Object
+	JS_EXTENS  map[string]string
 )
 
 func Javascript(dir string, name string, module string, types []Type, propPre []Type) {
@@ -216,16 +217,24 @@ func (t *InstanceType) Javascript() (string, map[string]string) {
 		JS_WRITER.Write([]byte(js))
 		return t.Name, rs
 	} else {
+		fullName := t.Name
+		if JS_MODULE == "" && t.PkgPath != "" {
+			fullName = strings.Replace(t.PkgPath, "/", ".", -1) + "." + t.Name
+		} else if JS_EXTENS != nil {
+			if pkg, ok := JS_EXTENS[t.Name]; ok {
+				fullName = strings.Replace(pkg, "/", ".", -1) + "." + t.Name
+			}
+		}
 		identifier := t.Name + "Delegate"
 		if _, exist := JS_TYPES[identifier]; !exist {
 			JS_WRITER.Write([]byte(fmt.Sprintf(`
 var %s = new ibelie.tyts.Extension('%s', %s)
-`, identifier, identifier, t.Name)))
+`, identifier, identifier, fullName)))
 			JS_TYPES[identifier] = t
 		}
 		return identifier, map[string]string{
-			"goog.require('ibelie.tyts.Extension');":   "",
-			fmt.Sprintf("goog.require('%s');", t.Name): "",
+			"goog.require('ibelie.tyts.Extension');":     "",
+			fmt.Sprintf("goog.require('%s');", fullName): "",
 		}
 	}
 }

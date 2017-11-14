@@ -177,7 +177,7 @@ func (t *EnumType) Typescript() string {
 
 func (t *InstanceType) Typescript() string {
 	fullName := t.Name
-	if TS_MODULE == "" {
+	if TS_MODULE == "" && t.PkgPath != "" {
 		fullName = t.PkgPath + "/" + t.Name
 	}
 	if _, ok := TS_OBJECTS[fullName]; ok {
