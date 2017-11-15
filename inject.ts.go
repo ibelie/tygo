@@ -192,7 +192,11 @@ func (t *InstanceType) Typescript() string {
 		fullName = t.PkgPath + "/" + t.Name
 	} else if EXTENS_PKG != nil {
 		if pkg, ok := EXTENS_PKG[t.Name]; ok {
-			return strings.Replace(pkg, "/", ".", -1) + "." + t.Name
+			if TS_CUR_MODULE == pkg {
+				return t.Name
+			} else {
+				return strings.Replace(pkg, "/", ".", -1) + "." + t.Name
+			}
 		}
 	}
 	if _, ok := TS_OBJECTS[fullName]; ok {
