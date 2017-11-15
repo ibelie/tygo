@@ -168,7 +168,7 @@ func (t *Object) Javascript() (string, map[string]string) {
 var %s = new ibelie.tyts.Object('%s', %d, [%s
 ], [%s
 ]);%s
-%s['%s'] = %s.Type;
+%s.%s = %s.Type;
 `, t.Name, t.Name, _MAKE_CUTOFF(len(fields)), strings.Join(fields, ","),
 		strings.Join(method_props, ","), strings.Join(method_types, ""),
 		strings.Replace(m, "/", ".", -1), t.Name, t.Name), requires
