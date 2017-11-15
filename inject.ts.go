@@ -18,7 +18,9 @@ import (
 var (
 	TS_MODULE     string
 	TS_CUR_MODULE string
+	TS_EX_TYPE    bool
 	TS_OBJECTS    map[string]*Object
+	EXTENS_PKG    map[string]string
 )
 
 func Typescript(dir string, name string, module string, types []Type, propPre []Type) {
@@ -29,40 +31,49 @@ func Typescript(dir string, name string, module string, types []Type, propPre []
 	TS_OBJECTS = ObjectMap(types, TS_MODULE == "")
 
 	var pkgTypes map[string][]Type
+	var sortedPkgs []string
 	if TS_MODULE == "" {
 		pkgTypes = PkgTypeMap(types)
+		for pkg, _ := range pkgTypes {
+			sortedPkgs = append(sortedPkgs, pkg)
+		}
+		sort.Strings(sortedPkgs)
 	} else {
 		pkgTypes = map[string][]Type{module: types}
+		sortedPkgs = []string{module}
 	}
-
-	var sortedPkgs []string
-	for pkg, _ := range pkgTypes {
-		sortedPkgs = append(sortedPkgs, pkg)
-	}
-	sort.Strings(sortedPkgs)
 
 	var modules []string
 	for _, pkg := range sortedPkgs {
 		ts := pkgTypes[pkg]
 		TS_CUR_MODULE = pkg
+		TS_EX_TYPE = false
+
 		var codes []string
 		for _, t := range ts {
 			codes = append(codes, t.Typescript())
 		}
-		modules = append(modules, fmt.Sprintf(`
-declare module %s {
+
+		exType := ""
+		if TS_EX_TYPE {
+			exType = `
 	interface Type {
 		__class__: string;
 		ByteSize(): number;
 		Serialize(): Uint8Array;
 		Deserialize(data: Uint8Array): void;
-	}%s
+	}`
+		}
+
+		modules = append(modules, fmt.Sprintf(`
+declare module %s {%s%s
 }
-`, strings.Replace(pkg, "/", ".", -1), strings.Join(codes, "")))
+`, strings.Replace(pkg, "/", ".", -1), exType, strings.Join(codes, "")))
 	}
 
 	PROP_PRE = nil
 	TS_OBJECTS = nil
+	TS_EX_TYPE = false
 	TS_MODULE = ""
 	TS_CUR_MODULE = ""
 
@@ -179,6 +190,10 @@ func (t *InstanceType) Typescript() string {
 	fullName := t.Name
 	if TS_MODULE == "" && t.PkgPath != "" {
 		fullName = t.PkgPath + "/" + t.Name
+	} else if EXTENS_PKG != nil {
+		if pkg, ok := EXTENS_PKG[t.Name]; ok {
+			return strings.Replace(pkg, "/", ".", -1) + "." + t.Name
+		}
 	}
 	if _, ok := TS_OBJECTS[fullName]; ok {
 		if TS_CUR_MODULE == t.PkgPath {
@@ -186,6 +201,7 @@ func (t *InstanceType) Typescript() string {
 		}
 		return strings.Replace(fullName, "/", ".", -1)
 	} else {
+		TS_EX_TYPE = true
 		return "Type"
 	}
 }

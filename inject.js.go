@@ -21,7 +21,6 @@ var (
 	JS_WRITER  io.Writer
 	JS_TYPES   map[string]Type
 	JS_OBJECTS map[string]*Object
-	JS_EXTENS  map[string]string
 )
 
 func Javascript(dir string, name string, module string, types []Type, propPre []Type) {
@@ -220,8 +219,8 @@ func (t *InstanceType) Javascript() (string, map[string]string) {
 		fullName := t.Name
 		if JS_MODULE == "" && t.PkgPath != "" {
 			fullName = strings.Replace(t.PkgPath, "/", ".", -1) + "." + t.Name
-		} else if JS_EXTENS != nil {
-			if pkg, ok := JS_EXTENS[t.Name]; ok {
+		} else if EXTENS_PKG != nil {
+			if pkg, ok := EXTENS_PKG[t.Name]; ok {
 				fullName = strings.Replace(pkg, "/", ".", -1) + "." + t.Name
 			}
 		}
