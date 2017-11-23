@@ -400,6 +400,7 @@ func SimpleType_FromString(s string) Type {
 	case STR_FLOAT64:
 		return SimpleType_FLOAT64
 	default:
+		log.Printf("[Tygo][SimpleType] Unknown simple type: %s", s)
 		return UnknownType(s)
 	}
 }
