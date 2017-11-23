@@ -202,7 +202,7 @@ func (t *InstanceType) Typescript() string {
 		}
 	}
 	if _, ok := TS_OBJECTS[fullName]; ok {
-		if TS_CUR_MODULE == t.PkgPath {
+		if TS_CUR_MODULE == t.PkgPath || t.Object != nil {
 			return t.Name
 		}
 		return strings.Replace(fullName, "/", ".", -1)
