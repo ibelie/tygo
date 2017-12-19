@@ -115,7 +115,7 @@ func (t *Object) Typescript() string {
 		parent = fmt.Sprintf(" extends %s", t.Parent.Typescript())
 	}
 	var members []string
-	for _, field := range t.VisibleFields() {
+	for _, field := range t.Fields {
 		members = append(members, fmt.Sprintf(`
 		%s: %s;`, field.Name, field.Typescript()))
 	}
