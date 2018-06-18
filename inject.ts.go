@@ -58,7 +58,7 @@ func Typescript(dir string, name string, module string, types []Type, propPre []
 		if TS_EX_TYPE {
 			exType = `
 	interface Type {
-		__class__: string;
+		isObject: true;
 		ByteSize(): number;
 		Serialize(): Uint8Array;
 		Deserialize(data: Uint8Array): void;
@@ -138,7 +138,7 @@ func (t *Object) Typescript() string {
 	return fmt.Sprintf(`
 
 	class %s%s {
-		__class__: string;
+		isObject: true;
 		ByteSize(): number;
 		Serialize(): Uint8Array;
 		Deserialize(data: Uint8Array): void;

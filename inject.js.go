@@ -101,9 +101,9 @@ func typeListJavascript(name string, ts []Type) (string, map[string]string) {
 		items = append(items, fmt.Sprintf(`
 	{tag: %d, tagsize: %d, type: %s}`, _MAKE_TAG(i+1, t.WireType()), TAG_SIZE(i+1), js))
 	}
-	return fmt.Sprintf(`new ibelie.tyts.Method('%s', %d, [%s
+	return fmt.Sprintf(`new ibelie.tyts.Method(%d, [%s
 ]);
-`, name, _MAKE_CUTOFF(len(items)), strings.Join(items, ",")), requires
+`, _MAKE_CUTOFF(len(items)), strings.Join(items, ",")), requires
 }
 
 func (t *Object) Javascript() (string, map[string]string) {
@@ -165,11 +165,11 @@ func (t *Object) Javascript() (string, map[string]string) {
 	}
 
 	return fmt.Sprintf(`
-var %s = new ibelie.tyts.Object('%s', %d, [%s
+var %s = new ibelie.tyts.Object(%d, [%s
 ], [%s
 ]);%s
 %s.%s = %s.Type;
-`, t.Name, t.Name, _MAKE_CUTOFF(len(fields)), strings.Join(fields, ","),
+`, t.Name, _MAKE_CUTOFF(len(fields)), strings.Join(fields, ","),
 		strings.Join(method_props, ","), strings.Join(method_types, ""),
 		strings.Replace(m, "/", ".", -1), t.Name, t.Name), requires
 }
@@ -227,8 +227,8 @@ func (t *InstanceType) Javascript() (string, map[string]string) {
 		identifier := t.Name + "Delegate"
 		if _, exist := JS_TYPES[identifier]; !exist {
 			JS_WRITER.Write([]byte(fmt.Sprintf(`
-var %s = new ibelie.tyts.Extension('%s', %s)
-`, identifier, identifier, fullName)))
+var %s = new ibelie.tyts.Extension(%s)
+`, identifier, fullName)))
 			JS_TYPES[identifier] = t
 		}
 		return identifier, map[string]string{
@@ -256,8 +256,8 @@ func (t *ListType) Javascript() (string, map[string]string) {
 		js, rs := t.E.Javascript()
 		requires = update(requires, rs)
 		JS_WRITER.Write([]byte(fmt.Sprintf(`
-var %s = new ibelie.tyts.List('%s', %s)
-`, identifier, identifier, js)))
+var %s = new ibelie.tyts.List(%s)
+`, identifier, js)))
 		JS_TYPES[identifier] = t
 	}
 	return identifier, requires
@@ -272,8 +272,8 @@ func (t *DictType) Javascript() (string, map[string]string) {
 		requires = update(requires, rs_k)
 		requires = update(requires, rs_v)
 		JS_WRITER.Write([]byte(fmt.Sprintf(`
-var %s = new ibelie.tyts.Dict('%s', %s, %s)
-`, identifier, identifier, js_k, js_v)))
+var %s = new ibelie.tyts.Dict(%s, %s)
+`, identifier, js_k, js_v)))
 		JS_TYPES[identifier] = t
 	}
 	return identifier, requires
@@ -297,9 +297,9 @@ func (t *VariantType) Javascript() (string, map[string]string) {
 	{tag: %d, tagsize: %d, type: %s}`, _MAKE_TAG(variantNum, wiretype), TAG_SIZE(variantNum), js))
 		}
 		JS_WRITER.Write([]byte(fmt.Sprintf(`
-var %s = new ibelie.tyts.Variant('%s', %d, [%s
+var %s = new ibelie.tyts.Variant(%d, [%s
 ])
-`, identifier, identifier, _MAKE_CUTOFF(len(codes)), strings.Join(codes, ","))))
+`, identifier, _MAKE_CUTOFF(len(codes)), strings.Join(codes, ","))))
 		JS_TYPES[identifier] = t
 	}
 	return identifier, requires
