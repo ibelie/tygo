@@ -118,7 +118,8 @@ func (t *Object) Javascript() (string, map[string]string) {
 		js, rs := field.Javascript()
 		requires = update(requires, rs)
 		fields = append(fields, fmt.Sprintf(`
-	{name: '%s', tag: %d, tagsize: %d, type: %s}`, field.Name, _MAKE_TAG(i+1, wiretype), TAG_SIZE(i+1), js))
+	{get: (o) => { return o.%s; }, set: (o, v) => { o.%s = v; }, handle: (o) => { return o.On%sChanged}, tag: %d, tagsize: %d, type: %s}`,
+			field.Name, field.Name, strings.Title(field.Name), _MAKE_TAG(i+1, wiretype), TAG_SIZE(i+1), js))
 	}
 
 	JS_TYPES[t.Name] = t
@@ -131,7 +132,7 @@ func (t *Object) Javascript() (string, map[string]string) {
 			js, rs := typeListJavascript(t.Name+field.Name, []Type{field})
 			update(requires, rs)
 			method_props = append(method_props, fmt.Sprintf(`
-	{name: '%s', type: null}`, field.Name))
+	{S: (t, f) => { t.S_%s = f; }, D: (t, f) => { t.D_%s = f; }, type: null}`, field.Name, field.Name))
 			method_types = append(method_types, fmt.Sprintf(`
 %s.methods[%d].type = %s`, t.Name, method_index, js))
 			method_index++
@@ -143,7 +144,7 @@ func (t *Object) Javascript() (string, map[string]string) {
 			js_p, rs_p := typeListJavascript(t.Name+method.Name+"Param", method.Params)
 			update(requires, rs_p)
 			method_props = append(method_props, fmt.Sprintf(`
-	{name: '%s%s', type: null}`, method.Name, "Param"))
+	{S: (t, f) => { t.S_%sParam = f; }, D: (t, f) => { t.D_%sParam = f; }, type: null}`, method.Name, method.Name))
 			method_types = append(method_types, fmt.Sprintf(`
 %s.methods[%d].type = %s`, t.Name, method_index, js_p))
 			method_index++
@@ -152,7 +153,7 @@ func (t *Object) Javascript() (string, map[string]string) {
 			js_r, rs_r := typeListJavascript(t.Name+method.Name+"Result", method.Results)
 			update(requires, rs_r)
 			method_props = append(method_props, fmt.Sprintf(`
-	{name: '%s%s', type: null}`, method.Name, "Result"))
+	{S: (t, f) => { t.S_%sResult = f; }, D: (t, f) => { t.D_%sResult = f; }, type: null}`, method.Name, method.Name))
 			method_types = append(method_types, fmt.Sprintf(`
 %s.methods[%d].type = %s`, t.Name, method_index, js_r))
 			method_index++
